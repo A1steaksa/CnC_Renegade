@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***                            Confidential - Westwood Studios                              ***
  ***********************************************************************************************
@@ -33,7 +15,6 @@
  *---------------------------------------------------------------------------------------------*
  * Functions:                                                                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 
 /*
 **	Includes
@@ -97,7 +78,6 @@ static void	Set_Subobject_Visibility (RenderObjClass *model, int bone_index, boo
 bool	VehicleGameObj::DefaultDriverIsGunner	= false;
 bool	VehicleGameObj::CameraLockedToTurret	= false;
 
-
 /*
 ** Target Steering Option.
 ** (gth) 07/11/2001 - making this default to true
@@ -105,19 +85,16 @@ bool	VehicleGameObj::CameraLockedToTurret	= false;
 */
 bool	_Use_Target_Steering = false;
 
-bool	VehicleGameObj::Toggle_Target_Steering( void )
-{
+bool	VehicleGameObj::Toggle_Target_Steering( void ){
 	return _Use_Target_Steering = !_Use_Target_Steering;
 }
 
-void	VehicleGameObj::Set_Target_Steering( bool onoff )
-{
+void	VehicleGameObj::Set_Target_Steering( bool onoff ){
 	_Use_Target_Steering = onoff;
-	return ;
+	return;
 }
 
-bool	VehicleGameObj::Is_Target_Steering( void )
-{
+bool	VehicleGameObj::Is_Target_Steering( void ){
 	return _Use_Target_Steering;
 }
 
@@ -143,10 +120,9 @@ VehicleGameObjDef::VehicleGameObjDef( void ) :
 	GDIDamageReportID(0),
 	NodDamageReportID(0),
 	GDIDestroyReportID(0),
-	NodDestroyReportID(0)
-{
+	NodDestroyReportID(0){
 	// initialize all engine sound defs to zero
-	for (int i=0; i<MAX_ENGINE_SOUND_STATES; i++) {
+	for (int i=0; i<MAX_ENGINE_SOUND_STATES; i++){
 		EngineSound[i] = 0;
 	}
 
@@ -161,19 +137,6 @@ VehicleGameObjDef::VehicleGameObjDef( void ) :
 	EDITABLE_PARAM( VehicleGameObjDef, ParameterClass::TYPE_FLOAT, 	SquishVelocity );
 	EDITABLE_PARAM( VehicleGameObjDef, ParameterClass::TYPE_BOOL,		Aim2D );
 
-#ifdef	PARAM_EDITING_ON
-	EnumParameterClass *param;
-	param = new EnumParameterClass( (int*)&Type );
-	param->Set_Name ("Type");
-	param->Add_Value ( "Car",		VEHICLE_TYPE_CAR );
-	param->Add_Value ( "Tank", 	VEHICLE_TYPE_TANK );
-	param->Add_Value ( "Bike", 	VEHICLE_TYPE_BIKE );
-	param->Add_Value ( "Flying", 	VEHICLE_TYPE_FLYING );
-	param->Add_Value ( "Turret", 	VEHICLE_TYPE_TURRET );
-
-	GENERIC_EDITABLE_PARAM(VehicleGameObjDef,param)
-#endif
-
 	EDITABLE_PARAM( VehicleGameObjDef, ParameterClass::TYPE_BOOL, 	OccupantsVisible );
 
 	// engine sounds
@@ -181,7 +144,6 @@ VehicleGameObjDef::VehicleGameObjDef( void ) :
 	NAMED_EDITABLE_PARAM(VehicleGameObjDef, ParameterClass::TYPE_SOUNDDEFINITIONID, EngineSound[ENGINE_SOUND_STATE_STARTING],"Engine Start Sound");
 	NAMED_EDITABLE_PARAM(VehicleGameObjDef, ParameterClass::TYPE_SOUNDDEFINITIONID, EngineSound[ENGINE_SOUND_STATE_RUNNING],"Engine Running Loop");
 	NAMED_EDITABLE_PARAM(VehicleGameObjDef, ParameterClass::TYPE_SOUNDDEFINITIONID, EngineSound[ENGINE_SOUND_STATE_STOPPING],"Engine Stop Sound");
-//	NAMED_EDITABLE_PARAM(VehicleGameObjDef, ParameterClass::TYPE_SOUNDDEFINITIONID, EngineSound[ENGINE_SOUND_STATE_OFF],"Engine Off Sound");
 
 	EDITABLE_PARAM( VehicleGameObjDef, ParameterClass::TYPE_BOOL,		SightDownMuzzle );
 
@@ -195,18 +157,15 @@ VehicleGameObjDef::VehicleGameObjDef( void ) :
 	EDITABLE_PARAM(VehicleGameObjDef, ParameterClass::TYPE_STRINGSDB_ID, NodDestroyReportID);
 }
 
-VehicleGameObjDef::~VehicleGameObjDef( void )
-{
+VehicleGameObjDef::~VehicleGameObjDef( void ){
 	Free_Transition_List();
 }
 
-uint32	VehicleGameObjDef::Get_Class_ID (void) const
-{
+uint32	VehicleGameObjDef::Get_Class_ID (void) const{
 	return CLASSID_GAME_OBJECT_DEF_VEHICLE;
 }
 
-PersistClass *	VehicleGameObjDef::Create( void ) const
-{
+PersistClass *	VehicleGameObjDef::Create( void ) const{
 	VehicleGameObj * obj = new VehicleGameObj;
 	obj->Init( *this );
 	return obj;
@@ -259,8 +218,7 @@ enum	{
 	MICROCHUNKID_DEF_NOD_DESTROY_REPORT_ID,
 };
 
-bool	VehicleGameObjDef::Save( ChunkSaveClass & csave )
-{
+bool	VehicleGameObjDef::Save( ChunkSaveClass & csave ){
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 		SmartGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -290,11 +248,10 @@ bool	VehicleGameObjDef::Save( ChunkSaveClass & csave )
 	csave.End_Chunk();
 
 	//	Save each of the transition 'definitions' in our list.
-	for( int index = 0; index < Transitions.Count (); index ++ ) {
+	for( int index = 0; index < Transitions.Count (); index ++ ){
 		TransitionDataClass *transition = Transitions[index];
-		if( transition != NULL ) {
-
-			//	Save this transition 'defintion' to its own chunk.
+		if( transition != NULL ){
+	 //	Save this transition 'defintion' to its own chunk.
 			csave.Begin_Chunk( CHUNKID_DEF_TRANSITION );
 			transition->Save( csave );
 			csave.End_Chunk();
@@ -304,13 +261,11 @@ bool	VehicleGameObjDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	VehicleGameObjDef::Load( ChunkLoadClass &cload )
-{
+bool	VehicleGameObjDef::Load( ChunkLoadClass &cload ){
 	Free_Transition_List ();
 
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
+	while (cload.Open_Chunk()){
+		switch(cload.Cur_Chunk_ID()){
 			case CHUNKID_DEF_PARENT:
 				SmartGameObjDef::Load( cload );
 				break;
@@ -324,8 +279,8 @@ bool	VehicleGameObjDef::Load( ChunkLoadClass &cload )
 			break;
 
 			case CHUNKID_DEF_VARIABLES:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
+				while (cload.Open_Micro_Chunk()){
+					switch(cload.Cur_Micro_Chunk_ID()){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_TYPE, Type );
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_TYPE_NAME, TypeName );
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_FIRE0ANIM, Fire0Anim );
@@ -366,45 +321,36 @@ bool	VehicleGameObjDef::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-/*
-**
-*/
-void VehicleGameObjDef::Free_Transition_List( void )
-{
+void VehicleGameObjDef::Free_Transition_List( void ){
 	//	Delete each of the transition 'definitions' in our list.
-	for( int index = 0; index < Transitions.Count (); index ++ ) {
+	for( int index = 0; index < Transitions.Count (); index ++ ){
 		TransitionDataClass *transition = Transitions[index];
-		if( transition != NULL ) {
+		if( transition != NULL ){
 			delete transition;
 		}
 	}
 	Transitions.Delete_All();
-	return ;
+	return;
 }
 
-const PersistFactoryClass & VehicleGameObjDef::Get_Factory (void) const
-{
+const PersistFactoryClass & VehicleGameObjDef::Get_Factory (void) const{
 	return _VehicleGameObjDefPersistFactory;
 }
 
-
-int VehicleGameObjDef::Get_Damage_Report(int team) const
-{
-	if (PLAYERTYPE_GDI == team) {
+int VehicleGameObjDef::Get_Damage_Report(int team) const{
+	if (PLAYERTYPE_GDI == team){
 		return GDIDamageReportID;
-	} else if (PLAYERTYPE_NOD == team) {
+	} else if (PLAYERTYPE_NOD == team){
 		return NodDamageReportID;
 	}
 
 	return 0;
 }
 
-
-int VehicleGameObjDef::Get_Destroy_Report(int team) const
-{
-	if (PLAYERTYPE_GDI == team) {
+int VehicleGameObjDef::Get_Destroy_Report(int team) const{
+	if (PLAYERTYPE_GDI == team){
 		return GDIDestroyReportID;
-	} else if (PLAYERTYPE_NOD == team) {
+	} else if (PLAYERTYPE_NOD == team){
 		return NodDestroyReportID;
 	}
 
@@ -416,11 +362,9 @@ int VehicleGameObjDef::Get_Destroy_Report(int team) const
 */
 SimplePersistFactoryClass<VehicleGameObj, CHUNKID_GAME_OBJECT_VEHICLE>	_VehicleGameObjPersistFactory;
 
-const PersistFactoryClass & VehicleGameObj::Get_Factory (void) const
-{
+const PersistFactoryClass & VehicleGameObj::Get_Factory (void) const{
 	return _VehicleGameObjPersistFactory;
 }
-
 
 VehicleGameObj::VehicleGameObj()	:
 	TurretBone( 0 ),
@@ -437,31 +381,28 @@ VehicleGameObj::VehicleGameObj()	:
 	HasEnterTransitions( false ),
 	HasExitTransitions( false ),
 	VehicleDelivered(false),
-	LockTimer( 0 )
-{
+	LockTimer( 0 ){
 	DriverIsGunner = DefaultDriverIsGunner;
 	Set_App_Packet_Type(APPPACKETTYPE_VEHICLE);
 }
 
-VehicleGameObj::~VehicleGameObj()
-{
-	if ( Peek_Physical_Object() != NULL && COMBAT_SCENE != NULL) {
-
+VehicleGameObj::~VehicleGameObj(){
+	if ( Peek_Physical_Object() != NULL && COMBAT_SCENE != NULL){
 		// Make sure the exiters don't hit me
 		Peek_Physical_Object()->Set_Collision_Group( UNCOLLIDEABLE_GROUP );
 
 		// Eject all the occupants around the vehicle so they don't intersect
 		Vector3 vehicle_pos;
 		Peek_Physical_Object()->Get_Position( &vehicle_pos );
-		for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
-			if ( SeatOccupants[i] != NULL ) {
+		for ( int i = 0; i < SeatOccupants.Length(); i++ ){
+			if ( SeatOccupants[i] != NULL ){
 				SeatOccupants[i]->Exit_Destroyed_Vehicle( i, vehicle_pos );
 			}
 			SeatOccupants[i] = NULL;
 		}
 	} else {
-		for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
-			if ( SeatOccupants[i] != NULL ) {
+		for ( int i = 0; i < SeatOccupants.Length(); i++ ){
+			if ( SeatOccupants[i] != NULL ){
 				SeatOccupants[i]->Exit_Vehicle();
 			}
 			SeatOccupants[i] = NULL;
@@ -470,13 +411,13 @@ VehicleGameObj::~VehicleGameObj()
 
 	Destroy_Transitions();
 
-	if (Sound) {
+	if (Sound){
 		Sound->Remove_From_Scene ();
 		Sound->Release_Ref ();
 		Sound = NULL;
 	}
 
-	if (CachedEngineSound) {
+	if (CachedEngineSound){
 		CachedEngineSound->Remove_From_Scene();
 		REF_PTR_RELEASE(CachedEngineSound);
 	}
@@ -486,23 +427,16 @@ VehicleGameObj::~VehicleGameObj()
 	Shutdown_Wheel_Effects();
 }
 
-/*
-**
-*/
-void VehicleGameObj::Init( void )
-{
+void VehicleGameObj::Init( void ){
 	DriverIsGunner = DefaultDriverIsGunner;
-	// Vehicles are too complex to re-init
-//	Init( Get_Definition() );
 }
 
-void	VehicleGameObj::Init( const VehicleGameObjDef & definition )
-{
+void	VehicleGameObj::Init( const VehicleGameObjDef & definition ){
 	DriverIsGunner = DefaultDriverIsGunner;
 	SmartGameObj::Init( definition );
 
 	SeatOccupants.Resize(definition.NumSeats);
-	for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
+	for ( int i = 0; i < SeatOccupants.Length(); i++ ){
 		SeatOccupants[i] = NULL;
 	}
 
@@ -511,26 +445,18 @@ void	VehicleGameObj::Init( const VehicleGameObjDef & definition )
 	Create_And_Destroy_Transitions();
 	Update_Damage_Meshes();
 
-	//
 	// Refine the app packet type if this is a turret
-	//
 	if (Get_Definition().Type == VEHICLE_TYPE_TURRET)
 	{
 		Set_App_Packet_Type(APPPACKETTYPE_TURRET);
 	}
-
-	//WWDEBUG_SAY((">> VehicleGameObj::Init, Type = %d\n", Get_Definition().Type));
 }
 
-const VehicleGameObjDef & VehicleGameObj::Get_Definition( void ) const
-{
+const VehicleGameObjDef & VehicleGameObj::Get_Definition( void ) const{
 	return (const VehicleGameObjDef &)BaseGameObj::Get_Definition();
 }
 
-
-/*
-** VehicleGameObj Save and Load
-*/
+// VehicleGameObj Save and Load
 enum	{
 	CHUNKID_PARENT							=	923991632,
 	CHUNKID_VARIABLES,
@@ -549,8 +475,7 @@ enum	{
 	MICROCHUNKID_NUM_SEATS,
 };
 
-bool	VehicleGameObj::Save( ChunkSaveClass & csave )
-{
+bool	VehicleGameObj::Save( ChunkSaveClass & csave ){
 	// Destroy the transitions, because we don't save them, and don't
 	// want to have the vehicle have a un-matched reference to them.
 	// Re-create at the end of save
@@ -569,7 +494,7 @@ bool	VehicleGameObj::Save( ChunkSaveClass & csave )
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_NUM_SEATS, num_seats );
 	csave.End_Chunk();
 
-	if ( num_seats != 0 ) {
+	if ( num_seats != 0 ){
 		csave.Begin_Chunk( CHUNKID_SEAT_LIST );
 		csave.Write( &SeatOccupants[0], num_seats * sizeof( SeatOccupants[0] ) );
 		csave.End_Chunk();
@@ -580,21 +505,19 @@ bool	VehicleGameObj::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	VehicleGameObj::Load( ChunkLoadClass &cload )
-{
+bool	VehicleGameObj::Load( ChunkLoadClass &cload ){
 	int num_seats = 0;
 
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
+	while (cload.Open_Chunk()){
+		switch(cload.Cur_Chunk_ID()){
 			case CHUNKID_PARENT:
 				SmartGameObj::Load( cload );
 				break;
 
 			case CHUNKID_VARIABLES:
 			{
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
+				while (cload.Open_Micro_Chunk()){
+					switch(cload.Cur_Micro_Chunk_ID()){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_TURRET_TURN, TurretTurn );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_BARREL_TILT, BarrelTilt );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_TRANSITIONS_ENABLED, TransitionsEnabled );
@@ -613,18 +536,18 @@ bool	VehicleGameObj::Load( ChunkLoadClass &cload )
 
 			case	CHUNKID_SEAT_LIST:
 			{
-				if ( (num_seats == 0) || (num_seats != Get_Definition().NumSeats)) {
+				if ( (num_seats == 0) || (num_seats != Get_Definition().NumSeats)){
 					SeatOccupants.Resize(Get_Definition().NumSeats);
-					for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
+					for ( int i = 0; i < SeatOccupants.Length(); i++ ){
 						SeatOccupants[i] = NULL;
 					}
-					break;		// May be legacy
+					break; // May be legacy
 				}
 
 				SeatOccupants.Resize( num_seats );
 				cload.Read( &SeatOccupants[0], num_seats * sizeof( SeatOccupants[0] ) );
-				for ( int i = 0; i < num_seats; i++ ) {
-					if ( SeatOccupants[i] != NULL ) {
+				for ( int i = 0; i < num_seats; i++ ){
+					if ( SeatOccupants[i] != NULL ){
 						REQUEST_POINTER_REMAP( (void **)&SeatOccupants[i] );
 					}
 				}
@@ -643,8 +566,7 @@ bool	VehicleGameObj::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void	VehicleGameObj::On_Post_Load( void )
-{
+void	VehicleGameObj::On_Post_Load( void ){
 	DriverIsGunner = DefaultDriverIsGunner;
 
 	Init_Wheel_Effects();
@@ -654,52 +576,21 @@ void	VehicleGameObj::On_Post_Load( void )
 	Update_Damage_Meshes();
 
 	// For some reason???  some vehicles come in with an anim control, but no model in the anim control.
-	if ( Get_Anim_Control() != NULL && Get_Anim_Control()->Peek_Model() == NULL ) {
+	if ( Get_Anim_Control() != NULL && Get_Anim_Control()->Peek_Model() == NULL ){
 		Get_Anim_Control()->Set_Model( Peek_Model() );
 	}
 
-
-	//
 	// Refine the app packet type if this is a turret
-	//
 	if (Get_Definition().Type == VEHICLE_TYPE_TURRET)
 	{
 		Set_App_Packet_Type(APPPACKETTYPE_TURRET);
 	}
 }
 
-
-#if 0
-void	VehicleGameObj::Create_Transitions( void )
-{
-	Destroy_Transitions();
-
-	WWASSERT( TransitionInstances.Count() == 0 );
-
-	const TRANSITION_DATA_LIST & trans_data_list = Get_Definition().Get_Transition_List();
-
-	if ( trans_data_list.Count() != 0 ) {		// new style
-
-		if ( Seats[0] == NULL ) {
-			Create_New_Transitions( TransitionDataClass::VEHICLE_ENTER_0 );
-		} else {
-			Create_New_Transitions( TransitionDataClass::VEHICLE_EXIT_0 );
-		}
-
-		if ( Seats[1] == NULL ) {
-			Create_New_Transitions( TransitionDataClass::VEHICLE_ENTER_1 );
-		} else {
-			Create_New_Transitions( TransitionDataClass::VEHICLE_EXIT_1 );
-		}
-	}
-}
-#endif
-
-void	VehicleGameObj::Destroy_Transitions( void )
-{
+void	VehicleGameObj::Destroy_Transitions( void ){
 	HasEnterTransitions = false;
 	HasExitTransitions = false;
-	while ( TransitionInstances.Count() ) {
+	while ( TransitionInstances.Count() ){
   		TransitionManager::Destroy( TransitionInstances[0] );
   		TransitionInstances.Delete( 0 );
 	}
@@ -708,12 +599,11 @@ void	VehicleGameObj::Destroy_Transitions( void )
 	TransitionManager::Destroy_Pending();
 }
 
-void	VehicleGameObj::Create_And_Destroy_Transitions( void )
-{
+void	VehicleGameObj::Create_And_Destroy_Transitions( void ){
 	// Manage the enter transitions
 	bool	should_have_enter_transitions = (OccupiedSeats < Get_Definition().NumSeats) && TransitionsEnabled;
-	if ( should_have_enter_transitions != HasEnterTransitions ) {
-		if ( should_have_enter_transitions ) {
+	if ( should_have_enter_transitions != HasEnterTransitions ){
+		if ( should_have_enter_transitions ){
 			Create_New_Transitions( TransitionDataClass::VEHICLE_ENTER );
 			HasEnterTransitions = true;
 		} else {
@@ -724,8 +614,8 @@ void	VehicleGameObj::Create_And_Destroy_Transitions( void )
 
 	// Manage the exit transitions
 	bool	should_have_exit_transitions = (OccupiedSeats > 0) && TransitionsEnabled;
-	if ( should_have_exit_transitions != HasExitTransitions ) {
-		if ( should_have_exit_transitions ) {
+	if ( should_have_exit_transitions != HasExitTransitions ){
+		if ( should_have_exit_transitions ){
 			Create_New_Transitions( TransitionDataClass::VEHICLE_EXIT );
 			HasExitTransitions = true;
 		} else {
@@ -736,17 +626,12 @@ void	VehicleGameObj::Create_And_Destroy_Transitions( void )
 
 }
 
-
-/*
-**
-*/
-void VehicleGameObj::Aquire_Turret_Bones( void )
-{
-   if ( TurretBone == 0 ) {
+void VehicleGameObj::Aquire_Turret_Bones( void ){
+   if ( TurretBone == 0 ){
 		TurretBone = Peek_Model()->Get_Bone_Index( "turret" );
-		if ( TurretBone != 0 ) {
+		if ( TurretBone != 0 ){
 			Peek_Model()->Capture_Bone( TurretBone );
-			if ( !Peek_Model()->Is_Bone_Captured( TurretBone ) ) {
+			if ( !Peek_Model()->Is_Bone_Captured( TurretBone ) ){
 				Debug_Say(( "VehicleGameObj::Aquire_Bones() : Turret Bone not captured for model %s\n",
 					Peek_Model()->Get_Name()));
 				TurretBone = 0;
@@ -756,11 +641,11 @@ void VehicleGameObj::Aquire_Turret_Bones( void )
 
 	BarrelOffset = 0;
 
-	if ( BarrelBone == 0 ) {
+	if ( BarrelBone == 0 ){
 		BarrelBone = Peek_Model()->Get_Bone_Index( "barrel" );
-		if ( BarrelBone != 0 ) {
+		if ( BarrelBone != 0 ){
 			Peek_Model()->Capture_Bone( BarrelBone );
-			if ( !Peek_Model()->Is_Bone_Captured( BarrelBone ) ) {
+			if ( !Peek_Model()->Is_Bone_Captured( BarrelBone ) ){
 				BarrelBone = 0;
 				Debug_Say(( "VehicleGameObj::Aquire_Bones() : Barrel Bone not captured for model %s\n",
 					Peek_Model()->Get_Name()));
@@ -768,32 +653,30 @@ void VehicleGameObj::Aquire_Turret_Bones( void )
 		}
 
 		// find the barrel in turret space
-	   if ( TurretBone != 0 ) {
+	   if ( TurretBone != 0 ){
 			Matrix3D	turret_base = Peek_Model()->Get_Bone_Transform( TurretBone );
 			Vector3	barrel_pos = Peek_Model()->Get_Bone_Transform( BarrelBone ).Get_Translation();
 			Vector3	turret_space_barrel;
 			Matrix3D::Inverse_Transform_Vector( turret_base, barrel_pos, &turret_space_barrel );
 			BarrelOffset = turret_space_barrel.Y;
-			if ( WWMath::Fabs( BarrelOffset ) < 0.1f  ) {
+			if ( WWMath::Fabs( BarrelOffset ) < 0.1f  ){
 				BarrelOffset = 0;
 			}
 		}
 	}
-
 }
 
-void VehicleGameObj::Release_Turret_Bones( void )
-{
-	if ( Peek_Model() ) {
-		if ( TurretBone != 0 ) {
-	 		if ( Peek_Model()->Is_Bone_Captured( TurretBone ) ) {
+void VehicleGameObj::Release_Turret_Bones( void ){
+	if ( Peek_Model() ){
+		if ( TurretBone != 0 ){
+	 		if ( Peek_Model()->Is_Bone_Captured( TurretBone ) ){
 				Peek_Model()->Release_Bone( TurretBone );
 				TurretBone = 0;
 			}
 		}
 
-		if ( BarrelBone != 0 ) {
-	 		if ( Peek_Model()->Is_Bone_Captured( BarrelBone ) ) {
+		if ( BarrelBone != 0 ){
+	 		if ( Peek_Model()->Is_Bone_Captured( BarrelBone ) ){
 				Peek_Model()->Release_Bone( BarrelBone );
 				BarrelBone = 0;
 			}
@@ -803,54 +686,43 @@ void VehicleGameObj::Release_Turret_Bones( void )
 	BarrelOffset = 0;
 }
 
-void	VehicleGameObj::Export_Creation( BitStreamClass &packet )
-{
+void	VehicleGameObj::Export_Creation( BitStreamClass &packet ){
 	SmartGameObj::Export_Creation( packet );
 
-	//
 	//	Send the lock status to the client
-	//
 	int lock_owner_id = 0;
-	if (LockOwner != NULL) {
+	if (LockOwner != NULL){
 		lock_owner_id = LockOwner.Get_Ptr ()->Get_ID ();
 	}
 	packet.Add(lock_owner_id);
 
-	if (lock_owner_id != 0) {
+	if (lock_owner_id != 0){
 		packet.Add(LockTimer,BITPACK_VEHICLE_LOCK_TIMER);
 	}
 
-	return ;
+	return;
 }
 
-
-void	VehicleGameObj::Import_Creation( BitStreamClass &packet )
-{
+void	VehicleGameObj::Import_Creation( BitStreamClass &packet ){
 	SmartGameObj::Import_Creation( packet );
 
-	//
 	//	Get the lock status from the server
-	//
 	int lock_owner_id;
 	packet.Get(lock_owner_id);
-	if (lock_owner_id != 0) {
+	if (lock_owner_id != 0){
 		LockOwner = GameObjManager::Find_PhysicalGameObj( lock_owner_id );
 		packet.Get(LockTimer,BITPACK_VEHICLE_LOCK_TIMER);
 	}
 
-	return ;
+	return;
 }
 
-
-void VehicleGameObj::Export_Rare( BitStreamClass &packet )
-{
+void VehicleGameObj::Export_Rare( BitStreamClass &packet ){
 	SmartGameObj::Export_Rare( packet );
 
-	//
 	// Export the seat occupants
-	//
-	for (int i = 0; i < SeatOccupants.Length(); i++) {
-		if (SeatOccupants[i] == NULL) {
+	for (int i = 0; i < SeatOccupants.Length(); i++){
+		if (SeatOccupants[i] == NULL){
 			const int NO_OCCUPANTS = -1;
 			packet.Add(NO_OCCUPANTS);
 		} else {
@@ -861,39 +733,30 @@ void VehicleGameObj::Export_Rare( BitStreamClass &packet )
 	packet.Add(VehicleDelivered);
 }
 
-void VehicleGameObj::Import_Rare( BitStreamClass &packet )
-{
-   WWASSERT(CombatManager::I_Am_Only_Client());
+void VehicleGameObj::Import_Rare( BitStreamClass &packet ){
 	SmartGameObj::Import_Rare( packet );
 
-	//
 	// Update the seat occupants
-	//
-	for (int i = 0; i < SeatOccupants.Length(); i++) {
+	for (int i = 0; i < SeatOccupants.Length(); i++){
 		int occupant = packet.Get(occupant);
-		if (occupant == -1) {
+		if (occupant == -1){
 
-			//
-			//	Remove the occupant from the seat
-			//
-			if (SeatOccupants[i] != NULL) {
+	 		//	Remove the occupant from the seat
+			if (SeatOccupants[i] != NULL){
 				Remove_Occupant (SeatOccupants[i]);
 			}
 
 		} else {
-			if ((SeatOccupants[i] == NULL) || (SeatOccupants[i]->Get_ID() != occupant)) {
+			if ((SeatOccupants[i] == NULL) || (SeatOccupants[i]->Get_ID() != occupant)){
 				SmartGameObj * obj = GameObjManager::Find_SmartGameObj(occupant);
 
-				if (SeatOccupants[i] != NULL) {
+				if (SeatOccupants[i] != NULL){
 					Remove_Occupant (SeatOccupants[i]);
 				}
 
-				if (obj != NULL) {
-
-					//
-					//	Add the occupant to the seat
-					//
-					if (SeatOccupants[i] == NULL) {
+				if (obj != NULL){
+	 				//	Add the occupant to the seat
+					if (SeatOccupants[i] == NULL){
 						Add_Occupant (obj->As_SoldierGameObj(), i);
 					}
 				}
@@ -905,40 +768,22 @@ void VehicleGameObj::Import_Rare( BitStreamClass &packet )
 
 	packet.Get(VehicleDelivered);
 
-	if (!wasDelivered && VehicleDelivered) {
+	if (!wasDelivered && VehicleDelivered){
 		BaseControllerClass* base = BaseControllerClass::Find_Base(Get_Player_Type());
 
-		if (base) {
+		if (base){
 			base->On_Vehicle_Delivered(this);
 		}
 	}
 }
 
-
-//-----------------------------------------------------------------------------
-/*
-**
-*/
-void VehicleGameObj::Import_Frequent(BitStreamClass & packet)
-{
-	/*
-	if (Get_Definition().Type == VEHICLE_TYPE_TURRET) {
-		WWDEBUG_SAY(("VEHICLE_TYPE_TURRET::Import_Frequent: %s, %d, %d\n",
-			Get_Definition().Get_Name(),
-			Get_Definition().NumSeats,
-			SeatOccupants.Length()));
-	}
-	*/
-
-   WWASSERT(CombatManager::I_Am_Only_Client());
-
+void VehicleGameObj::Import_Frequent(BitStreamClass & packet){
 	int rounds = packet.Get(rounds);
-	if (Get_Weapon() != NULL) {
+	if (Get_Weapon() != NULL){
 		Get_Weapon()->Set_Total_Rounds(rounds);
 	}
 
-	switch(Get_Definition().Type) {
-
+	switch(Get_Definition().Type){
 		case VEHICLE_TYPE_BIKE:
 		case VEHICLE_TYPE_CAR:
 		case VEHICLE_TYPE_TANK:
@@ -946,9 +791,7 @@ void VehicleGameObj::Import_Frequent(BitStreamClass & packet)
 		{
 			VehiclePhysClass * p_obj = Peek_Vehicle_Phys();
 
-			if (p_obj != NULL) {
-
-
+			if (p_obj != NULL){
 				Vector3 sc_position;
 				Quaternion q;
 				Vector3 vel;
@@ -966,25 +809,15 @@ void VehicleGameObj::Import_Frequent(BitStreamClass & packet)
 				packet.Get(q.W, BITPACK_VEHICLE_QUATERNION);
 				q.Normalize();
 
-
-#ifdef MULTIPLAYERDEMO
-				//
-				// Mix up the packet order to make demo/non-demo code more incompatible.
-				//
-				packet.Get(vel.Y, BITPACK_VEHICLE_VELOCITY);
-				packet.Get(vel.Z, BITPACK_VEHICLE_VELOCITY);
-				packet.Get(vel.X, BITPACK_VEHICLE_VELOCITY);
-#else
 				packet.Get(vel.X, BITPACK_VEHICLE_VELOCITY);
 				packet.Get(vel.Y, BITPACK_VEHICLE_VELOCITY);
 				packet.Get(vel.Z, BITPACK_VEHICLE_VELOCITY);
-#endif
 				
 				packet.Get(ang_vel.X, BITPACK_VEHICLE_ANGULAR_VELOCITY);
 				packet.Get(ang_vel.Y, BITPACK_VEHICLE_ANGULAR_VELOCITY);
 				packet.Get(ang_vel.Z, BITPACK_VEHICLE_ANGULAR_VELOCITY);
 
-				if (COMBAT_STAR && (COMBAT_STAR->Get_Vehicle() == this)) {
+				if (COMBAT_STAR && (COMBAT_STAR->Get_Vehicle() == this)){
 					p_obj->Network_Latency_State_Update(		sc_position,
 																			q,
 																			vel,
@@ -1002,53 +835,36 @@ void VehicleGameObj::Import_Frequent(BitStreamClass & packet)
 		}
 
 		case VEHICLE_TYPE_TURRET:
-			//WWDEBUG_SAY(("turret read %d\n", packet.Get_Bit_Write_Position()));
 			break;
 
 		default:
-			WWASSERT( 0 );
-			break;
+						break;
 	}
 
 	packet.Get( DriverIsGunner );
 
    SmartGameObj::Import_Frequent(packet);
-
-   WWASSERT(packet.Is_Flushed());
 }
 
 //-----------------------------------------------------------------------------
-void VehicleGameObj::Export_Frequent(BitStreamClass & packet)
-{
+void VehicleGameObj::Export_Frequent(BitStreamClass & packet){
 	Apply_Control();	// Make sure we have our drivers controls
-	/*
-	if (Get_Definition().Type == VEHICLE_TYPE_TURRET) {
-		WWDEBUG_SAY(("VEHICLE_TYPE_TURRET::Export_Frequent: %s, %d, %d\n",
-			Get_Definition().Get_Name(),
-			Get_Definition().NumSeats,
-			SeatOccupants.Length()));
-	}
-	*/
 
-	//
 	// Vehicles never change their weapon type
-	//
 	int total_rounds = 0;
-	if (Get_Weapon() != NULL) {
+	if (Get_Weapon() != NULL){
 		total_rounds = Get_Weapon()->Get_Total_Rounds();
 	}
 	packet.Add(total_rounds);
 
-	switch(Get_Definition().Type) {
-
+	switch(Get_Definition().Type){
 		case VEHICLE_TYPE_BIKE:
 		case VEHICLE_TYPE_TANK:
 		case VEHICLE_TYPE_CAR:
 		case VEHICLE_TYPE_FLYING:
 		{
 			VehiclePhysClass * p_obj = Peek_Vehicle_Phys();
-			if (p_obj != NULL) {
-
+			if (p_obj != NULL){
 				Vector3 pos;
 				Quaternion q;
 				Vector3 vel;
@@ -1071,20 +887,9 @@ void VehicleGameObj::Export_Frequent(BitStreamClass & packet)
 				packet.Add(q.Z, BITPACK_VEHICLE_QUATERNION);
 				packet.Add(q.W, BITPACK_VEHICLE_QUATERNION);
 
-
-#ifdef MULTIPLAYERDEMO
-				//
-				// Mix up the packet order to make demo/non-demo code more incompatible.
-				//
-				packet.Add(vel.Y, BITPACK_VEHICLE_VELOCITY);
-				packet.Add(vel.Z, BITPACK_VEHICLE_VELOCITY);
-				packet.Add(vel.X, BITPACK_VEHICLE_VELOCITY);
-#else
 				packet.Add(vel.X, BITPACK_VEHICLE_VELOCITY);
 				packet.Add(vel.Y, BITPACK_VEHICLE_VELOCITY);
 				packet.Add(vel.Z, BITPACK_VEHICLE_VELOCITY);
-#endif
-
 
 				packet.Add(ang_vel.X, BITPACK_VEHICLE_ANGULAR_VELOCITY);
 				packet.Add(ang_vel.Y, BITPACK_VEHICLE_ANGULAR_VELOCITY);
@@ -1095,12 +900,10 @@ void VehicleGameObj::Export_Frequent(BitStreamClass & packet)
 		}
 
 		case VEHICLE_TYPE_TURRET:
-			//WWDEBUG_SAY(("turret write %d\n", packet.Get_Bit_Write_Position()));
 			break;
 
 		default:
-			WWASSERT(0);
-			break;
+						break;
 	}
 
 	packet.Add( DriverIsGunner );
@@ -1109,71 +912,58 @@ void VehicleGameObj::Export_Frequent(BitStreamClass & packet)
 
 }
 
-//-----------------------------------------------------------------------------
-void VehicleGameObj::Import_State_Cs(BitStreamClass & packet)
-{
+void VehicleGameObj::Import_State_Cs(BitStreamClass & packet){
    SmartGameObj::Import_State_Cs(packet);
 }
 
-void VehicleGameObj::Export_State_Cs(BitStreamClass & packet)
-{
+void VehicleGameObj::Export_State_Cs(BitStreamClass & packet){
    SmartGameObj::Export_State_Cs(packet);
 }
 
-void VehicleGameObj::Get_Velocity(Vector3 & vel)
-{
+void VehicleGameObj::Get_Velocity(Vector3 & vel){
 	VehiclePhysClass * vp = Peek_Vehicle_Phys();
-	if (vp != NULL) {
+	if (vp != NULL){
 		vp->Get_Velocity(&vel);
 	} else {
 		vel.Set(0,0,0);
 	}
 }
 
-void VehicleGameObj::Set_Velocity(Vector3 & vel)
-{
+void VehicleGameObj::Set_Velocity(Vector3 & vel){
 	VehiclePhysClass * vehicle = Peek_Vehicle_Phys();
-	if (vehicle != NULL) {
+	if (vehicle != NULL){
 		vehicle->Set_Velocity(vel);
 	}
 }
 
-void	VehicleGameObj::Startup( void )
-{
+void	VehicleGameObj::Startup( void ){
 	// Setup all Seats for entry
 	Create_And_Destroy_Transitions();
 }
 
-void	VehicleGameObj::Update_Turret( float weapon_turn, float weapon_tilt )
-{
-	if ( TurretBone != 0 ) {
-
+void	VehicleGameObj::Update_Turret( float weapon_turn, float weapon_tilt ){
+	if ( TurretBone != 0 ){
 		Matrix3D	facing(1);
 		facing.Rotate_Z( weapon_turn );
 
-		if ( BarrelBone == 0 ) {		// if no barrel bone
-			facing.Rotate_Y( -weapon_tilt );  // neg rotate y tilts up
+		if ( BarrelBone == 0 ){ // if no barrel bone
+			facing.Rotate_Y( -weapon_tilt ); // neg rotate y tilts up
 		}
 
 		Peek_Model()->Control_Bone( TurretBone, facing );
 	}
 
-	if ( BarrelBone != 0 ) {
+	if ( BarrelBone != 0 ){
 		Matrix3D	facing(1);
-		facing.Rotate_Y( -weapon_tilt );  // neg rotate y tilts up
+		facing.Rotate_Y( -weapon_tilt ); // neg rotate y tilts up
 		Peek_Model()->Control_Bone( BarrelBone, facing );
 	}
 
 }
 
-/*
-** Vehicle Weapons
-*/
-bool	VehicleGameObj::Set_Targeting( const Vector3 & target_pos, bool do_tilt )
-{
+// Vehicle Weapons
+bool	VehicleGameObj::Set_Targeting( const Vector3 & target_pos, bool do_tilt ){
 	bool	ready = true;
-
-//Debug_Say(( "Weapon set targeting %f %f %f\n", target_pos.X, target_pos.Y, target_pos.Z ));
 
 	SmartGameObj::Set_Targeting( target_pos );
 
@@ -1181,8 +971,7 @@ bool	VehicleGameObj::Set_Targeting( const Vector3 & target_pos, bool do_tilt )
 	float relative_turn = 0;
 	float relative_tilt = 0;
 
-	if ( TurretBone != 0 ) {
-
+	if ( TurretBone != 0 ){
 		// find the target pos in turret space
 		Matrix3D	turret_base = Peek_Model()->Get_Bone_Transform( TurretBone );
 		Vector3	turret_space_target;
@@ -1191,38 +980,35 @@ bool	VehicleGameObj::Set_Targeting( const Vector3 & target_pos, bool do_tilt )
 		// Set the tilt and turn
 		relative_turn = WWMath::Atan2( turret_space_target.Y, turret_space_target.X );
 
-		if ( BarrelOffset ) {
+		if ( BarrelOffset ){
 			turret_space_target.Z = 0;
 			float barrel_offset_angle = WWMath::Atan2( BarrelOffset, turret_space_target.Length() );
-//			Debug_Say(( "barrel angle %f %f\n", RAD_TO_DEG( barrel_offset_angle ), RAD_TO_DEG( relative_turn + barrel_offset_angle ) ));
 			relative_turn -= barrel_offset_angle;
 		}
 
 	}
 
-	if ( WWMath::Fabs( relative_turn ) < DEG_TO_RAD( 80 ) ) {
-
-		if ( BarrelBone != 0 ) {
-			// find the target pos in barrel space
+	if ( WWMath::Fabs( relative_turn ) < DEG_TO_RAD( 80 ) ){
+		if ( BarrelBone != 0 ){
+	 // find the target pos in barrel space
 			Matrix3D	barrel_base = Peek_Model()->Get_Bone_Transform( BarrelBone );
 			Vector3	barrel_space_target;
 			Matrix3D::Inverse_Transform_Vector( barrel_base, target_pos, &barrel_space_target );
 
 			float dist = barrel_space_target.Length();
-			if ( dist ) {
-			// Only tilt when the turn is within 80 deg
+			if ( dist ){
+	 // Only tilt when the turn is within 80 deg
 				relative_tilt = WWMath::Fast_Asin( barrel_space_target.Z / dist );
 			}
 		}
 	}
 
-
 	// Move the tilt and turn towards the desired, following rates and limits
 	float max_move;
 	max_move = Get_Definition().WeaponTurnRate * TimeManager::Get_Frame_Seconds();
-	if ( Get_Definition().WeaponTurnRate < DEG_TO_RAD(1000) ) {
+	if ( Get_Definition().WeaponTurnRate < DEG_TO_RAD(1000) ){
 		TurretTurn += WWMath::Clamp( relative_turn, -max_move, max_move );
-		if ( WWMath::Fabs( relative_turn ) > WWMath::Fabs( max_move ) ) {
+		if ( WWMath::Fabs( relative_turn ) > WWMath::Fabs( max_move ) ){
 			ready = false;
 		}
 	} else {
@@ -1230,10 +1016,10 @@ bool	VehicleGameObj::Set_Targeting( const Vector3 & target_pos, bool do_tilt )
 	}
 	TurretTurn = WWMath::Clamp( TurretTurn, Get_Definition().WeaponTurnMin, Get_Definition().WeaponTurnMax );
 	max_move = Get_Definition().WeaponTiltRate * TimeManager::Get_Frame_Seconds();
-	if ( do_tilt ) {
-		if ( Get_Definition().WeaponTiltRate < DEG_TO_RAD(1000) ) {
+	if ( do_tilt ){
+		if ( Get_Definition().WeaponTiltRate < DEG_TO_RAD(1000) ){
 			BarrelTilt += WWMath::Clamp( relative_tilt, -max_move, max_move );
-			if ( WWMath::Fabs( relative_tilt ) > WWMath::Fabs( max_move ) ) {
+			if ( WWMath::Fabs( relative_tilt ) > WWMath::Fabs( max_move ) ){
 				ready = false;
 			}
 		} else {
@@ -1247,11 +1033,11 @@ bool	VehicleGameObj::Set_Targeting( const Vector3 & target_pos, bool do_tilt )
 
 	// if a fast turner and had to turn, do it again,just to make sure (trying to fix obelisk)
 	if ( Get_Definition().WeaponTurnRate > DEG_TO_RAD(1000) &&
-		( WWMath::Fabs(relative_turn) >= DEG_TO_RAD( 2 ) || WWMath::Fabs(relative_tilt) > DEG_TO_RAD( 2 ) ) ) {
+		( WWMath::Fabs(relative_turn) >= DEG_TO_RAD( 2 ) || WWMath::Fabs(relative_tilt) > DEG_TO_RAD( 2 ) ) ){
 		static int calls = 0;
-		if ( calls < 3 ) {
+		if ( calls < 3 ){
 			calls++;
-			Set_Targeting( target_pos, do_tilt );		// recurse
+			Set_Targeting( target_pos, do_tilt ); // recurse
 			calls--;
 		}
 		ready = true;
@@ -1260,110 +1046,39 @@ bool	VehicleGameObj::Set_Targeting( const Vector3 & target_pos, bool do_tilt )
 	return ready;
 }
 
-
-int	VehicleGameObj::Get_Weapon_Control_Owner(void)
-{
+int	VehicleGameObj::Get_Weapon_Control_Owner(void){
 	SoldierGameObj * gunner = Get_Gunner();
-	if ( gunner && !Get_Driver_Is_Gunner() ) {
+	if ( gunner && !Get_Driver_Is_Gunner() ){
 		return gunner->Get_Control_Owner();
 	}
 	SoldierGameObj * driver = Get_Driver();
-	if ( driver ) {
+	if ( driver ){
 		return driver->Get_Control_Owner();
 	}
 	return Get_Control_Owner();
 }
 
-
-/*
-void VehicleGameObj::Apply_Control( void )
-{
-	SoldierGameObj * driver = Seats[DRIVER_SEAT];
-	SoldierGameObj * gunner = Seats[GUNNER_SEAT];
-	if ( gunner == NULL ) {
-		gunner = driver;
-	}
-
-	bool target_steering = false;
-	// If I have a driver, use his control
-	if ( driver && !driver->In_Transition() ) {
-		//Debug_Say(( "Vehicle copy driver's control\n" ));	//copy his control???
-
-		Control = driver->Get_Control();
-		target_steering = true;
-
-	} else if (	!Get_Action()->Is_Acting() ) {
-		Control.Clear_Control();	// Bad for network????
-	}
-
-	// If i have a gunner, use him for the gun control
-	if ( gunner && (gunner != driver) && !gunner->In_Transition() ) {
-		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_PRIMARY,		gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_PRIMARY ) );
-		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_SECONDARY,		gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_SECONDARY ) );
-		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_NEXT,		gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_NEXT ) );
-		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_PREV,		gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_PREV ) );
-		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_RELOAD,	gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_RELOAD ) );
-		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_USE,		gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_USE ) );
-	}
-
-	if ( target_steering ) {
-		// Lets make turns come from the targeting
-		Vector3 target_pos = Get_Targeting_Pos();
-		Vector3 obj_space_target;
-		Matrix3D::Inverse_Transform_Vector( Get_Transform(), target_pos, &obj_space_target );
-		float target_direction = WWMath::Atan2( obj_space_target.Y, obj_space_target.X );
-		float turn_amount = target_direction / DEG_TO_RAD( 60 );
-		Control.Set_Analog( ControlClass::ANALOG_TURN_LEFT, turn_amount );
-	}
-
-	// Clamp turning
-	Control.Set_Analog( ControlClass::ANALOG_TURN_LEFT,
-		WWMath::Clamp( Control.Get_Analog( ControlClass::ANALOG_TURN_LEFT ), -1.0F, 1.0F ) );
-
-	SmartGameObj::Apply_Control();
-}
-*/
-
-void VehicleGameObj::Apply_Control( void )
-{
+void VehicleGameObj::Apply_Control( void ){
 	SoldierGameObj * driver = Get_Driver();
 	SoldierGameObj * gunner = Get_Gunner();
 
-	if ( gunner == NULL || Get_Driver_Is_Gunner() ) {
+	if ( gunner == NULL || Get_Driver_Is_Gunner() ){
 		gunner = driver;
 	}
 
-//	if ( gunner || driver ) {
-		if ( !CombatManager::Is_Gameplay_Permitted() ) {
-			Clear_Control();
-			Controller.Reset();
-			if ( Peek_Vehicle_Phys() != NULL) {
-				Peek_Vehicle_Phys()->Set_Velocity( Vector3(0,0,0) );
-			}
-			return;
+	if ( !CombatManager::Is_Gameplay_Permitted() ){
+		Clear_Control();
+		Controller.Reset();
+		if ( Peek_Vehicle_Phys() != NULL){
+			Peek_Vehicle_Phys()->Set_Velocity( Vector3(0,0,0) );
 		}
-//	}
+		return;
+	}
 
 	bool target_steering = false;
 	// If I have a driver, use his control
 
-	if ( driver && !driver->In_Transition() && driver->Is_Human_Controlled () == true) {
-
-		/*
-		bool use_control = CombatManager::I_Am_Server() ||
-			(CombatManager::Get_Client_Interpolation_Model() !=
-				CLIENT_INTERPOLATION_PATHFIND) ||
-			(CombatManager::I_Am_Client() &&
-			 driver->Get_Control_Owner() == CombatManager::Get_My_Id());
-
-		//Debug_Say(( "Vehicle copy driver's control\n" ));	//copy his control???
-
-		if (use_control) {
-			Control = driver->Get_Control();
-			target_steering = true;
-		}
-		*/
-
+	if ( driver && !driver->In_Transition() && driver->Is_Human_Controlled () == true){
 		//
 		// This could be a little dodgy... does client do this?
 		//
@@ -1372,7 +1087,7 @@ void VehicleGameObj::Apply_Control( void )
 	}
 
 	// If i have a gunner, use him for the gun control
-	if ( gunner && (gunner != driver) && !gunner->In_Transition() && !Get_Driver_Is_Gunner() ) {
+	if ( gunner && (gunner != driver) && !gunner->In_Transition() && !Get_Driver_Is_Gunner() ){
 		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_PRIMARY,		gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_PRIMARY ) );
 		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_SECONDARY,		gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_FIRE_SECONDARY ) );
 		Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_RELOAD,	gunner->Get_Control().Get_Boolean( ControlClass::BOOLEAN_WEAPON_RELOAD ) );
@@ -1382,31 +1097,27 @@ void VehicleGameObj::Apply_Control( void )
 	Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_NEXT,		false );
 	Control.Set_Boolean( ControlClass::BOOLEAN_WEAPON_PREV,		false );
 
-
-	if ( target_steering && _Use_Target_Steering ) {
-
+	if ( target_steering && _Use_Target_Steering ){
 		// Target Steering kicks in if the user is pressing the accelerator key.
-		if (Control.Get_Analog( ControlClass::ANALOG_MOVE_FORWARD ) >= 0.0f) {
-
-			// Lets make turns come from the targeting
+		if (Control.Get_Analog( ControlClass::ANALOG_MOVE_FORWARD ) >= 0.0f){
+	 // Lets make turns come from the targeting
 			Vector3 target_pos = Get_Targeting_Pos();
 			Vector3 obj_space_target;
 			Matrix3D::Inverse_Transform_Vector( Get_Transform(), target_pos, &obj_space_target );
 			float target_direction = WWMath::Atan2( obj_space_target.Y, obj_space_target.X );
 
-			// Offset the target direction if the user is turning while driving forward
+	 // Offset the target direction if the user is turning while driving forward
 			const float TARGET_STRAFE_ANGLE = DEG_TO_RADF(50.0f);
 			target_direction += TARGET_STRAFE_ANGLE * Control.Get_Analog( ControlClass::ANALOG_TURN_LEFT );
 
-			// Set the final steering angle
+	 // Set the final steering angle
 			float turn_amount = target_direction / DEG_TO_RAD( 60 ) * Control.Get_Analog( ControlClass::ANALOG_MOVE_FORWARD );
 			Control.Set_Analog( ControlClass::ANALOG_TURN_LEFT, turn_amount );
 
 		} else {
-
-			// When over-riding the target steering with keyboard steering,
-			// scale the turn rate down if we're going forward.
-			if (Control.Get_Analog( ControlClass::ANALOG_MOVE_FORWARD ) > 0.0f) {
+	 // When over-riding the target steering with keyboard steering,
+	 // scale the turn rate down if we're going forward.
+			if (Control.Get_Analog( ControlClass::ANALOG_MOVE_FORWARD ) > 0.0f){
 				Control.Set_Analog( ControlClass::ANALOG_TURN_LEFT, 0.5f * Control.Get_Analog(ControlClass::ANALOG_TURN_LEFT) );
 			}
 		}
@@ -1421,53 +1132,45 @@ void VehicleGameObj::Apply_Control( void )
 
 static char * _profile_name = "Vehicle Think";
 
-void	VehicleGameObj::Think( void )
-{
-{	WWPROFILE( _profile_name );
+void	VehicleGameObj::Think( void ){{	
 
-	Apply_Control();	// ????
+	Apply_Control(); // ????
 
 	Update_Transitions();
 }
-	SmartGameObj::Think(); 										// Perform smart object thinking
-{	WWPROFILE( _profile_name );
+	SmartGameObj::Think(); // Perform smart object thinking{	
 
 	Update_Sound_Effects();
 
 	Update_Wheel_Effects();
 
 	// Update the lock status
-	if (LockTimer > 0.0f) {
+	if (LockTimer > 0.0f){
 		LockTimer -= TimeManager::Get_Frame_Seconds();
 	} else {
 		LockOwner = NULL;
 	}
 
 	// UnStealth if we don't have any occupants, and we aren't in single play
-	if (StealthEffect != NULL) {
-		if ((Get_Occupant_Count() == 0 ) && ( !IS_MISSION )) {
+	if (StealthEffect != NULL){
+		if ((Get_Occupant_Count() == 0 ) && ( !IS_MISSION )){
 			StealthEffect->Enable_Stealth(false);
 		}
 	}
 }
-}
 
-static char * _post_profile_name = "Vehicle PostThink";
 
-void	VehicleGameObj::Post_Think( void )
-{
-{	WWPROFILE( _post_profile_name );
+void	VehicleGameObj::Post_Think( void ){{	
 	RenderObjClass * model = Peek_Model();
-	WWASSERT( model );
-
-	for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
-		if ( SeatOccupants[i] != NULL ) {
+	
+	for ( int i = 0; i < SeatOccupants.Length(); i++ ){
+		if ( SeatOccupants[i] != NULL ){
 			char	bone_name[80];
 			sprintf( bone_name, "SEAT%d", i );
 			int seat_bone_index = model->Get_Bone_Index( bone_name );
-			if ( seat_bone_index != -1 ) {
+			if ( seat_bone_index != -1 ){
 				Matrix3D seat = model->Get_Bone_Transform( seat_bone_index );
-				if ( !SeatOccupants[i]->In_Transition() ) {
+				if ( !SeatOccupants[i]->In_Transition() ){
 					SeatOccupants[i]->Set_Transform( seat );
 				}
 			} else {
@@ -1477,16 +1180,15 @@ void	VehicleGameObj::Post_Think( void )
 	}
 }
 	SmartGameObj::Post_Think();
-
-{	WWPROFILE( _post_profile_name );
-	if ( Get_Weapon() && !Get_Definition().Fire0Anim.Is_Empty() ) {
+{	
+	if ( Get_Weapon() && !Get_Definition().Fire0Anim.Is_Empty() ){
 		Get_Weapon()->Reset_Anim_Update();
 		int state = Get_Weapon()->Get_Anim_State();
-		if ( state == WEAPON_ANIM_NOT_FIRING ) {
+		if ( state == WEAPON_ANIM_NOT_FIRING ){
 			Set_Animation( NULL );
-		} else if ( state == WEAPON_ANIM_FIRING_0 ) {
+		} else if ( state == WEAPON_ANIM_FIRING_0 ){
 			Set_Animation( Get_Definition().Fire0Anim );
-		} else if ( state == WEAPON_ANIM_FIRING_1 ) {
+		} else if ( state == WEAPON_ANIM_FIRING_1 ){
 			Set_Animation( !Get_Definition().Fire1Anim.Is_Empty() ? Get_Definition().Fire1Anim : Get_Definition().Fire0Anim );
 		} else {
 			Debug_Say(( "Bad Weapon Anim State\n" ));
@@ -1495,55 +1197,36 @@ void	VehicleGameObj::Post_Think( void )
 }
 }
 
-
-/*
-**
-*/
-int VehicleGameObj::Get_Player_Type(void) const
-{
+int VehicleGameObj::Get_Player_Type(void) const{
 	// If they have a driver, they are his team.
-	for (int i = 0; i < SeatOccupants.Length(); i++) {
-		if (SeatOccupants[i] != NULL) {
+	for (int i = 0; i < SeatOccupants.Length(); i++){
+		if (SeatOccupants[i] != NULL){
 			return SeatOccupants[i]->Get_Player_Type();
 		}
 	}
 
-#if 0	// Do this at exit time
-	// in MP, empty vehicles are neutral
-	if ( !IS_MISSION ) {
-		return PLAYERTYPE_NEUTRAL;
-	}
-#endif
-
 	return SmartGameObj::Get_Player_Type();
 }
 
-/*
-**
-*/
-void	VehicleGameObj::Init_Wheel_Effects( void )
-{
+void	VehicleGameObj::Init_Wheel_Effects( void ){
 	// Create an array of persistant surface emitters, one for each "real" wheel
-	WWASSERT( WheelSurfaceEmitters.Length() == 0 );
 	if (	(Peek_Vehicle_Phys() != NULL) &&
 			(Peek_Vehicle_Phys()->Get_VehiclePhysDef()->Is_Fake() == false) )
 	{
 		int real_wheel_count = Peek_Vehicle_Phys()->Get_Real_Wheel_Count();
 		WheelSurfaceEmitters.Resize(real_wheel_count);
-		for (int i=0; i<real_wheel_count; i++) {
+		for (int i=0; i<real_wheel_count; i++){
 			WheelSurfaceEmitters[i] = SurfaceEffectsManager::Create_Persistant_Emitter();
 		}
 	}
 
 	// Create a single persistant surface effect sound for tire squealing
-	WWASSERT(WheelSurfaceSound == NULL);
 	WheelSurfaceSound = SurfaceEffectsManager::Create_Persistant_Sound();
 }
 
-void	VehicleGameObj::Shutdown_Wheel_Effects( void )
-{
+void	VehicleGameObj::Shutdown_Wheel_Effects( void ){
 	// Release the persistant surface emitters
-	for (int i=0; i<WheelSurfaceEmitters.Length(); i++) {
+	for (int i=0; i<WheelSurfaceEmitters.Length(); i++){
 		SurfaceEffectsManager::Destroy_Persistant_Emitter( WheelSurfaceEmitters[i] );
 		WheelSurfaceEmitters[i] = NULL;
 	}
@@ -1554,8 +1237,7 @@ void	VehicleGameObj::Shutdown_Wheel_Effects( void )
 	WheelSurfaceSound = NULL;
 }
 
-void	VehicleGameObj::Update_Wheel_Effects( void )
-{
+void	VehicleGameObj::Update_Wheel_Effects( void ){
 	if (	(Peek_Vehicle_Phys() == NULL) ||
 			(Peek_Vehicle_Phys()->Get_VehiclePhysDef()->Is_Fake()) )
 	{
@@ -1565,7 +1247,7 @@ void	VehicleGameObj::Update_Wheel_Effects( void )
 	int roll_hitter_type = SurfaceEffectsManager::HITTER_TYPE_TIRE_ROLLING;
 	int slide_hitter_type = SurfaceEffectsManager::HITTER_TYPE_TIRE_SLIDING;
 
-	if ( Peek_Vehicle_Phys()->As_TrackedVehicleClass() != NULL) {
+	if ( Peek_Vehicle_Phys()->As_TrackedVehicleClass() != NULL){
 		roll_hitter_type = SurfaceEffectsManager::HITTER_TYPE_TRACK_ROLLING;
 		slide_hitter_type = SurfaceEffectsManager::HITTER_TYPE_TRACK_SLIDING;
 	}
@@ -1581,49 +1263,44 @@ void	VehicleGameObj::Update_Wheel_Effects( void )
 
 	bool sound_done = false;
 
-	if (WheelSurfaceEmitters.Length() > 0) {
-
-		if ( Peek_Vehicle_Phys() != NULL) {
+	if (WheelSurfaceEmitters.Length() > 0){
+		if ( Peek_Vehicle_Phys() != NULL){
 			int emitter_index = 0;
 			int wheel_count = Peek_Vehicle_Phys()->Get_Wheel_Count();
-			for (int i=0; i<wheel_count; i++) {
-
+			for (int i=0; i<wheel_count; i++){
 				SuspensionElementClass * wheel = Peek_Vehicle_Phys()->Peek_Wheel(i);
-				if (wheel->Get_Flag(SuspensionElementClass::FAKE) == false) {
-
-					// Look up the surface and hitter types
+				if (wheel->Get_Flag(SuspensionElementClass::FAKE) == false){
+	 // Look up the surface and hitter types
 					int surface_type = wheel->Get_Contact_Surface();
 					int hitter_type = SurfaceEffectsManager::HITTER_TYPE_NONE;
 
-					// If stealthed, no emitters.
-					if (Is_Stealthed()) {
+	 // If stealthed, no emitters.
+					if (Is_Stealthed()){
 						surface_type = SURFACE_TYPE_DEFAULT;
 					}
 
-					if (wheel->Get_Flag( SuspensionElementClass::INCONTACT ) ) {
-						if (wheel->Get_Slip_Factor() > EMITTER_SLIDE_THRESHOLD) {
-
+					if (wheel->Get_Flag( SuspensionElementClass::INCONTACT ) ){
+						if (wheel->Get_Slip_Factor() > EMITTER_SLIDE_THRESHOLD){
 							hitter_type = slide_hitter_type;
 
 						} else {
-
-							// normally, trigger roll emitters by the velocity of the vehicle
-							if (vlen2 > EMITTER_ROLL_THRESHOLD2) {
+	 // normally, trigger roll emitters by the velocity of the vehicle
+							if (vlen2 > EMITTER_ROLL_THRESHOLD2){
 								hitter_type = roll_hitter_type;
 							}
 
-							// when attached to a cinematic, we deduce whether the wheels are rolling
-							// by using the rotation delta feature of wheels
-							if (Is_Attached_To_An_Object()) {
+	 // when attached to a cinematic, we deduce whether the wheels are rolling
+	 // by using the rotation delta feature of wheels
+							if (Is_Attached_To_An_Object()){
 								float wheel_avel = WWMath::Fabs(wheel->Get_Rotation_Delta() / TimeManager::Get_Frame_Seconds());
-								if (wheel_avel > EMITTER_CINEMATIC_ROLL_AVEL) {
+								if (wheel_avel > EMITTER_CINEMATIC_ROLL_AVEL){
 									hitter_type = roll_hitter_type;
 								}
 							}
 						}
 					}
 
-	   			// Update the emitter and move to the next emitter
+	 // Update the emitter and move to the next emitter
 					SurfaceEffectsManager::Update_Persistant_Emitter(	WheelSurfaceEmitters[emitter_index],
 																						surface_type,
 																						hitter_type,
@@ -1631,10 +1308,9 @@ void	VehicleGameObj::Update_Wheel_Effects( void )
 
 					emitter_index++;
 
-
-					// If this is the sound generating wheel, update the sound
-					// I'm just using the first engine wheel as the one that generates the tire sound effects.
-					if (!sound_done && wheel->Get_Flag(SuspensionElementClass::ENGINE)) {
+	 // If this is the sound generating wheel, update the sound
+	 // I'm just using the first engine wheel as the one that generates the tire sound effects.
+					if (!sound_done && wheel->Get_Flag(SuspensionElementClass::ENGINE)){
 						SurfaceEffectsManager::Update_Persistant_Sound( WheelSurfaceSound,
 																						surface_type,
 																						hitter_type,
@@ -1648,19 +1324,17 @@ void	VehicleGameObj::Update_Wheel_Effects( void )
 	}
 }
 
-void VehicleGameObj::Update_Sound_Effects(void)
-{
-	if (Peek_Vehicle_Phys() == NULL) {
+void VehicleGameObj::Update_Sound_Effects(void){
+	if (Peek_Vehicle_Phys() == NULL){
 		return;
 	}
 
 	switch (EngineSoundState)
 	{
-
 	case ENGINE_SOUND_STATE_STARTING:
 		{
-			// play our ENGINE_STARTING sound, if it is finished or not found, destroy and go to ENGINE_RUNNING
-			if ((CachedEngineSound == NULL) || ((CachedEngineSound != NULL) && (CachedEngineSound->Get_State()==AudibleSoundClass::STATE_STOPPED))) {
+	 // play our ENGINE_STARTING sound, if it is finished or not found, destroy and go to ENGINE_RUNNING
+			if ((CachedEngineSound == NULL) || ((CachedEngineSound != NULL) && (CachedEngineSound->Get_State()==AudibleSoundClass::STATE_STOPPED))){
 				Change_Engine_Sound_State(ENGINE_SOUND_STATE_RUNNING);
 			}
 		}
@@ -1668,10 +1342,10 @@ void VehicleGameObj::Update_Sound_Effects(void)
 
 	case ENGINE_SOUND_STATE_RUNNING:
 		{
-			if (CachedEngineSound != NULL) {
+			if (CachedEngineSound != NULL){
 				Update_Engine_Sound_Pitch ();
 			}
-			if (Peek_Vehicle_Phys()->Is_Engine_Enabled() == false) {
+			if (Peek_Vehicle_Phys()->Is_Engine_Enabled() == false){
 				Change_Engine_Sound_State(ENGINE_SOUND_STATE_STOPPING);
 			}
 		}
@@ -1679,16 +1353,16 @@ void VehicleGameObj::Update_Sound_Effects(void)
 
 	case ENGINE_SOUND_STATE_STOPPING:
 		{
-			// play the ENGINE_STOPPING sound, if it is finished or not found, destroy and go to ENGINE_OFF
-			if ((CachedEngineSound == NULL) || ((CachedEngineSound != NULL) && (CachedEngineSound->Get_State()==AudibleSoundClass::STATE_STOPPED))) {
+	 // play the ENGINE_STOPPING sound, if it is finished or not found, destroy and go to ENGINE_OFF
+			if ((CachedEngineSound == NULL) || ((CachedEngineSound != NULL) && (CachedEngineSound->Get_State()==AudibleSoundClass::STATE_STOPPED))){
 				Change_Engine_Sound_State(ENGINE_SOUND_STATE_OFF);
 			}
 		}
 		break;
 	case ENGINE_SOUND_STATE_OFF:
 		{
-			// if the engine is on, go to ENGINE_STARTING
-			if (Peek_Vehicle_Phys()->Is_Engine_Enabled() == true) {
+	 // if the engine is on, go to ENGINE_STARTING
+			if (Peek_Vehicle_Phys()->Is_Engine_Enabled() == true){
 				Change_Engine_Sound_State(ENGINE_SOUND_STATE_STARTING);
 			}
 		}
@@ -1701,9 +1375,8 @@ void VehicleGameObj::Update_Sound_Effects(void)
 
 }
 
-void VehicleGameObj::Change_Engine_Sound_State(int new_state)
-{
-	if (CachedEngineSound != NULL) {
+void VehicleGameObj::Change_Engine_Sound_State(int new_state){
+	if (CachedEngineSound != NULL){
 		CachedEngineSound->Remove_From_Scene();
 		CachedEngineSound->Release_Ref();
 		CachedEngineSound = NULL;
@@ -1712,48 +1385,44 @@ void VehicleGameObj::Change_Engine_Sound_State(int new_state)
 	EngineSoundState = new_state;
 
 	DefinitionClass * sound_def = DefinitionMgrClass::Find_Definition(Get_Definition().EngineSound[new_state]);
-	if (sound_def != NULL) {
+	if (sound_def != NULL){
 		CachedEngineSound = (AudibleSoundClass *)sound_def->Create();
 	}
 
-	if (CachedEngineSound != NULL) {
+	if (CachedEngineSound != NULL){
 		CachedEngineSound->Add_To_Scene();
 		CachedEngineSound->Attach_To_Object(Peek_Model());
 	}
 
-	return ;
+	return;
 }
 
-void	VehicleGameObj::Update_Engine_Sound_Pitch(void)
-{
-	if (CachedEngineSound == NULL) {
-		return ;
+void	VehicleGameObj::Update_Engine_Sound_Pitch(void){
+	if (CachedEngineSound == NULL){
+		return;
 	}
 
 	float pitch_factor = 1.0F;
 
-	if (Peek_Vehicle_Phys() != NULL) {
-
+	if (Peek_Vehicle_Phys() != NULL){
 		MotorVehicleClass * motophys = Peek_Physical_Object()->As_MotorVehicleClass();
 		TrackedVehicleClass * trackphys = Peek_Physical_Object()->As_TrackedVehicleClass();
 		VTOLVehicleClass * vtolphys = Peek_Physical_Object()->As_VTOLVehicleClass();
 
 		float max_factor = Get_Definition().EngineSoundMaxPitchFactor;
 
-		if (motophys != NULL) {
-
-			// Wheeled vehicle engine pitch depends on their rpms
+		if (motophys != NULL){
+	 // Wheeled vehicle engine pitch depends on their rpms
 			float norm_rpm = motophys->Get_Normalized_Engine_RPM();
-			if (norm_rpm < 0) {
+			if (norm_rpm < 0){
 				norm_rpm = -norm_rpm;
 			}
 			norm_rpm = WWMath::Clamp(norm_rpm,0.0f,1.0f);
 
 			pitch_factor = 1.0F + ((max_factor - 1.0F) * norm_rpm);
 
-		} else if (trackphys != NULL) {
-
-			// Tracked vehicle engine pitch depends on their overall speed
+		} else if (trackphys != NULL){
+	 // Tracked vehicle engine pitch depends on their overall speed
 			const float MAX_TRACKED_SPEED = 10.0f;
 			Vector3 vel;
 			trackphys->Get_Velocity(&vel);
@@ -1762,9 +1431,8 @@ void	VehicleGameObj::Update_Engine_Sound_Pitch(void)
 
 			pitch_factor = 1.0F + ((max_factor - 1.0F) * norm_speed);
 
-		} else if (vtolphys != NULL) {
-
-			// VTOL vehicle engine pitch depends on absolute acceleration
+		} else if (vtolphys != NULL){
+	 // VTOL vehicle engine pitch depends on absolute acceleration
 			const float MAX_VTOL_SPEED = 20.0f;
 			Vector3 vel;
 			vtolphys->Get_Velocity(&vel);
@@ -1776,52 +1444,32 @@ void	VehicleGameObj::Update_Engine_Sound_Pitch(void)
 	}
 
 	CachedEngineSound->Set_Pitch_Factor (pitch_factor);
-	return ;
+	return;
 }
 
-VehiclePhysClass	*VehicleGameObj::Peek_Vehicle_Phys( void ) const
-{
-	WWASSERT( Peek_Physical_Object() );
-	return Peek_Physical_Object()->As_VehiclePhysClass();		// NOTE: sometimes will return NULL!
+VehiclePhysClass	*VehicleGameObj::Peek_Vehicle_Phys( void ) const{
+	return Peek_Physical_Object()->As_VehiclePhysClass(); // NOTE: sometimes will return NULL!
 }
 
-
-/*
-** Occupants ( drivers, gunners, passengers )
-*/
-void	VehicleGameObj::Add_Occupant( SoldierGameObj * occupant )
-{
+// Occupants ( drivers, gunners, passengers )
+void	VehicleGameObj::Add_Occupant( SoldierGameObj * occupant ){
 	// Add the the lowest empty seat
-	for ( int i = 0; i < Get_Definition().NumSeats; i++ ) {
-		if ( SeatOccupants[i] == NULL ) {
+	for ( int i = 0; i < Get_Definition().NumSeats; i++ ){
+		if ( SeatOccupants[i] == NULL ){
 			Add_Occupant( occupant, i );
 			break;;
 		}
 	}
 }
 
-void	VehicleGameObj::Add_Occupant( SoldierGameObj * occupant, int seat_id )
-{
-	WWASSERT( occupant );
-
-	if ( SeatOccupants[seat_id] != NULL ) {
-		Debug_Say(( "Vehicle already has an occupant in that seat\n" ));
+void	VehicleGameObj::Add_Occupant( SoldierGameObj * occupant, int seat_id ){
+	
+	if ( SeatOccupants[seat_id] != NULL ){
 		return;
 	}
 
-	if ( Find_Seat( occupant ) != -1 ) {
-		Debug_Say(( "Soldier already in vehicle\n" ));
-	}
-
-
-	if ( seat_id == 0 ) {
+	if ( seat_id == 0 ){
 		DriverIsGunner = DefaultDriverIsGunner;
-	}
-
-	Debug_Say(( "Soldier %p added to seat %d\n", occupant, seat_id ));
-
-	if ( seat_id > Get_Definition().NumSeats-1 ) {
-		Debug_Say(( "Adding to extra seat %d\n", seat_id ));
 	}
 
 	SeatOccupants[seat_id] = occupant;
@@ -1829,75 +1477,64 @@ void	VehicleGameObj::Add_Occupant( SoldierGameObj * occupant, int seat_id )
 	Set_Object_Dirty_Bit( NetworkObjectClass::BIT_RARE, true );
 
 	const char * anim_name = NULL;
-	if ( Get_Definition().Type == VEHICLE_TYPE_BIKE ) {
+	if ( Get_Definition().Type == VEHICLE_TYPE_BIKE ){
 		anim_name = "S_A_HUMAN.H_A_V20A";
 	} else {
 		anim_name = "S_A_HUMAN.H_A_V10A";
 	}
 	occupant->Enter_Vehicle( this, anim_name );
 
-//	Debug_Say(( "Vehicle has a occupant in seat %d\n", seat_id ));
-
 	// possibily delete transitions
 	Create_And_Destroy_Transitions();
 
 	Enable_Engine(true);
 
-	if ( Get_Definition().OccupantsVisible == false ) {
+	if ( Get_Definition().OccupantsVisible == false ){
 		occupant->Peek_Model()->Set_Hidden( true );
 	}
 
 	// Notify the observers that someone entered
 	const GameObjObserverList & observer_list = Get_Observers();
-	for( int index = 0; index < observer_list.Count(); index++ ) {
+	for( int index = 0; index < observer_list.Count(); index++ ){
 		observer_list[ index ]->Custom( this, CUSTOM_EVENT_VEHICLE_ENTERED, seat_id, occupant );
 	}
 
-	//
 	//	Reveal this vehicle to the player if he was the one to enter the vehicle
-	//
-	if ( occupant == COMBAT_STAR ) {
+	if ( occupant == COMBAT_STAR ){
 		EncyclopediaMgrClass::Reveal_Object( this );
 	}
 
-	//
 	// Reset any action the vehicle was performing
-	//
-	if (Get_Action() != NULL) {
+	if (Get_Action() != NULL){
 		Get_Action()->Reset(1);
 	}
 
-	//
 	// Unlock the vehicle!
-	//
 	LockTimer = 0.0f;
 	LockOwner = NULL;
 }
 
-int	VehicleGameObj::Find_Seat( SoldierGameObj * occupant )
-{
-	for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
-		if ( SeatOccupants[i] == occupant ) {
+int	VehicleGameObj::Find_Seat( SoldierGameObj * occupant ){
+	for ( int i = 0; i < SeatOccupants.Length(); i++ ){
+		if ( SeatOccupants[i] == occupant ){
 			return i;
 		}
 	}
 	return -1;
 }
 
-void	VehicleGameObj::Remove_Occupant( SoldierGameObj * occupant )
-{
-	WWASSERT( occupant );
-
+void	VehicleGameObj::Remove_Occupant( SoldierGameObj * occupant ){
+	
 	int	seat_num = Find_Seat( occupant );
 
-	if ( seat_num == -1 ) {
+	if ( seat_num == -1 ){
 		Debug_Say(( "Object is not in this vehicle\n" ));
 		return;
 	}
 
 	// Do this anyway, just to make sure it happens.
-	if ( Get_Definition().OccupantsVisible == false ) {
-		if ( SeatOccupants[seat_num] && SeatOccupants[seat_num]->Peek_Model() ) {
+	if ( Get_Definition().OccupantsVisible == false ){
+		if ( SeatOccupants[seat_num] && SeatOccupants[seat_num]->Peek_Model() ){
 			SeatOccupants[seat_num]->Peek_Model()->Set_Hidden( false );
 		}
 	}
@@ -1909,7 +1546,7 @@ void	VehicleGameObj::Remove_Occupant( SoldierGameObj * occupant )
 	OccupiedSeats--;
 
 	// in MP, empty vehicles are neutral
-	if ( !IS_MISSION && OccupiedSeats == 0 ) {
+	if ( !IS_MISSION && OccupiedSeats == 0 ){
 		Set_Player_Type( PLAYERTYPE_NEUTRAL );
 	}
 
@@ -1918,23 +1555,21 @@ void	VehicleGameObj::Remove_Occupant( SoldierGameObj * occupant )
 	// possibily re-enable transitions
 	Create_And_Destroy_Transitions();
 
-	if ( seat_num == 0 ) {
+	if ( seat_num == 0 ){
 		Enable_Engine(false);
 	}
 
 	// Notify the observers that someone left
 	const GameObjObserverList & observer_list = Get_Observers();
-	for( int index = 0; index < observer_list.Count(); index++ ) {
+	for( int index = 0; index < observer_list.Count(); index++ ){
 		observer_list[ index ]->Custom( this, CUSTOM_EVENT_VEHICLE_EXITED, seat_num, occupant );
 	}
 }
 
-bool	VehicleGameObj::Contains_Occupant( SoldierGameObj * occupant )
-{
-	WWASSERT( occupant );
-
-	for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
-		if ( SeatOccupants[i] == occupant ) {
+bool	VehicleGameObj::Contains_Occupant( SoldierGameObj * occupant ){
+	
+	for ( int i = 0; i < SeatOccupants.Length(); i++ ){
+		if ( SeatOccupants[i] == occupant ){
 			return true;
 		}
 	}
@@ -1942,47 +1577,37 @@ bool	VehicleGameObj::Contains_Occupant( SoldierGameObj * occupant )
 	return false;
 }
 
-int VehicleGameObj::Get_Occupant_Count(void)
-{
+int VehicleGameObj::Get_Occupant_Count(void){
 	int count = 0;
-	for ( int i = 0; i < SeatOccupants.Length(); i++ ) {
-		if ( SeatOccupants[i] != NULL ) {
+	for ( int i = 0; i < SeatOccupants.Length(); i++ ){
+		if ( SeatOccupants[i] != NULL ){
 			count++;
 		}
 	}
 	return count;
 }
 
-bool	VehicleGameObj::Is_Entry_Permitted( SoldierGameObj * p_soldier )
-{
-	if (!CombatManager::Is_Gameplay_Permitted()) {
-		//
+bool	VehicleGameObj::Is_Entry_Permitted( SoldierGameObj * p_soldier ){
+	if (!CombatManager::Is_Gameplay_Permitted()){
 		// You can't enter a vehicle if there are no opponents, etc
-		//
 		return false;
 	}
 
-	//
 	// Do not permit a soldier to enter a vehicle if there is already
 	// another soldier of a different player type in the vehicle.
 	// Actually, only allow 2 Nods or 2 GDI's to share a vehicle...
-	//
-
-	WWASSERT(p_soldier != NULL);
 
 	bool is_permitted = true;
 
 	int player_type = p_soldier->Get_Player_Type();
 
 	int i;
-	for (i = 0; i < SeatOccupants.Length(); i++) {
-
-		if (SeatOccupants[i] != NULL) {
+	for (i = 0; i < SeatOccupants.Length(); i++){
+		if (SeatOccupants[i] != NULL){
 			int seated_pt = SeatOccupants[i]->Get_Player_Type();
 
 			if (seated_pt != player_type ||
-				(seated_pt != PLAYERTYPE_NOD && seated_pt != PLAYERTYPE_GDI)) {
-
+				(seated_pt != PLAYERTYPE_NOD && seated_pt != PLAYERTYPE_GDI)){
 				is_permitted = false;
 				break;
 			}
@@ -1991,29 +1616,26 @@ bool	VehicleGameObj::Is_Entry_Permitted( SoldierGameObj * p_soldier )
 
 	// If there are no entry transitions, entry is not possible
 	bool entry_exists = false;
-	for ( i = 0; i < TransitionInstances.Count(); i++ ) {
-//		if ( ( TransitionInstances[i]->Get_Type() == TransitionDataClass::LEGACY_VEHICLE_ENTER_0 ) ||
-//			  ( TransitionInstances[i]->Get_Type() == TransitionDataClass::LEGACY_VEHICLE_ENTER_1 ) ) {
-		if ( TransitionInstances[i]->Get_Type() == TransitionDataClass::VEHICLE_ENTER ) {
+	for ( i = 0; i < TransitionInstances.Count(); i++ ){
+		if ( TransitionInstances[i]->Get_Type() == TransitionDataClass::VEHICLE_ENTER ){
 			entry_exists = true;
 		}
 	}
-	if ( !entry_exists ) {
+	if ( !entry_exists ){
 		is_permitted = false;
 	}
 
 	// If the vehicle is locked and you are not the lock owner, entry is not permitted
-	if (Is_Locked() && (p_soldier != LockOwner.Get_Ptr())) {
+	if (Is_Locked() && (p_soldier != LockOwner.Get_Ptr())){
 		is_permitted = false;
 	}
 
 	return is_permitted;
 }
 
-void	VehicleGameObj::Remove_Transitions( TransitionDataClass::StyleType transition_type )
-{
-	for ( int i = 0; i < TransitionInstances.Count(); i++ ) {
-		if ( TransitionInstances[i]->Get_Type() == transition_type ) {
+void	VehicleGameObj::Remove_Transitions( TransitionDataClass::StyleType transition_type ){
+	for ( int i = 0; i < TransitionInstances.Count(); i++ ){
+		if ( TransitionInstances[i]->Get_Type() == transition_type ){
 			TransitionManager::Destroy( TransitionInstances[i] );
 			TransitionInstances.Delete( i );
 			i--;
@@ -2021,47 +1643,41 @@ void	VehicleGameObj::Remove_Transitions( TransitionDataClass::StyleType transiti
 	}
 }
 
-void	VehicleGameObj::Create_New_Transitions( TransitionDataClass::StyleType transition_type )
-{
+void	VehicleGameObj::Create_New_Transitions( TransitionDataClass::StyleType transition_type ){
 	const TRANSITION_DATA_LIST & trans_data_list = Get_Definition().Get_Transition_List();
 
-	for ( int i = 0; i < trans_data_list.Count(); i++ ) {
-		if ( trans_data_list[i]->Get_Type() == transition_type ) {
-			// make new instance
+	for ( int i = 0; i < trans_data_list.Count(); i++ ){
+		if ( trans_data_list[i]->Get_Type() == transition_type ){
+	 // make new instance
 			TransitionInstanceClass * trans = new TransitionInstanceClass( *trans_data_list[i] );
-			// setup
+	 // setup
 			trans->Set_Vehicle( this );
-			// add to our list
+	 // add to our list
 			TransitionInstances.Add( trans );
-			// add to master list
+	 // add to master list
 			TransitionManager::Add( trans );
 		}
 	}
 }
 
-void	VehicleGameObj::Update_Transitions( void )
-{
+void	VehicleGameObj::Update_Transitions( void ){
 	Matrix3D tm = Get_Transform();
 
 	// Update all transitions
-	for ( int i = 0; i < TransitionInstances.Count(); i++ ) {
+	for ( int i = 0; i < TransitionInstances.Count(); i++ ){
 		TransitionInstances[i]->Set_Parent_Transform( tm );
 	}
 }
 
-
-void	VehicleGameObj::Passenger_Entering( void )
-{
+void	VehicleGameObj::Passenger_Entering( void ){
 	// Play the passenger entering animation
 	char string[80];
 	sprintf( string, "V_%sL1.M_%sCL", Get_Definition().TypeName, Get_Definition().TypeName );
 	Set_Animation( string );
 	Get_Anim_Control()->Set_Mode( ANIM_MODE_ONCE );
-	//Debug_Say(("VehicleGameObj::Passenger_Entering\n"));
 }
 
-void	VehicleGameObj::Passenger_Exiting( void )
-{
+void	VehicleGameObj::Passenger_Exiting( void ){
 	// Play the passenger leaving animation
 	char string[80];
 	sprintf( string, "V_%sL1.M_%sOP", Get_Definition().TypeName, Get_Definition().TypeName );
@@ -2070,9 +1686,7 @@ void	VehicleGameObj::Passenger_Exiting( void )
 	Control.Clear_Control();
 }
 
-//void VehicleGameObj::Get_Extended_Information(StringClass & description)
-void VehicleGameObj::Get_Description(StringClass & description)
-{
+void VehicleGameObj::Get_Description(StringClass & description){
 	StringClass line;
 
    line.Format("ID:    %d\n", Get_ID());
@@ -2105,7 +1719,7 @@ void VehicleGameObj::Get_Description(StringClass & description)
 	description += line;
 
 	WeaponClass	* p_weapon = Get_Weapon();
-	if (p_weapon != NULL) {
+	if (p_weapon != NULL){
 		line.Format("WEAP:  %s\n", p_weapon->Get_Name());
 		description += line;
 
@@ -2113,17 +1727,17 @@ void VehicleGameObj::Get_Description(StringClass & description)
 		description += line;
    }
 
-	if (Get_Defense_Object() != NULL) {
+	if (Get_Defense_Object() != NULL){
 		line.Format("HLTH:  %-5.2f\n", Get_Defense_Object()->Get_Health());
 		description += line;
 	}
 
-   if (Get_Driver() != NULL) {
+   if (Get_Driver() != NULL){
 		line.Format("DRVR:  %d\n", Get_Driver()->Get_ID());
 		description += line;
    }
 
-   if (Get_Gunner() != NULL) {
+   if (Get_Gunner() != NULL){
 		line.Format("GUNR:   %d\n", Get_Gunner()->Get_ID());
 		description += line;
    }
@@ -2141,8 +1755,7 @@ void VehicleGameObj::Get_Description(StringClass & description)
 		control.Get_Analog(ControlClass::ANALOG_TURN_LEFT));
 	description += line;
 
-	if (Get_Action() != NULL) {
-
+	if (Get_Action() != NULL){
 		line.Format("ACTCT: %d\n", Get_Action()->Get_Act_Count());
 		description += line;
 
@@ -2164,24 +1777,21 @@ void VehicleGameObj::Get_Description(StringClass & description)
 	description += line;
 }
 
-bool	VehicleGameObj::Is_Engine_Enabled (void) const
-{
-	if (Peek_Vehicle_Phys() != NULL) {
+bool	VehicleGameObj::Is_Engine_Enabled (void) const{
+	if (Peek_Vehicle_Phys() != NULL){
 		return Peek_Vehicle_Phys()->Is_Engine_Enabled();
 	} else {
 		return false;
 	}
 }
 
-void	VehicleGameObj::Enable_Engine (bool onoff)
-{
-	if (Peek_Vehicle_Phys() != NULL) {
+void	VehicleGameObj::Enable_Engine (bool onoff){
+	if (Peek_Vehicle_Phys() != NULL){
 		Peek_Vehicle_Phys()->Enable_Engine(onoff);
 	}
 }
 
-void VehicleGameObj::Set_Precision(void)
-{
+void VehicleGameObj::Set_Precision(void){
 	cEncoderList::Set_Precision(BITPACK_VEHICLE_VELOCITY,
 		-90.0f, 90.0f, 0.01f); // 200 mph = approx. 90 m/s
 	cEncoderList::Set_Precision(BITPACK_VEHICLE_ANGULAR_VELOCITY,
@@ -2192,8 +1802,7 @@ void VehicleGameObj::Set_Precision(void)
 		0.0f, 16.0f, 0.25f);
 }
 
-void	VehicleGameObj::Apply_Damage( const OffenseObjectClass & damager, float scale, int alternate_skin )
-{
+void	VehicleGameObj::Apply_Damage( const OffenseObjectClass & damager, float scale, int alternate_skin ){
 	float starting_health = Get_Defense_Object()->Get_Health();
 
 	//
@@ -2202,9 +1811,9 @@ void	VehicleGameObj::Apply_Damage( const OffenseObjectClass & damager, float sca
 	SmartGameObj::Apply_Damage( damager, scale, alternate_skin );
 
 	// Stats
-	if ( starting_health > 0 && Get_Defense_Object()->Get_Health() <= 0 ) {
-		if ( damager.Get_Owner() && damager.Get_Owner()->As_SoldierGameObj() != NULL ) {
-			if ( damager.Get_Owner()->As_SoldierGameObj()->Get_Player_Data() != NULL ) {
+	if ( starting_health > 0 && Get_Defense_Object()->Get_Health() <= 0 ){
+		if ( damager.Get_Owner() && damager.Get_Owner()->As_SoldierGameObj() != NULL ){
+			if ( damager.Get_Owner()->As_SoldierGameObj()->Get_Player_Data() != NULL ){
 				damager.Get_Owner()->As_SoldierGameObj()->Get_Player_Data()->Stats_Add_Vehicle_Destroyed();
 			}
 		}
@@ -2216,35 +1825,34 @@ void	VehicleGameObj::Apply_Damage( const OffenseObjectClass & damager, float sca
 	Update_Damage_Meshes();
 }
 
-void	VehicleGameObj::Update_Damage_Meshes( void )
-{
+void	VehicleGameObj::Update_Damage_Meshes( void ){
 	//
 	//	Calculate what percent health we have after this damage
 	//
 	DefenseObjectClass *defense_object = Get_Defense_Object();
-	if ( defense_object != NULL ) {
+	if ( defense_object != NULL ){
 		float ending_health = defense_object->Get_Health() / defense_object->Get_Health_Max();
 
 		//
 		//	Make sure we have a render object to lookup bones on
 		//
 		RenderObjClass *model = Peek_Model ();
-		if (model != NULL) {
+		if (model != NULL){
 			bool show_damage25 = false;
 			bool show_damage50 = false;
 			bool show_damage75 = false;
 
-			//
-			//	Determine what the visibility state of these bones should be
-			//
-			if (ending_health < 0.25F) {
+	 //
+	 //	Determine what the visibility state of these bones should be
+	 //
+			if (ending_health < 0.25F){
 				show_damage25 = true;
 				show_damage50 = true;
 				show_damage75 = true;
-			} else if (ending_health < 0.5F) {
+			} else if (ending_health < 0.5F){
 				show_damage25 = true;
 				show_damage50 = true;
-			} else if (ending_health < 0.75F) {
+			} else if (ending_health < 0.75F){
 				show_damage25 = true;
 			}
 
@@ -2255,97 +1863,84 @@ void	VehicleGameObj::Update_Damage_Meshes( void )
 			static int				DAMAGE50_BONE_NAME_LEN	= ::strlen( DAMAGE50_BONE_NAME );
 			static int				DAMAGE75_BONE_NAME_LEN	= ::strlen( DAMAGE75_BONE_NAME );
 
-			//
-			//	Loop over all the bones in the model, showing and hiding any that represent
-			// damage levels
-			//
+	 //
+	 //	Loop over all the bones in the model, showing and hiding any that represent
+	 // damage levels
+	 //
 			int bone_count = model->Get_Num_Bones();
-			for (	int index = 0; index < bone_count; index ++) {
+			for (	int index = 0; index < bone_count; index ++){
 				const char *bone_name = model->Get_Bone_Name( index );
 
-				if ( ::strnicmp( bone_name, DAMAGE25_BONE_NAME, DAMAGE25_BONE_NAME_LEN ) == 0 ) {
-
-					//
-					//	Show/hide the subobjects associated with 25% damage
-					//
+				if ( ::strnicmp( bone_name, DAMAGE25_BONE_NAME, DAMAGE25_BONE_NAME_LEN ) == 0 ){
+	 //
+	 //	Show/hide the subobjects associated with 25% damage
+	 //
 					::Set_Subobject_Visibility( model, index, show_damage25 );
-				} else if ( ::strnicmp( bone_name, DAMAGE50_BONE_NAME, DAMAGE50_BONE_NAME_LEN ) == 0 ) {
-
-					//
-					//	Show/hide the subobjects associated with 50% damage
-					//
+				} else if ( ::strnicmp( bone_name, DAMAGE50_BONE_NAME, DAMAGE50_BONE_NAME_LEN ) == 0 ){
+	 //
+	 //	Show/hide the subobjects associated with 50% damage
+	 //
 					::Set_Subobject_Visibility( model, index, show_damage50 );
-				} else if ( ::strnicmp( bone_name, DAMAGE75_BONE_NAME, DAMAGE75_BONE_NAME_LEN ) == 0 ) {
-
-					//
-					//	Show/hide the subobjects associated with 75% damage
-					//
+				} else if ( ::strnicmp( bone_name, DAMAGE75_BONE_NAME, DAMAGE75_BONE_NAME_LEN ) == 0 ){
+	 //
+	 //	Show/hide the subobjects associated with 75% damage
+	 //
 					::Set_Subobject_Visibility( model, index, show_damage75 );
 				}
 			}
 		}
 	}
 
-	return ;
+	return;
 }
 
-
-void	Set_Subobject_Visibility (RenderObjClass *model, int bone_index, bool show)
-{
-	WWASSERT( model != NULL );
-
+void	Set_Subobject_Visibility (RenderObjClass *model, int bone_index, bool show){
 	//
 	//	Loop over all the subobjects that are attached to this bone
 	//
 	int count = model->Get_Num_Sub_Objects_On_Bone( bone_index );
-	for (int index = 0; index < count; index ++) {
+	for (int index = 0; index < count; index ++){
 		RenderObjClass *sub_obj = model->Get_Sub_Object_On_Bone(index, bone_index);
-		if (sub_obj != NULL) {
-
-			//
-			//	Show or hide this subobject
-			//
+		if (sub_obj != NULL){
+	 //
+	 //	Show or hide this subobject
+	 //
 			sub_obj->Set_Hidden (!show);
 			sub_obj->Release_Ref();
 		}
 	}
 
-	return ;
+	return;
 }
 
-Matrix3D VehicleGameObj::Get_Look_Transform(void)
-{
-	if ( Get_Definition().SightDownMuzzle ) {
+Matrix3D VehicleGameObj::Get_Look_Transform(void){
+	if ( Get_Definition().SightDownMuzzle ){
 		return Get_Muzzle();
 	}
 	return SmartGameObj::Get_Look_Transform();
 }
 
-const WCHAR *	VehicleGameObj::Get_Vehicle_Name( void )
-{
-	if ( Get_Definition().VehicleNameID != 0 ) {
+const WCHAR *	VehicleGameObj::Get_Vehicle_Name( void ){
+	if ( Get_Definition().VehicleNameID != 0 ){
 		return TranslateDBClass::Get_String( Get_Definition().VehicleNameID );
 	}
 	return TRANSLATE(IDS_HUD_VEHICLE_NAME);
 }
 
 // Vehicles should explode when expired / flipped
-ExpirationReactionType	VehicleGameObj::Object_Expired( PhysClass * observed_obj )
-{
+ExpirationReactionType	VehicleGameObj::Object_Expired( PhysClass * observed_obj ){
 	// Only on the server
-	if ( CombatManager::I_Am_Server() ) {
-
-		if ( Get_Definition().KilledExplosion != 0 && !Is_Delete_Pending() ) {
+	if ( CombatManager::I_Am_Server() ){
+		if ( Get_Definition().KilledExplosion != 0 && !Is_Delete_Pending() ){
 			Vector3 pos;
 			Get_Position(&pos);
-			WWASSERT(pos.Is_Valid());// most likely candidate for explosion damage bug....?
 			ExplosionManager::Server_Explode( Get_Definition().KilledExplosion,pos,0 );
 		}
 
-		if ( !Is_Delete_Pending() ) {
-			// notify the observers of killed
+		if ( !Is_Delete_Pending() ){
+	 // notify the observers of killed
 			const GameObjObserverList & observer_list = Get_Observers();
-			for( int index = 0; index < observer_list.Count(); index++ ) {
+			for( int index = 0; index < observer_list.Count(); index++ ){
 				observer_list[ index ]->Killed( this, NULL );
 			}
 		}
@@ -2357,58 +1952,46 @@ ExpirationReactionType	VehicleGameObj::Object_Expired( PhysClass * observed_obj 
 	}
 }
 
-/*
-**
-*/
-SoldierGameObj * VehicleGameObj::Get_Driver(void)
-{
-	if ( SeatOccupants.Length() > DRIVER_SEAT ) {
+SoldierGameObj * VehicleGameObj::Get_Driver(void){
+	if ( SeatOccupants.Length() > DRIVER_SEAT ){
 		return SeatOccupants[DRIVER_SEAT];
 	}
 	return NULL;
 }
 
-SoldierGameObj * VehicleGameObj::Get_Gunner(void)
-{
-	if ( SeatOccupants.Length() > GUNNER_SEAT ) {
+SoldierGameObj * VehicleGameObj::Get_Gunner(void){
+	if ( SeatOccupants.Length() > GUNNER_SEAT ){
 		return SeatOccupants[GUNNER_SEAT];
 	}
 	return NULL;
 }
 
-SoldierGameObj * VehicleGameObj::Get_Actual_Gunner(void)
-{
+SoldierGameObj * VehicleGameObj::Get_Actual_Gunner(void){
 	SoldierGameObj * gunner = Get_Gunner();
-	if ( gunner && !Get_Driver_Is_Gunner() ) {
+	if ( gunner && !Get_Driver_Is_Gunner() ){
 		return gunner;
 	}
 	return Get_Driver();
 }
 
-float VehicleGameObj::Get_Stealth_Fade_Distance(void) const
-{
-	if (IS_MISSION) {
+float VehicleGameObj::Get_Stealth_Fade_Distance(void) const{
+	if (IS_MISSION){
 		return GlobalSettingsDef::Get_Global_Settings()->Get_Stealth_Distance_Vehicle();
 	} else {
 		return GlobalSettingsDef::Get_Global_Settings()->Get_MP_Stealth_Distance_Vehicle();
 	}
 }
 
-
-void VehicleGameObj::Set_Vehicle_Delivered(void)
-{
+void VehicleGameObj::Set_Vehicle_Delivered(void){
 	VehicleDelivered = true;
 	Set_Object_Dirty_Bit( NetworkObjectClass::BIT_RARE, true );
 }
 
-
-
-float VehicleGameObj::Get_Filter_Distance(void) const
-{
-	if (Get_Definition().Type == VEHICLE_TYPE_TURRET) {
+float VehicleGameObj::Get_Filter_Distance(void) const{
+	if (Get_Definition().Type == VEHICLE_TYPE_TURRET){
 		WeaponClass *weapon = ((VehicleGameObj*)this)->Get_Weapon();
 		float range = Get_Definition().SightRange;
-		if (weapon != NULL) {
+		if (weapon != NULL){
 			range = min(weapon->Get_Range(), range);
 		}
 		return(range);
@@ -2416,238 +1999,22 @@ float VehicleGameObj::Get_Filter_Distance(void) const
 	return(SmartGameObj::Get_Filter_Distance());
 }
 
-
-
-void	VehicleGameObj::Ignore_Occupants( void )
-{
-	for (int i = 0; i < SeatOccupants.Length(); i++) {
-		if (SeatOccupants[i] != NULL) {
-			if ( SeatOccupants[i]->Peek_Physical_Object() != NULL ) {
+void	VehicleGameObj::Ignore_Occupants( void ){
+	for (int i = 0; i < SeatOccupants.Length(); i++){
+		if (SeatOccupants[i] != NULL){
+			if ( SeatOccupants[i]->Peek_Physical_Object() != NULL ){
 				SeatOccupants[i]->Peek_Physical_Object()->Inc_Ignore_Counter();
 			}
 		}
 	}
 }
 
-void	VehicleGameObj::Unignore_Occupants( void )
-{
-	for (int i = 0; i < SeatOccupants.Length(); i++) {
-		if (SeatOccupants[i] != NULL) {
-			if ( SeatOccupants[i]->Peek_Physical_Object() != NULL ) {
+void	VehicleGameObj::Unignore_Occupants( void ){
+	for (int i = 0; i < SeatOccupants.Length(); i++){
+		if (SeatOccupants[i] != NULL){
+			if ( SeatOccupants[i]->Peek_Physical_Object() != NULL ){
 				SeatOccupants[i]->Peek_Physical_Object()->Dec_Ignore_Counter();
 			}
 		}
 	}
 }
-
-
-
-
-				/*
-				Vector3 current_position;
-				Get_Position(&current_position);
-				Vector3 pos_error = current_position - sc_position;
-
-				if (pos_error.Length() > 2.0f && Is_Attached_To_An_Object () == false) {
-					Matrix3D tm(q, sc_position);
-					p_obj->Set_Transform(tm);
-					p_obj->Set_Velocity(vel);
-					p_obj->Set_Angular_Velocity(ang_vel);
-				} else if (Is_Attached_To_An_Object ()) {
-					Debug_Say(( "Skipping vehicle position update - attached to bone.\n" ));
-				}
-				*/
-
-				/*
-				// New temporary scheme : constantly correct to server position by linearly
-				// interpolating a fraction of the error
-				//
-				Matrix3D dest_tm(q, sc_position);
-				Matrix3D tm = ::Lerp(Get_Transform (), dest_tm, 0.1F);
-				p_obj->Set_Transform(tm);
-				p_obj->Set_Velocity(vel);
-				p_obj->Set_Angular_Velocity(ang_vel);
-				*/
-
-				/*
-				packet.Add_Vector3(pos);
-				packet.Add_Quaternion(q);
-				packet.Add_Vector3(vel);
-				packet.Add_Vector3(ang_vel);
-				*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-void VehicleGameObj::Import_State_Sc(BitStreamClass & packet)
-{
-   WWASSERT(CombatManager::I_Am_Only_Client());
-
-	if (Get_Weapon() != NULL) {
-		int rounds = packet.Get(rounds);
-		Get_Weapon()->Set_Total_Rounds(rounds);
-	}
-
-	for (int i = 0; i < NUM_SEATS; i++) {
-		int occupant = packet.Get(occupant);
-		if (occupant == -1) {
-			Seats[i] = NULL;
-		} else {
-			if ((Seats[i] == NULL) || (Seats[i]->Get_ID() != occupant)) {
-				SmartGameObj * obj = GameObjManager::Find_SmartGameObj(occupant);
-				Seats[i] = NULL;
-				if (obj != NULL) {
-					Seats[i] = obj->As_SoldierGameObj();
-				}
-			}
-		}
-	}
-
-	switch(Get_Definition().Type) {
-
-		case VEHICLE_TYPE_BIKE:
-		case VEHICLE_TYPE_CAR:
-		case VEHICLE_TYPE_TANK:
-		{
-			VehiclePhysClass * p_obj = Peek_Vehicle_Phys();
-			WWASSERT(p_obj != NULL);
-
-			Vector3 sc_position;
-			Quaternion q;
-			Vector3 vel;
-			Vector3 ang_vel;
-
-			//packet.Get_Vector3(pos);
-			//packet.Get_Quaternion(q);
-			//packet.Get_Vector3(vel);
-			//packet.Get_Vector3(ang_vel);
-
-			packet.Get(sc_position.X, BITPACK_WORLD_POSITION_X);
-			packet.Get(sc_position.Y, BITPACK_WORLD_POSITION_Y);
-			packet.Get(sc_position.Z, BITPACK_WORLD_POSITION_Z);
-
-			packet.Get(q.X, BITPACK_VEHICLE_QUATERNION);
-			packet.Get(q.Y, BITPACK_VEHICLE_QUATERNION);
-			packet.Get(q.Z, BITPACK_VEHICLE_QUATERNION);
-			packet.Get(q.W, BITPACK_VEHICLE_QUATERNION);
-
-			packet.Get(vel.X, BITPACK_VEHICLE_VELOCITY);
-			packet.Get(vel.Y, BITPACK_VEHICLE_VELOCITY);
-			packet.Get(vel.Z, BITPACK_VEHICLE_VELOCITY);
-
-			packet.Get(ang_vel.X, BITPACK_VEHICLE_ANGULAR_VELOCITY);
-			packet.Get(ang_vel.Y, BITPACK_VEHICLE_ANGULAR_VELOCITY);
-			packet.Get(ang_vel.Z, BITPACK_VEHICLE_ANGULAR_VELOCITY);
-
-			switch (CombatManager::Get_Client_Interpolation_Model()) {
-
-				case CLIENT_INTERPOLATION_SERVER_AUTHORITATIVE:
-				case CLIENT_INTERPOLATION_SERVER_AUTHORITATIVE_WITH_BLENDING:
-				{
-					//Matrix3D tm(q, sc_position);
-					//p_obj->Set_Transform(tm);
-					//p_obj->Set_Velocity(vel);
-					//p_obj->Set_Angular_Velocity(ang_vel);
-
-					Vector3 current_position;
-					Get_Position(&current_position);
-					Vector3 pos_error = current_position - sc_position;
-					if (pos_error.Length() > 2.0f) {
-						Matrix3D tm(q, sc_position);
-						p_obj->Set_Transform(tm);
-						p_obj->Set_Velocity(vel);
-						p_obj->Set_Angular_Velocity(ang_vel);
-					}
-					break;
-				}
-
-				case CLIENT_INTERPOLATION_PATHFIND: {
-
-					SoldierGameObj * p_driver = Seats[DRIVER_SEAT];
-					if (p_driver != NULL && p_driver->Get_Control_Owner() == CombatManager::Get_My_Id()) {
-
-						Matrix3D tm(q, sc_position);
-						p_obj->Set_Transform(tm);
-						p_obj->Set_Velocity(vel);
-						p_obj->Set_Angular_Velocity(ang_vel);
-
-					} else {
-
-						ActionParamsStruct parameters;
-						parameters.Priority = 1;
-						parameters.MoveLocation = sc_position;
-						parameters.MoveArrivedDistance = 0.1f;
-						WWASSERT(Get_Action() != NULL);
-						Get_Action()->Goto(parameters);
-					}
-					break;
-				}
-
-				default:
-					WWASSERT(0);
-			}
-			break;
-		}
-
-		case VEHICLE_TYPE_FLYING:
-			break;
-
-		case VEHICLE_TYPE_TURRET:
-			break;
-
-		default:
-			WWASSERT( 0 );
-			break;
-	}
-
-   SmartGameObj::Import_State_Sc(packet);
-
-   WWASSERT(packet.Is_Flushed());
-}
-*/
