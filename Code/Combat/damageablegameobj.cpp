@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -40,47 +22,23 @@
 #include "playertype.h"
 #include "colors.h"
 
-/*
-** DamageableGameObjDef - Defintion class for a DamageableGameObj
-*/
-DamageableGameObjDef::DamageableGameObjDef( void ) :
+// DamageableGameObjDef - Defintion class for a DamageableGameObj
+DamageableGameObjDef::DamageableGameObjDef(void) :
 	TranslatedNameID( 0 ),
 	EncyclopediaType( EncyclopediaMgrClass::TYPE_UNKNOWN ),
 	EncyclopediaID( 0 ),
 	NotTargetable( false ),
-	DefaultPlayerType( PLAYERTYPE_NEUTRAL )
-{
+	DefaultPlayerType( PLAYERTYPE_NEUTRAL ){
 	DEFENSEOBJECTDEF_EDITABLE_PARAMS( DamageableGameObjDef, DefenseObjectDef );
-	EDITABLE_PARAM( DamageableGameObjDef, ParameterClass::TYPE_STRINGSDB_ID,	TranslatedNameID );
+	EDITABLE_PARAM( DamageableGameObjDef, ParameterClass::TYPE_STRINGSDB_ID, TranslatedNameID );
 	FILENAME_PARAM( DamageableGameObjDef, InfoIconTextureFilename, "InfoIconTextureFilename", ".TGA" );
-
-#ifdef	PARAM_EDITING_ON
-	EnumParameterClass *param = new EnumParameterClass( (int *)&EncyclopediaType );
-	param->Set_Name( "Encyclopedia Type" );
-	param->Add_Value( "<NA>",			0 );
-	param->Add_Value( "Character",	EncyclopediaMgrClass::TYPE_CHARACTER );
-	param->Add_Value( "Weapon",		EncyclopediaMgrClass::TYPE_WEAPON );
-	param->Add_Value( "Vehicle",		EncyclopediaMgrClass::TYPE_VEHICLE );
-	param->Add_Value( "Building",		EncyclopediaMgrClass::TYPE_BUILDING );
-	GENERIC_EDITABLE_PARAM( DamageableGameObjDef, param )
-
-	param = new EnumParameterClass( &DefaultPlayerType );
-	param->Set_Name ("PlayerType");
-	param->Add_Value ( "Mutant",		PLAYERTYPE_MUTANT );
-	param->Add_Value ( "Unteamed",	PLAYERTYPE_NEUTRAL );
-	param->Add_Value ( "Renegade",	PLAYERTYPE_RENEGADE );
-	param->Add_Value ( "Nod",			PLAYERTYPE_NOD );
-	param->Add_Value ( "GDI",			PLAYERTYPE_GDI );
-	GENERIC_EDITABLE_PARAM(DamageableGameObjDef,param)
-#endif
-
-	EDITABLE_PARAM( DamageableGameObjDef, ParameterClass::TYPE_INT,	EncyclopediaID );
-	EDITABLE_PARAM( DamageableGameObjDef, ParameterClass::TYPE_BOOL,	NotTargetable );
-	return ;
+	EDITABLE_PARAM( DamageableGameObjDef, ParameterClass::TYPE_INT, EncyclopediaID );
+	EDITABLE_PARAM( DamageableGameObjDef, ParameterClass::TYPE_BOOL, NotTargetable );
+	return;
 }
 
-enum	{
-	CHUNKID_DEF_PARENT								=	207011205,
+enum {
+	CHUNKID_DEF_PARENT							=	207011205,
 	CHUNKID_DEF_VARIABLES,
 	CHUNKID_DEF_DEFENSEOBJECTDEF,
 
@@ -92,8 +50,7 @@ enum	{
 	MICROCHUNKID_DEF_DEFAULT_PLAYER_TYPE, 
 };
 
-bool	DamageableGameObjDef::Save( ChunkSaveClass & csave )
-{
+bool DamageableGameObjDef::Save( ChunkSaveClass & csave ){
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 		ScriptableGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -114,8 +71,7 @@ bool	DamageableGameObjDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	DamageableGameObjDef::Load( ChunkLoadClass &cload )
-{
+bool	DamageableGameObjDef::Load( ChunkLoadClass &cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -156,83 +112,47 @@ bool	DamageableGameObjDef::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-/*
-** DamageableGameObj
-*/
+// DamageableGameObj
 DamageableGameObj::DamageableGameObj( void ) :
-	IsHealthBarDisplayed( true )
-{
+	IsHealthBarDisplayed( true ){
 	Set_Player_Type(PLAYERTYPE_NEUTRAL);
 }
 
-DamageableGameObj::~DamageableGameObj( void )
-{
+DamageableGameObj::~DamageableGameObj( void ){
 	Remove_All_Observers();
 }
 
-
-
-/*
-**
-*/
-void	DamageableGameObj::Init( const DamageableGameObjDef & definition )
-{
+void DamageableGameObj::Init( const DamageableGameObjDef & definition ){
 	ScriptableGameObj::Init( definition );
 	Copy_Settings( definition );
 	return ;
 }
 
-/*
-**
-*/
-void	DamageableGameObj::Copy_Settings( const DamageableGameObjDef & definition )
-{
+void DamageableGameObj::Copy_Settings( const DamageableGameObjDef & definition ){
 	Set_Player_Type(definition.DefaultPlayerType);
 	DefenseObject.Init(definition.DefenseObjectDef, this );
 	return ;
 }
 
-/*
-**
-*/
-void	DamageableGameObj::Re_Init( const DamageableGameObjDef & definition )
-{
+void DamageableGameObj::Re_Init( const DamageableGameObjDef & definition ){
 	int old_player_type	= PlayerType;
 
-	//
-	//	Record the health and shield percent so we can restore the
-	// appropriate amount of health and shield after we've re-initialized
-	//
-	//float health_percent	= DefenseObject.Get_Health() / DefenseObject.Get_Health_Max();
-	//float shield_percent	= DefenseObject.Get_Shield_Strength() / DefenseObject.Get_Shield_Strength_Max();
-
-	//
 	//	Re-initialize the base class
-	//
 	ScriptableGameObj::Re_Init( definition );
 
-	//
 	//	Copy any internal settings from the definition
-	//
 	Copy_Settings( definition );
 
-	//
-	//	Reset the health and shield to appropriate values
-	//
-	//DefenseObject.Set_Health (DefenseObject.Get_Health_Max () * health_percent);
-	//DefenseObject.Set_Shield_Strength (DefenseObject.Get_Shield_Strength_Max () * shield_percent);
 	Set_Player_Type( old_player_type );
 	return ;
 }
 
-const DamageableGameObjDef & DamageableGameObj::Get_Definition( void ) const 
-{
+const DamageableGameObjDef & DamageableGameObj::Get_Definition( void ) const {
 	return (const DamageableGameObjDef &)BaseGameObj::Get_Definition();
 }
 
-/*
-** DamageableGameObj Save and Load
-*/
+
+// DamageableGameObj Save and Load
 enum	{
 	CHUNKID_PARENT							=	207011212,
 	CHUNKID_DEFENSEOBJECT,
@@ -242,8 +162,7 @@ enum	{
 	MICROCHUNKID_IS_HEALTH_BAR_DISPLAYED,
 };
 
-bool	DamageableGameObj::Save( ChunkSaveClass & csave )
-{
+bool DamageableGameObj::Save( ChunkSaveClass & csave ){
 	csave.Begin_Chunk( CHUNKID_PARENT );
 		ScriptableGameObj::Save( csave );
 	csave.End_Chunk();
@@ -260,8 +179,7 @@ bool	DamageableGameObj::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	DamageableGameObj::Load( ChunkLoadClass &cload )
-{
+bool DamageableGameObj::Load( ChunkLoadClass &cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -298,8 +216,7 @@ bool	DamageableGameObj::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void	DamageableGameObj::Apply_Damage( const OffenseObjectClass & damager, float scale, int alternate_skin )
-{
+void DamageableGameObj::Apply_Damage( const OffenseObjectClass & damager, float scale, int alternate_skin ){
 	if ( DefenseObject.Get_Health() <= 0 ) {
 		return;
 	}
@@ -333,63 +250,23 @@ void	DamageableGameObj::Apply_Damage( const OffenseObjectClass & damager, float 
 	}
 }
 
-//------------------------------------------------------------------------------------
-/*void	DamageableGameObj::Get_Information( StringClass & string )
-{
-	// If we just came from the editor, call created on all out observers
-	const GameObjObserverList & observer_list = Get_Observers();
-	for( int index = 0; index < observer_list.Count(); index++ ) {
-		StringClass temp;
-		temp.Format( "%s\n", observer_list[ index ]->Get_Name() );
-		string += temp;
-	}
-} */
 
-
-/*
-**
-*/
-void	DamageableGameObj::Export_Occasional( BitStreamClass &packet )
-{
+void DamageableGameObj::Export_Occasional( BitStreamClass &packet ){
 	ScriptableGameObj::Export_Occasional( packet );
 
-	//
 	//	Export the defense object's state
-	//
 	DefenseObject.Export (packet);
 }
 
 
-/*
-**
-*/
-void	DamageableGameObj::Import_Occasional( BitStreamClass &packet )
-{
+
+void DamageableGameObj::Import_Occasional( BitStreamClass &packet ){
 	ScriptableGameObj::Import_Occasional( packet );
 
-	//
 	//	Update the defense object's state
-	//
 	float old_health = DefenseObject.Get_Health();
 	DefenseObject.Import (packet);
 	float new_health = DefenseObject.Get_Health();
-
-	/*
-	//
-	// Hack !
-	//
-	if ( Is_Delete_Pending() ) {
-		if ( new_health != 0 ) {
-			DefenseObject.Set_Health( 0 );
-			new_health = DefenseObject.Get_Health();
-		}
-	} else {
-		if ( new_health == 0 ) {
-			DefenseObject.Set_Health( 0.01f );
-			new_health = DefenseObject.Get_Health();
-		}
-	}
-	*/
 
 	if (old_health > 0 && old_health > new_health) {
 		// Notify the observers that we are damaged
@@ -401,9 +278,7 @@ void	DamageableGameObj::Import_Occasional( BitStreamClass &packet )
 		}
 	}
 
-	//
 	//	Check to see if the object is completely damaged
-	//
 	if ( old_health > 0 && new_health <= 0 ) {
 		// Notify the observers that the building has been destroyed
 		const GameObjObserverList& observer_list = Get_Observers();
@@ -419,37 +294,28 @@ void	DamageableGameObj::Import_Occasional( BitStreamClass &packet )
 }
 
 
-//-----------------------------------------------------------------------------
-bool DamageableGameObj::Is_Team_Player(void) 
-{
+bool DamageableGameObj::Is_Team_Player(void){
 	return PlayerType == PLAYERTYPE_NOD || PlayerType == PLAYERTYPE_GDI;
 }
 
-//-----------------------------------------------------------------------------
-Vector3 DamageableGameObj::Get_Team_Color(void)
-{
+Vector3 DamageableGameObj::Get_Team_Color(void){
 	return Get_Color_For_Team(PlayerType);
 }
 
-//-----------------------------------------------------------------------------
-void DamageableGameObj::Set_Player_Type(int id) 
-{
+void DamageableGameObj::Set_Player_Type(int id){
 	PlayerType = id;
 
 	Set_Object_Dirty_Bit( NetworkObjectClass::BIT_RARE, true );
 }
 
-//-----------------------------------------------------------------------------
-bool DamageableGameObj::Is_Teammate(DamageableGameObj * p_obj)
-{
+bool DamageableGameObj::Is_Teammate(DamageableGameObj * p_obj){
 	WWASSERT(p_obj != NULL);
 
    return ((p_obj == this) || 
 			  (Is_Team_Player() && Get_Player_Type() == p_obj->Get_Player_Type()));
 }
 
-bool DamageableGameObj::Is_Enemy(DamageableGameObj * p_obj)
-{
+bool DamageableGameObj::Is_Enemy(DamageableGameObj * p_obj){
 	WWASSERT(p_obj != NULL);
    return ( (p_obj != this) && Player_Types_Are_Enemies( Get_Player_Type(), p_obj->Get_Player_Type() ) );
 }

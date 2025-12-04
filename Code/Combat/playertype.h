@@ -16,13 +16,6 @@
 **	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//
-// Filename:     playertype.h
-// Author:       Tom Spencer-Smith
-// Date:         Dec 1998
-// Description:  
-//
-//-----------------------------------------------------------------------------
 #if defined(_MSV_VER)
 #pragma once
 #endif
@@ -33,7 +26,6 @@
 // 4514: unreferenced inline function has been removed.
 #pragma warning(disable : 4514)
 
-//-----------------------------------------------------------------------------
 typedef enum {
 
 	PLAYERTYPE_FIRST					= -4,
@@ -57,7 +49,6 @@ typedef enum {
 
 const char * Player_Type_Name( int player_type );
 
-//-----------------------------------------------------------------------------
 
 inline bool	Player_Types_Are_Enemies( int player_type_1, int player_type_2 )
 {

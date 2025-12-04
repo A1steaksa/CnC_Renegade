@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -59,24 +41,22 @@ DefinitionMgrClass	_TheDefinitionMgr;
 static const int		DEFINTION_LIST_GROW_SIZE	= 1000;
 static const uint32	IDRANGE_PER_CLASS				= 10000;
 
-enum
-{
+enum {
 	CHUNKID_VARIABLES			= 0x00000100,
 	CHUNKID_OBJECTS,
 		CHUNKID_OBJECT
 };
 
-enum
-{
+enum {
 	VARID_NEXTDEFID	= 0x01
 };
 
 //////////////////////////////////////////////////////////////////////////////////
 //	Static member initialization
 //////////////////////////////////////////////////////////////////////////////////
-DefinitionClass **	DefinitionMgrClass::_SortedDefinitionArray	= NULL;
-int						DefinitionMgrClass::_DefinitionCount			= 0;
-int						DefinitionMgrClass::_MaxDefinitionCount		= 0;
+DefinitionClass** DefinitionMgrClass::_SortedDefinitionArray = NULL;
+int DefinitionMgrClass::_DefinitionCount	= 0;
+int DefinitionMgrClass::_MaxDefinitionCount	= 0;
 HashTemplateClass<StringClass, DynamicVectorClass<DefinitionClass*>*>* DefinitionMgrClass::DefinitionHash;
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -84,21 +64,18 @@ HashTemplateClass<StringClass, DynamicVectorClass<DefinitionClass*>*>* Definitio
 //	DefinitionMgrClass
 //
 //////////////////////////////////////////////////////////////////////////////////
-DefinitionMgrClass::DefinitionMgrClass (void)
-{
-	return ;
+DefinitionMgrClass::DefinitionMgrClass(void){
+	return;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////
 //
 //	~DefinitionMgrClass
 //
 //////////////////////////////////////////////////////////////////////////////////
-DefinitionMgrClass::~DefinitionMgrClass (void)
-{
-	Free_Definitions ();
-	return ;
+DefinitionMgrClass::~DefinitionMgrClass(void){
+	Free_Definitions();
+	return;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -106,9 +83,7 @@ DefinitionMgrClass::~DefinitionMgrClass (void)
 //	Find_Definition
 //
 //////////////////////////////////////////////////////////////////////////////////
-DefinitionClass *
-DefinitionMgrClass::Find_Definition (uint32 id, bool twiddle)
-{
+DefinitionClass* DefinitionMgrClass::Find_Definition( uint32 id, bool twiddle ){
 	DefinitionClass *definition = NULL;
 
 	int lower_index	= 0;
@@ -116,9 +91,7 @@ DefinitionMgrClass::Find_Definition (uint32 id, bool twiddle)
 	int index			= upper_index / 2;
 	bool keep_going	= (_DefinitionCount > 0);
 
-	//
 	//	Binary search the list until we've found the definition
-	//
 	while (keep_going) {
 		
 		DefinitionClass *curr_def = _SortedDefinitionArray[index];
@@ -158,15 +131,13 @@ DefinitionMgrClass::Find_Definition (uint32 id, bool twiddle)
 		}
 	}
 
-	//
 	//	Should we twiddle this definition? (Twiddling refers to our randomizing
 	//	framework for definitions)
-	//
 	if (	twiddle &&
 			definition != NULL &&
 			definition->Get_Class_ID () == CLASSID_TWIDDLERS)
 	{
-		definition = ((TwiddlerClass *)definition)->Twiddle ();
+		definition = ( (TwiddlerClass*) definition )->Twiddle();
 	}
 
 	return definition;
@@ -471,7 +442,6 @@ DefinitionMgrClass::Free_Definitions (void)
 		HashTemplateIterator<StringClass,DynamicVectorClass<DefinitionClass*>*> ite(*DefinitionHash);
 		for (ite.First();!ite.Is_Done();ite.Next()) {
 			DynamicVectorClass<DefinitionClass*>* defs=ite.Peek_Value();
-//			delete ite.Peek_Value();
 			delete defs;
 		}
 		DefinitionHash->Remove_All();
@@ -479,9 +449,7 @@ DefinitionMgrClass::Free_Definitions (void)
 		DefinitionHash=NULL;
 	}
 
-	//
 	//	Free each of the definition objects
-	//	
 	for (int index = 0; index < _DefinitionCount; index ++) {
 		DefinitionClass *definition = _SortedDefinitionArray[index];
 		if (definition != NULL) {
@@ -489,16 +457,14 @@ DefinitionMgrClass::Free_Definitions (void)
 		}
 	}
 
-	//
 	//	Free the definition array
-	//
 	if (_SortedDefinitionArray != NULL) {
 		delete [] _SortedDefinitionArray;
 	}
 
-	_SortedDefinitionArray	= NULL;
-	_MaxDefinitionCount		= 0;
-	_DefinitionCount			= 0;
+	_SortedDefinitionArray = NULL;
+	_MaxDefinitionCount = 0;
+	_DefinitionCount = 0;
 	return ;
 }
 
@@ -700,32 +666,25 @@ DefinitionMgrClass::Save
 //	Load
 //
 //////////////////////////////////////////////////////////////////////////////////
-bool
-DefinitionMgrClass::Load (ChunkLoadClass &cload)
-{
+bool DefinitionMgrClass::Load( ChunkLoadClass& cload ){
 	WWMEMLOG(MEM_GAMEDATA);
 	bool retval = true;
 
-	while (cload.Open_Chunk ()) {
-		switch (cload.Cur_Chunk_ID ()) {
-			
-			//
-			//	If this is the chunk that contains the class variables, then
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
+			// If this is the chunk that contains the class variables, then
 			// loop through and read each microchunk
-			//
 			case CHUNKID_VARIABLES:
-				retval &= Load_Variables (cload);
+				retval &= Load_Variables( cload );
 				break;
 
-			//
-			//	Load all the definition objects from this chunk
-			//
+			// Load all the definition objects from this chunk
 			case CHUNKID_OBJECTS:
-				retval &= Load_Objects (cload);
+				retval &= Load_Objects( cload );
 				break;
 		}
 
-		cload.Close_Chunk ();
+		cload.Close_Chunk();
 	}
 
 	return retval;
@@ -770,9 +729,7 @@ DefinitionMgrClass::Save_Objects
 //	Save_Variables
 //
 //////////////////////////////////////////////////////////////////////////////////
-bool
-DefinitionMgrClass::Save_Variables (ChunkSaveClass &csave)
-{
+bool DefinitionMgrClass::Save_Variables( ChunkSaveClass& csave ){
 	bool retval = true;
 	return retval;
 }
@@ -787,25 +744,18 @@ float _reg_time;
 //	Load_Objects
 //
 //////////////////////////////////////////////////////////////////////////////////
-bool
-DefinitionMgrClass::Load_Objects (ChunkLoadClass &cload)
-{
+bool DefinitionMgrClass::Load_Objects( ChunkLoadClass& cload ){
 	bool retval = true;
 
-	while (cload.Open_Chunk ()) {
-
-		//
-		//	Load this definition from the chunk (if possible)
-		//
+	while( cload.Open_Chunk() ){
+		// Load this definition from the chunk (if possible)
 		PersistFactoryClass *factory = SaveLoadSystemClass::Find_Persist_Factory (cload.Cur_Chunk_ID ());
 		if (factory != NULL) {
 			
 			DefinitionClass *definition = (DefinitionClass *)factory->Load (cload);
 			if (definition != NULL) {
 
-				//
 				//	Add this definition to our array
-				//				
 				Prepare_Definition_Array ();
 				_SortedDefinitionArray[_DefinitionCount ++] = definition;				
 			}
@@ -814,16 +764,12 @@ DefinitionMgrClass::Load_Objects (ChunkLoadClass &cload)
 		cload.Close_Chunk ();
 	}
 
-	//
-	//	Sort the definitions
-	//
+	// Sort the definitions
 	if (_DefinitionCount > 0) {
 		::qsort (_SortedDefinitionArray, _DefinitionCount, sizeof (DefinitionClass *), fnCompareDefinitionsCallback);
 	}
 
-	//
-	//	Assign a mgr link to each definition
-	//
+	// Assign a mgr link to each definition
 	for (int index = 0; index < _DefinitionCount; index ++) {
 		_SortedDefinitionArray[index]->m_DefinitionMgrLink = index;
 	}
@@ -837,22 +783,17 @@ DefinitionMgrClass::Load_Objects (ChunkLoadClass &cload)
 //	Load_Variables
 //
 //////////////////////////////////////////////////////////////////////////////////
-bool
-DefinitionMgrClass::Load_Variables (ChunkLoadClass &cload)
-{
+bool DefinitionMgrClass::Load_Variables( ChunkLoadClass& cload ){
 	bool retval = true;
 
-	//
 	//	Loop through all the microchunks that define the variables
-	//
-	while (cload.Open_Micro_Chunk ()) {
-		switch (cload.Cur_Micro_Chunk_ID ()) {
-			
+	while( cload.Open_Micro_Chunk() ){
+		switch( cload.Cur_Micro_Chunk_ID() ){
 			case VARID_NEXTDEFID:
 				break;
 		}
 
-		cload.Close_Micro_Chunk ();
+		cload.Close_Micro_Chunk();
 	}
 
 	return retval;
@@ -864,17 +805,13 @@ DefinitionMgrClass::Load_Variables (ChunkLoadClass &cload)
 //	Get_New_ID
 //
 /////////////////////////////////////////////////////////////////////
-uint32
-DefinitionMgrClass::Get_New_ID (uint32 class_id)
-{
+uint32 DefinitionMgrClass::Get_New_ID( uint32 class_id ){
 	uint32 idrange_start = (class_id - DEF_CLASSID_START) * IDRANGE_PER_CLASS;
 	uint32 idrange_end	= (idrange_start + IDRANGE_PER_CLASS);
 
 	uint32 new_id = idrange_start + 1;
 
-	//
 	//	Try to find the first empty slot in this ID range
-	//
 	for (int index = 0; index < _DefinitionCount; index ++) {
 		DefinitionClass *definition = _SortedDefinitionArray[index];
 		if (definition != NULL) {
@@ -905,10 +842,8 @@ DefinitionMgrClass::Get_New_ID (uint32 class_id)
 					is_ok = true;
 				}
 
-				//
-				//	Return the new ID
-				//
-				if (is_ok) {
+				// Return the new ID
+				if( is_ok ){
 					new_id = curr_id + 1;
 					break;
 				}
@@ -925,25 +860,17 @@ DefinitionMgrClass::Get_New_ID (uint32 class_id)
 //	fnCompareDefinitionsCallback
 //
 ////////////////////////////////////////////////////////////////
-int __cdecl
-DefinitionMgrClass::fnCompareDefinitionsCallback
-(
-	const void *elem1,
-	const void *elem2
-)
-{
-   WWASSERT (elem1 != NULL);
-   WWASSERT (elem2 != NULL);
-   DefinitionClass *definition1 = *((DefinitionClass **)elem1);
-   DefinitionClass *definition2 = *((DefinitionClass **)elem2);
+int __cdecl DefinitionMgrClass::fnCompareDefinitionsCallback( const void *elem1, const void *elem2 ){
+	WWASSERT (elem1 != NULL);
+	WWASSERT (elem2 != NULL);
+	DefinitionClass *definition1 = *((DefinitionClass **)elem1);
+	DefinitionClass *definition2 = *((DefinitionClass **)elem2);
 
-	//
-	//	Sort the definitions based on ID
-	//
+	// Sort the definitions based on ID
 	int result = 0;
-	if (definition1->Get_ID () > definition2->Get_ID ()) {
+	if( definition1->Get_ID() > definition2->Get_ID() ){
 		result = 1;
-	} else if (definition1->Get_ID () < definition2->Get_ID ()) {
+	}else if( definition1->Get_ID() < definition2->Get_ID() ){
 		result = -1;
 	} else {
 		result = 0;

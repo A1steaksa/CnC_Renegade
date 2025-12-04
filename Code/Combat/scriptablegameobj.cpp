@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***                            Confidential - Westwood Studios                              ***
  ***********************************************************************************************
@@ -60,11 +42,8 @@
 #include "soundsceneobj.h"
 #include "wwprofile.h"
 
-/*
-** ScriptableGameObjDef - Defintion class for a ScriptableGameObj
-*/
-ScriptableGameObjDef::ScriptableGameObjDef( void )
-{
+// ScriptableGameObjDef - Defintion class for a ScriptableGameObj
+ScriptableGameObjDef::ScriptableGameObjDef( void ) {
 	SCRIPTLIST_PARAM (ScriptableGameObjDef, "Scripts", ScriptNameList, ScriptParameterList);
 }
 
@@ -77,8 +56,7 @@ enum	{
 	MICROCHUNKID_DEF_SCRIPT_PARAMETERS,
 };
 
-bool	ScriptableGameObjDef::Save( ChunkSaveClass & csave )
-{
+bool	ScriptableGameObjDef::Save( ChunkSaveClass & csave ) {
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 		BaseGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -94,8 +72,7 @@ bool	ScriptableGameObjDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	ScriptableGameObjDef::Load( ChunkLoadClass &cload )
-{
+bool	ScriptableGameObjDef::Load( ChunkLoadClass &cload ) {
 	WWASSERT( ScriptNameList.Count() == ScriptParameterList.Count() );
 	StringClass str;
 	while (cload.Open_Chunk()) {
@@ -139,9 +116,8 @@ bool	ScriptableGameObjDef::Load( ChunkLoadClass &cload )
 }
 
 
-/*
-** Game Object Observer Timer (used in Scripts)
-*/
+
+// Game Object Observer Timer (used in Scripts)
 class	GameObjObserverTimerClass {
 public:
 	GameObjObserverTimerClass( int observer_id = 0, float time = 0, int timer_id = 0 )
@@ -169,8 +145,7 @@ enum	{
 	MICROCHUNKID_PARAM,
 };
 
-bool	GameObjObserverTimerClass::Save( ChunkSaveClass & csave )
-{
+bool	GameObjObserverTimerClass::Save( ChunkSaveClass & csave ) {
 	csave.Begin_Chunk( CHUNKID_TIMER_VARIABLES );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_REMAINING_TIME, RemainingTime );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_TIMER_ID, TimerID );
@@ -180,8 +155,7 @@ bool	GameObjObserverTimerClass::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	GameObjObserverTimerClass::Load( ChunkLoadClass & cload )
-{
+bool	GameObjObserverTimerClass::Load( ChunkLoadClass & cload ) {
 	cload.Open_Chunk();
 	WWASSERT( cload.Cur_Chunk_ID() == CHUNKID_TIMER_VARIABLES );
 
@@ -202,9 +176,8 @@ bool	GameObjObserverTimerClass::Load( ChunkLoadClass & cload )
 }
 
 
-/*
-** Game Object Custom Timer (used in Scripts)
-*/
+
+// Game Object Custom Timer (used in Scripts)
 class	GameObjCustomTimerClass {
 public:
 
@@ -223,8 +196,7 @@ public:
 	int					Param;
 };
 
-bool	GameObjCustomTimerClass::Save( ChunkSaveClass & csave )
-{
+bool	GameObjCustomTimerClass::Save( ChunkSaveClass & csave ) {
 	csave.Begin_Chunk( CHUNKID_TIMER_VARIABLES );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_REMAINING_TIME, RemainingTime );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_TYPE, Type );
@@ -240,8 +212,7 @@ bool	GameObjCustomTimerClass::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	GameObjCustomTimerClass::Load( ChunkLoadClass & cload )
-{
+bool	GameObjCustomTimerClass::Load( ChunkLoadClass & cload ) {
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -275,61 +246,41 @@ bool	GameObjCustomTimerClass::Load( ChunkLoadClass & cload )
 	return true;
 }
 
-
-/*
-** ScriptableGameObj
-*/
+// ScriptableGameObj
 ScriptableGameObj::ScriptableGameObj( void ) :
 	ReferenceableGameObj( this ),
 	ObserverCreatedPending( false )
 {
 }
 
-ScriptableGameObj::~ScriptableGameObj( void )
-{
+ScriptableGameObj::~ScriptableGameObj( void ) {
 	Remove_All_Observers();
 
-	/*
-	** Delete the ObserverTimerList. ST - 6/11/2001 9:20PM
-	*/
+	
+	// Delete the ObserverTimerList. ST - 6/11/2001 9:20PM
 	while (ObserverTimerList.Count()) {
 		delete ObserverTimerList[0];
 		ObserverTimerList.Delete(0);
 	}
 
-	/*
-	** Delete the CustomTimerList. ST - 6/11/2001 9:20PM
-	*/
+	
+	// Delete the CustomTimerList. ST - 6/11/2001 9:20PM
 	while (CustomTimerList.Count()) {
 		delete CustomTimerList[0];
 		CustomTimerList.Delete(0);
 	}
 }
 
-
-/*
-**
-*/
-void	ScriptableGameObj::Init( const ScriptableGameObjDef & definition )
-{
+void	ScriptableGameObj::Init( const ScriptableGameObjDef & definition ) {
 	BaseGameObj::Init( definition );
 	Copy_Settings( definition );
 	return ;
 }
 
-/*
-**
-*/
-void	ScriptableGameObj::Copy_Settings( const ScriptableGameObjDef & definition )
-{
-	//
+void	ScriptableGameObj::Copy_Settings( const ScriptableGameObjDef & definition ) {
 	//	Only assign scripts on the server
-	//
 	if (CombatManager::I_Am_Server()) {
-
-		//
 		//	Attach the scripts
-		//
 		WWASSERT( definition.ScriptNameList.Count() == definition.ScriptParameterList.Count() );
 		for ( int i = 0; i < definition.ScriptNameList.Count(); i++ ) {
 			ScriptClass* script = ScriptManager::Create_Script( definition.ScriptNameList[i] );
@@ -345,50 +296,29 @@ void	ScriptableGameObj::Copy_Settings( const ScriptableGameObjDef & definition )
 	return ;
 }
 
-
-/*
-**
-*/
-void	ScriptableGameObj::Re_Init( const ScriptableGameObjDef & definition )
-{
-	//
+void	ScriptableGameObj::Re_Init( const ScriptableGameObjDef & definition ) {
 	//	Remove all currently running scripts
-	//
 	Remove_All_Observers();
 
-	//
 	//	Copy any internal settings from the definition
-	//
 	Copy_Settings( definition );
 
-	//
 	//	Reset our definition pointer
-	//
 	BaseGameObj::Init( definition );
 	return ;
 }
 
-
-/*
-**
-*/
-void	ScriptableGameObj::Post_Re_Init( void )
-{
-	//
+void	ScriptableGameObj::Post_Re_Init( void ) {
 	//	Start the new scripts executing
-	//
 	Start_Observers();
 	return ;
 }
 
-
-const ScriptableGameObjDef & ScriptableGameObj::Get_Definition( void ) const
-{
+const ScriptableGameObjDef & ScriptableGameObj::Get_Definition( void ) const {
 	return (const ScriptableGameObjDef &)BaseGameObj::Get_Definition();
 }
 
-void	ScriptableGameObj::Set_Delete_Pending( void )
-{
+void	ScriptableGameObj::Set_Delete_Pending( void ) {
 	if ( !Is_Delete_Pending() ) {
 		if ( CombatManager::Are_Observers_Active() ) {
 			const GameObjObserverList & observer_list = Get_Observers();
@@ -406,9 +336,7 @@ void	ScriptableGameObj::Set_Delete_Pending( void )
 }
 
 
-/*
-** ScriptableGameObj Save and Load
-*/
+// ScriptableGameObj Save and Load
 enum	{
 	CHUNKID_PARENT							=	627001122,
 	CHUNKID_VARIABLES,
@@ -534,8 +462,7 @@ bool	ScriptableGameObj::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void ScriptableGameObj::On_Post_Load( void )
-{
+void ScriptableGameObj::On_Post_Load( void ) {
 	BaseGameObj::On_Post_Load();
 
 	// Delete any NULL pointers
@@ -552,11 +479,7 @@ void ScriptableGameObj::On_Post_Load( void )
 	}
 }
 
-/*
-**
-*/
-void ScriptableGameObj::Start_Observers( void )
-{
+void ScriptableGameObj::Start_Observers( void ) {
 	// If we just came from the editor, call created on all out observers
 	const GameObjObserverList & observer_list = Get_Observers();
 	for( int index = 0; index < observer_list.Count(); index++ ) {
@@ -564,8 +487,7 @@ void ScriptableGameObj::Start_Observers( void )
 	}
 }
 
-void ScriptableGameObj::Add_Observer( GameObjObserverClass * observer )
-{
+void ScriptableGameObj::Add_Observer( GameObjObserverClass * observer ) {
 	WWASSERT(observer != NULL);
 
 	Insert_Observer( observer );
@@ -576,40 +498,34 @@ void ScriptableGameObj::Add_Observer( GameObjObserverClass * observer )
 	}
 }
 
-void ScriptableGameObj::Insert_Observer( GameObjObserverClass * observer )
-{
+void ScriptableGameObj::Insert_Observer( GameObjObserverClass * observer ) {
 	WWASSERT(observer != NULL);
 
 	observer->Attach( this );
 	Observers.Add( observer );
 }
 
-void ScriptableGameObj::Remove_Observer( GameObjObserverClass * observer )
-{
+void ScriptableGameObj::Remove_Observer( GameObjObserverClass * observer ) {
 	Observers.Delete( observer );
 	observer->Detach( this );
 	// if observer is a script, if will be deleted soon after this
 }
 
-void ScriptableGameObj::Remove_All_Observers(void)
-{
+void ScriptableGameObj::Remove_All_Observers(void) {
 	while(Observers.Count() != 0) {
 		Remove_Observer(Observers[0]);
 	}
 }
 
-void	ScriptableGameObj::Start_Observer_Timer( int observer_id, float duration, int timer_id )
-{
+void	ScriptableGameObj::Start_Observer_Timer( int observer_id, float duration, int timer_id ) {
 	ObserverTimerList.Add( new GameObjObserverTimerClass( observer_id, duration, timer_id ) );
 }
 
-void	ScriptableGameObj::Start_Custom_Timer( ScriptableGameObj * from, float delay, int type, int param )
-{
+void	ScriptableGameObj::Start_Custom_Timer( ScriptableGameObj * from, float delay, int type, int param ) {
 	CustomTimerList.Add( new GameObjCustomTimerClass( from, delay, type, param ) );
 }
 
-void	ScriptableGameObj::Think( void )
-{
+void	ScriptableGameObj::Think( void ) {
 	if (Is_Always_Dirty()) {
 #pragma message ("Forcing game objects to be network dirty for updates.\n")
 		Set_Object_Dirty_Bit (NetworkObjectClass::BIT_FREQUENT, true);
@@ -623,8 +539,7 @@ void	ScriptableGameObj::Think( void )
 	BaseGameObj::Think();
 }
 
-void	ScriptableGameObj::Post_Think( void )
-{
+void	ScriptableGameObj::Post_Think( void ) {
 	BaseGameObj::Post_Think();
 
 	WWPROFILE( "Scriptable PostThink" );
@@ -637,9 +552,6 @@ void	ScriptableGameObj::Post_Think( void )
 	int i;
 	for ( i = ObserverTimerList.Count() - 1; i >= 0; i-- ) {
 		if ( ObserverTimerList[i]->Update() ) {
-
-//			Debug_Say(( "Timer Expired for %d\n", ObserverTimerList[i]->ObserverID ));
-
 			bool found = false;
 
 			WWASSERT( ObserverTimerList[i]->ObserverID != 0 );
@@ -681,9 +593,7 @@ void	ScriptableGameObj::Post_Think( void )
 	}
 }
 
-//------------------------------------------------------------------------------------
-void	ScriptableGameObj::Get_Information( StringClass & string )
-{
+void	ScriptableGameObj::Get_Information( StringClass & string ) {
 	// If we just came from the editor, call created on all out observers
 	const GameObjObserverList & observer_list = Get_Observers();
 	for( int index = 0; index < observer_list.Count(); index++ ) {
@@ -693,51 +603,32 @@ void	ScriptableGameObj::Get_Information( StringClass & string )
 	}
 }
 
-//------------------------------------------------------------------------------------
-void	ScriptableGameObj::On_Sound_Ended( SoundSceneObjClass *sound_obj )
-{
+void	ScriptableGameObj::On_Sound_Ended( SoundSceneObjClass *sound_obj ) {
 	if ( sound_obj == NULL ) {
 		return ;
 	}
 
 	int sound_id = sound_obj->Get_ID();
 
-	//
 	// Notify all observers
-	//
 	const GameObjObserverList & observer_list = Get_Observers();
 	for( int index = 0; index < observer_list.Count(); index++ ) {
-
-		//
 		//	Send a custom event to this observer notifying it that this sound has ended
-		//
 		observer_list[ index ]->Custom( this, CUSTOM_EVENT_SOUND_ENDED, sound_id, NULL );
 	}
 
 	return ;
 }
 
-
-/*
-**
-*/
-void	ScriptableGameObj::Export_Creation( BitStreamClass &packet )
-{
+void	ScriptableGameObj::Export_Creation( BitStreamClass &packet ) {
 	BaseGameObj::Export_Creation( packet );
 	return ;
 }
 
-
-/*
-**
-*/
-void	ScriptableGameObj::Import_Creation( BitStreamClass &packet )
-{
+void	ScriptableGameObj::Import_Creation( BitStreamClass &packet ) {
 	BaseGameObj::Import_Creation( packet );
 
-	//
 	//	Ensure we don't have any scripts running
-	//
 	Remove_All_Observers();
 	return ;
 }

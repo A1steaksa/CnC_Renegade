@@ -70,26 +70,27 @@ class SaveLoadSubSystemClass : public PostLoadableClass
 {
 public:
 	
-	SaveLoadSubSystemClass (void);
-	virtual ~SaveLoadSubSystemClass (void);
+	SaveLoadSubSystemClass(void);
+	virtual ~SaveLoadSubSystemClass(void);
 
-	virtual uint32				Chunk_ID (void) const = 0;
+	virtual uint32 Chunk_ID(void) const = 0;
 
 protected:
 
-	virtual bool				Contains_Data(void) const						{ return true; }
-	virtual bool				Save (ChunkSaveClass &csave) = 0;
-	virtual bool				Load (ChunkLoadClass &cload) = 0;
+	virtual bool Contains_Data(void) const {
+		return true;
+	}
+	
+	virtual bool Save( ChunkSaveClass& csave ) = 0;
+	virtual bool Load( ChunkLoadClass& cload ) = 0;
 
-	virtual const char*		Name() const = 0;
+	virtual const char* Name() const = 0;
 
 private:
 
-	SaveLoadSubSystemClass *	NextSubSystem;			// managed by SaveLoadSystem
+	SaveLoadSubSystemClass* NextSubSystem; // managed by SaveLoadSystem
 
 	friend class SaveLoadSystemClass;
 };
-
-
 
 #endif

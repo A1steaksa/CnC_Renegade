@@ -48,69 +48,47 @@
 #include "networkobjectfactory.h"
 
 
-//////////////////////////////////////////////////////////////
 //	NetworkGameObjectFactoryClass
-//////////////////////////////////////////////////////////////
-class NetworkGameObjectFactoryClass : public NetworkObjectFactoryClass
-{
+class NetworkGameObjectFactoryClass : public NetworkObjectFactoryClass {
 public:
-	virtual NetworkObjectClass *	Create (cPacket &packet) const;
-	virtual void						Prep_Packet (NetworkObjectClass *object, cPacket &packet) const;
-	virtual uint32						Get_Class_ID (void) const { return NETCLASSID_GAMEOBJ; }
+	virtual NetworkObjectClass* Create( cPacket &packet ) const;
+	virtual void Prep_Packet ( NetworkObjectClass *object, cPacket &packet ) const;
+	
+	virtual uint32 Get_Class_ID(void) const {
+		return NETCLASSID_GAMEOBJ;
+	}
 };
 
-//////////////////////////////////////////////////////////////
-//	Prep_Packet
-//////////////////////////////////////////////////////////////
-void
-NetworkGameObjectFactoryClass::Prep_Packet (NetworkObjectClass *object, cPacket &packet) const
-{
-	WWASSERT (object != NULL);
-	BaseGameObj *game_obj = (BaseGameObj *)(object);
+void NetworkGameObjectFactoryClass::Prep_Packet( NetworkObjectClass *object, cPacket &packet ) const {
+	WWASSERT( object != NULL );
+	BaseGameObj* game_obj = (BaseGameObj*) (object);
 
-	//
-	//	Add the definition ID of the object to the packet
-	//
-	packet.Add (game_obj->Get_Definition ().Get_ID ());
-	return ;
+	// Add the definition ID of the object to the packet
+	packet.Add( game_obj->Get_Definition().Get_ID() );
+	return;
 }
 
-//////////////////////////////////////////////////////////////
-//	Create
-//////////////////////////////////////////////////////////////
-NetworkObjectClass *
-NetworkGameObjectFactoryClass::Create (cPacket &packet) const
-{
-	int definition_id = packet.Get (definition_id);
+NetworkObjectClass* NetworkGameObjectFactoryClass::Create( cPacket &packet ) const {
+	int definition_id = packet.Get( definition_id );
 
-	//
-	//	Lookup the definition for this object
-	//
-	DefinitionClass *definition = DefinitionMgrClass::Find_Definition (definition_id);
-	WWASSERT (definition != NULL);
+	// Lookup the definition for this object
+	DefinitionClass* definition = DefinitionMgrClass::Find_Definition( definition_id );
+	WWASSERT( definition != NULL );
 
-	//
-	//	Create the new object
-	//
-	BaseGameObj *new_game_obj = (BaseGameObj *)definition->Create();
+	// Create the new object
+	BaseGameObj* new_game_obj = (BaseGameObj*) definition->Create();
 
-	//
-	//	Convert the game object to a network object
-	//
-	return static_cast<NetworkObjectClass *> (new_game_obj);
+	// Convert the game object to a network object
+	return static_cast<NetworkObjectClass*>( new_game_obj );
 }
 
-//////////////////////////////////////////////////////////////
 //	Static data
-//////////////////////////////////////////////////////////////
 static NetworkGameObjectFactoryClass _NetworkGameObjectFactory;
 
 
-/*
-** BaseGameObjDef
-*/
-enum	{
-	CHUNKID_DEF_PARENT							= 1111991123,
+// BaseGameObjDef
+enum {
+	CHUNKID_DEF_PARENT = 1111991123,
 };
 
 
@@ -131,9 +109,6 @@ bool	BaseGameObjDef::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-/*
-**
-*/
 BaseGameObj::BaseGameObj( void ) :
 	Definition( NULL ),
 	//DestroyType( DESTROY_NONE ),
@@ -146,17 +121,11 @@ BaseGameObj::BaseGameObj( void ) :
 	Set_Object_Dirty_Bit (NetworkObjectClass::BIT_CREATION, true);
 }
 
-/*
-**
-*/
 BaseGameObj::~BaseGameObj( void )
 {
 	GameObjManager::Remove( this );
 }
 
-/*
-**
-*/
 void	BaseGameObj::Init( const BaseGameObjDef & definition )
 {
 	Definition = &definition;
@@ -167,9 +136,8 @@ const BaseGameObjDef &	BaseGameObj::Get_Definition( void ) const
 	return *Definition;
 };
 
-/*
-** BaseGameObj Save and Load
-*/
+
+// BaseGameObj Save and Load
 enum	{
 	CHUNKID_VARIABLES						=	910991407,
 

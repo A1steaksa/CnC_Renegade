@@ -239,9 +239,7 @@ private:
 	int					CreatedByPacketID;
 #endif //WWDEBUG
 
-	//
 	// Per client update information. Bandwidth will be allocated per object, per client.
-	//
 	struct PerClientUpdateInfoStruct {
 		unsigned long	LastUpdateTime;
 		unsigned short	UpdateRate;
@@ -260,10 +258,9 @@ private:
 	int					LastObjectIdIDamaged;
 	int					LastObjectIdIGotDamagedBy;
 
-	//
+
 	// The size of this objects FREQUENT tier export. Used as a starting point for bandwidth calculation.
 	// It better not be exporting more than 255 bytes!
-	//
 	unsigned char		FrequentExportPacketSize;
 
 	float					CachedPriority;

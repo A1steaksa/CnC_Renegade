@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -79,11 +61,9 @@ class	BuildingGameObj;
 class	SoldierGameObj;
 class ScriptZoneGameObj;
 
-/*
-** ScriptableGameObjDef - Defintion class for a ScriptableGameObj
-*/
-class ScriptableGameObjDef : public BaseGameObjDef
-{
+
+// ScriptableGameObjDef - Defintion class for a ScriptableGameObj
+class ScriptableGameObjDef : public BaseGameObjDef {
 public:
 	ScriptableGameObjDef( void );
 
@@ -99,11 +79,8 @@ protected:
 	friend	class								ScriptableGameObj;
 };
 
-/*
-**
-*/
-class ScriptableGameObj : public BaseGameObj, public ReferenceableGameObj, public AudioCallbackClass
-{
+
+class ScriptableGameObj : public BaseGameObj, public ReferenceableGameObj, public AudioCallbackClass {
 
 public:
 	//	Constructor and Destructor
@@ -165,12 +142,10 @@ public:
 	virtual void	Import_Creation( BitStreamClass &packet );
 
 protected:
-	bool															ObserverCreatedPending;
-	GameObjObserverList										Observers;
+	bool	ObserverCreatedPending;
+	GameObjObserverList								Observers;
 	DynamicVectorClass<GameObjObserverTimerClass *>	ObserverTimerList;
 	DynamicVectorClass<GameObjCustomTimerClass *>	CustomTimerList;
 };
-
-
 
 #endif	//	SCRIPTABLEGAMEOBJ_H

@@ -52,16 +52,24 @@
 class PostLoadableClass
 {
 public:
-	PostLoadableClass(void) : IsPostLoadRegistered(false)						{ }
-	virtual ~PostLoadableClass(void)													{ }
+	PostLoadableClass(void) : IsPostLoadRegistered(false){
+	}
 
-	virtual void						On_Post_Load (void)							{ }
+	virtual ~PostLoadableClass(void){
+	}
 
-	bool									Is_Post_Load_Registered(void)				{ return IsPostLoadRegistered; }
-	void									Set_Post_Load_Registered(bool onoff)	{ IsPostLoadRegistered = onoff; }
+	virtual void On_Post_Load(void){
+	}
+
+	bool Is_Post_Load_Registered(void){
+		return IsPostLoadRegistered;
+	}
+	
+	void Set_Post_Load_Registered( bool onoff ){
+		IsPostLoadRegistered = onoff;
+	}
 
 private:
-
 	bool									IsPostLoadRegistered;
 };
 

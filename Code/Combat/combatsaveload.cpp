@@ -60,7 +60,7 @@
 */
 CombatSaveLoadClass	_CombatSaveLoad;
 
-enum	{
+enum {
 	CHUNKID_GAMEOBJMANAGER					=	916991654,
 	CHUNKID_COMBAT_GAME_MODE,
 	XXX_CHUNKID_TRANSITIONS,
@@ -81,11 +81,7 @@ enum	{
 	CHUNKID_SCREEN_FADE,
 };
 
-/*
-**
-*/
-bool	CombatSaveLoadClass::Save( ChunkSaveClass &csave )
-{
+bool CombatSaveLoadClass::Save( ChunkSaveClass &csave ){
 	WWMEMLOG(MEM_GAMEDATA);
 
 	csave.Begin_Chunk( CHUNKID_GAMEOBJMANAGER );
@@ -152,8 +148,7 @@ bool	CombatSaveLoadClass::Save( ChunkSaveClass &csave )
 	return true;
 }
 
-bool	CombatSaveLoadClass::Load( ChunkLoadClass &cload )
-{
+bool CombatSaveLoadClass::Load( ChunkLoadClass &cload ){
 	WWMEMLOG(MEM_GAMEDATA);
 
 	while (cload.Open_Chunk()) {
