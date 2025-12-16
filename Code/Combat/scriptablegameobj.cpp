@@ -47,16 +47,16 @@ ScriptableGameObjDef::ScriptableGameObjDef( void ) {
 	SCRIPTLIST_PARAM (ScriptableGameObjDef, "Scripts", ScriptNameList, ScriptParameterList);
 }
 
-enum	{
-	CHUNKID_DEF_PARENT							=	627001056,
+enum {
+	CHUNKID_DEF_PARENT					= 627001056,
 	CHUNKID_DEF_VARIABLES,
 
-	XXX_MICROCHUNKID_DEF_TYPE						=	1,
+	XXX_MICROCHUNKID_DEF_TYPE			= 1,
 	MICROCHUNKID_DEF_SCRIPT_NAME,
 	MICROCHUNKID_DEF_SCRIPT_PARAMETERS,
 };
 
-bool	ScriptableGameObjDef::Save( ChunkSaveClass & csave ) {
+bool ScriptableGameObjDef::Save( ChunkSaveClass & csave ) {
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 		BaseGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -72,20 +72,18 @@ bool	ScriptableGameObjDef::Save( ChunkSaveClass & csave ) {
 	return true;
 }
 
-bool	ScriptableGameObjDef::Load( ChunkLoadClass &cload ) {
+bool ScriptableGameObjDef::Load( ChunkLoadClass& cload ){
 	WWASSERT( ScriptNameList.Count() == ScriptParameterList.Count() );
 	StringClass str;
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case CHUNKID_DEF_PARENT:
 				BaseGameObjDef::Load( cload );
 				break;
 
 			case CHUNKID_DEF_VARIABLES:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
-
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
 						case MICROCHUNKID_DEF_SCRIPT_NAME:
 							LOAD_MICRO_CHUNK_WWSTRING( cload, str );
 							ScriptNameList.Add( str );
@@ -107,10 +105,11 @@ bool	ScriptableGameObjDef::Load( ChunkLoadClass &cload ) {
 			default:
 				Debug_Say(( "Unhandled Chunk:%d File:%s Line:%d\r\n",cload.Cur_Chunk_ID(),__FILE__,__LINE__));
 				break;
-
 		}
+
 		cload.Close_Chunk();
 	}
+
 	WWASSERT( ScriptNameList.Count() == ScriptParameterList.Count() );
 	return true;
 }

@@ -291,7 +291,7 @@ private:
 	csave.Write((const TCHAR *)var, var.Get_Length () + 1); \
 	csave.End_Chunk(); }
 
-#define WRITE_WIDESTRING_CHUNK(csave,id,var) { \
+#define WRITE_WIDESTRING_CHUNK(csave,id,var) { 						\
 	csave.Begin_Chunk(id); \
 	csave.Write((const WCHAR *)var, (var.Get_Length () + 1) * 2); \
 	csave.End_Chunk(); }
@@ -381,9 +381,10 @@ private:
 **	}
 */
 #define READ_MICRO_CHUNK( cload, id, var )		\
-	case( id ):									\
+	case( id ): {								\
 		cload.Read( &var, sizeof(var) );		\
-		break;
+		break;									\
+	}
 
 /*
 ** Like READ_MICRO_CHUNK but reads items straight into the data safe.
@@ -396,26 +397,36 @@ private:
 		break;															\
 	}
 
-#define READ_MICRO_CHUNK_STRING(cload,id,var,size)																			\
-	case (id):	WWASSERT(cload.Cur_Micro_Chunk_Length() <= size); cload.Read(var,cload.Cur_Micro_Chunk_Length()); break;	\
+#define READ_MICRO_CHUNK_STRING( cload, id, var, size )		\
+	case( id ): {											\
+		WWASSERT( cload.Cur_Micro_Chunk_Length() <= size );	\
+		cload.Read( var, cload.Cur_Micro_Chunk_Length() );	\
+		break;												\
+	}
 
-#define READ_MICRO_CHUNK_WWSTRING(cload,id,var)																		\
-	case (id):	cload.Read(var.Get_Buffer(cload.Cur_Micro_Chunk_Length()),cload.Cur_Micro_Chunk_Length()); break;	\
+#define READ_MICRO_CHUNK_WWSTRING( cload, id, var )															\
+	case( id ): {																							\
+		cload.Read( var.Get_Buffer( cload.Cur_Micro_Chunk_Length() ), cload.Cur_Micro_Chunk_Length() );		\
+		break;																								\
+	}
 
-#define READ_MICRO_CHUNK_WIDESTRING(cload,id,var)																		\
-	case (id):	cload.Read(var.Get_Buffer((cload.Cur_Micro_Chunk_Length()+1)/2),cload.Cur_Micro_Chunk_Length()); break;	\
+#define READ_MICRO_CHUNK_WIDESTRING( cload, id, var )																	\
+	case( id ): {																										\
+		cload.Read( var.Get_Buffer( ( cload.Cur_Micro_Chunk_Length() + 1 ) / 2 ), cload.Cur_Micro_Chunk_Length() );		\
+		break;																											\
+	}
 
 /*
 ** These load macros make it easier to add extra code to a specifc case
 */
-#define LOAD_MICRO_CHUNK(cload,var)	\
-	cload.Read(&var,sizeof(var));	\
+#define LOAD_MICRO_CHUNK( cload, var )	\
+	cload.Read( &var, sizeof( var ) );	\
 
-#define LOAD_MICRO_CHUNK_WWSTRING(cload,var)													\
-	cload.Read(var.Get_Buffer(cload.Cur_Micro_Chunk_Length()),cload.Cur_Micro_Chunk_Length());	\
+#define LOAD_MICRO_CHUNK_WWSTRING( cload, var )														\
+	cload.Read( var.Get_Buffer( cload.Cur_Micro_Chunk_Length() ), cload.Cur_Micro_Chunk_Length() );	\
 
-#define LOAD_MICRO_CHUNK_WIDESTRING(cload,var)															\
-	cload.Read(var.Get_Buffer((cload.Cur_Micro_Chunk_Length()+1)/2),cload.Cur_Micro_Chunk_Length());	\
+#define LOAD_MICRO_CHUNK_WIDESTRING( cload, var )																\
+	cload.Read( var.Get_Buffer( ( cload.Cur_Micro_Chunk_Length() + 1 ) / 2 ), cload.Cur_Micro_Chunk_Length() );	\
 
 
 /*
@@ -423,9 +434,7 @@ private:
 ** to skip a given micro chunk but not fall through to your 'default' case statement which
 ** prints an "unrecognized chunk" warning message.
 */
-#define OBSOLETE_MICRO_CHUNK(id)	\
+#define OBSOLETE_MICRO_CHUNK( id )	\
 	case (id): break;
-
-
 
 #endif CHUNKIO_H

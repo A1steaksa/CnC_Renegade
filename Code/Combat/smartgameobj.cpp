@@ -119,15 +119,13 @@ bool	SmartGameObjDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	SmartGameObjDef::Load( ChunkLoadClass &cload )
-{
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
+bool SmartGameObjDef::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case CHUNKID_DEF_ARMEDGAMEOBJ_PARENT:
 				ArmedGameObjDef::Load( cload );
 				break;
-								
+
 			case CHUNKID_DEF_VARIABLES:
 				while (cload.Open_Micro_Chunk()) {
 					switch(cload.Cur_Micro_Chunk_ID()) {

@@ -55,12 +55,17 @@ class PhysicalGameObjDef : public DamageableGameObjDef {
 public:
 	PhysicalGameObjDef(void);
 
-	virtual bool								Save( ChunkSaveClass& csave );
-	virtual bool								Load( ChunkLoadClass& cload );
-	virtual bool								Is_Valid_Config (StringClass& message);
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	virtual bool Is_Valid_Config( StringClass& message );
 
-	int Get_Phys_Def_ID(void) const	{ return PhysDefID; }
-	int Get_Orator_Type(void) const	{ return OratorType; }
+	int Get_Phys_Def_ID(void) const	{
+		return PhysDefID;
+	}
+
+	int Get_Orator_Type(void) const	{
+		return OratorType;
+	}
 
 	DECLARE_EDITABLE( PhysicalGameObjDef, DamageableGameObjDef );
 
@@ -81,25 +86,25 @@ protected:
 
 class PhysicalGameObj : public DamageableGameObj, public CombatPhysObserverClass {
 public:
-	//	Constructor and Destructor
+	// Constructor and Destructor
 	PhysicalGameObj(void);
 	virtual	~PhysicalGameObj(void);
 
 	// Definitions
-	void	Init( const PhysicalGameObjDef&  definition );
-	void	Copy_Settings( const PhysicalGameObjDef&  definition );
-	void	Re_Init( const PhysicalGameObjDef&  definition );
+	void Init( const PhysicalGameObjDef&  definition );
+	void Copy_Settings( const PhysicalGameObjDef&  definition );
+	void Re_Init( const PhysicalGameObjDef&  definition );
 	const PhysicalGameObjDef&  Get_Definition(void) const;
 
 	// Save / Load
-	virtual	bool	Save( ChunkSaveClass&  csave );
-	virtual	bool	Load( ChunkLoadClass&  cload );
-	virtual	void	On_Post_Load(void);
+	virtual	bool Save( ChunkSaveClass&  csave );
+	virtual	bool Load( ChunkLoadClass&  cload );
+	virtual	void On_Post_Load(void);
 
-	virtual	void	Startup(void){}	
+	virtual	void Startup(void){}	
 
 	// Physics
-	WWINLINE PhysClass* 	Peek_Physical_Object(void) const { return PhysObj; }
+	WWINLINE PhysClass* Peek_Physical_Object(void) const { return PhysObj; }
 
 	void					Attach_To_Object_Bone( PhysicalGameObj*  host, const char*  bone_name );
 	bool					Is_Attached_To_An_Object(void){ return (HostGameObj.Get_Ptr () != NULL); }
@@ -133,7 +138,7 @@ public:
 	virtual	void Apply_Damage_Extended(
 		const OffenseObjectClass& offense,
 		float scale = 1.0f,
-		const Vector3& direction = Vector3( 0,0,0 ),
+		const Vector3& direction = Vector3( 0, 0, 0 ),
 		const char*  collision_box_name = NULL
 	);
 	virtual	void Completely_Damaged( const OffenseObjectClass& damager );

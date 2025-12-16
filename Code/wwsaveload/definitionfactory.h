@@ -56,8 +56,7 @@ class DefinitionClass;
 //	are responsible for creating new definitions for a particular class of objects.
 //
 //////////////////////////////////////////////////////////////////////////////////
-class DefinitionFactoryClass
-{
+class DefinitionFactoryClass {
 public:
 
 	//////////////////////////////////////////////////////////////
@@ -69,10 +68,10 @@ public:
 	//////////////////////////////////////////////////////////////
 	//	Public methods
 	//////////////////////////////////////////////////////////////
-	virtual DefinitionClass *	Create (void) const = 0;
-	virtual const char *			Get_Name (void) const = 0;
-	virtual uint32					Get_Class_ID (void) const = 0;
-	virtual bool					Is_Displayed (void) const = 0;
+	virtual DefinitionClass* Create(void) const = 0;
+	virtual const char* Get_Name(void) const = 0;
+	virtual uint32 Get_Class_ID(void) const = 0;
+	virtual bool Is_Displayed(void) const = 0;
 
 protected:
 	

@@ -43,7 +43,7 @@ bool DefinitionClass::Save( ChunkSaveClass& csave ){
 bool DefinitionClass::Load( ChunkLoadClass& cload ){
 	bool retval = true;
 
-	while( cload.Open_Chunk() ) {
+	while( cload.Open_Chunk() ){
 		switch( cload.Cur_Chunk_ID() ) {
 			case CHUNKID_VARIABLES:
 				Load_Variables( cload );
@@ -56,26 +56,25 @@ bool DefinitionClass::Load( ChunkLoadClass& cload ){
 	return retval;
 }
 
-bool DefinitionClass::Save_Variables (ChunkSaveClass &csave){
+bool DefinitionClass::Save_Variables( ChunkSaveClass& csave ){
 	bool retval = true;
 
-	WRITE_MICRO_CHUNK (csave, VARID_INSTANCEID, m_ID);
-	WRITE_MICRO_CHUNK_WWSTRING (csave, VARID_NAME, m_Name);
+	WRITE_MICRO_CHUNK( csave, VARID_INSTANCEID, m_ID );
+	WRITE_MICRO_CHUNK_WWSTRING( csave, VARID_NAME, m_Name );
 	return retval;
 }
 
-bool DefinitionClass::Load_Variables (ChunkLoadClass &cload){
+bool DefinitionClass::Load_Variables( ChunkLoadClass& cload ){
 	bool retval = true;
 
-	//	Loop through all the microchunks that define the variables
-	while (cload.Open_Micro_Chunk ()){
-		switch (cload.Cur_Micro_Chunk_ID ()){
-			
-			READ_MICRO_CHUNK (cload, VARID_INSTANCEID, m_ID)
-			READ_MICRO_CHUNK_WWSTRING (cload, VARID_NAME, m_Name)
+	// Loop through all the microchunks that define the variables
+	while( cload.Open_Micro_Chunk() ){
+		switch( cload.Cur_Micro_Chunk_ID() ){
+			READ_MICRO_CHUNK( cload, VARID_INSTANCEID, m_ID )
+			READ_MICRO_CHUNK_WWSTRING( cload, VARID_NAME, m_Name )
 		}
 
-		cload.Close_Micro_Chunk ();
+		cload.Close_Micro_Chunk();
 	}
 
 	return retval;
@@ -87,8 +86,8 @@ void DefinitionClass::Set_ID (uint32 id){
 	// If we are registered with the definition manager, then we need to
 	// re-link ourselves back into the list
 	if (m_DefinitionMgrLink != -1) {
-		DefinitionMgrClass::Unregister_Definition (this);
-		DefinitionMgrClass::Register_Definition (this);
+		DefinitionMgrClass::Unregister_Definition( this );
+		DefinitionMgrClass::Register_Definition( this );
 	}
 
 	return ;

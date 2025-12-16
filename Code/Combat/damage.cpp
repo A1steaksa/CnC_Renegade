@@ -319,11 +319,11 @@ WarheadType ArmorWarheadManager::Get_Warhead_Type( const char *name ){
 	return 0;
 }
 
-const char * ArmorWarheadManager::Get_Armor_Name( ArmorType type ){
+const char* ArmorWarheadManager::Get_Armor_Name( ArmorType type ){
 	return ArmorNames[type];
 }
 
-const char *	ArmorWarheadManager::Get_Warhead_Name( WarheadType type ){
+const char* ArmorWarheadManager::Get_Warhead_Name( WarheadType type ){
 	return WarheadNames[type];
 }
 
@@ -345,8 +345,8 @@ int ArmorWarheadManager::Get_Armor_Save_ID( ArmorType type ){
 }
 
 ArmorType ArmorWarheadManager::Find_Armor_Save_ID( int id ){
-	for (	int index = 0; index < ArmorSaveIDs.Count(); index++ ){
-		if( ArmorSaveIDs[ index ] == id ){
+	for( int index = 0; index < ArmorSaveIDs.Count(); index++ ){
+		if( ArmorSaveIDs[index] == id ){
 			return index;
 		}
 	}
@@ -936,7 +936,7 @@ DefenseObjectDefClass::DefenseObjectDefClass(void) :
 
 DefenseObjectDefClass::~DefenseObjectDefClass(void){}
 
-bool DefenseObjectDefClass::Save(ChunkSaveClass& csave){
+bool DefenseObjectDefClass::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk(DEFENSEOBJECTDEF_CHUNK_VARIABLES);
 	WRITE_SAFE_MICRO_CHUNK(csave,DEFENSEOBJECTDEF_VARIABLE_HEALTH, Health, float);
 	WRITE_SAFE_MICRO_CHUNK(csave,DEFENSEOBJECTDEF_VARIABLE_HEALTHMAX,HealthMax, float);
@@ -952,25 +952,22 @@ bool DefenseObjectDefClass::Save(ChunkSaveClass& csave){
 	return true;
 }
 
-bool DefenseObjectDefClass::Load(ChunkLoadClass& cload){
+bool DefenseObjectDefClass::Load( ChunkLoadClass& cload ){
 	int skin_save_id = -2;
 	int shield_save_id = -2;
-	while (cload.Open_Chunk()){
-
-		switch(cload.Cur_Chunk_ID())
-		{
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case DEFENSEOBJECTDEF_CHUNK_VARIABLES:
-
-				while (cload.Open_Micro_Chunk()){
-					switch(cload.Cur_Micro_Chunk_ID()){
-						READ_SAFE_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_HEALTH,Health,float);
-						READ_SAFE_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_HEALTHMAX,HealthMax,float);
-						READ_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_SKIN,skin_save_id);
-						READ_SAFE_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_SHIELDSTRENGTH,ShieldStrength,float);
-						READ_SAFE_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_SHIELDSTRENGTHMAX,ShieldStrengthMax,float);
-						READ_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_SHIELDTYPE,shield_save_id);
-						READ_SAFE_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_DAMAGE_POINTS,DamagePoints,float);
-						READ_SAFE_MICRO_CHUNK(cload,DEFENSEOBJECTDEF_VARIABLE_DEATH_POINTS,DeathPoints,float);
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
+						READ_SAFE_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_HEALTH, Health, float );
+						READ_SAFE_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_HEALTHMAX, HealthMax, float );
+						READ_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_SKIN, skin_save_id );
+						READ_SAFE_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_SHIELDSTRENGTH, ShieldStrength, float );
+						READ_SAFE_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_SHIELDSTRENGTHMAX, ShieldStrengthMax, float );
+						READ_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_SHIELDTYPE, shield_save_id );
+						READ_SAFE_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_DAMAGE_POINTS, DamagePoints, float );
+						READ_SAFE_MICRO_CHUNK( cload, DEFENSEOBJECTDEF_VARIABLE_DEATH_POINTS, DeathPoints, float );
 					}
 					cload.Close_Micro_Chunk();
 				}

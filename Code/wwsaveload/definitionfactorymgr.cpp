@@ -143,25 +143,14 @@ DefinitionFactoryMgrClass::Get_First (uint32 superclass_id)
 //	Get_Next
 //
 ////////////////////////////////////////////////////////////////////////////
-DefinitionFactoryClass *
-DefinitionFactoryMgrClass::Get_Next
-(
-	DefinitionFactoryClass *curr_factory,
-	uint32						superclass_id
-)
-{
+DefinitionFactoryClass* DefinitionFactoryMgrClass::Get_Next( DefinitionFactoryClass* curr_factory, uint32 superclass_id ){
 	DefinitionFactoryClass *factory = 0;
 
-	//
-	//	Loop through all the factories and see if we can
+	// Loop through all the factories and see if we can
 	// find the next one that belongs to the given superclass
-	//
-	while ((factory == NULL) && ((curr_factory = curr_factory->m_NextFactory) != NULL)) {
-
-		//
-		//	Is this the factory we were looking for?
-		//
-		if (::SuperClassID_From_ClassID (curr_factory->Get_Class_ID ()) == superclass_id) {
+	while( ( factory == NULL ) && ( ( curr_factory = curr_factory->m_NextFactory ) != NULL ) ){
+		// Is this the factory we were looking for?
+		if( ::SuperClassID_From_ClassID( curr_factory->Get_Class_ID() ) == superclass_id ){
 			factory = curr_factory;
 		}
 	}
@@ -175,9 +164,7 @@ DefinitionFactoryMgrClass::Get_Next
 //	Get_First
 //
 ////////////////////////////////////////////////////////////////////////////
-DefinitionFactoryClass *
-DefinitionFactoryMgrClass::Get_First (void)
-{
+DefinitionFactoryClass* DefinitionFactoryMgrClass::Get_First(void){
 	return _FactoryListHead;
 }
 
@@ -208,13 +195,11 @@ DefinitionFactoryMgrClass::Get_Next (DefinitionFactoryClass *curr_factory)
 //	Register_Factory
 //
 ////////////////////////////////////////////////////////////////////////////
-void
-DefinitionFactoryMgrClass::Register_Factory (DefinitionFactoryClass *factory)
-{
-	WWASSERT (factory->m_NextFactory == 0);
-	WWASSERT (factory->m_PrevFactory == 0);
-	Link_Factory (factory);
-	return ;
+void DefinitionFactoryMgrClass::Register_Factory( DefinitionFactoryClass* factory ){
+	WWASSERT( factory->m_NextFactory == 0 );
+	WWASSERT( factory->m_PrevFactory == 0 );
+	Link_Factory( factory );
+	return;
 }
 
 
@@ -223,12 +208,10 @@ DefinitionFactoryMgrClass::Register_Factory (DefinitionFactoryClass *factory)
 //	Unregister_Factory
 //
 ////////////////////////////////////////////////////////////////////////////
-void
-DefinitionFactoryMgrClass::Unregister_Factory (DefinitionFactoryClass *factory)
-{
-	WWASSERT (factory != 0);
-	Unlink_Factory (factory);
-	return ;
+void DefinitionFactoryMgrClass::Unregister_Factory( DefinitionFactoryClass* factory ){
+	WWASSERT( factory != 0 );
+	Unlink_Factory( factory );
+	return;
 }
 
 
@@ -237,23 +220,21 @@ DefinitionFactoryMgrClass::Unregister_Factory (DefinitionFactoryClass *factory)
 //	Link_Factory
 //
 ////////////////////////////////////////////////////////////////////////////
-void
-DefinitionFactoryMgrClass::Link_Factory (DefinitionFactoryClass *factory)
-{
-	WWASSERT (factory->m_NextFactory == 0);
-	WWASSERT (factory->m_PrevFactory == 0);
+void DefinitionFactoryMgrClass::Link_Factory( DefinitionFactoryClass* factory ){
+	WWASSERT( factory->m_NextFactory == 0 );
+	WWASSERT( factory->m_PrevFactory == 0 );
 
 	// Adding this factory in front of the current head of the list
 	factory->m_NextFactory = _FactoryListHead;
 	
 	// If the list wasn't empty, link the next factory back to this factory
-	if (factory->m_NextFactory != 0) {
+	if( factory->m_NextFactory != 0 ){
 		factory->m_NextFactory->m_PrevFactory = factory;
 	}
 
 	// Point the head of the list at this factory now
 	_FactoryListHead = factory;
-	return ;
+	return;
 }
 
 
@@ -262,34 +243,26 @@ DefinitionFactoryMgrClass::Link_Factory (DefinitionFactoryClass *factory)
 //	Unlink_Factory
 //
 ////////////////////////////////////////////////////////////////////////////
-void
-DefinitionFactoryMgrClass::Unlink_Factory (DefinitionFactoryClass *factory)
-{
+void DefinitionFactoryMgrClass::Unlink_Factory( DefinitionFactoryClass* factory ){
 	WWASSERT(factory != 0);
 
 	// Handle the factory's prev pointer:
-	if (factory->m_PrevFactory == 0) {
-
+	if( factory->m_PrevFactory == 0 ){
 		// this factory is the head
-		WWASSERT (_FactoryListHead == factory);
+		WWASSERT( _FactoryListHead == factory );
 		_FactoryListHead = factory->m_NextFactory;
-	
 	} else {
-
 		// link it's prev with it's next
 		factory->m_PrevFactory->m_NextFactory = factory->m_NextFactory;
-
 	}
 
 	// Handle the factory's next pointer if its not at the end of the list:
 	if (factory->m_NextFactory != 0) {
-		
 		factory->m_NextFactory->m_PrevFactory = factory->m_PrevFactory;
-
 	}
 
 	// factory is now un-linked
 	factory->m_NextFactory = 0;
 	factory->m_PrevFactory = 0;
-	return ;
+	return;
 }

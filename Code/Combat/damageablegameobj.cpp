@@ -71,17 +71,17 @@ bool DamageableGameObjDef::Save( ChunkSaveClass & csave ){
 	return true;
 }
 
-bool	DamageableGameObjDef::Load( ChunkLoadClass &cload ){
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
+bool DamageableGameObjDef::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 
 			case CHUNKID_DEF_PARENT:
 				ScriptableGameObjDef::Load( cload );
 				break;
 	
 			case CHUNKID_DEF_VARIABLES:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_TRANSLATED_NAME_ID, TranslatedNameID );
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_DEF_INFO_ICON_TEXTURE_FILENAME, InfoIconTextureFilename );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_ENCY_TYPE,	EncyclopediaType );

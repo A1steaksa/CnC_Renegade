@@ -51,14 +51,13 @@
 	#include "audioevents.h"
 #endif
 
+typedef	SimpleDynVecClass<GameObjObserverClass*> GameObjObserverList;
 
-typedef	SimpleDynVecClass<GameObjObserverClass *>		GameObjObserverList;
-
-class	GameObjObserverTimerClass;
-class	GameObjCustomTimerClass;
-class	DamageableGameObj;
-class	BuildingGameObj;
-class	SoldierGameObj;
+class GameObjObserverTimerClass;
+class GameObjCustomTimerClass;
+class DamageableGameObj;
+class BuildingGameObj;
+class SoldierGameObj;
 class ScriptZoneGameObj;
 
 
@@ -67,16 +66,16 @@ class ScriptableGameObjDef : public BaseGameObjDef {
 public:
 	ScriptableGameObjDef( void );
 
-	virtual bool								Save( ChunkSaveClass &csave );
-	virtual bool								Load( ChunkLoadClass &cload );
+	virtual bool Save( ChunkSaveClass &csave );
+	virtual bool Load( ChunkLoadClass &cload );
 
 	DECLARE_EDITABLE( ScriptableGameObjDef, BaseGameObjDef );
 
 protected:
-	DynamicVectorClass<StringClass>		ScriptNameList;
-	DynamicVectorClass<StringClass>		ScriptParameterList;
+	DynamicVectorClass<StringClass> ScriptNameList;
+	DynamicVectorClass<StringClass> ScriptParameterList;
 
-	friend	class								ScriptableGameObj;
+	friend class ScriptableGameObj;
 };
 
 

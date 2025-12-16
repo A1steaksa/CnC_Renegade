@@ -88,9 +88,9 @@ bool SaveLoadSystemClass::Load( ChunkLoadClass& cload, bool auto_post_load ){
 
 // Nework update macro for post loader.
 #define UPDATE_NETWORK							\
-	if (network_callback) {						\
+	if( network_callback ){						\
 		unsigned long time2 = TIMEGETTIME();	\
-		if (time2 - time > 20) {				\
+		if( time2 - time > 20 ){				\
 			network_callback();					\
 			time = time2;						\
 		}										\
@@ -132,24 +132,21 @@ SaveLoadSubSystemClass* SaveLoadSystemClass::Find_Sub_System( uint32 chunk_id ){
 	return sys;
 }
 
-void SaveLoadSystemClass::Register_Persist_Factory(PersistFactoryClass * factory)
-{
+void SaveLoadSystemClass::Register_Persist_Factory( PersistFactoryClass* factory ){
 	WWASSERT(factory != NULL);
-	Link_Factory(factory);
+	Link_Factory( factory );
 }
 
-void SaveLoadSystemClass::Unregister_Persist_Factory(PersistFactoryClass * factory)
-{
+void SaveLoadSystemClass::Unregister_Persist_Factory( PersistFactoryClass* factory ){
 	WWASSERT(factory != NULL);
-	Unlink_Factory(factory);
+	Unlink_Factory( factory );
 }
 
-PersistFactoryClass * SaveLoadSystemClass::Find_Persist_Factory(uint32 chunk_id)
-{
+PersistFactoryClass* SaveLoadSystemClass::Find_Persist_Factory( uint32 chunk_id ){
 	// TODO: need a d-s that gives fast searching based on chunk_id!!
 	PersistFactoryClass * fact;
-	for ( fact = FactoryListHead; fact != NULL; fact = fact->NextFactory ) {
-		if ( fact->Chunk_ID() == chunk_id ) {
+	for( fact = FactoryListHead; fact != NULL; fact = fact->NextFactory ){
+		if( fact->Chunk_ID() == chunk_id ){
 			break;
 		}
 	}
@@ -212,11 +209,10 @@ void SaveLoadSystemClass::Request_Ref_Counted_Pointer_Remap (RefCountClass **poi
 
 #endif
 
-void SaveLoadSystemClass::Link_Sub_System(SaveLoadSubSystemClass * sys)
-{
+void SaveLoadSystemClass::Link_Sub_System( SaveLoadSubSystemClass* sys ){
 	WWASSERT(sys != NULL);
-	if (sys != NULL) {
-		WWASSERT(sys->NextSubSystem == NULL);			// sys should never be registered twice!
+	if( sys != NULL ){
+		WWASSERT(sys->NextSubSystem == NULL); // sys should never be registered twice!
 		sys->NextSubSystem = SubSystemListHead;
 		SubSystemListHead = sys;
 	}
@@ -243,11 +239,10 @@ void SaveLoadSystemClass::Unlink_Sub_System(SaveLoadSubSystemClass * sys)
 }
 
 
-void SaveLoadSystemClass::Link_Factory(PersistFactoryClass * fact)
-{
+void SaveLoadSystemClass::Link_Factory( PersistFactoryClass* fact ){
 	WWASSERT(fact != NULL);
-	if (fact != NULL) {
-		WWASSERT(fact->NextFactory == NULL);			// factories should never be registered twice!
+	if( fact != NULL ){
+		WWASSERT(fact->NextFactory == NULL); // factories should never be registered twice!
 		fact->NextFactory = FactoryListHead;
 		FactoryListHead = fact;
 	}

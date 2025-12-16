@@ -57,16 +57,13 @@
 	#include "wwstring.h"
 #endif
 
-class	Sound3DClass;
-class	VehiclePhysClass;
-class	SoldierGameObj;
-class	PersistantSurfaceEmitterClass;
+class Sound3DClass;
+class VehiclePhysClass;
+class SoldierGameObj;
+class PersistantSurfaceEmitterClass;
 class PersistantSurfaceSoundClass;
 
 
-/*
-**
-*/
 typedef enum {
 	VEHICLE_TYPE_CAR,
 	VEHICLE_TYPE_TANK,
@@ -75,8 +72,7 @@ typedef enum {
 	VEHICLE_TYPE_TURRET,
 } VehicleType;
 
-enum
-{
+enum {
 	ENGINE_SOUND_STATE_STARTING = 0,
 	ENGINE_SOUND_STATE_RUNNING,
 	ENGINE_SOUND_STATE_STOPPING,
@@ -89,55 +85,59 @@ enum
 /*
 ** VehicleGameObjDef - Defintion class for a VehicleGameObj
 */
-class VehicleGameObjDef : public SmartGameObjDef
-{
+class VehicleGameObjDef : public SmartGameObjDef {
 public:
 	VehicleGameObjDef( void );
 	virtual ~VehicleGameObjDef( void );
 
-	virtual uint32								Get_Class_ID( void ) const;
-	virtual PersistClass *					Create( void ) const ;
-	virtual bool								Save( ChunkSaveClass &csave );
-	virtual bool								Load( ChunkLoadClass &cload );
-	virtual const PersistFactoryClass &	Get_Factory( void ) const;
+	virtual uint32 Get_Class_ID(void) const;
+	virtual PersistClass* Create(void) const;
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	virtual const PersistFactoryClass& Get_Factory(void) const;
 
 	DECLARE_EDITABLE( VehicleGameObjDef, SmartGameObjDef );
 
-	TRANSITION_DATA_LIST *					Get_Transition_List( void ) { return &Transitions; }
-	const TRANSITION_DATA_LIST &			Get_Transition_List( void ) const { return Transitions; }
+	TRANSITION_DATA_LIST* Get_Transition_List(void){
+		return &Transitions;
+	}
 
-	void											Free_Transition_List( void );
+	const TRANSITION_DATA_LIST& Get_Transition_List(void) const {
+		return Transitions;
+	}
 
-	int Get_Damage_Report(int team) const;
-	int Get_Destroy_Report(int team) const;
+	void Free_Transition_List(void);
+
+	int Get_Damage_Report( int team ) const;
+	int Get_Destroy_Report( int team ) const;
 
 protected:
 
-	VehicleType									Type;
-	StringClass									TypeName;
-	StringClass									Fire0Anim;
-	StringClass									Fire1Anim;
-	StringClass									Profile;
-	TRANSITION_DATA_LIST						Transitions;
-	float											TurnRadius;
-	bool											OccupantsVisible;
-	bool											SightDownMuzzle;
-	bool											Aim2D;
+	VehicleType Type;
+	StringClass TypeName;
+	StringClass Fire0Anim;
+	StringClass Fire1Anim;
+	StringClass Profile;
+	TRANSITION_DATA_LIST Transitions;
+	float TurnRadius;
+	bool OccupantsVisible;
+	bool SightDownMuzzle;
+	bool Aim2D;
 
-	float											EngineSoundMaxPitchFactor;
-	int											EngineSound[MAX_ENGINE_SOUND_STATES];
+	float EngineSoundMaxPitchFactor;
+	int EngineSound[MAX_ENGINE_SOUND_STATES];
 
-	float											SquishVelocity;
-	int											VehicleNameID;
+	float SquishVelocity;
+	int VehicleNameID;
 
-	int											NumSeats;
+	int NumSeats;
 
 	int GDIDamageReportID;
 	int NodDamageReportID;
 	int GDIDestroyReportID;
 	int NodDestroyReportID;
 
-	friend	class								VehicleGameObj;
+	friend class VehicleGameObj;
 };
 
 /*
@@ -150,28 +150,28 @@ public:
 	virtual	~VehicleGameObj();
 
 	// Definitions
-	virtual	void	Init( void );
-	void	Init( const VehicleGameObjDef & definition );
-	const VehicleGameObjDef & Get_Definition( void ) const ;
+	virtual	void Init( void );
+	void Init( const VehicleGameObjDef& definition );
+	const VehicleGameObjDef& Get_Definition(void) const;
 
 	// Save / Load / Construction Factory
-	virtual	bool	Save( ChunkSaveClass & csave );
-	virtual	bool	Load( ChunkLoadClass & cload );
-	virtual	void	On_Post_Load( void );
-	virtual	const	PersistFactoryClass & Get_Factory( void ) const;
+	virtual	bool Save( ChunkSaveClass& csave );
+	virtual	bool Load( ChunkLoadClass& cload );
+	virtual	void On_Post_Load(void);
+	virtual	const PersistFactoryClass& Get_Factory(void) const;
 
-	virtual	void	Startup( void );
+	virtual	void Startup(void);
 
 	// Physics
-	VehiclePhysClass * Peek_Vehicle_Phys( void ) const;
+	VehiclePhysClass* Peek_Vehicle_Phys(void) const;
 
 	// Think
-	virtual	void	Think( void );
-	virtual	void	Post_Think( void );
+	virtual	void Think(void);
+	virtual	void Post_Think(void);
 
 	// Control
-	virtual	void	Apply_Control( void );
-   virtual	int	Get_Weapon_Control_Owner(void);
+	virtual	void Apply_Control(void);
+	virtual int Get_Weapon_Control_Owner(void);
 
 	// Weapon
 	virtual bool		Set_Targeting( const Vector3 & pos, bool do_tilt = true );

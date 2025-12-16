@@ -38,8 +38,8 @@ DefinitionMgrClass	_TheDefinitionMgr;
 //////////////////////////////////////////////////////////////////////////////////
 //	Constants
 //////////////////////////////////////////////////////////////////////////////////
-static const int		DEFINTION_LIST_GROW_SIZE	= 1000;
-static const uint32	IDRANGE_PER_CLASS				= 10000;
+static const int DEFINTION_LIST_GROW_SIZE = 1000;
+static const uint32	IDRANGE_PER_CLASS = 10000;
 
 enum {
 	CHUNKID_VARIABLES			= 0x00000100,
@@ -149,36 +149,25 @@ DefinitionClass* DefinitionMgrClass::Find_Definition( uint32 id, bool twiddle ){
 //	Find_Named_Definition
 //
 //////////////////////////////////////////////////////////////////////////////////
-DefinitionClass *
-DefinitionMgrClass::Find_Named_Definition (const char *name, bool twiddle)
-{
+DefinitionClass* DefinitionMgrClass::Find_Named_Definition( const char *name, bool twiddle ){
 	DefinitionClass *definition = NULL;
 
-	//
-	//	Loop through all the definitions and see if we can
+	// Loop through all the definitions and see if we can
 	// find the one with the requested name
-	//
 	for (int index = 0; index < _DefinitionCount; index ++) {
 		DefinitionClass *curr_def = _SortedDefinitionArray[index];
-		
-		//
-		//	Is this the definition we were looking for?
-		//
-		if (curr_def != NULL && ::stricmp (curr_def->Get_Name (), name) == 0) {
+
+		// Is this the definition we were looking for?
+		if( curr_def != NULL && ::stricmp( curr_def->Get_Name(), name ) == 0) {
 			definition = curr_def;
 			break;
 		}
 	}
 
-	//
-	//	Should we twiddle this definition? (Twiddling refers to our randomizing
-	//	framework for definitions)
-	//
-	if (	twiddle &&
-			definition != NULL &&
-			definition->Get_Class_ID () == CLASSID_TWIDDLERS)
-	{
-		definition = ((TwiddlerClass *)definition)->Twiddle ();
+	// Should we twiddle this definition? (Twiddling refers to our randomizing
+	// framework for definitions)
+	if( twiddle && definition != NULL && definition->Get_Class_ID () == CLASSID_TWIDDLERS){
+		definition = ( (TwiddlerClass*) definition)->Twiddle();
 	}
 
 	return definition;
@@ -191,12 +180,8 @@ DefinitionMgrClass::Find_Named_Definition (const char *name, bool twiddle)
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-DefinitionClass *
-DefinitionMgrClass::Find_Typed_Definition (const char *name, uint32 class_id, bool twiddle)
-{
-	//
-	//	Sanity check
-	//
+DefinitionClass* DefinitionMgrClass::Find_Typed_Definition( const char *name, uint32 class_id, bool twiddle ){
+	// Sanity check
 	if (DefinitionHash == NULL) {
 		WWDEBUG_SAY (("DefinitionMgrClass::Find_Typed_Definition () failed due to a NULL DefinitionHash. %s\n", name));
 		return NULL;
@@ -207,58 +192,47 @@ DefinitionMgrClass::Find_Typed_Definition (const char *name, uint32 class_id, bo
 	// Check the hash table first. The hash table is built as we need the definitions, so if definition is not
 	// in the table, it will be added there.
 
-	//
 	// TSS null deref on this sucker 08/03/01
-	//
 	WWASSERT(DefinitionHash != NULL);
 
 	StringClass lower_case_name(name,true);
 	_strlwr(lower_case_name.Peek_Buffer());
 	DynamicVectorClass<DefinitionClass*>* defs = DefinitionHash->Get(lower_case_name);
 
-	if (defs) {
-		for (int i=0;i<defs->Length();++i) {
+	if( defs ){
+		for( int i=0; i<defs->Length(); ++i ){
 			DefinitionClass* curr_def=(*defs)[i];
 			WWASSERT(curr_def);
 			uint32 curr_class_id = curr_def->Get_Class_ID ();
-			if (	(curr_class_id == class_id) ||
-					(::SuperClassID_From_ClassID (curr_class_id) == class_id) ||
-					(twiddle && (curr_def->Get_Class_ID () == CLASSID_TWIDDLERS)))
-			{
+			if( (curr_class_id == class_id) ||
+				( ::SuperClassID_From_ClassID( curr_class_id ) == class_id ) ||
+				( twiddle && ( curr_def->Get_Class_ID() == CLASSID_TWIDDLERS ) ) ){
 				definition = curr_def;
 				break;
 			}
 		}
 	}
 
-	//
-	//	Loop through all the definitions and see if we can
+	// Loop through all the definitions and see if we can
 	// find the one with the requested name
-	//
-	if (!definition) {
-		for (int index = 0; index < _DefinitionCount; index ++) {
+	if( !definition ){
+		for( int index = 0; index < _DefinitionCount; index++ ){
 			DefinitionClass *curr_def = _SortedDefinitionArray[index];
-			if (curr_def != NULL) {
-
-				//
+			if( curr_def != NULL ){
 				//	Is this the correct class of definition?
-				//
 				uint32 curr_class_id = curr_def->Get_Class_ID ();
 				if (	(curr_class_id == class_id) ||
 						(::SuperClassID_From_ClassID (curr_class_id) == class_id) ||
-						(twiddle && (curr_def->Get_Class_ID () == CLASSID_TWIDDLERS)))
-				{
-					//
+						(twiddle && (curr_def->Get_Class_ID () == CLASSID_TWIDDLERS ) ) ){
 					//	Is this the definition we were looking for?
-					//
-					if (::stricmp (curr_def->Get_Name (), name) == 0) {
+					if( ::stricmp( curr_def->Get_Name(), name ) == 0 ){
 						definition = curr_def;
 						// Add the definition to the hash table, so that it can be quickly accessed the next time it is needed.
-						if (!defs) {
-							defs=new DynamicVectorClass<DefinitionClass*>;
-							DefinitionHash->Insert(lower_case_name,defs);
+						if( !defs ){
+							defs = new DynamicVectorClass<DefinitionClass*>;
+							DefinitionHash->Insert( lower_case_name, defs );
 						}
-						defs->Add(definition);
+						defs->Add( definition );
 						break;
 					}
 				}
@@ -266,10 +240,8 @@ DefinitionMgrClass::Find_Typed_Definition (const char *name, uint32 class_id, bo
 		}
 	}
 
-	//
 	//	Should we twiddle this definition? (Twiddling refers to our randomizing
 	//	framework for definitions)
-	//
 	if (	twiddle &&
 			definition != NULL &&
 			definition->Get_Class_ID () == CLASSID_TWIDDLERS)
@@ -286,21 +258,17 @@ DefinitionMgrClass::Find_Typed_Definition (const char *name, uint32 class_id, bo
 //	List_Available_Definitions
 //
 //////////////////////////////////////////////////////////////////////////////////
-void
-DefinitionMgrClass::List_Available_Definitions (void)
-{
-	//
+void DefinitionMgrClass::List_Available_Definitions(void){
 	//	Loop through all the definitions and print the definition name
-	//
 	WWDEBUG_SAY(("Available definitions:\n"));
-	for (int index = 0; index < _DefinitionCount; index ++) {
+	for( int index = 0; index < _DefinitionCount; index++ ){
 		DefinitionClass *curr_def = _SortedDefinitionArray[index];		
-		if (curr_def != NULL) {
-			WWDEBUG_SAY(("  >%s<\n", curr_def->Get_Name ()));
+		if( curr_def != NULL ){
+			WWDEBUG_SAY( ( "  >%s<\n", curr_def->Get_Name() ) );
 		}
 	}
 
-	return ;
+	return;
 }
 
 
@@ -309,22 +277,17 @@ DefinitionMgrClass::List_Available_Definitions (void)
 //	List_Available_Definitions
 //
 //////////////////////////////////////////////////////////////////////////////////
-void
-DefinitionMgrClass::List_Available_Definitions (int superclass_id)
-{
-	//
+void DefinitionMgrClass::List_Available_Definitions( int superclass_id ){
 	//	Loop through all the definitions and print the definition name
-	//
-	WWDEBUG_SAY(("Available superclass definitions for 0x%8X:\n", superclass_id));
-	DefinitionClass *definition = NULL;
-	for (	definition = Get_First (superclass_id, DefinitionMgrClass::ID_SUPERCLASS);
+	WWDEBUG_SAY( ( "Available superclass definitions for 0x%8X:\n", superclass_id ) );
+	DefinitionClass* definition = NULL;
+	for(	definition = Get_First( superclass_id, DefinitionMgrClass::ID_SUPERCLASS );
 			definition != NULL;
-			definition = Get_Next (definition, superclass_id, DefinitionMgrClass::ID_SUPERCLASS))
-	{
+			definition = Get_Next( definition, superclass_id, DefinitionMgrClass::ID_SUPERCLASS ) ){
 		WWDEBUG_SAY(("  >%s<\n", definition->Get_Name ()));
 	}
 
-	return ;
+	return;
 }
 
 
@@ -333,30 +296,18 @@ DefinitionMgrClass::List_Available_Definitions (int superclass_id)
 //	Get_First
 //
 //////////////////////////////////////////////////////////////////////////////////
-DefinitionClass *
-DefinitionMgrClass::Get_First (uint32 id, ID_TYPE type)
-{
+DefinitionClass* DefinitionMgrClass::Get_First( uint32 id, ID_TYPE type ){
 	DefinitionClass *definition = NULL;
 
-	//
-	//	Loop through all the definitions and find the first
+	// Loop through all the definitions and find the first
 	// one that belongs to the requested class
-	//
-	for (	int index = 0;
-			(definition == NULL) && (index < _DefinitionCount);
-			index ++)
-	{
-		DefinitionClass *curr_def = _SortedDefinitionArray[index];		
-		if (curr_def != NULL) {
-
-			//
+	for( int index = 0; ( definition == NULL ) && ( index < _DefinitionCount ); index++ ){
+		DefinitionClass* curr_def = _SortedDefinitionArray[index];		
+		if( curr_def != NULL ){
 			//	Is this the definition we were looking for?
-			//
-			if (	(type == ID_SUPERCLASS) &&
-					(::SuperClassID_From_ClassID (curr_def->Get_Class_ID ()) == id)) {
+			if( ( type == ID_SUPERCLASS ) && ( ::SuperClassID_From_ClassID( curr_def->Get_Class_ID() ) == id ) ){
 				definition = curr_def;
-			} else if (	(type == ID_CLASS) &&
-							(curr_def->Get_Class_ID () == id)) {
+			} else if( ( type == ID_CLASS ) && ( curr_def->Get_Class_ID() == id ) ){
 				definition = curr_def;
 			}
 		}
@@ -371,35 +322,18 @@ DefinitionMgrClass::Get_First (uint32 id, ID_TYPE type)
 //	Get_Next
 //
 //////////////////////////////////////////////////////////////////////////////////
-DefinitionClass *
-DefinitionMgrClass::Get_Next
-(
-	DefinitionClass *	curr_def,
-	uint32				id,
-	ID_TYPE				type
-)
-{
+DefinitionClass* DefinitionMgrClass::Get_Next( DefinitionClass* curr_def, uint32 id, ID_TYPE type ){
 	DefinitionClass *definition = NULL;
 
-	//
-	//	Loop through all the definitions and find the first
+	// Loop through all the definitions and find the first
 	// one that belongs to the requested class
-	//
-	for (	int index = curr_def->m_DefinitionMgrLink + 1;
-			(definition == NULL) && (index < _DefinitionCount);
-			index ++)
-	{		
-		DefinitionClass *curr_def = _SortedDefinitionArray[index];
-		if (curr_def != NULL) {
-
-			//
+	for( int index = curr_def->m_DefinitionMgrLink + 1; ( definition == NULL ) && ( index < _DefinitionCount ); index++ ){		
+		DefinitionClass* curr_def = _SortedDefinitionArray[index];
+		if( curr_def != NULL ){
 			//	Is this the definition we were looking for?
-			//
-			if (	(type == ID_SUPERCLASS) &&
-					(::SuperClassID_From_ClassID (curr_def->Get_Class_ID ()) == id)) {
+			if( ( type == ID_SUPERCLASS ) && ( ::SuperClassID_From_ClassID( curr_def->Get_Class_ID() ) == id ) ){
 				definition = curr_def;
-			} else if (	(type == ID_CLASS) &&
-							(curr_def->Get_Class_ID () == id)) {
+			}else if( ( type == ID_CLASS ) && ( curr_def->Get_Class_ID() == id ) ){
 				definition = curr_def;
 			}
 		}
@@ -510,9 +444,7 @@ DefinitionMgrClass::Prepare_Definition_Array (void)
 //	Register_Definition
 //
 ////////////////////////////////////////////////////////////////////////////
-void
-DefinitionMgrClass::Register_Definition (DefinitionClass *definition)
-{
+void DefinitionMgrClass::Register_Definition( DefinitionClass* definition ){
 	WWASSERT (definition != NULL);
 	if (definition != NULL && definition->m_DefinitionMgrLink == -1 && definition->Get_ID () != 0) {
 		//
@@ -633,29 +565,20 @@ DefinitionMgrClass::Unregister_Definition (DefinitionClass *definition)
 //	Save
 //
 //////////////////////////////////////////////////////////////////////////////////
-bool
-DefinitionMgrClass::Save
-(
-	ChunkSaveClass &	csave
-)
-{
+bool DefinitionMgrClass::Save( ChunkSaveClass& csave ){
 	WWMEMLOG(MEM_GAMEDATA);
 	
 	bool retval = true;
 
-	//
-	//	Create a chunk to contain the class variables we need to serialize.
-	//
-	csave.Begin_Chunk (CHUNKID_VARIABLES);	
-	Save_Variables (csave);
-	csave.End_Chunk ();
+	// Create a chunk to contain the class variables we need to serialize.
+	csave.Begin_Chunk( CHUNKID_VARIABLES );	
+	Save_Variables( csave );
+	csave.End_Chunk();
 	
-	//
-	//	Have the base class write the objects to their own chunk.
-	//
-	csave.Begin_Chunk (CHUNKID_OBJECTS);
-	retval &= Save_Objects (csave);
-	csave.End_Chunk ();
+	// Have the base class write the objects to their own chunk.
+	csave.Begin_Chunk( CHUNKID_OBJECTS );
+	retval &= Save_Objects( csave );
+	csave.End_Chunk();
 
 	return retval;
 }
@@ -696,27 +619,16 @@ bool DefinitionMgrClass::Load( ChunkLoadClass& cload ){
 //	Save_Objects
 //
 //////////////////////////////////////////////////////////////////////////////////
-bool
-DefinitionMgrClass::Save_Objects
-(
-	ChunkSaveClass &	csave
-)
-{
+bool DefinitionMgrClass::Save_Objects( ChunkSaveClass& csave ){
 	bool retval = true;
-
-	//
-	//	Loop through all the definition objects
-	//
-	for (int index = 0; index < _DefinitionCount; index ++) {
-		DefinitionClass *definition = _SortedDefinitionArray[index];
-		if (definition != NULL && definition->Is_Save_Enabled ()) {
-
-			//
-			//	Save this definition object
-			//
-			csave.Begin_Chunk (definition->Get_Factory ().Chunk_ID ());
-			definition->Get_Factory ().Save (csave, definition);
-			csave.End_Chunk ();
+	// Loop through all the definition objects
+	for( int index = 0; index < _DefinitionCount; index++ ){
+		DefinitionClass* definition = _SortedDefinitionArray[index];
+		if( definition != NULL && definition->Is_Save_Enabled() ){
+			// Save this definition object
+			csave.Begin_Chunk( definition->Get_Factory().Chunk_ID() );
+			definition->Get_Factory().Save( csave, definition );
+			csave.End_Chunk();
 		}
 	}
 
@@ -749,24 +661,23 @@ bool DefinitionMgrClass::Load_Objects( ChunkLoadClass& cload ){
 
 	while( cload.Open_Chunk() ){
 		// Load this definition from the chunk (if possible)
-		PersistFactoryClass *factory = SaveLoadSystemClass::Find_Persist_Factory (cload.Cur_Chunk_ID ());
-		if (factory != NULL) {
+		PersistFactoryClass* factory = SaveLoadSystemClass::Find_Persist_Factory( cload.Cur_Chunk_ID() );
+		if( factory != NULL ){
 			
-			DefinitionClass *definition = (DefinitionClass *)factory->Load (cload);
-			if (definition != NULL) {
-
-				//	Add this definition to our array
-				Prepare_Definition_Array ();
-				_SortedDefinitionArray[_DefinitionCount ++] = definition;				
+			DefinitionClass* definition = (DefinitionClass*) factory->Load( cload );
+			if( definition != NULL ){
+				// Add this definition to our array
+				Prepare_Definition_Array();
+				_SortedDefinitionArray[_DefinitionCount++] = definition;				
 			}
 		}
 
-		cload.Close_Chunk ();
+		cload.Close_Chunk();
 	}
 
 	// Sort the definitions
-	if (_DefinitionCount > 0) {
-		::qsort (_SortedDefinitionArray, _DefinitionCount, sizeof (DefinitionClass *), fnCompareDefinitionsCallback);
+	if( _DefinitionCount > 0 ){
+		::qsort (_SortedDefinitionArray, _DefinitionCount, sizeof(DefinitionClass*), fnCompareDefinitionsCallback);
 	}
 
 	// Assign a mgr link to each definition

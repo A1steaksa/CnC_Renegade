@@ -92,7 +92,7 @@ enum {
 };
 
 
-bool	BaseGameObjDef::Save( ChunkSaveClass & csave )
+bool BaseGameObjDef::Save( ChunkSaveClass & csave )
 {
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 		DefinitionClass::Save( csave );
@@ -100,8 +100,7 @@ bool	BaseGameObjDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	BaseGameObjDef::Load( ChunkLoadClass &cload )
-{
+bool BaseGameObjDef::Load( ChunkLoadClass& cload ){
 	cload.Open_Chunk();
 	WWASSERT( cload.Cur_Chunk_ID() == CHUNKID_DEF_PARENT );
 	DefinitionClass::Load( cload );
@@ -109,25 +108,16 @@ bool	BaseGameObjDef::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-BaseGameObj::BaseGameObj( void ) :
-	Definition( NULL ),
-	//DestroyType( DESTROY_NONE ),
-	//ID( 0 ),
-	IsPostThinkAllowed( false ),
-	EnableCinematicFreeze( true )
-{
+BaseGameObj::BaseGameObj(void) : Definition( NULL ), IsPostThinkAllowed( false ), EnableCinematicFreeze( true ) {
 	GameObjManager::Add( this );
-
-	Set_Object_Dirty_Bit (NetworkObjectClass::BIT_CREATION, true);
+	Set_Object_Dirty_Bit(NetworkObjectClass::BIT_CREATION, true);
 }
 
-BaseGameObj::~BaseGameObj( void )
-{
+BaseGameObj::~BaseGameObj(void){
 	GameObjManager::Remove( this );
 }
 
-void	BaseGameObj::Init( const BaseGameObjDef & definition )
-{
+void BaseGameObj::Init( const BaseGameObjDef & definition ){
 	Definition = &definition;
 }
 
@@ -138,18 +128,17 @@ const BaseGameObjDef &	BaseGameObj::Get_Definition( void ) const
 
 
 // BaseGameObj Save and Load
-enum	{
-	CHUNKID_VARIABLES						=	910991407,
+enum {
+	CHUNKID_VARIABLES						= 910991407,
 
-	XXX_MICROCHUNKID_DESTROY_TYPE		=	1,
+	XXX_MICROCHUNKID_DESTROY_TYPE			= 1,
 	MICROCHUNKID_DEFINITION_ID,
 	MICROCHUNKID_INSTANCE_ID,
 	MICROCHUNKID_IS_PENDING_DELETE,
 	MICROCHUNKID_ENABLE_CINEMATIC_FREEZE,
 };
 
-bool	BaseGameObj::Save( ChunkSaveClass & csave )
-{
+bool BaseGameObj::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_VARIABLES );
 		bool is_delete_pending = Is_Delete_Pending ();
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_IS_PENDING_DELETE, is_delete_pending );
@@ -165,45 +154,37 @@ bool	BaseGameObj::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	BaseGameObj::Load( ChunkLoadClass &cload )
-{
+bool BaseGameObj::Load( ChunkLoadClass& cload ){
 	int id = 0;
 
 	cload.Open_Chunk();
 	WWASSERT( cload.Cur_Chunk_ID() == CHUNKID_VARIABLES );
-	while (cload.Open_Micro_Chunk()) {
-		switch(cload.Cur_Micro_Chunk_ID()) {
-			
-			case MICROCHUNKID_IS_PENDING_DELETE:
-			{
+	while( cload.Open_Micro_Chunk() ){
+		switch( cload.Cur_Micro_Chunk_ID() ){
+			case MICROCHUNKID_IS_PENDING_DELETE: {
 				bool is_delete_pending = false;
 				LOAD_MICRO_CHUNK( cload, is_delete_pending );
-				if (is_delete_pending) {
+				if( is_delete_pending ){
 					Set_Delete_Pending ();
 				}				
 				break;
 			}
 
-			case MICROCHUNKID_INSTANCE_ID:
-			{
+			case MICROCHUNKID_INSTANCE_ID: {
 				LOAD_MICRO_CHUNK( cload, id );
-				//TSS
-				//Set_Network_ID( id );
 				break;
 			}
 
-			case	MICROCHUNKID_DEFINITION_ID:
+			case MICROCHUNKID_DEFINITION_ID:
 				int definition_id;
 				LOAD_MICRO_CHUNK( cload, definition_id );
 				WWASSERT( Definition == NULL );
-				Definition = (const BaseGameObjDef*)DefinitionMgrClass::Find_Definition( definition_id );
-				if ( Definition == NULL ) {
+				Definition = (const BaseGameObjDef*) DefinitionMgrClass::Find_Definition( definition_id );
+				if ( Definition == NULL ){
 					Debug_Say(( "Definition %d not found\n.  Re-Export needed\n", definition_id ));
 				}
 
-				//
 				// 07/30/01 attempting to load a level with temps will presently assert here.
-				//
 				WWASSERT( Definition != NULL );
 				break;
 
@@ -217,21 +198,15 @@ bool	BaseGameObj::Load( ChunkLoadClass &cload )
 	}
 	cload.Close_Chunk();
 
-	//
-	//	Set the ID if necessary
-	//
-
-	if (id == 0) {
-
-		id = Get_ID ();
-		if (id == 0) {
-			Set_Network_ID (NetworkObjectMgrClass::Get_New_Dynamic_ID ());
+	// Set the ID if necessary
+	if( id == 0 ){
+		id = Get_ID();
+		if( id == 0 ){
+			Set_Network_ID( NetworkObjectMgrClass::Get_New_Dynamic_ID() );
 		} else {
-			WWASSERT(id >= NETID_DYNAMIC_OBJECT_MIN && id <= NETID_DYNAMIC_OBJECT_MAX);
+			WWASSERT( id >= NETID_DYNAMIC_OBJECT_MIN && id <= NETID_DYNAMIC_OBJECT_MAX );
 		}
-
 	} else {
-
 		Set_Network_ID (id);
 	}
 

@@ -948,7 +948,7 @@ IOResult SkinModifierClass::LoadLocalData(ILoad *iload, LocalModData **pld)
 	SkinDataClass * newskin = (SkinDataClass *)*pld;
 
 	/*
-	** Initialize it from ILoad...
+	** Initialize it from ILoad Start
 	*/
 	return newskin->Load(iload);
 }

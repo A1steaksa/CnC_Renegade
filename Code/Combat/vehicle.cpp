@@ -64,7 +64,7 @@
 /*
 ** Local prototypes
 */
-static void	Set_Subobject_Visibility (RenderObjClass *model, int bone_index, bool show);
+static void	Set_Subobject_Visibility( RenderObjClass* model, int bone_index, bool show );
 
 /*
 ** Defines
@@ -72,29 +72,28 @@ static void	Set_Subobject_Visibility (RenderObjClass *model, int bone_index, boo
 #define	NORMALIZE_RADIANS( v ) 	while ( v > (float)DEG_TO_RAD(  180.0f ) ) v -= (float)DEG_TO_RAD( 360.0f ); \
 											while ( v < (float)DEG_TO_RAD( -180.0f ) ) v += (float)DEG_TO_RAD( 360.0f );
 
-//
+
 // Class statics
-//
-bool	VehicleGameObj::DefaultDriverIsGunner	= false;
-bool	VehicleGameObj::CameraLockedToTurret	= false;
+bool VehicleGameObj::DefaultDriverIsGunner	= false;
+bool VehicleGameObj::CameraLockedToTurret	= false;
 
 /*
 ** Target Steering Option.
 ** (gth) 07/11/2001 - making this default to true
 ** (gth) 08/21/2001 - new default is false, user can turn it on with a console command...
 */
-bool	_Use_Target_Steering = false;
+bool _Use_Target_Steering = false;
 
-bool	VehicleGameObj::Toggle_Target_Steering( void ){
+bool VehicleGameObj::Toggle_Target_Steering(void){
 	return _Use_Target_Steering = !_Use_Target_Steering;
 }
 
-void	VehicleGameObj::Set_Target_Steering( bool onoff ){
+void VehicleGameObj::Set_Target_Steering( bool onoff ){
 	_Use_Target_Steering = onoff;
 	return;
 }
 
-bool	VehicleGameObj::Is_Target_Steering( void ){
+bool VehicleGameObj::Is_Target_Steering(void){
 	return _Use_Target_Steering;
 }
 
@@ -103,11 +102,11 @@ bool	VehicleGameObj::Is_Target_Steering( void ){
 */
 DECLARE_FORCE_LINK( Vehicle )
 
-SimplePersistFactoryClass<VehicleGameObjDef, CHUNKID_GAME_OBJECT_DEF_VEHICLE>	_VehicleGameObjDefPersistFactory;
+SimplePersistFactoryClass<VehicleGameObjDef, CHUNKID_GAME_OBJECT_DEF_VEHICLE> _VehicleGameObjDefPersistFactory;
 
-DECLARE_DEFINITION_FACTORY(VehicleGameObjDef, CLASSID_GAME_OBJECT_DEF_VEHICLE, "Vehicle") _VehicleGameObjDefDefFactory;
+DECLARE_DEFINITION_FACTORY( VehicleGameObjDef, CLASSID_GAME_OBJECT_DEF_VEHICLE, "Vehicle") _VehicleGameObjDefDefFactory;
 
-VehicleGameObjDef::VehicleGameObjDef( void ) :
+VehicleGameObjDef::VehicleGameObjDef(void) :
 	Type( VEHICLE_TYPE_CAR ),
 	TurnRadius( 10.0f ),
 	OccupantsVisible( true ),
@@ -171,7 +170,7 @@ PersistClass *	VehicleGameObjDef::Create( void ) const{
 	return obj;
 }
 
-enum	{
+enum {
 	CHUNKID_DEF_PARENT							=	930991656,
 	CHUNKID_DEF_VARIABLES,
 	CHUNKID_DEF_TRANSITION,
@@ -218,7 +217,7 @@ enum	{
 	MICROCHUNKID_DEF_NOD_DESTROY_REPORT_ID,
 };
 
-bool	VehicleGameObjDef::Save( ChunkSaveClass & csave ){
+bool VehicleGameObjDef::Save( ChunkSaveClass & csave ){
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 		SmartGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -261,26 +260,25 @@ bool	VehicleGameObjDef::Save( ChunkSaveClass & csave ){
 	return true;
 }
 
-bool	VehicleGameObjDef::Load( ChunkLoadClass &cload ){
+bool VehicleGameObjDef::Load( ChunkLoadClass& cload ){
 	Free_Transition_List ();
 
-	while (cload.Open_Chunk()){
-		switch(cload.Cur_Chunk_ID()){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case CHUNKID_DEF_PARENT:
 				SmartGameObjDef::Load( cload );
 				break;
 
-			case CHUNKID_DEF_TRANSITION:
-			{
-				TransitionDataClass *transition = new TransitionDataClass;
+			case CHUNKID_DEF_TRANSITION: {
+				TransitionDataClass* transition = new TransitionDataClass;
 				transition->Load( cload );
 				Transitions.Add( transition );
 			}
 			break;
 
 			case CHUNKID_DEF_VARIABLES:
-				while (cload.Open_Micro_Chunk()){
-					switch(cload.Cur_Micro_Chunk_ID()){
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_TYPE, Type );
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_TYPE_NAME, TypeName );
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_FIRE0ANIM, Fire0Anim );
@@ -303,6 +301,7 @@ bool	VehicleGameObjDef::Load( ChunkLoadClass &cload ){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_NOD_DAMAGE_REPORT_ID, NodDamageReportID );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_GDI_DESTROY_REPORT_ID, GDIDestroyReportID );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_NOD_DESTROY_REPORT_ID, NodDestroyReportID );
+						
 						default:
 							Debug_Say(( "Unrecognized VehicleDef Variable chunkID\n" ));
 							break;

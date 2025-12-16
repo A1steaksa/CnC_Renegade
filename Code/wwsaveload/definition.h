@@ -37,7 +37,7 @@ class ChunkLoadClass;
 class DefinitionClass : public EditableClass {
 public:
 	// Editable interface requirements
-	DECLARE_EDITABLE(DefinitionClass, EditableClass);
+	DECLARE_EDITABLE( DefinitionClass, EditableClass );
 
 	// Public constructors/destructors
 	DefinitionClass(void);
@@ -97,7 +97,7 @@ private:
 };
 
 
-inline DefinitionClass::DefinitionClass(void) : m_ID(0), m_SaveEnabled(true), m_DefinitionMgrLink(-1 ){
+inline DefinitionClass::DefinitionClass(void) : m_ID(0), m_SaveEnabled(true), m_DefinitionMgrLink(-1) {
 	return;
 }
 
