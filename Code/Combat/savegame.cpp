@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -61,31 +43,15 @@
 #include <stdlib.h>
 #include "specialbuilds.h"
 
-/*
-**
-*/
-StringClass		SaveGameManager::MapFilename;
-StringClass		SaveGameManager::CurrentGameFilename;
-WideStringClass	SaveGameManager::Description;
-int				SaveGameManager::MissionDescriptionID = 0;
-const char *	SaveGameManager::DefaultDefinitionFilename = "Objects.DDB";
+StringClass SaveGameManager::MapFilename;
+StringClass SaveGameManager::CurrentGameFilename;
+WideStringClass SaveGameManager::Description;
+int SaveGameManager::MissionDescriptionID = 0;
+const char* SaveGameManager::DefaultDefinitionFilename = "Objects.DDB";
 
-/*
-**
-*/
-enum	{
 
-#ifdef BETACLIENT
-	//
-	// This CHUNKID_LEVEL_INFO tweaking is temporary, to disallow the aircraft maps 
-	// to be used outside of the beta. The maps distributed with the Beta client must have 
-	// 1011991648 replaced with 1011991650 and 1011991649 replaced with 1011991651.
-	//
-	CHUNKID_LEVEL_INFO					=	1011991650,
-#else
+enum {
 	CHUNKID_LEVEL_INFO					=	1011991648,
-#endif
-
 	CHUNKID_LEVEL_DATA,
 
 	MICROCHUNKID_MAP_FILENAME			=	1,
@@ -93,15 +59,11 @@ enum	{
 	MICROCHUNKID_DESCRIPTION,
 };
 
-/*
-**
-*/
-void _cdecl SaveGameManager::Save_Game( const char * filename, ... )
-{
+void _cdecl SaveGameManager::Save_Game( const char* filename, ... ){
 	Debug_Say(( "Save Game %s\n", filename ));
 	CurrentGameFilename = filename;
 
-	FileClass * file = _TheWritingFileFactory->Get_File( filename );
+	FileClass* file = _TheWritingFileFactory->Get_File( filename );
 	WWASSERT(file);
 	file->Open(FileClass::WRITE);
 
@@ -146,97 +108,64 @@ void _cdecl SaveGameManager::Save_Game( const char * filename, ... )
 
 }
 
+void SaveGameManager::Pre_Load_Game( const char* filename, StringClass& filename_to_load, StringClass& lsd_filename ){
+	// Get the root name and extension from the filename
+	char root_name[ _MAX_FNAME ] = { 0 };
+	char extension[ _MAX_EXT ] = { 0 };
+	::_splitpath( filename, NULL, NULL, root_name, extension );
 
-void	SaveGameManager::Pre_Load_Game
-(
-	 const char *	filename,
-	 StringClass & filename_to_load,
-	 StringClass &	lsd_filename 
-)
-{
-	//
-	//	Get the root name and extension from the filename
-	//
-	char root_name[_MAX_FNAME] = { 0 };
-	char extension[_MAX_EXT] = { 0 };
-	::_splitpath (filename, NULL, NULL, root_name, extension);
-
-	SystemInfoLog::Set_Current_Level(root_name);
+	SystemInfoLog::Set_Current_Level( root_name );
 	filename_to_load = filename;
 
-	//
-	//	Reset the search order
-	//
-	if (FileFactoryListClass::Get_Instance () != NULL)
-	{
-		FileFactoryListClass::Get_Instance ()->Reset_Search_Start();
+	// Reset the search order
+	if( FileFactoryListClass::Get_Instance() != NULL ){
+		FileFactoryListClass::Get_Instance()->Reset_Search_Start();
 	}
 
-	//
-	//	Is this a mix file?
-	//
-	if (::strcmpi (extension, ".mix") == 0) {
-		
-		StringClass thumb_filename(root_name,true);
-		thumb_filename+=".thu";
-		ThumbnailManagerClass::Add_Thumbnail_Manager(thumb_filename,filename);
+	// Is this a mix file?
+	if( ::strcmpi( extension, ".mix" ) == 0 ){
+		StringClass thumb_filename( root_name, true );
+		thumb_filename += ".thu";
+		ThumbnailManagerClass::Add_Thumbnail_Manager( thumb_filename, filename );
 
-		//
-		//	Build the dynamic data filename from mix file's root name
-		//
-		filename_to_load.Format ("%s.ldd", root_name);
-		lsd_filename .Format ("%s.lsd", root_name);
+		// Build the dynamic data filename from mix file's root name
+		filename_to_load.Format( "%s.ldd", root_name );
+		lsd_filename.Format( "%s.lsd", root_name );
 
-		//
-		//	HACK HACK - Put the level 9 mix file first...
-		//
-		if (	::lstrcmpi (filename, "M09.mix") == 0 &&
-				FileFactoryListClass::Get_Instance () != NULL)
-		{
-			FileFactoryListClass::Get_Instance ()->Set_Search_Start(filename);
+		// HACK HACK - Put the level 9 mix file first...
+		if( ::lstrcmpi( filename, "M09.mix" ) == 0 && FileFactoryListClass::Get_Instance() != NULL ){
+			FileFactoryListClass::Get_Instance()->Set_Search_Start( filename );
 		}
-
-	} else if (::strcmpi (extension, ".lsd") == 0) {		
+	}else if( ::strcmpi( extension, ".lsd" ) == 0 ){
 		lsd_filename = filename;
-		filename_to_load.Format ("%s.ldd", root_name);
-	} else {
-		
-		//
-		//	Dig out the name of the map we'll use with this file
-		//
-		StringClass map_name(0,true);
-		if (Peek_Map_Name (filename, map_name)) {
-
+		filename_to_load.Format( "%s.ldd", root_name );
+	}else{
+		// Dig out the name of the map we'll use with this file
+		StringClass map_name( 0, true );
+		if( Peek_Map_Name( filename, map_name ) ){
 			char mix_root_name[_MAX_FNAME] = { 0 };
-			::_splitpath ((const char *)map_name, NULL, NULL, mix_root_name, NULL);
+			::_splitpath( (const char*) map_name, NULL, NULL, mix_root_name, NULL );
 
-			//
-			//	Build the mix filename from the map name...
-			//
-			StringClass mix_filename(0, true);
-			lsd_filename.Format ("%s.lsd", mix_root_name);
-			mix_filename.Format ("%s.mix", mix_root_name);
+			// Build the mix filename from the map name...
+			StringClass mix_filename( 0, true );
+			lsd_filename.Format( "%s.lsd", mix_root_name );
+			mix_filename.Format( "%s.mix", mix_root_name );
 
-			//
-			//	HACK HACK - Put the level 9 mix file first...
-			//
-			if (	::lstrcmpi (mix_filename, "M09.mix") == 0 &&
-					FileFactoryListClass::Get_Instance () != NULL)
-			{
-				FileFactoryListClass::Get_Instance ()->Set_Search_Start(mix_filename);
+			// HACK HACK - Put the level 9 mix file first...
+			if( ::lstrcmpi( mix_filename, "M09.mix" ) == 0 && FileFactoryListClass::Get_Instance () != NULL ){
+				FileFactoryListClass::Get_Instance()->Set_Search_Start( mix_filename );
 			}
 
-			StringClass thumb_filename(mix_root_name,true);
-			thumb_filename+=".thu";
-			ThumbnailManagerClass::Add_Thumbnail_Manager(thumb_filename,mix_filename);
+			StringClass thumb_filename( mix_root_name, true );
+			thumb_filename += ".thu";
+			ThumbnailManagerClass::Add_Thumbnail_Manager( thumb_filename, mix_filename );
 		}
 	}
 
-	return ;
+	return;
 }
 
-void	SaveGameManager::Load_Game( const char * filename )
-{
+void SaveGameManager::Load_Game( const char* filename ){
 	WWLOG_PREPARE_TIME_AND_MEMORY("Load_Game");
 
 	WWMEMLOG(MEM_GAMEDATA);
@@ -249,16 +178,14 @@ void	SaveGameManager::Load_Game( const char * filename )
 	ChunkLoadClass cload(file);
 
 	WWLOG_INTERMEDIATE("Open file");
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
-			case CHUNKID_LEVEL_INFO:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
-						
-						READ_MICRO_CHUNK_WWSTRING( cload,	MICROCHUNKID_MAP_FILENAME,			MapFilename );
-						READ_MICRO_CHUNK( cload,			MICROCHUNKID_MISSION_DESCRIPTION,	MissionDescriptionID );
-						READ_MICRO_CHUNK_WIDESTRING( cload, MICROCHUNKID_DESCRIPTION,			Description );
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
+			case CHUNKID_LEVEL_INFO: {
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
+						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_MAP_FILENAME, MapFilename );
+						READ_MICRO_CHUNK( cload, MICROCHUNKID_MISSION_DESCRIPTION, MissionDescriptionID );
+						READ_MICRO_CHUNK_WIDESTRING( cload, MICROCHUNKID_DESCRIPTION, Description );
 
 						default:
 							Debug_Say(( "Unrecognized Level Info chunkID\n" ));
@@ -269,12 +196,12 @@ void	SaveGameManager::Load_Game( const char * filename )
 
 
 				{
-				// Load level specific Defs
-				StringClass temp_ddb(MapFilename,true);
-				WWASSERT( temp_ddb.Get_Length() > 4 );
-				temp_ddb.Erase( MapFilename.Get_Length()-4, 4 );
-				temp_ddb	+= ".ddb";
-				Load_Definitions(temp_ddb);
+					// Load level specific Defs
+					StringClass temp_ddb(MapFilename,true);
+					WWASSERT( temp_ddb.Get_Length() > 4 );
+					temp_ddb.Erase( MapFilename.Get_Length()-4, 4 );
+					temp_ddb += ".ddb";
+					Load_Definitions(temp_ddb);
 				}
 				WWLOG_INTERMEDIATE("Load_Definitions");
 
@@ -283,17 +210,20 @@ void	SaveGameManager::Load_Game( const char * filename )
 				WWLOG_INTERMEDIATE("Load_Level");
 				
 				break;
+			}
 								
-			case CHUNKID_LEVEL_DATA:
+			case CHUNKID_LEVEL_DATA: {
 				if (CombatManager::I_Am_Server()) {
 					SaveLoadSystemClass::Load( cload, false );
 				}
 				WWLOG_INTERMEDIATE("Load");
 				break;
+			}
 
-			default:
+			default: {
 				Debug_Say(( "Unrecognized Level chunkID\n" ));
 				break;
+			}
 
 		}
 		cload.Close_Chunk();
@@ -304,52 +234,33 @@ void	SaveGameManager::Load_Game( const char * filename )
 	WWLOG_INTERMEDIATE("Rest of the stuff");
 }
 
-
-bool	SaveGameManager::Smart_Peek_Description
-(
-	const char *		filename,
-	WideStringClass &	description,
-	WideStringClass &	mission_name
-)
-{
-	//
+bool	SaveGameManager::Smart_Peek_Description( const char* filename, WideStringClass&	description, WideStringClass& mission_name ){
 	//	Get the root name and extension from the filename
-	//
 	char root_name[_MAX_FNAME] = { 0 };
 	char extension[_MAX_EXT] = { 0 };
 	::_splitpath (filename, NULL, NULL, root_name, extension);
 
 	StringClass filename_to_load(filename,true);
 
-	//
 	//	Is this a mix file?
-	//
 	FileFactoryClass * mix_factory = NULL;
 	if (::strcmpi (extension, ".mix") == 0) {		
 		
-		//
 		// Configure a mix file factory for this mix file
-		//
 		Debug_Say(( "Adding Temp MIX file factory %s\n", filename ));
 		if ( FileFactoryListClass::Get_Instance() != NULL ) {
 			mix_factory = new MixFileFactoryClass( filename, _TheFileFactory );
 			FileFactoryListClass::Get_Instance()->Add_FileFactory( mix_factory, filename );
 		}
 
-		//
 		//	Build the dynamic data filename from mix file's root name
-		//
 		filename_to_load.Format ("%s.ldd", root_name);
 	}
 
-	//
 	//	Peek at the information inside this mix file...
-	//
 	bool retval = Peek_Description (filename_to_load, description, mission_name);
 
-	//
 	//	Remove the temporary mix file factory we added
-	//
 	if (mix_factory != NULL) {
 		FileFactoryListClass::Get_Instance()->Remove_FileFactory(mix_factory);
 		delete mix_factory;
@@ -359,17 +270,8 @@ bool	SaveGameManager::Smart_Peek_Description
 	return retval;
 }
 
-
-bool SaveGameManager::Peek_Description
-(
-	const char *		filename,
-	WideStringClass &	description,
-	WideStringClass &	mission_name
-)
-{
-	//
+bool SaveGameManager::Peek_Description( const char* filename, WideStringClass& description, WideStringClass& mission_name ){
 	//	Open the file as a chunk
-	//
 	FileClass * file = _TheFileFactory->Get_File(filename);
 	WWASSERT(file != NULL);
 	file->Open(FileClass::READ);
@@ -378,10 +280,8 @@ bool SaveGameManager::Peek_Description
 	bool retval			= false;
 	int mission_name_id	= 0;
 	StringClass map_filename(0,true);
-	
-	//
+
 	//	Loop until we've found the header chunk
-	//
 	while (retval == false && cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -428,11 +328,8 @@ bool SaveGameManager::Peek_Description
 	return retval;
 }
 
-bool SaveGameManager::Peek_Map_Name( const char * filename, StringClass &map_name )
-{
-	//
+bool SaveGameManager::Peek_Map_Name( const char* filename, StringClass& map_name ){
 	//	Open the file as a chunk
-	//
 	FileClass * file = _TheFileFactory->Get_File(filename);
 	WWASSERT(file != NULL);
 	file->Open(FileClass::READ);
@@ -440,23 +337,18 @@ bool SaveGameManager::Peek_Map_Name( const char * filename, StringClass &map_nam
 
 	bool retval = false;
 	
-	//
-	//	Loop until we've found the header chunk
-	//
-	while (retval == false && cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
+	// Loop until we've found the header chunk
+	while( retval == false && cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case CHUNKID_LEVEL_INFO:
-				while (retval == false && cload.Open_Micro_Chunk()) {
+				while( retval == false && cload.Open_Micro_Chunk() ){
 					switch(cload.Cur_Micro_Chunk_ID()) {
-						
-					//
-					//	Read the map name string from chunk	
-					//
-					case MICROCHUNKID_MAP_FILENAME:
-						LOAD_MICRO_CHUNK_WWSTRING( cload, map_name );
-						retval = true;
-						break;
+						// Read the map name string from chunk	
+						case MICROCHUNKID_MAP_FILENAME: {
+							LOAD_MICRO_CHUNK_WWSTRING( cload, map_name );
+							retval = true;
+							break;
+						}
 					}
 					cload.Close_Micro_Chunk();
 				}
@@ -465,18 +357,13 @@ bool SaveGameManager::Peek_Map_Name( const char * filename, StringClass &map_nam
 		cload.Close_Chunk();
 	}
 
-	//
-	//	Close the file
-	//
+	// Close the file
 	file->Close();
 	_TheFileFactory->Return_File(file);
 
 	return retval;
 }
 
-/*
-**
-*/
 void	SaveGameManager::Save_Level( void )
 {
 	Debug_Say(( "Save Level %s\n", MapFilename ));
@@ -490,31 +377,22 @@ void	SaveGameManager::Save_Level( void )
 									NULL );
 }
 
-void	SaveGameManager::Load_Level( void )
-{
-	Debug_Say(( "Load Level %s\n", MapFilename ));
+void SaveGameManager::Load_Level(void){
+	Debug_Say( ( "Load Level %s\n", MapFilename ) );
 	Load_Save_Load_System( MapFilename, false );	// false = no automatic post load processing (needs to be called explicitly)
 }
 
-/*
-**
-*/
-void	SaveGameManager::Save_Definitions( const char * filename )
-{
-	Debug_Say(( "Save Definitions %s\n", filename ));
+void SaveGameManager::Save_Definitions( const char* filename ){
+	Debug_Say( ( "Save Definitions %s\n", filename ) );
 	Save_Save_Load_System( filename, &_TheDefinitionMgr, NULL );
 }
 
-void	SaveGameManager::Load_Definitions( const char * filename )
-{
+void SaveGameManager::Load_Definitions( const char* filename ){
 	WWMEMLOG(MEM_GAMEDATA);
 	Debug_Say(( "Load Definitions %s\n", filename ));
 	Load_Save_Load_System( filename, true );	// true = automatic post load processing
 }
 
-/*
-**
-*/
 void _cdecl SaveGameManager::Save_Save_Load_System( const char * filename, ... )
 {
 	FileClass * file = _TheWritingFileFactory->Get_File( filename );
@@ -539,9 +417,8 @@ void _cdecl SaveGameManager::Save_Save_Load_System( const char * filename, ... )
 	_TheWritingFileFactory->Return_File(file);
 }
 
-void	SaveGameManager::Load_Save_Load_System( const char * filename, bool auto_post_load )
-{
-	FileClass * file = _TheFileFactory->Get_File( filename );
+void SaveGameManager::Load_Save_Load_System( const char* filename, bool auto_post_load ){
+	FileClass* file = _TheFileFactory->Get_File( filename );
 	if ( file != NULL ) {
 		file->Open( FileClass::READ );
 		ChunkLoadClass cload(file);
@@ -550,7 +427,5 @@ void	SaveGameManager::Load_Save_Load_System( const char * filename, bool auto_po
 		_TheFileFactory->Return_File(file);
 	} else {
 		Debug_Say(( "Failed to load file %s\n", filename ));
-//		WWASSERT( file );
 	}
 }
-

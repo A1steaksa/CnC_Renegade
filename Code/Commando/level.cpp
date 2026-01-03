@@ -51,24 +51,22 @@
 /*
 ** Release all objects and resources loaded for this level
 */
-void		LevelManager::Release_Level( void )
+void LevelManager::Release_Level(void)
 {
 WWPROFILE( "Release Level" );
-	SaveGameManager::Set_Map_Filename( NULL );
+	SaveGameManager::Set_Map_Filename(NULL);
 	ConversationMgrClass::Reset_Active_Conversations ();
 
-	//
 	// Stop (and free) any currently playing sounds
-	//
-   WWASSERT(WWAudioClass::Get_Instance() != NULL);
-   SoundSceneClass *sound_scene = WWAudioClass::Get_Instance ()->Get_Sound_Scene ();
-	if( sound_scene != NULL ) {
-		sound_scene->Flush_Scene ();
+	WWASSERT(WWAudioClass::Get_Instance() != NULL);
+	SoundSceneClass* sound_scene = WWAudioClass::Get_Instance()->Get_Sound_Scene();
+	if( sound_scene != NULL ){
+		sound_scene->Flush_Scene();
 	}	
 
-	WWAudioClass::Get_Instance ()->Flush_Playlist ();
+	WWAudioClass::Get_Instance()->Flush_Playlist();
 
-	GameObjManager::Destroy_All();		// Kill All Objects (including the Camera)
+	GameObjManager::Destroy_All(); // Kill All Objects (including the Camera)
 
 	TransitionManager::Reset();
 

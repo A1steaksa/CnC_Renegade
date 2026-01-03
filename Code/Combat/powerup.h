@@ -81,7 +81,6 @@ protected:
 	int											GrantWeaponRounds;
 	bool											GrantWeaponClips;
 	bool											Persistent;
-	//bool											IsCaptureTheFlag;
 	int											GrantKey;
 	bool											AlwaysAllowGrant;
 

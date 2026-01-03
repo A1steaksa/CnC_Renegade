@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***                            Confidential - Westwood Studios                              ***
  ***********************************************************************************************
@@ -44,7 +26,6 @@
 #include "wwsaveload.h"
 #include "input.h"
 #include "inputconfigmgr.h"
-//#include "gamesettings.h"
 #include "ffactory.h"
 #include "assets.h"
 #include "_globals.h"
@@ -53,9 +34,9 @@
 #include "wolgmode.h"		// gamemode
 #include "movie.h"			// gamemode
 #include "gamemenu.h"		// gamemode
-#include "overlay.h"			// gamemode
+#include "overlay.h"		// gamemode
 #include "multihud.h"		// gamemode
-#include "console.h"			// gamemode
+#include "console.h"		// gamemode
 #include "textdisplay.h"	// gamemode
 #include "scorescreen.h"	// gamemode
 #include "msgloop.h"
@@ -134,8 +115,8 @@ extern const char *VALUE_NAME_TEXTURE_FILTER_MODE;
 /*
 ** This defines the subdirectory where the game will load all data from
 */
-const char *	DATA_SUBDIRECTORY			= "DATA\\";
-const char *	SAVE_SUBDIRECTORY			= "DATA\\SAVE\\";
+const char *	DATA_SUBDIRECTORY		= "DATA\\";
+const char *	SAVE_SUBDIRECTORY		= "DATA\\SAVE\\";
 const char *	CONFIG_SUBDIRECTORY		= "DATA\\CONFIG\\";
 const char *	MOVIES_SUBDIRECTORY		= "DATA\\MOVIES\\";
 
@@ -156,8 +137,7 @@ extern char DefaultRegistryModifier[1024];
 /*
 ** Static global lod settings for particles
 */
-static const float _ParticleLODScreenSizes[17] =
-{
+static const float _ParticleLODScreenSizes[17] = {
 	0.0025f,
 	0.0050f,
 	0.0075f,
@@ -612,115 +592,34 @@ bool RestartNeeded = true;
  * HISTORY:                                                                                    *
  *   12/3/2001 11:26PM ST : Created                                                            *
  *=============================================================================================*/
-void Get_Version_Number(unsigned long *major, unsigned long *minor)
-{
+void Get_Version_Number( unsigned long* major, unsigned long* minor ){
 	// Version info removed per Legal review requirements. LFeenanEA - 8th February 2025
 	
 	unsigned long version_major = 0;
 	unsigned long version_minor = 0;
 }
 
-
-/*
-**
-*/
-#if 0
-#define	FIRST_CHAR	'a'
-#define	LAST_CHAR	'z'
-
-#include "realcrc.h"
-int	CRC_Next( unsigned char ** p, int length ) 
-{
-	int ret = 0;
-	if ( length == -1 ) {
-		return 1;
-	}
-	if ( **p == LAST_CHAR ) {
-		*p = *p-1;
-		ret |= CRC_Next( p, length-1 );
-		*p = *p+1;
-		**p = FIRST_CHAR;
-	} else {
-		**p = **p+1;
-	}
-	return ret;
-
-}
-
-void CRC_Check( void ) 
-{
-	Debug_Say(( "CRC_Check\n" ));
-	int count = 0;
-
-#define	MAX_STRING	10
-#define	GOAL_CRC		65729409
-
-	int start = timeGetTime();
-
-	unsigned char string[MAX_STRING+1];
-	for ( int length = 1; length <= MAX_STRING; length++ ) 
-	{
-		unsigned char * p = &string[length-1];
-		string[length] = 0;
-		for ( int i = 0; i < length; i++ ) {
-			string[i] = FIRST_CHAR;
-		}
-
-		while ( 1 ) {
-/*			if ( (count & 0x0FFFF) == 0 ) {
-				Debug_Say(( "Checking %d \"%s\"\n", count, string ));
-			}*/
-			int crc = CRC_String( (char *)string );
-			if ( crc == GOAL_CRC ) {
-				Debug_Say(( "CRC MATCH \"%s\" (count %d) at %d\n\n", string, count, timeGetTime()-start ));
-			}
-			count++;
-			if ( CRC_Next( &p, length-1 ) != 0 ) {
-				break;
-			}
-		}
-Debug_Say(( "End length %d (count %d) at %d\n", length, count, timeGetTime()-start ));
-	}
-
-//	strcpy( string, "miketheheadlesschickenisgod" );
-//	Debug_Say(( "CRC %d\n", crc ));
-	return;
-}
-#endif
-/*
-**
-*/
-bool Game_Init(void)
-{
+bool Game_Init(void){
 	WWMEMLOG(MEM_GAMEINIT);
 
 	// Set registry key to 1 for the duration of the init. This way we know if the program crashed while the init.
 	RegistryClass registry( APPLICATION_SUB_KEY_NAME_DEBUG );
-	if ( registry.Is_Valid() ) {
+	if( registry.Is_Valid() ){
 		registry.Set_Int( VALUE_NAME_GAME_INITIALIZATION_IN_PROGRESS, 1 );
 		unsigned crash_version=registry.Get_Int( VALUE_NAME_APPLICATION_CRASH_VERSION, 0 );
-#ifdef WWDEBUG
-		if (crash_version) Copy_Logs(crash_version);
-#endif // WWDEBUG
 		registry.Set_Int( VALUE_NAME_APPLICATION_CRASH_VERSION, 0 );
 	}
 
-	//
-	//	Ensure our directory structure exists
-	//
-	Construct_Directory_Structure ();
+	// Ensure our directory structure exists
+	Construct_Directory_Structure();
 
-	//
-	//	Initialize our debugging framework
-	//
+	// Initialize our debugging framework
 	DebugManager::Init();
   	DebugManager::Load_Registry_Settings( APPLICATION_SUB_KEY_NAME_DEBUG );
-	WWDebug_Install_Assert_Handler(Commando_Assert_Handler);
+	WWDebug_Install_Assert_Handler( Commando_Assert_Handler );
 	BuildInfoClass::Log_Build_Info();
 
-//CRC_Check();
-
-	Get_Version_Number(NULL, NULL);
+	Get_Version_Number( NULL, NULL );
 
 	// setup Writing Factory
 	RenegadeWritingFileFactory.Set_Sub_Directory( DATA_SUBDIRECTORY );
@@ -737,31 +636,26 @@ bool Game_Init(void)
 	_TheSimpleFileFactory->Set_Strip_Path( true );
 
 	_RenegadeFileFactory.Add_FileFactory( &RenegadeBaseFileFactory, "" );
-	_RenegadeFileFactory.Add_FileFactory( new MixFileFactoryClass( "Always2.dat", &RenegadeBaseFileFactory ), "Always2.dat" );
-	_RenegadeFileFactory.Add_FileFactory( new MixFileFactoryClass( "Always.dbs", &RenegadeBaseFileFactory ), "Always.dbs" );
-	_RenegadeFileFactory.Add_FileFactory( new MixFileFactoryClass( "Always.dat", &RenegadeBaseFileFactory ), "Always.dat" );
+	_RenegadeFileFactory.Add_FileFactory( new MixFileFactoryClass( "Always2.dat", RenegadeBaseFileFactory& ), "Always2.dat" );
+	_RenegadeFileFactory.Add_FileFactory( new MixFileFactoryClass( "Always.dbs", RenegadeBaseFileFactory& ), "Always.dbs" );
+	_RenegadeFileFactory.Add_FileFactory( new MixFileFactoryClass( "Always.dat", RenegadeBaseFileFactory& ), "Always.dat" );
 
-	//
-	//	Search for all mix files in the data directory
-	//
-	WIN32_FIND_DATA find_info	= { 0 };
-	BOOL keep_going				= TRUE;
-	HANDLE file_find				= NULL;
-	for (file_find = ::FindFirstFile ("data\\*.mix", &find_info);
-		 (file_find != INVALID_HANDLE_VALUE) && keep_going;
-		  keep_going = ::FindNextFile (file_find, &find_info))
-	{
-		//
-		//	Add this mix file to our mix file factory list
-		//
+	// Search for all mix files in the data directory
+	WIN32_FIND_DATA find_info = { 0 };
+	BOOL keep_going = TRUE;
+	HANDLE file_find = NULL;
+	for(
+		file_find = ::FindFirstFile ("data\\*.mix", find_info& );
+		( file_find != INVALID_HANDLE_VALUE ) && keep_going;
+		keep_going = ::FindNextFile ( file_find, find_info& )
+	){
+		// Add this mix file to our mix file factory list
 		_RenegadeFileFactory.Add_FileFactory( new MixFileFactoryClass (find_info.cFileName, &RenegadeBaseFileFactory ), find_info.cFileName );
 	}
 
-	//
-	//	Close the search handle
-	//
-	if (file_find != INVALID_HANDLE_VALUE) {
-		::FindClose (file_find);
+	// Close the search handle
+	if( file_find != INVALID_HANDLE_VALUE ){
+		::FindClose( file_find );
 	}
 
 	_TheFileFactory = &_RenegadeFileFactory;
@@ -774,8 +668,6 @@ bool Game_Init(void)
 
 	AudioFileFactory.Set_Base_Factory( _TheFileFactory );
 
-	//Setup_Mix_File();
-
 	// Lets seed the Random Generator, a little
 	int count = TIMEGETTIME() & 0xFF;
 	while ( count-- > 0 ) {
@@ -785,47 +677,33 @@ bool Game_Init(void)
 	// Thumbnail manager pre init will ensure that thumbnail database
 	// is up-to-date.
 	bool show_thumbnail_pre_init_dialog = true;
-#ifdef WWDEBUG
-	show_thumbnail_pre_init_dialog = cDevOptions::ShowThumbnailPreInitDialog.Get();
-#endif // WWDEBUG
-//	ThumbnailManagerClass::Pre_Init(show_thumbnail_pre_init_dialog);
 
-	//
 	// Create an instance of the sound library
-	//
 	new WWAudioClass(ConsoleBox.Is_Exclusive());
 	WWAudioClass::Get_Instance()->Initialize( APPLICATION_SUB_KEY_NAME_SOUND );
 	WWAudioClass::Get_Instance()->Set_File_Factory( &AudioFileFactory );
 	// Install text callback
-	WWAudioClass::Get_Instance()->Register_Text_Callback(AudioTextCallback,0);
+	WWAudioClass::Get_Instance()->Register_Text_Callback( AudioTextCallback, 0 );
 
-	//
-	//	Load the multiplayer settings
-	//
-	MPSettingsMgrClass::Load_Settings ();
+	// Load the multiplayer settings
+	MPSettingsMgrClass::Load_Settings();
 
-	/*
-	**
-	*/
-	WW3DAssetManager * asset_manager = new WW3DAssetManager;
-//	asset_manager->Open_Texture_File_Cache("cache_");
+	WW3DAssetManager* asset_manager = new WW3DAssetManager;
 	asset_manager->Set_WW3D_Load_On_Demand( true );
-	asset_manager->Register_Prototype_Loader(&_ParticleEmitterLoader);
-	asset_manager->Register_Prototype_Loader(&_SphereLoader);
-	asset_manager->Register_Prototype_Loader(&_RingLoader);
-	asset_manager->Register_Prototype_Loader (&_SoundRenderObjLoader);
-	asset_manager->Set_Activate_Fog_On_Load (true);
-
-	//GameSettings::Init();
+	asset_manager->Register_Prototype_Loader( _ParticleEmitterLoader& );
+	asset_manager->Register_Prototype_Loader( _SphereLoader& );
+	asset_manager->Register_Prototype_Loader( _RingLoader& );
+	asset_manager->Register_Prototype_Loader( _SoundRenderObjLoader& );
+	asset_manager->Set_Activate_Fog_On_Load( true );
 
 	// Initialize WWMath
 	WWMath::Init();
 
 	// Initialize the pathfind system
-	PathMgrClass::Initialize ();
+	PathMgrClass::Initialize();
 
 	// Initialize WW3D
-	switch ( WW3D::Init(MainWindow, NULL, ConsoleBox.Is_Exclusive() ? true : false)) {
+	switch( WW3D::Init( MainWindow, NULL, ConsoleBox.Is_Exclusive() ? true : false ) ){
 	case WW3D_ERROR_OK:	// Success!
 		break;
 	case WW3D_ERROR_DIRECTX8_INITIALIZATION_FAILED:
@@ -838,111 +716,98 @@ bool Game_Init(void)
 		return false;
 	}
 
-	if (ConsoleBox.Is_Exclusive()) {
-		WW3D::Enable_Decals(false);
-		PhysicsSceneClass * scene = PhysicsSceneClass::Get_Instance();
-		scene->Set_Max_Simultaneous_Shadows(0);
-		DazzleRenderObjClass::Enable_Dazzle_Rendering(false);
-	} else {
-		if ( WW3D::Registry_Load_Render_Device( APPLICATION_SUB_KEY_NAME_RENDER, true ) != WW3D_ERROR_OK ) {
+	if( ConsoleBox.Is_Exclusive() ){
+		WW3D::Enable_Decals( false );
+		PhysicsSceneClass* scene = PhysicsSceneClass::Get_Instance();
+		scene->Set_Max_Simultaneous_Shadows( 0 );
+		DazzleRenderObjClass::Enable_Dazzle_Rendering( false );
+	}else{
+		if( WW3D::Registry_Load_Render_Device( APPLICATION_SUB_KEY_NAME_RENDER, true ) != WW3D_ERROR_OK ){
 			WWDEBUG_SAY(("WW3D::Registry_Load_Render_Device Failed!\r\n"));
 			return false;
 		}
 
-		if ( WW3D::Registry_Save_Render_Device( APPLICATION_SUB_KEY_NAME_RENDER ) != WW3D_ERROR_OK ) {
+		if( WW3D::Registry_Save_Render_Device( APPLICATION_SUB_KEY_NAME_RENDER ) != WW3D_ERROR_OK ){
 			WWDEBUG_SAY(("WW3D::Registry_Save_Render_Device Failed!\r\n"));
 			return false;
 		}
-		WW3D::Enable_Static_Sort_Lists (true);
+		WW3D::Enable_Static_Sort_Lists(true);
 	}
-	if (AutoRestart.Get_Restart_Flag() || ServerSettingsClass::Is_Command_Line_Mode() || ConsoleBox.Is_Exclusive()) {
-		if (!ConsoleBox.Is_Exclusive()) {
-			::ShowWindow( MainWindow, SW_MINIMIZE );	// minimize if we are starting automatically.
+
+	if( AutoRestart.Get_Restart_Flag() || ServerSettingsClass::Is_Command_Line_Mode() || ConsoleBox.Is_Exclusive() ){
+		if( !ConsoleBox.Is_Exclusive() ){
+			::ShowWindow( MainWindow, SW_MINIMIZE ); // minimize if we are starting automatically.
 		}
 		ConsoleBox.Init();
-	} else {
-		::ShowWindow( MainWindow, SW_SHOW );	// show the (initially hidden) window
+	}else{
+		::ShowWindow( MainWindow, SW_SHOW ); // show the (initially hidden) window
 	}
 
 	// Clear screen
-	for (int frame=0;frame<3;++frame) {
-		WW3D::Begin_Render(true,true,Vector3(0.0f,0.0f,0.0f));
+	for( int frame=0; frame<3; ++frame ){
+		WW3D::Begin_Render( true, true, Vector3( 0.0f, 0.0f, 0.0f ) );
 		WW3D::End_Render();
 	}
 
 	ParticleEmitterClass::Set_Default_Remove_On_Complete(false);	// (gth) 09/17/2000 - by default emitters shouldn't self-destruct
 
-	for (int i=0; i<17; i++) {
-		ParticleBufferClass::Set_LOD_Max_Screen_Size(i,_ParticleLODScreenSizes[i]);
+	for( int i=0; i < 17; i++ ){
+		ParticleBufferClass::Set_LOD_Max_Screen_Size( i, _ParticleLODScreenSizes[i] );
 	}
 
-	if ( cUserOptions::PermitDiagLogging.Is_True() &&
-		  DebugManager::Is_Diag_Logging_Enabled() ) {
-
+	if( cUserOptions::PermitDiagLogging.Is_True() && DebugManager::Is_Diag_Logging_Enabled() ){
 		DiagLogClass::Init();
 	}
 
 	WWPhys::Init();
 	WWSaveLoad::Init();
 
-	//
-	//	Load the strings table
-	//
+	// Load the strings table
 	TranslateDBClass::Initialize();
-	FileClass *file	= _TheFileFactory->Get_File( STRINGS_FILENAME );
-	if (file != NULL) {
-		file->Open (FileClass::READ);				//	Open or the file
-		if ( file->Is_Available() ) {
-			ChunkLoadClass cload (file);				// Load the database
-			SaveLoadSystemClass::Load(cload);
+	FileClass* file = _TheFileFactory->Get_File( STRINGS_FILENAME );
+	if( file != NULL ){
+		file->Open( FileClass::READ ); // Open or the file
+		if( file->Is_Available() ){
+			ChunkLoadClass cload( file ); // Load the database
+			SaveLoadSystemClass::Load( cload );
 		}
-		file->Close ();								// Close the file
+		file->Close(); // Close the file
 		_TheFileFactory->Return_File (file);
 	}
-	//TranslateDBClass::Set_Current_Language (TranslateDBClass::LANGID_CHINESE);
 
-	//
-	//	Initialize the input control system
-	//
-	bool dinput_avail = (ConsoleBox.Is_Exclusive()) ? false : true;
+	// Initialize the input control system
+	bool dinput_avail = ( ConsoleBox.Is_Exclusive() ) ? false : true;
 
 	Input::Init(dinput_avail);
 	Input::Load_Registry( APPLICATION_SUB_KEY_NAME_CONTROLS );
 	InputConfigMgrClass::Initialize();
 
-	//
-	//	Initialize the skin selection framework
-	//
+	// Initialize the skin selection framework
 	SkinPackageMgrClass::Initialize ();
 	ModPackageMgrClass::Initialize ();
 	ModPackageMgrClass::Build_List ();
 
-	//
-	//	Load the conversation database
-	//
-	file	= _TheFileFactory->Get_File( CONV_DB_FILENAME );
-	if (file != NULL) {
-		file->Open (FileClass::READ);				//	Open or the file
-		if ( file->Is_Available() ) {
-			ChunkLoadClass cload (file);				// Load the database
-			SaveLoadSystemClass::Load(cload);
+	// Load the conversation database
+	file = _TheFileFactory->Get_File( CONV_DB_FILENAME );
+	if( file != NULL ){
+		file->Open ( FileClass::READ ); //	Open or the file
+		if ( file->Is_Available() ){
+			ChunkLoadClass cload( file ); // Load the database
+			SaveLoadSystemClass::Load( cload );
 		}
-		file->Close ();								// Close the file
-		_TheFileFactory->Return_File (file);
+		file->Close(); // Close the file
+		_TheFileFactory->Return_File( file );
 	}
 
-	//
-	//	Check to make sure the code version matches the strings
+	// Check to make sure the code version matches the strings
 	// table version
-	//
-	if (TranslateDBClass::Get_Version_Number () != STRINGS_VER) {
+	if( TranslateDBClass::Get_Version_Number() != STRINGS_VER ){
 		MessageBox( 0,
 			"This build of Renegade is out of sync with the strings database (strings.tdb).  Strings will be incorrect and may cause the game to crash.",
 			"Version Error",
 			MB_OK | MB_ICONEXCLAMATION | MB_SETFOREGROUND  );
 	}
 
-	//
 	//	Note:  Due to interdependencies (yuck!) between these subsystems, here's the
 	// order they need to be initialized in:
 	//
@@ -966,9 +831,9 @@ bool Game_Init(void)
 	cGameData::Onetime_Init();
 	cBandwidthGraph::Onetime_Init();
 
-   cNetUtil::Wsa_Init();
+	cNetUtil::Wsa_Init();
 
-	CombatManager::Init(ConsoleBox.Is_Exclusive() ? false : true);
+	CombatManager::Init( ConsoleBox.Is_Exclusive() ? false : true );
 
 	CampaignManager::Init();
 
@@ -981,7 +846,6 @@ bool Game_Init(void)
 	GameModeManager::Add( new MovieGameModeClass );
 	GameModeManager::Add( new ConsoleGameModeClass );
 	GameModeManager::Add( new ScoreScreenGameModeClass );
-	//GameModeManager::Add( new LobbyGameModeClass );
 	GameModeManager::Add( new TextDisplayGameModeClass );
 	GameModeManager::Add( new Overlay3DGameModeClass );
 
@@ -994,103 +858,57 @@ bool Game_Init(void)
 	// After TextDisplay is created, install the Display Handler
 	DebugManager::Set_Display_Handler(&TextDisplayHandler);
 
-	//DEADMENU MenuManager::Set_Menu( "Menu_Main" );
-
 	// Load the accelerator table and hand it off to WWLIB.
 	// Note:  Accelerator tables that are loaded from resources (like
 	// we are doing here) do not need to be manually freed.  Windows
 	// will cleanup for us when the process terminates.
 	HACCEL haccel = ::LoadAccelerators (::GetModuleHandle (NULL), MAKEINTRESOURCE (IDR_ACCELERATOR));
-	if (haccel) {
-		::Add_Accelerator (MainWindow, haccel);
+	if( haccel ){
+		::Add_Accelerator( MainWindow, haccel );
 	}
 
-	//WW3D::Set_Texture_Reduction( 1 );
-
-	//
-	//	Initialize the encyclopedia logic
-	//
+	// Initialize the encyclopedia logic
 	EncyclopediaMgrClass::Initialize ();
 
-#if (IMMEDIATE_LOAD)
-	// Immediately load up the specified level
-	GameInitMgrClass::Initialize_SP ();
-	GameInitMgrClass::Start_Game (IMMEDIATE_LOAD_LEVELNAME);
-#endif
-
 	cDiagnostics::Init();
-	//cHelpText::Init();
 
-	//
 	// NIC initialization
-	//
 	cNicEnum::Init();
-
-
 
 	if ( registry.Is_Valid() ) {
 		registry.Set_Int( VALUE_NAME_GAME_INITIALIZATION_IN_PROGRESS, 0 );
 		registry.Set_Int( VALUE_NAME_APPLICATION_CRASH_VERSION, DebugManager::Get_Version_Number() );
 	}
 
-
-#if (IMMEDIATE_LOAD==0)
-
-#if 0	// Not anymore
-	//
-	//	Start the main menu
-	//
-	RenegadeDialogMgrClass::Goto_Location (RenegadeDialogMgrClass::LOC_MAIN_MENU);
-#else
-
-
-	//
 	// Parse the server settings files if they will be used soon to make sure there are no errors.
-	//
-	if (ServerSettingsClass::Is_Command_Line_Mode()) {
-		if (!ServerSettingsClass::Parse(false)) {
-			AutoRestart.Set_Restart_Flag(false);
+	if( ServerSettingsClass::Is_Command_Line_Mode() ){
+		if( !ServerSettingsClass::Parse( false ) ){
+			AutoRestart.Set_Restart_Flag( false );
 			Game_Shutdown();
 			return (false);
 		}
 	}
 
-	//
 	// If this is a post crash restart (or a FDS starting up) then just go straight into the game.
-	//
-	if (AutoRestart.Get_Restart_Flag()) {
+	if( AutoRestart.Get_Restart_Flag() ){
 		AutoRestart.Restart_Game();
-	} else if (cGameSpyAdmin::Is_Gamespy_Game()) {
-		if (!ConsoleBox.Is_Exclusive()) {
-			RenegadeDialogMgrClass::Goto_Location (RenegadeDialogMgrClass::LOC_SPLASH_IN);
+	}else if( cGameSpyAdmin::Is_Gamespy_Game() ){
+		if( !ConsoleBox.Is_Exclusive() ){
+			RenegadeDialogMgrClass::Goto_Location( RenegadeDialogMgrClass::LOC_SPLASH_IN );
 		}
-	} else {
-		MovieGameModeClass * mode = (MovieGameModeClass *)GameModeManager::Find ("Movie");
-		if ( mode ) {
+	}else{
+		MovieGameModeClass* mode = (MovieGameModeClass*) GameModeManager::Find( "Movie" );
+		if( mode ){
 			mode->Activate();
-			mode->Startup_Movies( );
+			mode->Startup_Movies();
 		}
 	}
 
-#endif
-
-
-#endif
-
-
-	//
 	// Send our Spy Usage Info off to Gamespy
-	//
 	GameSpyQnR.TrackUsage();
 
 	return true;
 }
-
-
-
-
-
-
 
 
 /***********************************************************************************************
@@ -1109,8 +927,7 @@ bool Game_Init(void)
  * HISTORY:                                                                                    *
  *   11/9/2001 3:39PM ST : Created                                                             *
  *=============================================================================================*/
-char *Build_Registry_Location_String(char *base, char *modifier, char *sub)
-{
+char* Build_Registry_Location_String( char* base, char* modifier, char* sub ){
 	static char _whole_registry_string[1024];
 
 	WWASSERT(base != NULL);

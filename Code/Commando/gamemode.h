@@ -123,9 +123,9 @@ public:
 	/*
 	** Add, Remove, Destroy and count the modes
 	*/
-	static	GameModeClass *Add( GameModeClass *mode );	// { GameModeList.Add_Tail( mode ); return mode; }
-	static	void	Remove( GameModeClass *mode );		//			{ GameModeList.Remove( mode ); }
-	static	int	Count();	//										{ return GameModeList.Get_Count(); }
+	static GameModeClass* Add( GameModeClass *mode );
+	static void Remove( GameModeClass *mode );
+	static int Count();
 	static	void	Destroy( GameModeClass *mode );
 	static	void	Destroy_All( void );
 

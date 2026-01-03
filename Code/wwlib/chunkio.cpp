@@ -471,7 +471,7 @@ bool ChunkLoadClass::Peek_Next_Chunk( uint32* set_id, uint32* set_size ){
  *=============================================================================================*/
 bool ChunkLoadClass::Close_Chunk(){
 	// if user didn't close any micro chunks that he opened, bad things could happen
-	assert( InMicroChunk == false );							
+	assert( InMicroChunk == false );
 
 	// check for stack overflow
 	assert( StackIndex > 0 );
@@ -608,12 +608,12 @@ bool ChunkLoadClass::Close_Micro_Chunk(){
 	int pos = MicroChunkPosition;
 	
 	// seek the file past this micro chunk 
-	if (pos < csize) {
+	if( pos < csize ){
 
 		File->Seek(csize - pos,SEEK_CUR);
 		
 		// update the tracking variables for where we are in the normal chunk.
-		if (StackIndex > 0) {
+		if( StackIndex > 0 ){
 			PositionStack[StackIndex-1] += csize - pos;
 		}
 	}

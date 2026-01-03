@@ -140,11 +140,8 @@ protected:
 	friend class VehicleGameObj;
 };
 
-/*
-**
-*/
-class VehicleGameObj : public SmartGameObj {
 
+class VehicleGameObj : public SmartGameObj {
 public:
 	VehicleGameObj();
 	virtual	~VehicleGameObj();
@@ -158,7 +155,7 @@ public:
 	virtual	bool Save( ChunkSaveClass& csave );
 	virtual	bool Load( ChunkLoadClass& cload );
 	virtual	void On_Post_Load(void);
-	virtual	const PersistFactoryClass& Get_Factory(void) const;
+	virtual	const PersistFactoryClass& Get_Factory(void)  const;
 
 	virtual	void Startup(void);
 
@@ -174,67 +171,85 @@ public:
 	virtual int Get_Weapon_Control_Owner(void);
 
 	// Weapon
-	virtual bool		Set_Targeting( const Vector3 & pos, bool do_tilt = true );
-	virtual bool		Use_2D_Aiming( void ) 				{ return Get_Definition().Aim2D; }
-	virtual Matrix3D	Get_Look_Transform(void);
-	bool					Has_Turret( void)						{ return TurretBone != 0; }
+	virtual bool Set_Targeting( const Vector3& pos, bool do_tilt = true );
+	
+	virtual bool Use_2D_Aiming(void){
+		return Get_Definition().Aim2D;
+	}
+
+	virtual Matrix3D Get_Look_Transform(void);
+	
+	bool Has_Turret(void){
+		return TurretBone != 0;
+	}
 
 	// Type ID
-	virtual VehicleGameObj		*As_VehicleGameObj()		{ return this; }
-	virtual	bool	Is_Aircraft( void )						{ return Get_Definition().Type == VEHICLE_TYPE_FLYING; }
-	virtual  bool  Is_Turret( void )							{ return Get_Definition().Type == VEHICLE_TYPE_TURRET; }
+	virtual VehicleGameObj* As_VehicleGameObj(){
+		return this;
+	}
+
+	virtual	bool Is_Aircraft(void){
+		return Get_Definition().Type == VEHICLE_TYPE_FLYING;
+	}
+	
+	virtual bool Is_Turret(void){
+		return Get_Definition().Type == VEHICLE_TYPE_TURRET;
+	}
 
    virtual int Get_Player_Type(void) const;
 
 
 	// Occupants
-	void	Add_Occupant( SoldierGameObj * occupant, int seat_id );
-	void	Add_Occupant( SoldierGameObj * occupant );
-	void	Remove_Occupant( SoldierGameObj * occupant );
-	bool	Contains_Occupant( SoldierGameObj * occupant );
+	void Add_Occupant( SoldierGameObj* occupant, int seat_id );
+	void Add_Occupant( SoldierGameObj* occupant );
+	void Remove_Occupant( SoldierGameObj* occupant );
+	bool Contains_Occupant( SoldierGameObj* occupant );
 	int	Get_Occupant_Count(void);
-	int	Find_Seat( SoldierGameObj * occupant );
-   SoldierGameObj * Get_Driver(void);
-   SoldierGameObj * Get_Gunner(void);
-   SoldierGameObj * Get_Actual_Gunner(void);
-	virtual bool Is_Entry_Permitted(SoldierGameObj * p_soldier);
+	int	Find_Seat( SoldierGameObj* occupant );
+	SoldierGameObj* Get_Driver(void);
+	SoldierGameObj* Get_Gunner(void);
+	SoldierGameObj* Get_Actual_Gunner(void);
+	virtual bool Is_Entry_Permitted( SoldierGameObj* p_soldier );
 
-	void	Passenger_Entering( void );	// used to begin animation
-	void	Passenger_Exiting( void );	// used to begin animation
+	void Passenger_Entering(void);	// used to begin animation
+	void Passenger_Exiting(void);	// used to begin animation
 
 	void Set_Vehicle_Delivered(void);
 
 	// State
-	virtual	void	Export_Creation( BitStreamClass & packet );
-	virtual	void	Import_Creation( BitStreamClass & packet );
-   virtual	void	Export_Rare( BitStreamClass &packet );
-	virtual	void	Import_Rare( BitStreamClass &packet );
-	virtual	void	Import_Frequent( BitStreamClass & packet );
-   virtual	void	Export_Frequent( BitStreamClass & packet );
-   virtual	void	Import_State_Cs( BitStreamClass & packet );
-   virtual	void	Export_State_Cs( BitStreamClass & packet );
+	virtual	void Export_Creation( BitStreamClass& packet );
+	virtual	void Import_Creation( BitStreamClass& packet );
+	virtual	void Export_Rare( BitStreamClass& packet );
+	virtual	void Import_Rare( BitStreamClass& packet );
+	virtual	void Import_Frequent( BitStreamClass& packet );
+	virtual	void Export_Frequent( BitStreamClass& packet );
+	virtual	void Import_State_Cs( BitStreamClass& packet );
+	virtual	void Export_State_Cs( BitStreamClass& packet );
 
 	// Profile
-	const char *Get_Profile( void )						{ return Get_Definition().Profile; }
+	const char* Get_Profile(void){
+		return Get_Definition().Profile;
+	}
 
 	// Velocity
-	void Get_Velocity(Vector3 & vel);
-	void Set_Velocity(Vector3 & vel);
+	void Get_Velocity( Vector3& vel );
+	void Set_Velocity( Vector3& vel );
 
-	//virtual	void	Get_Extended_Information( StringClass & description );
-	virtual	void	Get_Description( StringClass & description );
+	virtual	void Get_Description( StringClass& description );
 
 	// Pathfinding
-	float Get_Turn_Radius (void) const	{ return Get_Definition ().TurnRadius; }
+	float Get_Turn_Radius(void) const {
+		return Get_Definition().TurnRadius;
+	}
 
 	// Engine control
-	bool	Is_Engine_Enabled (void) const;
-	void	Enable_Engine (bool onoff);
+	bool Is_Engine_Enabled(void) const;
+	void Enable_Engine( bool onoff );
 
 	// Wheel Effects
-	void	Init_Wheel_Effects( void );
-	void	Shutdown_Wheel_Effects( void );
-	void	Update_Wheel_Effects( void );
+	void Init_Wheel_Effects(void);
+	void Shutdown_Wheel_Effects(void);
+	void Update_Wheel_Effects(void);
 
 	// Damage
 	virtual	void	Apply_Damage( const OffenseObjectClass & damager, float scale = 1.0f, int alternate_skin = -1 );

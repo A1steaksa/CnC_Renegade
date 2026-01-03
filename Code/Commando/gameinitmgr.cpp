@@ -124,16 +124,14 @@ bool GameInitMgrClass::Is_Game_In_Progress(void)
 //	Start_Game
 //
 ////////////////////////////////////////////////////////////////
-void
-GameInitMgrClass::Start_Game (const char *map_name, int teamChoice, unsigned long clanID)
-{
+void GameInitMgrClass::Start_Game( const char *map_name, int teamChoice, unsigned long clanID ){
 	unsigned long time;
 
 	WWASSERT(map_name != NULL);
-   WWDEBUG_SAY (("GameInitMgrClass::Start_Game(%s)\n", map_name));
+	WWDEBUG_SAY (("GameInitMgrClass::Start_Game(%s)\n", map_name));
 
 	// NOTE: Multi-play does not need this fix because it does not sound page swap.
-	if (IS_SOLOPLAY) {
+	if( IS_SOLOPLAY ){
 	
 		// IML: First, allow a short period to process any outstanding sound effects that may have
 		// been started by the caller.
@@ -155,8 +153,8 @@ GameInitMgrClass::Start_Game (const char *map_name, int teamChoice, unsigned lon
 	//
 	// Kill off any old suspended game
 	//
-	if (GameModeManager::Find ("Combat")->Is_Suspended ()) {
-		End_Game ();
+	if( GameModeManager::Find( "Combat" )->Is_Suspended() ){
+		End_Game();
 		GameModeManager::Safely_Deactivate ();
 	}
 

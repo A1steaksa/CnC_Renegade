@@ -47,17 +47,14 @@
 */
 CommandoSaveLoadClass	_CommandoSaveLoad;
 
-enum	{
-	CHUNKID_NETWORK								= 1011991043,
+enum {
+	CHUNKID_NETWORK		= 1011991043,
 	CHUNKID_GOD,
 	CHUNKID_CAMPAIGN,
 };
 
-/*
-**
-*/
-bool	CommandoSaveLoadClass::Save( ChunkSaveClass &csave )
-{
+
+bool CommandoSaveLoadClass::Save( ChunkSaveClass& csave ){
 	WWMEMLOG(MEM_GAMEDATA);
 
 	csave.Begin_Chunk( CHUNKID_NETWORK );
@@ -75,8 +72,7 @@ bool	CommandoSaveLoadClass::Save( ChunkSaveClass &csave )
 	return true;
 }
 
-bool	CommandoSaveLoadClass::Load( ChunkLoadClass &cload )
-{
+bool CommandoSaveLoadClass::Load( ChunkLoadClass& cload ){
 	WWMEMLOG(MEM_GAMEDATA);
 
 	while (cload.Open_Chunk()) {

@@ -301,7 +301,7 @@ bool VehicleGameObjDef::Load( ChunkLoadClass& cload ){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_NOD_DAMAGE_REPORT_ID, NodDamageReportID );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_GDI_DESTROY_REPORT_ID, GDIDestroyReportID );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DEF_NOD_DESTROY_REPORT_ID, NodDestroyReportID );
-						
+
 						default:
 							Debug_Say(( "Unrecognized VehicleDef Variable chunkID\n" ));
 							break;
@@ -430,7 +430,7 @@ void VehicleGameObj::Init( void ){
 	DriverIsGunner = DefaultDriverIsGunner;
 }
 
-void	VehicleGameObj::Init( const VehicleGameObjDef & definition ){
+void VehicleGameObj::Init( const VehicleGameObjDef & definition ){
 	DriverIsGunner = DefaultDriverIsGunner;
 	SmartGameObj::Init( definition );
 
@@ -456,7 +456,7 @@ const VehicleGameObjDef & VehicleGameObj::Get_Definition( void ) const{
 }
 
 // VehicleGameObj Save and Load
-enum	{
+enum {
 	CHUNKID_PARENT							=	923991632,
 	CHUNKID_VARIABLES,
 	XXXCHUNKID_ANIM_CONTROL,
@@ -1131,12 +1131,12 @@ void VehicleGameObj::Apply_Control( void ){
 
 static char * _profile_name = "Vehicle Think";
 
-void	VehicleGameObj::Think( void ){{	
+void	VehicleGameObj::Think( void ){
+	{	
+		Apply_Control(); // ????
+		Update_Transitions();
+	}
 
-	Apply_Control(); // ????
-
-	Update_Transitions();
-}
 	SmartGameObj::Think(); // Perform smart object thinking{	
 
 	Update_Sound_Effects();

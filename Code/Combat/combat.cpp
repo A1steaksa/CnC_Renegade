@@ -102,68 +102,58 @@
 const int DEFAULT_MAX_SHADOWS = 4;
 
 
-/*
-**
-*/
-CCameraClass				*		CombatManager::MainCamera			= NULL;
-SimpleSceneClass			*		CombatManager::BackgroundScene	= NULL;
-SoundEnvironmentClass	*		CombatManager::SoundEnvironment	= NULL;
-DazzleLayerClass			*		CombatManager::DazzleLayer			= NULL;
-GameObjReference					CombatManager::TheStar;
-bool									CombatManager::IsStarDeterminingTarget = true;
-//bool									CombatManager::IAmServer			= true;
-//bool									CombatManager::IAmClient			= true;
-bool									CombatManager::IAmServer			= false;
-bool									CombatManager::IAmClient			= false;
-bool									CombatManager::IAmOnlyClient		= false;
-bool									CombatManager::IAmOnlyServer		= false;
-int									CombatManager::MyId					= 0;
-int									CombatManager::SyncTime				= 0;
-CombatNetworkHandlerClass *	CombatManager::NetworkHandler		= NULL;
-CombatMiscHandlerClass *		CombatManager::MiscHandler			= NULL;
-MessageWindowClass *				CombatManager::MessageWindow		= NULL;
-bool									CombatManager::EnableSkeletonSliderDemo = false;
-int									CombatManager::DifficultyLevel		= 1;
-bool									CombatManager::AutoTransitions		= true;
-int									CombatManager::StarDamageDirection	= 0;
-bool									CombatManager::AreObserversActive	= true;
-bool									CombatManager::FirstPerson				= true;
-bool									CombatManager::FirstPersonDefault 		= true;
-bool									CombatManager::IsFirstLoad				= false;
-int									CombatManager::StarKillerID			= 0;
-bool									CombatManager::IsGamePaused			= false;
-bool									CombatManager::IsLevelInitialized	= false;
-StringClass							CombatManager::StartScript;
-StringClass							CombatManager::RespawnScript;
-bool									CombatManager::AutosaveRequested		= false;
-DWORD									CombatManager::LastRoundTripPingMs	= 0;
-DWORD									CombatManager::AvgRoundTripPingMs	= 0;
-bool									CombatManager::FriendlyFirePermitted = false;
-bool									CombatManager::BeaconPlacementEndsGame = false;
-bool									CombatManager::HitReticleEnabled	 = true;
-bool									CombatManager::IsGameplayPermitted = false;
+CCameraClass* CombatManager::MainCamera = NULL;
+SimpleSceneClass* CombatManager::BackgroundScene = NULL;
+SoundEnvironmentClass* CombatManager::SoundEnvironment = NULL;
+DazzleLayerClass* CombatManager::DazzleLayer = NULL;
+GameObjReference CombatManager::TheStar;
+bool CombatManager::IsStarDeterminingTarget = true;
+bool CombatManager::IAmServer = false;
+bool CombatManager::IAmClient = false;
+bool CombatManager::IAmOnlyClient = false;
+bool CombatManager::IAmOnlyServer = false;
+int CombatManager::MyId = 0;
+int CombatManager::SyncTime = 0;
+CombatNetworkHandlerClass* CombatManager::NetworkHandler = NULL;
+CombatMiscHandlerClass* CombatManager::MiscHandler = NULL;
+MessageWindowClass* CombatManager::MessageWindow = NULL;
+bool CombatManager::EnableSkeletonSliderDemo = false;
+int CombatManager::DifficultyLevel = 1;
+bool CombatManager::AutoTransitions = true;
+int CombatManager::StarDamageDirection = 0;
+bool CombatManager::AreObserversActive = true;
+bool CombatManager::FirstPerson = true;
+bool CombatManager::FirstPersonDefault = true;
+bool CombatManager::IsFirstLoad = false;
+int CombatManager::StarKillerID = 0;
+bool CombatManager::IsGamePaused = false;
+bool CombatManager::IsLevelInitialized = false;
+StringClass CombatManager::StartScript;
+StringClass CombatManager::RespawnScript;
+bool CombatManager::AutosaveRequested = false;
+DWORD CombatManager::LastRoundTripPingMs = 0;
+DWORD CombatManager::AvgRoundTripPingMs = 0;
+bool CombatManager::FriendlyFirePermitted = false;
+bool CombatManager::BeaconPlacementEndsGame = false;
+bool CombatManager::HitReticleEnabled = true;
+bool CombatManager::IsGameplayPermitted = false;
 
-int									CombatManager::CombatMode = CombatManager::COMBAT_MODE_NONE;
-int									CombatManager::ReloadCount = 0;
-StringClass							CombatManager::LastLSDName;
-int									CombatManager::LoadProgress;
-bool									CombatManager::MultiplayRenderingAllowed = true;
+int CombatManager::CombatMode = CombatManager::COMBAT_MODE_NONE;
+int CombatManager::ReloadCount = 0;
+StringClass CombatManager::LastLSDName;
+int CombatManager::LoadProgress;
+bool CombatManager::MultiplayRenderingAllowed = true;
 
-static	PhysicsSceneClass	*	GameScene	= NULL;
+static PhysicsSceneClass* GameScene = NULL;
 
-/*
-**
-*/
-void	CombatManager::Init( bool render_available )
-{
-//	Debug_Say(("CombatManager::Init\n"));
 
+void CombatManager::Init( bool render_available ){
 	IsGameplayPermitted=false;
 
-	ConversationMgrClass::Initialize ();
+	ConversationMgrClass::Initialize();
 
 	MessageWindow = new MessageWindowClass;
-	MessageWindow->Initialize ();
+	MessageWindow->Initialize();
 
 	ScriptManager::Init();
 
@@ -183,51 +173,44 @@ void	CombatManager::Init( bool render_available )
 	MainCamera = new CCameraClass();
 
 	// create the dazzle layer
-	if (render_available) {
+	if( render_available ){
 		DazzleLayer = new DazzleLayerClass;
 		DazzleRenderObjClass::Set_Current_Dazzle_Layer(DazzleLayer);
-	} else {
+	}else{
 		DazzleRenderObjClass::Set_Current_Dazzle_Layer(NULL);
 	}
 
 	// Pass the main camera onto the 3D audio library as the
 	// listener's position.
 	SoundSceneClass *sound_scene = WWAudioClass::Get_Instance ()->Get_Sound_Scene ();
-	if (sound_scene != NULL) {
-		sound_scene->Attach_Listener_To_Obj (MainCamera);
+	if( sound_scene != NULL ){
+		sound_scene->Attach_Listener_To_Obj( MainCamera );
 	}
 
-	HUDClass::Init(render_available);
+	HUDClass::Init( render_available );
 	ScreenFadeManager::Init();
 	FirstPerson	= FirstPersonDefault;
 }
 
-/*
-**
-*/
-void	CombatManager::Shutdown( void )
-{
-//	Debug_Say(("CombatManager::Shutdown\n"));
+
+void CombatManager::Shutdown(void){
 	ScreenFadeManager::Shutdown();
 	HUDClass::Shutdown();
 
-	if ( GameScene != NULL ) {
-		// Debug_Say(( "Releasing the PScene with %d Refs\n", GameScene->Num_Refs() ));
+	if( GameScene != NULL ){
 		GameScene->Release_Ref();
 		GameScene = NULL;
 	}
 
-	//
 	// Reset the audio library
-	//
-	if (WWAudioClass::Get_Instance () != NULL) {
+	if( WWAudioClass::Get_Instance () != NULL ){
 		SoundSceneClass *sound_scene = WWAudioClass::Get_Instance ()->Get_Sound_Scene ();
-		if (sound_scene != NULL) {
+		if(sound_scene != NULL){
 			sound_scene->Attach_Listener_To_Obj (NULL);
 		}
 	}
 
-	if (DazzleLayer != NULL) {
+	if( DazzleLayer != NULL ){
 		delete DazzleLayer;
 		DazzleLayer = NULL;
 		DazzleRenderObjClass::Set_Current_Dazzle_Layer(NULL);
@@ -250,24 +233,21 @@ void	CombatManager::Shutdown( void )
 
 	ScriptManager::Shutdown();
 
-	if (MessageWindow != NULL) {
-		MessageWindow->Shutdown ();
+	if( MessageWindow != NULL ){
+		MessageWindow->Shutdown();
 		delete MessageWindow;
 		MessageWindow = NULL;
 	}
 
-	ConversationMgrClass::Shutdown ();
-
-//	Debug_Say(( "Combat Shutdown %d refs\n", RefCountClass::Total_Refs() ));
+	ConversationMgrClass::Shutdown();
 }
 
-void	CombatManager::Scene_Init( void )
-{
+void CombatManager::Scene_Init(void){
 	// Game scene is where the main action occurs!
 	GameScene = new PhysicsSceneClass;
 	GameScene->Set_Ambient_Light(Vector3(0.55f,0.55f,0.55f));
 	GameScene->Set_Ambient_Light(Vector3(1,1,1));
-	GameScene->Set_Fog_Color(Vector3(0.6f,0.6f,0.6f)); //Vector3(80.0f/255.0f,130.0f/255.0f,180.0f/255.0f));
+	GameScene->Set_Fog_Color(Vector3(0.6f,0.6f,0.6f));
 
 	// Do all 'Enable_All's, then all 'Disable_All's, then the individual pairs
 	COMBAT_SCENE->Enable_All_Collision_Detections( DEFAULT_COLLISION_GROUP );
@@ -298,10 +278,9 @@ void	CombatManager::Scene_Init( void )
 ** notify Pat so he can add those calls manually
 **
 */
-void	CombatManager::Pre_Load_Level( bool render_available )
-{
+void CombatManager::Pre_Load_Level( bool render_available ){
 	MultiplayRenderingAllowed = true;
-	if ( !IS_MISSION && !I_Am_Server() ) {
+	if( !IS_MISSION && !I_Am_Server() ){
 		MultiplayRenderingAllowed = false;
 	}
 
@@ -333,15 +312,6 @@ void	CombatManager::Pre_Load_Level( bool render_available )
 	WeaponViewClass::Init();
 
 	SmartGameObj::Set_Global_Sight_Range_Scale( 1.0f );
-//	SoundSystem::Set_Global_Listener_Scale( 1.0f );
-
-	//
-	//	Map initialization (temporary -- until its more data driven)
-	//
-	/*MapMgrClass::Set_Map_Texture ("L1-MAP.TGA");
-	MapMgrClass::Set_Map_Center (Vector2 (308.0F, 414.0F));
-	MapMgrClass::Set_Map_Scale (Vector2 (0.53F, 0.54F));
-	MapMgrClass::Cloud_All_Cells ();*/
 
 	ScreenFadeManager::Enable_Letterbox( 0, 0 );
 	ScreenFadeManager::Set_Screen_Overlay_Opacity( 0, 0 );
@@ -349,15 +319,14 @@ void	CombatManager::Pre_Load_Level( bool render_available )
 	HUDInfo::Set_HUD_Help_Text( L"" );	// Clear text
 }
 
-bool	_preload_assets;
-StringClass	_load_map_name;
+bool _preload_assets;
+StringClass _load_map_name;
 
-static class LoadThreadClass : public ThreadClass
-{
+static class LoadThreadClass : public ThreadClass{
 public:
-	LoadThreadClass(const char *thread_name = "Game loader thread") : ThreadClass(thread_name, &Exception_Handler) {}
+	LoadThreadClass(const char *thread_name = "Game loader thread") : ThreadClass(thread_name, &Exception_Handler){}
 
-	void Thread_Function() {
+	void Thread_Function(){
 
 		CombatManager::Set_Load_Progress( 0 );
 
@@ -372,7 +341,7 @@ public:
 
 		CombatManager::Inc_Load_Progress();
 
-		//	Reload the definition databases (to support level-specific temp ddb's)
+		// Reload the definition databases (to support level-specific temp ddb's)
 		INIT_STATUS("Free definition databases");
 		DefinitionMgrClass::Free_Definitions();
 		WWLOG_INTERMEDIATE("Free definitions");
@@ -382,11 +351,9 @@ public:
 		WWLOG_INTERMEDIATE("Load definitions");
 
 		CombatManager::Inc_Load_Progress();
-		//
-		//	Make sure the animated-sound system is setup.  This needs
+		// Make sure the animated-sound system is setup.  This needs
 		// to be done after the definition databases are loaded...
-		//
-		AnimatedSoundMgrClass::Initialize ();
+		AnimatedSoundMgrClass::Initialize();
 
 		StringClass filename_to_load( _load_map_name, true );
 		StringClass lsd_filename( _load_map_name,true );
@@ -401,10 +368,8 @@ public:
 
 		CombatManager::Inc_Load_Progress();
 
-		//
-		//	Preload the assets
-		//
-		if ( _preload_assets ) {
+		// Preload the assets
+		if( _preload_assets ){
 			INIT_STATUS("Preload assets");
 			AssetDependencyManager::Load_Always_Assets();
 			WWLOG_INTERMEDIATE("Preload always assets");
@@ -413,7 +378,7 @@ public:
 
 			AssetDependencyManager::Load_Level_Assets( lsd_filename );
 			WWLOG_INTERMEDIATE("Preload level assets");
-		} else {
+		}else{
 			CombatManager::Inc_Load_Progress();
 		}
 
@@ -429,11 +394,8 @@ public:
 	}
 } thread;
 
-void	CombatManager::Load_Level_Threaded( const char * map_name, bool preload_assets )
-{
-	//
-	//	Turn off music and sound effects while loading
-	//
+void CombatManager::Load_Level_Threaded( const char * map_name, bool preload_assets ){
+	// Turn off music and sound effects while loading
 	IsLevelInitialized = false;
 	WWAudioClass::Get_Instance ()->Enable_New_Sounds (false);
 
@@ -444,14 +406,12 @@ void	CombatManager::Load_Level_Threaded( const char * map_name, bool preload_ass
 	thread.Execute();
 }
 
-bool	CombatManager::Is_Load_Level_Complete( void )
-{
+bool CombatManager::Is_Load_Level_Complete(void){
 	ThreadClass::Sleep_Ms(50);
 	return (thread.Is_Running() == false);
 }
 
-bool	CombatManager::Is_Loading_Level( void )
-{
+bool CombatManager::Is_Loading_Level(void){
 	return (thread.Is_Running());
 }
 
@@ -461,60 +421,28 @@ bool	CombatManager::Is_Loading_Level( void )
 ** notify Pat so he can add those calls manually
 **
 */
-void	CombatManager::Post_Load_Level( void )
-{
+void CombatManager::Post_Load_Level(void){
 	// Dont reset SyncTime.  Level from the editor should have it at 0, and levels from
 	// the game need it set to continue cinematics
-//	SyncTime = 0;
 	CombatMode = COMBAT_MODE_NONE;
 	Input::Flush();
-	HitReticleEnabled	 = true;		// Default for on when you start each level
+	HitReticleEnabled = true; // Default for on when you start each level
 
 	Clear_Star_Damage_Direction();
 
-#if 0
-	// Re-init all objects loaded from editor
-	if ( CombatManager::Is_First_Load() ) {
-		Debug_Say(( "Re-Initing all game objects\n" ));
-		GameObjManager::Init_All();
-	}
-#endif
+	// Build network wrappers for every static anim object in the level
+	StaticNetworkObjectClass::Generate_Static_Network_Objects();
 
-	//
-	//	Build network wrappers for every static anim object in the level
-	//
-	StaticNetworkObjectClass::Generate_Static_Network_Objects ();
-
-
-	// Debug code to create a definition
-#if 0
-	DefinitionFactoryClass * def_factory = (DefinitionFactoryClass *)DefinitionFactoryMgrClass::Find_Factory( CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_ANIM_OVERRIDE );
-	if ( def_factory != NULL ) {
-		HumanAnimOverrideDef * def = (HumanAnimOverrideDef *)def_factory->Create();
-		if ( def != NULL ) {
-			def->Set_Name( "HAO Test" );
-			def->Set_ID (DefinitionMgrClass::Get_New_ID (def->Get_Class_ID ()));
-			def->WalkEmptyHands = "H_A_432A";
-			def->RunEmptyHands = "H_A_J43B";
-			DefinitionMgrClass::Register_Definition( def );
-		}
-	}
-#endif
-
-	if (IsLevelInitialized == false && TheStar != NULL) {
+	if( IsLevelInitialized == false && TheStar != NULL ){
 		IsLevelInitialized = true;
 
-		//
-		//	Turn music and sound effects back on...
-		//
-		WWAudioClass::Get_Instance ()->Enable_New_Sounds (true);
+		// Turn music and sound effects back on...
+		WWAudioClass::Get_Instance()->Enable_New_Sounds (true);
 	}
 
-	//
-	//	Generate the unit coordination zones
-	//
-	UnitCoordinationZoneMgr::Build_Zones ();
-	return ;
+	// Generate the unit coordination zones
+	UnitCoordinationZoneMgr::Build_Zones();
+	return;
 }
 
 /*
@@ -524,13 +452,12 @@ void	CombatManager::Post_Load_Level( void )
 **
 */
 
-void	CombatManager::Unload_Level( void )
-{
+void CombatManager::Unload_Level(void){
 	// Display please wait screen.....
 	Render2DSentenceClass backdropText;
 	backdropText.Set_Texture_Size_Hint( 256 );
 	FontCharsClass *font	= StyleMgrClass::Peek_Font( StyleMgrClass::FONT_INGAME_BIG_TXT );
-	if (font != NULL) {
+	if(font != NULL){
 		backdropText.Set_Font( font );
 		WideStringClass wide_str = TRANSLATE( IDS_MP_LOADING );
 		backdropText.Build_Sentence( wide_str );
@@ -554,9 +481,7 @@ void	CombatManager::Unload_Level( void )
 	AssetStatusClass::Peek_Instance()->Enable_Load_On_Demand_Reporting(false);
 	WWLOG_INTERMEDIATE("AssetStatusClass::Peek_Instance()->Enable_Load_On_Demand_Reporting(false)");
 
-	//
-	//	Free the static anim phys object network wrappers
-	//
+	// Free the static anim phys object network wrappers
 	StaticNetworkObjectClass::Free_Static_Network_Objects ();
 	WWLOG_INTERMEDIATE("StaticNetworkObjectClass::Free_Static_Network_Objects ()");
 
@@ -592,36 +517,28 @@ void	CombatManager::Unload_Level( void )
 
 	WWLOG_INTERMEDIATE("Delete factories");
 
-	//
-	//	Kill the background music and flush the cache
-	//
-	if (WWAudioClass::Get_Instance () != NULL) {
-		WWAudioClass::Get_Instance ()->Set_Background_Music (NULL);
-		WWAudioClass::Get_Instance ()->Flush_Cache ();
+	// Kill the background music and flush the cache
+	if( WWAudioClass::Get_Instance() != NULL ){
+		WWAudioClass::Get_Instance()->Set_Background_Music(NULL);
+		WWAudioClass::Get_Instance()->Flush_Cache();
 	}
 	WWLOG_INTERMEDIATE("Flush audio cache");
 
 	SystemInfoLog::Reset_State();
 	WWLOG_INTERMEDIATE("SystemInfoLog::Reset_State()");
 
-	if (MessageWindow != NULL) {
+	if( MessageWindow != NULL ){
 		MessageWindow->Clear();
 		MessageWindow->Clear_Log();
 	}
 
-	//
-	//	Shutdown the animated-sound system
-	//
+	// Shutdown the animated-sound system
 	AnimatedSoundMgrClass::Shutdown();
 	WWLOG_INTERMEDIATE("AnimatedSoundMgrClass::Shutdown");
-	return ;
+	return;
 }
 
-/*
-**
-*/
-PhysicsSceneClass	*	CombatManager::Get_Scene( void )
-{
+PhysicsSceneClass* CombatManager::Get_Scene(void){
 	return PhysicsSceneClass::Get_Instance();
 }
 
@@ -630,26 +547,18 @@ PhysicsSceneClass	*	CombatManager::Get_Scene( void )
 ** to happen in-between them.
 */
 
-/*
-**
-*/
-void 	CombatManager::Generate_Control( void )
-{
+void CombatManager::Generate_Control(void){
 	WWPROFILE( "Generate Control" );
 	// First, generate input control for all necessary game objects and
 	// possibly send those control to the server
 	GameObjManager::Generate_Control();
 }
 
-/*
-**
-*/
-void 	CombatManager::Handle_Input()
-{
-	if ( Input::Get_State( INPUT_FUNCTION_FIRST_PERSON_TOGGLE ) ) {
+void CombatManager::Handle_Input(){
+	if( Input::Get_State( INPUT_FUNCTION_FIRST_PERSON_TOGGLE ) ){
 		Set_First_Person( !Is_First_Person() );
 
-		if ( COMBAT_STAR ) {
+		if( COMBAT_STAR ){
 			Vector3 pos;
 			COMBAT_STAR->Get_Position( &pos );
 			DIAG_LOG(( "SWPE", "%1.2f; %1.2f; %1.2f; %s ", pos.X, pos.Y, pos.Z, Is_First_Person() ? "First" : "Third" ));
@@ -658,29 +567,20 @@ void 	CombatManager::Handle_Input()
 }
 
 
-/*
-**
-*/
-void 	CombatManager::Think()
-{
-	SyncTime += (int)((TimeManager::Get_Frame_Seconds() * 1000.0f) + 0.5f);
+void CombatManager::Think(){
+	SyncTime += (int) ( ( TimeManager::Get_Frame_Seconds() * 1000.0f ) + 0.5f );
 
 	WWPROFILE( "CombatManager Think" );
 
 	IsGameplayPermitted=NetworkHandler->Is_Gameplay_Permitted();
-
 {	WWPROFILE( "Input" );
 	Handle_Input();
 }
-//	GroupControllerManager::Update();
 
-	//
-	//	Display debug boxes for the coordinate zones as necessary
-	//
-	if ( SoldierGameObj::Is_Ghost_Collision_Debug_Display_Enabled() ) {
+	// Display debug boxes for the coordinate zones as necessary
+	if( SoldierGameObj::Is_Ghost_Collision_Debug_Display_Enabled() ){
 		UnitCoordinationZoneMgr::Display_Debug_Boxes();
 	}
-
 {	WWPROFILE( "Bullets" );
 	BulletManager::Update();
 }
@@ -688,8 +588,7 @@ void 	CombatManager::Think()
 	ObjectiveManager::Update( TimeManager::Get_Frame_Seconds() );
 
 	// Now, Process all objects logically
-	ConversationMgrClass::Think();
-{	WWPROFILE( "Game Obj Think" );
+	ConversationMgrClass::Think();{	WWPROFILE( "Game Obj Think" );
 	GameObjManager::Think();
 
 	// Now, Process all objects physically
@@ -702,7 +601,7 @@ void 	CombatManager::Think()
 	// In normal mode, the camera must think before Post_Think, since the
 	// camera update calls Set_Targeting on the star, which must feed Update_Animation
 }{	WWPROFILE( "Camera 1" );
-	if ( !MainCamera->Is_Using_Host_Model() ) {
+	if( !MainCamera->Is_Using_Host_Model() ){
 		MainCamera->Update();
 	}
 
@@ -712,7 +611,7 @@ void 	CombatManager::Think()
 }
 	// In host_model mode, the camera must think after Post_Think, so the host model has
 	// a chance to determine where the camera should be
-	if ( MainCamera->Is_Using_Host_Model() ) {
+	if( MainCamera->Is_Using_Host_Model() ){
 		MainCamera->Update();
 	}
 
@@ -720,25 +619,21 @@ void 	CombatManager::Think()
 	Update_Star_Targeting();
 
 	Do_Skeleton_Slider_Demo();
-
 {	WWPROFILE( "Message Window" );
 	MessageWindow->On_Frame_Update();
 }
 
 	SpawnManager::Update();
-
 {	WWPROFILE( "Sound Environment" );
 
-	if ( SoundEnvironment != NULL ) {
+	if( SoundEnvironment != NULL ){
 		SoundEnvironment->Update (COMBAT_SCENE, MainCamera);
 	}
 }
-
 {	WWPROFILE( "Background" );
 
 	BackgroundMgrClass::Update (COMBAT_SCENE, MainCamera);
 }
-
 {  WWPROFILE( "Weather" );
 
 	WeatherMgrClass::Update (COMBAT_SCENE, MainCamera);
@@ -749,40 +644,36 @@ void 	CombatManager::Think()
 	ScreenFadeManager::Think();
 }
 
-/*
-**
-*/
-void CombatManager::Render()
-{
-	if ( COMBAT_STAR != NULL ) {
+void CombatManager::Render(){
+	if( COMBAT_STAR != NULL ){
 		MultiplayRenderingAllowed = true;
 	}
 
-	if ( MultiplayRenderingAllowed ) {
+	if( MultiplayRenderingAllowed ){
 		SystemInfoLog::Record_Frame();
 
 		{
 			WWPROFILE( "Camera Shakes" );
-			COMBAT_SCENE->Apply_Camera_Shakes (*MainCamera);
+			COMBAT_SCENE->Apply_Camera_Shakes( *MainCamera );
 		}
 
-		DazzleRenderObjClass::Install_Dazzle_Visibility_Handler(&_TheCombatDazzleHandler);
+		DazzleRenderObjClass::Install_Dazzle_Visibility_Handler( &_TheCombatDazzleHandler );
 
 		{
 			WWPROFILE( "Combat Render BG" );
 
-			WW3D::Render (BackgroundScene, MainCamera);
+			WW3D::Render( BackgroundScene, MainCamera );
 		}
 
 		{
 			WWPROFILE( "Combat Render FG" );
-			WW3D::Render(COMBAT_SCENE, MainCamera);
+			WW3D::Render( COMBAT_SCENE, MainCamera );
 		}
 
 		{
 			WWPROFILE( "DazzleRenderer" );
-			DazzleLayerClass * dlayer = COMBAT_DAZZLE_LAYER;
-			if (dlayer != NULL) {
+			DazzleLayerClass* dlayer = COMBAT_DAZZLE_LAYER;
+			if( dlayer != NULL ){
 				dlayer->Render(COMBAT_CAMERA);
 			}
 		}
@@ -815,8 +706,7 @@ enum	{
 	MICROCHUNKID_FIRST_PERSON,
 };
 
-bool	CombatManager::Save( ChunkSaveClass &csave )
-{
+bool CombatManager::Save( ChunkSaveClass &csave ){
 	csave.Begin_Chunk( CHUNKID_THE_STAR );
 	TheStar.Save( csave );
 	csave.End_Chunk();
@@ -824,7 +714,7 @@ bool	CombatManager::Save( ChunkSaveClass &csave )
 	csave.Begin_Chunk( CHUNKID_VARIABLES );
 		bool	first_load = !Are_Observers_Active();
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_FIRST_LOAD, first_load );
-		if ( !first_load ) {
+		if( !first_load ){
 			WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DIFFICULTY_LEVEL, DifficultyLevel );
 			WRITE_MICRO_CHUNK( csave, MICROCHUNKID_FIRST_PERSON, FirstPerson );
 		}
@@ -840,7 +730,7 @@ bool	CombatManager::Save( ChunkSaveClass &csave )
 
 	csave.End_Chunk();
 
-	if ( COMBAT_CAMERA != NULL ) {
+	if( COMBAT_CAMERA != NULL ){
 		csave.Begin_Chunk( CHUNKID_CCAMERA );
 			COMBAT_CAMERA->Save( csave );
 		csave.End_Chunk();
@@ -849,24 +739,23 @@ bool	CombatManager::Save( ChunkSaveClass &csave )
 	return true;
 }
 
-bool	CombatManager::Load( ChunkLoadClass &cload )
-{
+bool CombatManager::Load( ChunkLoadClass& cload ){
 	ReloadCount = 0;		// Legacy
 	IsFirstLoad = true;		// Default
 	int legacy_dificulty_level = DifficultyLevel;
 	int cheat_history = 0;
 	FirstPerson = FirstPersonDefault;
 
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
+	while (cload.Open_Chunk()){
+		switch(cload.Cur_Chunk_ID()){
 
 			case CHUNKID_THE_STAR:
 				TheStar.Load( cload );
 				break;
 
 			case CHUNKID_VARIABLES:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
+				while (cload.Open_Micro_Chunk()){
+					switch(cload.Cur_Micro_Chunk_ID()){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_FIRST_LOAD, IsFirstLoad );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DIFFICULTY_LEVEL, DifficultyLevel );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_SYNC_TIME, SyncTime );
@@ -885,7 +774,7 @@ bool	CombatManager::Load( ChunkLoadClass &cload )
 				break;
 
 			case CHUNKID_CCAMERA:
-				if ( COMBAT_CAMERA != NULL ) {
+				if( COMBAT_CAMERA != NULL ){
 					COMBAT_CAMERA->Load( cload );
 				}
 				break;
@@ -898,12 +787,12 @@ bool	CombatManager::Load( ChunkLoadClass &cload )
 		cload.Close_Chunk();
 	}
 
-	if ( IsFirstLoad ) {
+	if( IsFirstLoad ){
 		DifficultyLevel = legacy_dificulty_level;
 		ReloadCount = 0;
 		CheatMgrClass::Get_Instance()->Reset_History();
-	} else {
-		ReloadCount++;		// Count another load!
+	}else{
+		ReloadCount++; // Count another load!
 		CheatMgrClass::Get_Instance()->Set_History( cheat_history );
 		CheatMgrClass::Get_Instance()->Update_History();
 	}
@@ -914,158 +803,133 @@ bool	CombatManager::Load( ChunkLoadClass &cload )
 /*
 **
 */
-bool CombatManager::Can_Damage(ArmedGameObj * p_armed_damager, PhysicalGameObj * p_phys_victim)
-{
-	if (NetworkHandler != NULL) {
-		return NetworkHandler->Can_Damage(p_armed_damager, p_phys_victim);
-	} else {
+bool CombatManager::Can_Damage( ArmedGameObj* p_armed_damager, PhysicalGameObj* p_phys_victim ){
+	if( NetworkHandler != NULL ){
+		return NetworkHandler->Can_Damage( p_armed_damager, p_phys_victim );
+	}else{
 		return true;
 	}
 }
 
-float CombatManager::Get_Damage_Factor(ArmedGameObj * p_armed_damager, PhysicalGameObj * p_phys_victim)
-{
-	if (NetworkHandler != NULL) {
-		return NetworkHandler->Get_Damage_Factor(p_armed_damager, p_phys_victim);
-	} else {
+float CombatManager::Get_Damage_Factor( ArmedGameObj* p_armed_damager, PhysicalGameObj* p_phys_victim ){
+	if( NetworkHandler != NULL ){
+		return NetworkHandler->Get_Damage_Factor( p_armed_damager, p_phys_victim );
+	}else{
 		return 1.0f;
 	}
 }
 
-void CombatManager::On_Soldier_Kill(SoldierGameObj * p_soldier, SoldierGameObj * p_victim)
-{
+void CombatManager::On_Soldier_Kill( SoldierGameObj * p_soldier, SoldierGameObj* p_victim ){
 	WWASSERT(p_soldier != NULL);
 	WWASSERT(p_victim != NULL);
 
-	if (NetworkHandler != NULL) {
-		 NetworkHandler->On_Soldier_Kill(p_soldier, p_victim);
+	if( NetworkHandler != NULL ){
+		 NetworkHandler->On_Soldier_Kill( p_soldier, p_victim );
 	}
 }
 
-void CombatManager::On_Soldier_Death(SoldierGameObj * p_soldier)
-{
+void CombatManager::On_Soldier_Death( SoldierGameObj* p_soldier ){
 	WWASSERT(p_soldier != NULL);
 
-	if (NetworkHandler != NULL) {
-		 NetworkHandler->On_Soldier_Death(p_soldier);
+	if( NetworkHandler != NULL ){
+		NetworkHandler->On_Soldier_Death( p_soldier );
 	}
 }
 
-bool CombatManager::Is_Gameplay_Permitted(void)
-{
-	if (NetworkHandler == NULL) {
+bool CombatManager::Is_Gameplay_Permitted(void){
+	if( NetworkHandler == NULL ){
 		return true;
-	} else {
+	}else{
 		return IsGameplayPermitted;
-//		return NetworkHandler->Is_Gameplay_Permitted();
 	}
 }
 
 /*
 ** Misc Handler
 */
-void	CombatManager::Mission_Complete( bool success )
-{
-	if (MiscHandler != NULL) {
+void CombatManager::Mission_Complete( bool success ){
+	if(MiscHandler != NULL){
 		MiscHandler->Mission_Complete( success );
 	}
 }
 
-void	CombatManager::Star_Killed( void )
-{
-	if (MiscHandler != NULL) {
+void CombatManager::Star_Killed(void){
+	if(MiscHandler != NULL){
 		MiscHandler->Star_Killed();
 	}
 }
 
-/*
-**
-*/
-void	CombatManager::Set_Camera_Profile( const char * profile_name )
-{
-	if ( profile_name == NULL ) {
+void CombatManager::Set_Camera_Profile( const char * profile_name ){
+	if( profile_name == NULL ){
 		COMBAT_CAMERA->Use_Default_Profile();
-	} else {
+	}else{
 		COMBAT_CAMERA->Use_Profile( profile_name );
 	}
 }
 
-/*
-**
-*/
-void 	CombatManager::Set_The_Star( SoldierGameObj *target, bool is_star_determining_target )
-{
-	if ( 	TheStar != target ) {
+void CombatManager::Set_The_Star( SoldierGameObj *target, bool is_star_determining_target ){
+	if( TheStar != target ){
 		HUDClass::Reset();	// Reset the HUD (clear damage and powerups)
 	}
 
 	TheStar = target;
 	IsStarDeterminingTarget = is_star_determining_target;
-	if ( target != NULL ) {
+	if( target != NULL ){
 		COMBAT_CAMERA->Force_Heading( target->Get_Facing() );
 	}
 
 	HUDClass::Force_Weapon_Chart_Update();
 	WeaponViewClass::Reset();
 
-	if (IsLevelInitialized == false) {
+	if(IsLevelInitialized == false){
 		IsLevelInitialized = true;
 
-		//
-		//	Turn music and sound effects back on...
-		//
+		// Turn music and sound effects back on...
 		WWAudioClass::Get_Instance ()->Enable_New_Sounds (true);
 	}
 }
 
-/*
-**
-*/
-void CombatManager::Update_Star( void )
-{
+void CombatManager::Update_Star(void){
 	SoldierGameObj * star = COMBAT_STAR;
-	if ( star == NULL ) {
+	if( star == NULL ){
 		return;
 	}
 
-	if ( star->Is_Destroyed() ) {
+	if( star->Is_Destroyed() ){
 		Set_Combat_Mode( COMBAT_MODE_CORPSE );
-	} else if ( star->Is_Dead() ) {
+	} else if( star->Is_Dead() ){
 		Set_Combat_Mode( COMBAT_MODE_DIEING );
-	} else if ( star->Get_Profile_Vehicle() != NULL ) {
+	} else if( star->Get_Profile_Vehicle() != NULL ){
 		Set_Combat_Mode( COMBAT_MODE_IN_VEHICLE );
-	} else if ( star->Is_Sniping() ) {
+	} else if( star->Is_Sniping() ){
 		Set_Combat_Mode( COMBAT_MODE_SNIPING );
-	} else if ( star->Use_Ladder_View() ) {
+	} else if( star->Use_Ladder_View() ){
 		Set_Combat_Mode( COMBAT_MODE_ON_LADDER );
-	} else if ( Is_First_Person() ) {
+	} else if( Is_First_Person() ){
 		Set_Combat_Mode( COMBAT_MODE_FIRST_PERSON );
-	} else {
+	}else{
 		Set_Combat_Mode( COMBAT_MODE_THIRD_PERSON );
 	}
 
 	Update_Combat_Mode();
 
-	//
-	//	Update the map
-	//
+	// Update the map
 	Vector3 star_pos;
 	star->Get_Position (&star_pos);
 	MapMgrClass::Clear_Cloud_Cell (star_pos);
 	return ;
 }
 
-void CombatManager::Update_Star_Targeting( void )
-{
+void CombatManager::Update_Star_Targeting(void){
 	WWPROFILE( "Targeting" );
 	SmartGameObj * star = NULL;
 
-	if ( COMBAT_STAR != NULL ) {
+	if( COMBAT_STAR != NULL ){
 		SoldierGameObj * soldier = COMBAT_STAR;
 
 	   WWASSERT(soldier != NULL);
 		star = soldier;
-		if ( soldier->Get_Vehicle() ) {
+		if( soldier->Get_Vehicle() ){
 			star = soldier->Get_Vehicle();
 		}
 
@@ -1073,29 +937,27 @@ void CombatManager::Update_Star_Targeting( void )
 		// such as where the bullets will hit, what we are targeting, distance, etc.
 		HUDInfo::Set_Weapon_Target_Object( NULL );
 		WeaponClass * weapon = star->Get_Weapon();
-		if ( weapon ) {
+		if( weapon ){
 			WWPROFILE( "Display_Targeting" );
 			weapon->Display_Targeting();
 		}
 	}
 }
 
-bool CombatManager::Is_In_Camera_Frustrum(Vector3 & position)
-{
+bool CombatManager::Is_In_Camera_Frustrum(Vector3& position){
 	WWASSERT(COMBAT_CAMERA != NULL);
    Vector3 projected_mid_point;
 	bool is_visible = (COMBAT_CAMERA->Project(projected_mid_point, position) == CameraClass::INSIDE_FRUSTUM);
 	return is_visible;
 }
 
-void	CombatManager::Do_Skeleton_Slider_Demo( void )
-{
-	if (( EnableSkeletonSliderDemo == false ) ||
-		 ( COMBAT_CAMERA->Is_2D_Targeting() == false )) {
+void CombatManager::Do_Skeleton_Slider_Demo(void){
+	if(( EnableSkeletonSliderDemo == false ) ||
+		 ( COMBAT_CAMERA->Is_2D_Targeting() == false )){
 		return;
 	}
 
-	if ( COMBAT_STAR != NULL ) {
+	if( COMBAT_STAR != NULL ){
 		Vector2 sliders = COMBAT_CAMERA->Get_Camera_Target_2D_Offset();
 		// Slide is 0-1, height * widht should be -scale - scale
 		sliders.X = (sliders.X - 0.5f) * 2;
@@ -1103,20 +965,14 @@ void	CombatManager::Do_Skeleton_Slider_Demo( void )
 		float scale = 1;
 		float height = sliders.Y * scale;
 		float width = sliders.X * scale;
-//		Debug_Say(( "Height %f, width %f\n", height, width ));
 		COMBAT_STAR->Adjust_Skeleton( height, width );
 	}
 }
 
 
-/*
-**
-*/
-void	Vehicle_Panic( VehicleGameObj * vehicle )
-{
+void Vehicle_Panic( VehicleGameObj* vehicle ){
 	VehiclePhysClass * rbody = vehicle->Peek_Vehicle_Phys();
-	if (rbody != NULL) {
-#if 1
+	if(rbody != NULL){
 		// Try to put the vehicle up-right in its current position
 		Matrix3D tm = rbody->Get_Transform();
 		Vector3 position;
@@ -1124,7 +980,7 @@ void	Vehicle_Panic( VehicleGameObj * vehicle )
 
 		tm.Get_Translation(&position);
 		tm.Get_X_Vector(&forward);
-		if (forward.Z > 0.707f) {
+		if(forward.Z > 0.707f){
 			tm.Get_Z_Vector(&forward);
 		}
 
@@ -1134,38 +990,30 @@ void	Vehicle_Panic( VehicleGameObj * vehicle )
 		new_tm.Obj_Look_At(position,position+forward,0.0f);
 
 		rbody->Set_Transform(new_tm);
-#endif
 	}
 }
 
 /*
 ** Combat Mode Management
 */
-void	CombatManager::Set_Combat_Mode( int mode )
-{
+void CombatManager::Set_Combat_Mode( int mode ){
 	// I don't know how to handle loading a saved game in cinematics, so postpone
 	// this mode change until the camera is not host controlled?
-	if ( COMBAT_CAMERA && COMBAT_CAMERA->Is_Using_Host_Model() ) {
+	if( COMBAT_CAMERA && COMBAT_CAMERA->Is_Using_Host_Model() ){
 		return;
 	}
 
-	if ( mode != CombatMode ) {
-		//Debug_Say(( "Switching CombatMode to %d\n", mode ));
-
+	if( mode != CombatMode ){
 		// When changing to or from ladder, lerp
-		if ( ( CombatMode == COMBAT_MODE_ON_LADDER ) || ( mode == COMBAT_MODE_ON_LADDER ) ) {
+		if( ( CombatMode == COMBAT_MODE_ON_LADDER ) || ( mode == COMBAT_MODE_ON_LADDER ) ){
 			COMBAT_CAMERA->Set_Lerp_Time( 0.5f );
 		}
 
 		CombatMode = mode;
 
-		// Pause game in single player corpse mode
-//		IsGamePaused = (CombatMode == COMBAT_MODE_CORPSE) && IS_SOLOPLAY;
-
 		SoldierGameObj * star = COMBAT_STAR;
 
-		switch ( CombatMode ) {
-
+		switch( CombatMode ){
 			case COMBAT_MODE_NONE:
 				break;
 
@@ -1195,14 +1043,13 @@ void	CombatManager::Set_Combat_Mode( int mode )
 				WeaponViewClass::Enable( false );
 				break;
 
-			case COMBAT_MODE_IN_VEHICLE:
-			{
+			case COMBAT_MODE_IN_VEHICLE: {
 				VehicleGameObj * vehicle = star->Get_Profile_Vehicle();
 				WWASSERT( vehicle );
 	 			COMBAT_CAMERA->Set_Is_Star_Sniping( false );
-				if ( vehicle->Get_Profile() != NULL ) {
+				if( vehicle->Get_Profile() != NULL ){
 					COMBAT_CAMERA->Use_Profile( vehicle->Get_Profile() );
-				} else {
+				}else{
 					COMBAT_CAMERA->Use_Default_Profile();
 				}
 				WeaponViewClass::Enable( false );
@@ -1227,30 +1074,23 @@ void	CombatManager::Set_Combat_Mode( int mode )
 				Debug_Say(( "Bad CombatMode %d\n", CombatMode ));
 				CombatMode = COMBAT_MODE_NONE;
 				break;
-
 		}
 	}
 }
 
-void	CombatManager::Update_Combat_Mode( void )
-{
+void CombatManager::Update_Combat_Mode(void){
 	SoldierGameObj * star = COMBAT_STAR;
 	Vector3	pos;
 	star->Get_Position( &pos );
 	COMBAT_CAMERA->Set_Anchor_Position( pos );
 
-	//XXX
-	//COMBAT_CAMERA->Enable_2D_Targeting(true);
-
-	switch ( CombatMode ) {
-
+	switch( CombatMode ){
 		case COMBAT_MODE_NONE:
 			break;
 
 		case COMBAT_MODE_FIRST_PERSON:
 			star->Peek_Model()->Set_Hidden( true );	// Putting it here, because vehicles are turning it back on
 			COMBAT_CAMERA->Set_Profile_Height( star->Get_Weapon_Height() );	// This is every frame for crouching
-//			COMBAT_CAMERA->Enable_2D_Targeting( Input::Get_State(INPUT_FUNCTION_CURSOR_TARGETING) );
 			COMBAT_CAMERA->Enable_2D_Targeting( false );
 			break;
 
@@ -1258,7 +1098,7 @@ void	CombatManager::Update_Combat_Mode( void )
 		case COMBAT_MODE_THIRD_PERSON:
 			COMBAT_CAMERA->Enable_2D_Targeting( Input::Get_State(INPUT_FUNCTION_CURSOR_TARGETING ) );
 
-			if ( star->Is_On_Ladder() ) {
+			if( star->Is_On_Ladder() ){
 				COMBAT_CAMERA->Force_Heading( star->Get_Facing() );
 			}
 			break;
@@ -1267,47 +1107,38 @@ void	CombatManager::Update_Combat_Mode( void )
 			COMBAT_CAMERA->Set_Profile_Height( star->Get_Weapon_Height() );	// This is every frame for crouching
 			break;
 
-		case COMBAT_MODE_IN_VEHICLE:
-		{
+		case COMBAT_MODE_IN_VEHICLE: {
 			VehicleGameObj * vehicle = star->Get_Profile_Vehicle();
 			WWASSERT( vehicle );
-
-#ifdef WWDEBUG
-			if ( Input::Get_State( INPUT_FUNCTION_PANIC ) ) {
-				Vehicle_Panic( vehicle );
-			}
-#endif
 
 			Vector3	pos;
 			vehicle->Get_Position( &pos );
 			COMBAT_CAMERA->Set_Anchor_Position( pos );
 
-//			bool target_2d = ( !vehicle->Use_2D_Aiming() ^ Input::Get_State(INPUT_FUNCTION_CURSOR_TARGETING) ^ VehicleGameObj::Is_Target_Steering() );
-
 			bool target_2d = (Input::Get_State(INPUT_FUNCTION_CURSOR_TARGETING) ^ VehicleGameObj::Is_Target_Steering() );
 
 			// This can be used to always for the V key down for vehicles
-			if ( VehicleGameObj::Get_Camera_Locked_To_Turret() ) {
+			if( VehicleGameObj::Get_Camera_Locked_To_Turret() ){
 				target_2d = !target_2d;
 			}
 
-			if ( !vehicle->Use_2D_Aiming() ) {
+			if( !vehicle->Use_2D_Aiming() ){
 				target_2d = true;
 			}
 
-			if ( vehicle->Get_Gunner() == COMBAT_STAR ) {
+			if( vehicle->Get_Gunner() == COMBAT_STAR ){
 				target_2d = true;
 			}
 
-			if ( target_2d ) {
+			if( target_2d ){
 				COMBAT_CAMERA->Enable_2D_Targeting( false );
-			} else {
+			}else{
 				COMBAT_CAMERA->Enable_2D_Targeting( true );
 
 	// Lateral velocity offset camera code
 				float desired_heading = vehicle->Get_Facing();;
 				VehiclePhysClass * vehiclephys = vehicle->Peek_Physical_Object()->As_VehiclePhysClass();
-				if (vehiclephys != NULL) {
+				if(vehiclephys != NULL){
 					Vector3 vel,localvel;
 					vehiclephys->Get_Velocity(&vel);
 
@@ -1315,7 +1146,6 @@ void	CombatManager::Update_Combat_Mode( void )
 					vehiclephys->Get_Transform().Get_Orthogonal_Inverse(invtm);
 					Matrix3D::Rotate_Vector(invtm,vel,&localvel);
 
-	//				float lateralvel = localvel.Y;
 					float heading_offset = WWMath::Atan2(localvel.Y,localvel.X);
 					heading_offset = WWMath::Clamp(heading_offset,DEG_TO_RADF(-45.0f),DEG_TO_RADF(45.0f));
 
@@ -1332,11 +1162,10 @@ void	CombatManager::Update_Combat_Mode( void )
 			break;
 
 		case COMBAT_MODE_DIEING:
-
 			// Make the camera look towards the star killer
-			if ( StarKillerID != 0 ) {
+			if( StarKillerID != 0 ){
 				PhysicalGameObj * killer = GameObjManager::Find_PhysicalGameObj( StarKillerID );
-				if ( killer ) {
+				if( killer ){
 					Vector3 star_pos;
 					Vector3 killer_pos;
 					COMBAT_STAR->Get_Position( &star_pos );
@@ -1347,7 +1176,6 @@ void	CombatManager::Update_Combat_Mode( void )
 					COMBAT_CAMERA->Force_Heading( heading );
 				}
 			}
-
 			break;
 
 		case COMBAT_MODE_CORPSE:
@@ -1355,20 +1183,14 @@ void	CombatManager::Update_Combat_Mode( void )
 
 		case COMBAT_MODE_SNAP_SHOT:
 			break;
-
 	}
 }
 
-void	CombatManager::Register_Star_Killer( ArmedGameObj * killer )
-{
-	if ( killer != NULL ) {
+void CombatManager::Register_Star_Killer( ArmedGameObj * killer ){
+	if( killer != NULL ){
 		StarKillerID = killer->Get_ID();
-	} else {
+	}else{
 		StarKillerID = 0;
 	}
 }
-
-
-
-
 

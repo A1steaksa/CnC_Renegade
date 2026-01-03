@@ -85,7 +85,7 @@ TransitionEffectClass::TransitionEffectClass(void) :
 	MaterialPass = NEW_REF(MaterialPassClass,());
 	MaterialPass->Enable_On_Translucent_Meshes(false);
 	
-	VertexMaterialClass * vmtl = NEW_REF(VertexMaterialClass,()); //PhysResourceMgrClass::Get_Stealth_Material();
+	VertexMaterialClass * vmtl = NEW_REF(VertexMaterialClass,());
 	vmtl->Set_Ambient(0,0,0);
 	vmtl->Set_Diffuse(0,0,0);
 	vmtl->Set_Specular(0,0,0);

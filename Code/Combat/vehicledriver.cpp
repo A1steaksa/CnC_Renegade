@@ -277,8 +277,7 @@ VehicleDriverClass::Drive (void)
 //
 ////////////////////////////////////////////////////////////////
 bool
-VehicleDriverClass::Drive_Wheeled (void)
-{
+VehicleDriverClass::Drive_Wheeled(void){
 
 	//
 	//	Convert the destinations from world to object space
@@ -289,18 +288,6 @@ VehicleDriverClass::Drive_Wheeled (void)
 	tm.Make_Identity ();
 	tm.Set_Translation (pos);
 	tm.Rotate_Z (facing);
-
-		/*PhysClass *phys_obj = m_GameObj->Peek_Physical_Object ();
-		RenderObjClass *model = phys_obj->Peek_Model ();
-
-		AABoxClass bounding_box;
-		bounding_box = model->Get_Bounding_Box ();
-
-	Vector3 offset;
-	Matrix3D::Rotate_Vector (tm, Vector3 (bounding_box.Extent.X, 0, 0), &offset);
-	tm.Set_Translation (tm.Get_Translation () - offset);
-
-	PhysicsSceneClass::Get_Instance ()->Add_Debug_AABox (AABoxClass (tm.Get_Translation (), Vector3 (0.5F,0.5F,0.5F)), Vector3 (1, 0, 1));*/
 
 	//
 	//	Make sure we have the final destination point
@@ -317,7 +304,6 @@ VehicleDriverClass::Drive_Wheeled (void)
 	//
 	if (m_IsBackupLocked) {
 		tm.Rotate_Z (DEG_TO_RADF (180));
-		//curve_modifier = 2.0F;
 	}
 
 	//
@@ -377,15 +363,6 @@ VehicleDriverClass::Drive_Wheeled (void)
 		float max_angle	= DEG_TO_RADF (10.0F) + (1.0F - curve_sharpness) * DEG_TO_RADF (30.0F);
 		float turn_accel	= turn_angle / max_angle;
 
-
-		/*PathObjectClass path_obj;
-		m_CurrentPath->Get_Path_Object (path_obj);
-		float turn_radius = path_obj.Get_Turn_Radius ();*/
-
-		/*if ((turn_radius * turn_radius) > current_dest.Length2 () && WWMath::Fabs (turn_angle) > DEG_TO_RADF (60.0F)) {
-			m_IsBackingUp = true;
-		}*/
-
 		//
 		//	Calculate our (current) normalized speed
 		//
@@ -419,10 +396,6 @@ VehicleDriverClass::Drive_Wheeled (void)
 		m_LastFrameExpectedVelocity = WWMath::Fabs (expected_velocity);
 		float forward_accel = (expected_velocity - norm_speed) * vel_factor;
 
-		/*StringClass message;
-		message.Format ("forward accel = %f\n", forward_accel);
-		WWDEBUG_SAY (((const char *)message));*/
-
 		//
 		//	Invert everything if we are locked in driving backwards mode
 		//
@@ -430,33 +403,6 @@ VehicleDriverClass::Drive_Wheeled (void)
 			forward_accel	= -forward_accel;
 			turn_accel		= -turn_accel;
 		}
-
-		//
-		//	Handle the case where we are backing up
-		//
-		/*if (m_IsBackingUp) {
-
-			//
-			//	Switch out of backup mode if we have a pretty good facing on the
-			// destination or we got stuck while backing up.
-			//
-			if (WWMath::Fabs (turn_angle) < DEG_TO_RADF (25.0F) || Are_We_Stuck (vel_vector)) {
-				m_IsBackingUp			= false;
-				m_BadProgressCount	= 0;
-			} else {
-
-				//
-				//	Backup and turn in the opposite direction
-				//
-				forward_accel	= -forward_accel;
-				turn_accel		= -turn_accel;
-			}
-
-		} else if (Are_We_Stuck (vel_vector)) {
-
-			m_IsBackingUp = true;
-			m_BadProgressCount = 0;
-		}*/
 
 		//
 		//	Clamp the analog controls to -1 and 1
@@ -791,17 +737,9 @@ VehicleDriverClass::Apply_Controls
 )
 {
 	if (!WWMath::Is_Valid_Float(forward_accel)) {
-#ifdef WWDEBUG
-		const char* name = m_GameObj->Peek_Physical_Object()->Peek_Model()->Get_Name();
-		WWDEBUG_SAY(("VehicleDriverClass::Apply_Controls - BAD FLOAT forward_access = %f - Model name = %s\n", forward_accel, name));
-#endif //WWDEBUG
 		forward_accel = 0.0f;
 	}
 	if (!WWMath::Is_Valid_Float(left_accel)) {
-#ifdef WWDEBUG
-		const char* name = m_GameObj->Peek_Physical_Object()->Peek_Model()->Get_Name();
-		WWDEBUG_SAY(("VehicleDriverClass::Apply_Controls - BAD FLOAT left_access = %f - Model name = %s\n", left_accel, name));
-#endif //WWDEBUG
 		left_accel = 0.0f;
 	}
 

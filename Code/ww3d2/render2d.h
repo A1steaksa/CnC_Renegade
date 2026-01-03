@@ -198,10 +198,13 @@ public:
 	Render2DTextClass(Font3DInstanceClass *font=NULL);
 	~Render2DTextClass();
 
-	virtual	void	Reset(void);
+	virtual void Reset(void);
 
-	Font3DInstanceClass *	Peek_Font( void )				{ return Font; }
-	void	Set_Font( Font3DInstanceClass *font );
+	Font3DInstanceClass* Peek_Font(void){
+		return Font;
+	}
+
+	void Set_Font( Font3DInstanceClass* font );
 
 	void	Set_Location( const Vector2 & loc )				{ Location = loc; Cursor = loc; }
 	void	Set_Wrapping_Width (float width)					{ WrapWidth = width; }

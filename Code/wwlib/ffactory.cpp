@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               *** 
  *********************************************************************************************** 
@@ -91,15 +73,10 @@ void RawFileFactoryClass::Return_File( FileClass *file )
 ** SimpleFileFactoryClass implementation
 */
 
-SimpleFileFactoryClass::SimpleFileFactoryClass( void ) :
-	IsStripPath( false ),
-	Mutex( )
-{
+SimpleFileFactoryClass::SimpleFileFactoryClass( void ) : IsStripPath( false ), Mutex(){
 }
 
-
-void SimpleFileFactoryClass::Get_Sub_Directory( StringClass& new_dir ) const
-{
+void SimpleFileFactoryClass::Get_Sub_Directory( StringClass& new_dir ) const{
 	// BEGIN SERIALIZATION
 
 	// We cannot return a const char * here because the StringClass
@@ -119,28 +96,25 @@ void SimpleFileFactoryClass::Get_Sub_Directory( StringClass& new_dir ) const
 }
 
 
-void SimpleFileFactoryClass::Set_Sub_Directory( const char * sub_directory )
-{
+void SimpleFileFactoryClass::Set_Sub_Directory( const char* sub_directory ){
 	// BEGIN SERIALIZATION
 
 	// StringClass makes no guarantees on the atomicity of assignment.
 	// Just to be safe, we lock before executing the assignment code.
 	// (DRM, 04/19/01)
 
-	CriticalSectionClass::LockClass lock(Mutex);
+	CriticalSectionClass::LockClass lock( Mutex );
 	SubDirectory = sub_directory;
 	// END SERIALIZATION
 }
 
-
-void SimpleFileFactoryClass::Prepend_Sub_Directory( const char * sub_directory )
-{
-	int sub_len = strlen(sub_directory);
+void SimpleFileFactoryClass::Prepend_Sub_Directory( const char* sub_directory ){
+	int sub_len = strlen( sub_directory );
 	// Overflow prevention
-	if (sub_len > 1021) {
-		WWASSERT(0);
+	if( sub_len > 1021 ){
+		WWASSERT( 0 );
 		return;
-	} else if (sub_len < 1) {
+	}else if( sub_len < 1 ){
 		return;
 	}
 
@@ -167,9 +141,7 @@ void SimpleFileFactoryClass::Prepend_Sub_Directory( const char * sub_directory )
 	// END SERIALIZATION
 }
 
-
-void SimpleFileFactoryClass::Append_Sub_Directory( const char * sub_directory )
-{
+void SimpleFileFactoryClass::Append_Sub_Directory( const char* sub_directory ){
 	int sub_len = strlen(sub_directory);
 	// Overflow prevention
 	if (sub_len > 1022) {
@@ -207,31 +179,23 @@ void SimpleFileFactoryClass::Append_Sub_Directory( const char * sub_directory )
 }
 
 
-/*
-**	Is_Full_Path
-*/
-static bool
-Is_Full_Path (const char *path)
-{
+
+static bool Is_Full_Path( const char* path ){
 	bool retval = false;
 
-	if (path != NULL && path[0] != 0) {
+	if( path != NULL && path[0] != 0 ){
 		
 		// Check for drive designation
-		retval = bool(path[1] == ':');
+		retval = bool( path[1] == ':' );
 
 		// Check for network path
-		retval |= bool((path[0] == '\\') && (path[1] == '\\'));
+		retval |= bool( ( path[0] == '\\' ) && ( path[1] == '\\' ) );
 	}
 
 	return retval;
 }
 
-/*
-**
-*/
-FileClass * SimpleFileFactoryClass::Get_File( char const *filename )
-{
+FileClass * SimpleFileFactoryClass::Get_File( char const* filename ){
 	// strip off the path (if needed). Note that if path stripping is off, and the requested file
 	// has a path in its name, and the current subdirectory is not empty, the paths will just be
 	// concatenated which may not produce reasonable results.
@@ -252,9 +216,7 @@ FileClass * SimpleFileFactoryClass::Get_File( char const *filename )
 	RawFileClass *file = new BufferedFileClass();// new RawWritingFileClass();
 	assert( file );
 
-	//
 	//	Do we need to find the path for this file request?
-	//
 	StringClass new_name(stripped_name,true);
 	if (Is_Full_Path ( new_name ) == false) {
 
@@ -268,13 +230,10 @@ FileClass * SimpleFileFactoryClass::Get_File( char const *filename )
 		CriticalSectionClass::LockClass lock(Mutex);
 
 		if (!SubDirectory.Is_Empty()) {
-
-			//
 			// SubDirectory may contain a semicolon seperated search path...
 			// If the file doesn't exist, we'll set the path to the last dir in
 			// the search path.  Therefore newly created files will always go in the
 			// last dir in the search path.
-			//
 			StringClass subdir(SubDirectory,true);
 
 			if (strchr(subdir,';'))

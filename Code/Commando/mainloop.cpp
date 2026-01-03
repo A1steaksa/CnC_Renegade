@@ -67,28 +67,23 @@
 #include "GameSpy_QnR.h"
 
 
-/*
-**
-*/
 bool	RunMainLoop = true;
 int		ExitCode = EXIT_SUCCESS;
 
-void Stop_Main_Loop(int exitCode)
-{
+void Stop_Main_Loop( int exitCode ){
 	RunMainLoop = false;
 	ExitCode = exitCode;
 }
 
 
-void _Game_Main_Loop_Loop(void)
-{
+void _Game_Main_Loop_Loop(void){
 	WWPROFILE( "Main Loop" );
 
 	unsigned long time1 = TIMEGETTIME();
 
-   TimeManager::Update();
+	TimeManager::Update();
 
-   Input::Update();
+	Input::Update();
 
 
 {	WWPROFILE( "Pathfind Evaluate" );
@@ -116,7 +111,7 @@ void _Game_Main_Loop_Loop(void)
 	GameSpyQnR.Think();
 }
 
-	if (cGameSpyAdmin::Is_Gamespy_Game()) {
+	if( cGameSpyAdmin::Is_Gamespy_Game() ){
 		WWPROFILE( "cGameSpyAdmin Think" );
 		cGameSpyAdmin::Think();
 	}
@@ -125,18 +120,18 @@ void _Game_Main_Loop_Loop(void)
 	// If the following assert hits it may indicate that your
 	// working directory pathname got cleared in the project settings.
 	//
-	WWASSERT(GameModeManager::Find("Combat") != NULL);
+	WWASSERT( GameModeManager::Find("Combat") != NULL );
 
-	if (!GameModeManager::Find("Combat")->Is_Active()) {
+	if( !GameModeManager::Find( "Combat" )->Is_Active() ){
 		cNetwork::Update();
 	}
 
 	// Denzil - Embedded browser
-	if (WebBrowser::IsWebPageDisplayed() == false) {
+	if( WebBrowser::IsWebPageDisplayed() == false ){
 		GameModeManager::Render();
 	}
 
-	if (AutoRestart.Is_Active()) {
+	if( AutoRestart.Is_Active() ){
 		AutoRestart.Think();
 	}
 
@@ -151,27 +146,10 @@ void _Game_Main_Loop_Loop(void)
 		WWAudioClass::Get_Instance ()->On_Frame_Update (0);
 	}
 }
-	// Give the sound manager a chance to think
-  // PROFILE(	"Audio", WWAudioClass::Get_Instance ()->On_Frame_Update (0) );
 
    Windows_Message_Handler();
-#ifdef WWDEBUG
-   // Sometimes it is useful to be able to artificially lower the frame rate
-   Sleep(cDevOptions::DesiredFrameSleepMs.Get());
-#endif
-
-#if 0
-{	WWPROFILE( "Random" );
-	// spin the Random Generator, a little
-	int count = FreeRandom.Get_Int( 5 );
-	while ( count-- > 0 ) {
-		FreeRandom.Get_Int();
-	}
-}
-#endif
 
    DebugManager::Update();
-
 
 	/*
 	** Sleep for a while if we are hogging the CPU.
@@ -184,9 +162,9 @@ void _Game_Main_Loop_Loop(void)
 			** 16 (approx) for 60 fps. (1000/60)
 			*/
 			unsigned long diff = time2 - time1;
-			if (diff < 16) {
-				unsigned long sleep_time = 16 - (time2 - time1);
-				Sleep(sleep_time);
+			if( diff < 16 ){
+				unsigned long sleep_time = 16 - ( time2 - time1 );
+				Sleep( sleep_time );
 			}
 		}
 	}
@@ -195,22 +173,21 @@ void _Game_Main_Loop_Loop(void)
 /*
 ** MAIN GAME LOOP
 */
-int Game_Main_Loop(void)
-{
+int Game_Main_Loop(void){
 	const unsigned long servicetime = 1000; // Time in milliseconds.
 
 	unsigned long time;
 
 	// Only run main loop if the init is succesful!
-	if (Game_Init()) {
-		while ( RunMainLoop ) {
+	if( Game_Init() ){
+		while( RunMainLoop ){
 			_Game_Main_Loop_Loop();
 		}
 
 		// IML: Allow a short period to process any outstanding sound effects before shutdown.
 		time = TIMEGETTIME();
-		while (TIMEGETTIME() - time < servicetime) {
-			WWAudioClass::Get_Instance ()->On_Frame_Update (0);
+		while( TIMEGETTIME() - time < servicetime ){
+			WWAudioClass::Get_Instance()->On_Frame_Update( 0 );
 		}
 
 		Game_Shutdown();

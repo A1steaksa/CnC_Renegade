@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -43,107 +25,81 @@
 #include "win.h"
 #include "bittype.h"
 
-/*
-**
-*/
-typedef struct
-{
-	char	signature[4];
-	long	header_offset;
-	long	names_offset;
-
+typedef struct {
+	char signature[4];
+	long header_offset;
+	long names_offset;
 } MIXFILE_HEADER;
 
-typedef struct
-{
-	long	file_count;
-
+typedef struct {
+	long file_count;
 } MIXFILE_DATA_HEADER;
 
 
-/*
-**
-*/					
-MixFileFactoryClass::MixFileFactoryClass( const char * mix_filename, FileFactoryClass * factory )	:
-	FileCount (0),
-	NamesOffset (0),
-	IsValid (false),
-	BaseOffset (0),
-	Factory (NULL),
-	IsModified (false)
+MixFileFactoryClass::MixFileFactoryClass( const char* mix_filename, FileFactoryClass* factory ) :
+	FileCount(0),
+	NamesOffset(0),
+	IsValid(false),
+	BaseOffset(0),
+	Factory(NULL),
+	IsModified(false)
 {
-//	WWDEBUG_SAY(( "MixFileFactory( %s )\n", mix_filename ));
 	MixFilename	= mix_filename;
-	Factory		= factory;
-	FilenameList.Set_Growth_Step (1000);
+	Factory = factory;
+	FilenameList.Set_Growth_Step( 1000 );
 
 	// First, open the mix file
-	FileClass * file = factory->Get_File( mix_filename );
+	FileClass* file = factory->Get_File( mix_filename );
 
-//	WWASSERT( file );
-
-	if ( file && file->Is_Available() ) {
+	if( file && file->Is_Available() ){
 
 		file->Open();
 
 		IsValid = true;
 
-		//
-		//	Read the file header
-		//
+		// Read the file header
 		MIXFILE_HEADER header = { 0 };
 		IsValid = (file->Read( &header, sizeof( header ) ) == sizeof( header ));
 
-		//
-		//	Validate the file header
-		//
+		// Validate the file header
 		if ( IsValid ) {
 			IsValid = (::memcmp( header.signature, "MIX1", sizeof ( header.signature ) ) == 0);
 		}
 
-		//
-		//	Seek to the data start
-		//
+		// Seek to the data start
 		FileCount = 0;
 		if ( IsValid ) {
 			file->Seek( header.header_offset, SEEK_SET );
 			IsValid = ( file->Read( &FileCount, sizeof( FileCount ) ) == sizeof( FileCount ) );
 		}
 		
-		//
-		//	Read the array of data headers
-		//
+		// Read the array of data headers
 		if ( IsValid ) {
 			FileInfo.Resize( FileCount );
 			int size = FileCount * sizeof( FileInfoStruct );
 			IsValid = ( file->Read( &FileInfo[0], size ) == size );
 		}
 
-		//
-		//	Check for success
-		//
-		if ( IsValid ) {
+		// Check for success
+		if ( IsValid ){
 			BaseOffset	= 0;
 			NamesOffset	= header.names_offset;
 			WWDEBUG_SAY(( "MixFileFactory( %s ) loaded successfully  %d files\n", MixFilename, FileInfo.Length() ));
-		} else {
+		}else{
 			FileInfo.Resize(0);
 		}	
 
 		factory->Return_File( file );
-
-	} else {
+	}else{
 		WWDEBUG_SAY(( "MixFileFactory( %s ) FAILED\n", mix_filename ));
 	}
 }
 
-MixFileFactoryClass::~MixFileFactoryClass( void )
-{
+MixFileFactoryClass::~MixFileFactoryClass(void){
 	FileInfo.Resize(0);
 }
 
-bool	MixFileFactoryClass::Build_Filename_List (DynamicVectorClass<StringClass> &list)
-{
+bool MixFileFactoryClass::Build_Filename_List( DynamicVectorClass<StringClass>& list ){
 	if (IsValid == false) {
 		return false;
 	}
@@ -206,12 +162,10 @@ bool	MixFileFactoryClass::Build_Filename_List (DynamicVectorClass<StringClass> &
 	return retval;
 }
 
-FileClass * MixFileFactoryClass::Get_File( char const *filename )
-{
+FileClass * MixFileFactoryClass::Get_File( char const *filename ){
 	if ( FileInfo.Length() == 0 ) {
 		return NULL;
 	}
-//	WWDEBUG_SAY(( "MixFileFactoryClass::Get_File( %s )\n", filename ));
 
 	RawFileClass *file = NULL;
 
@@ -238,69 +192,45 @@ FileClass * MixFileFactoryClass::Get_File( char const *filename )
 	}		
 
 	if ( info != NULL) {
-//		WWDEBUG_SAY(( "MixFileFactoryClass::Get_File( %s ) FOUND\n", filename ));
 		file = (RawFileClass *)Factory->Get_File( MixFilename );
 		if ( file ) {
 			file->Bias( BaseOffset + info->Offset, info->Size );
 		}
-//		WWDEBUG_SAY(( "MixFileFactoryClass::Get_File( %s ) FOUND\n", filename ));
-	} else {
-//		WWDEBUG_SAY(( "MixFileFactoryClass::Get_File( %s ) NOT FOUND\n", filename ));
 	}
 
 	return file;
 }
 
-void	MixFileFactoryClass::Return_File( FileClass * file )
-{
-	if ( file != NULL ) {
+void MixFileFactoryClass::Return_File( FileClass* file ){
+	if( file != NULL ){
 		Factory->Return_File( file );
 	}
 }
 
-
-/*
-**
-*/
-void
-MixFileFactoryClass::Add_File (const char *full_path, const char *filename)
-{
+void MixFileFactoryClass::Add_File( const char *full_path, const char *filename ){
 	AddInfoStruct info;
 	info.FullPath = full_path;
 	info.Filename = filename;
-	PendingAddFileList.Add (info);
+	PendingAddFileList.Add( info );
 	IsModified = true;
-	return ;
+	return;
 }
 
 
-/*
-**
-*/
-void
-MixFileFactoryClass::Delete_File (const char *filename)
-{
-	//
+void MixFileFactoryClass::Delete_File( const char *filename ){
 	//	Remove this file (if it exists) from our filename list
-	//
-	for (int list_index = 0; list_index < FilenameList.Count (); list_index ++) {
-		if (FilenameList[list_index].Compare_No_Case (filename) == 0) {
-			FilenameList.Delete (list_index);
+	for( int list_index = 0; list_index < FilenameList.Count(); list_index ++ ){
+		if( FilenameList[list_index].Compare_No_Case( filename ) == 0 ){
+			FilenameList.Delete( list_index );
 			IsModified = true;
 			break;
 		}
 	}
 
-	return ;
+	return;
 }
 
-
-/*
-**
-*/
-void
-MixFileFactoryClass::Flush_Changes (void)
-{
+void MixFileFactoryClass::Flush_Changes(void){
 	//
 	//	Exit if there's nothing to do.
 	//

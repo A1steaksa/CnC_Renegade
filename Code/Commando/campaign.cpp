@@ -55,14 +55,12 @@
 #include "dlgloadspgame.h"
 #include "ccamera.h"
 
-/*
-**
-*/
+
 int	CampaignManager::State = 0;
 int	CampaignManager::BackdropIndex = 0;
 
 #define	CAMPAIGN_INI_FILENAME	"campaign.ini"
-#define	SECTION_CAMPAIGN			"Campaign"
+#define	SECTION_CAMPAIGN		"Campaign"
 #define	NOT_IN_CAMPAIGN_STATE	-10
 #define	REPLAY_LEVEL			-11
 #define	REPLAY_SCORE			-12
@@ -79,22 +77,19 @@ struct BackdropDescriptionStruct {
 
 DynamicVectorClass<BackdropDescriptionStruct>	BackdropDescriptions;
 
-/*
-**
-*/
-void	CampaignManager::Init( void )
-{
+
+void CampaignManager::Init(void){
 	State = NOT_IN_CAMPAIGN_STATE;
 	BackdropIndex = 0;
 
 	// Load CAMPAIGN.INI to get campain flow
-	INIClass	* campaignINI = Get_INI( CAMPAIGN_INI_FILENAME );
-	if (campaignINI != NULL) {
+	INIClass* campaignINI = Get_INI( CAMPAIGN_INI_FILENAME );
+	if( campaignINI != NULL ){
 		WWASSERT( campaignINI && campaignINI->Section_Count() > 0 );
-		int count =  campaignINI->Entry_Count( SECTION_CAMPAIGN );
+		int count = campaignINI->Entry_Count( SECTION_CAMPAIGN );
 		for ( int entry = 0; entry < count; entry++ )	{
-			StringClass	description(0,true);
-			campaignINI->Get_String(description, SECTION_CAMPAIGN, campaignINI->Get_Entry( SECTION_CAMPAIGN, entry) );
+			StringClass	description( 0, true );
+			campaignINI->Get_String( description, SECTION_CAMPAIGN, campaignINI->Get_Entry( SECTION_CAMPAIGN, entry ) );
 			CampaignFlowDescriptions.Add( description );
 		}
 
@@ -114,30 +109,19 @@ void	CampaignManager::Init( void )
 					BackdropDescriptions[index].Lines.Add( description );
 				}
 			}
-
 		}
 
 		Release_INI( campaignINI );
-	} else {
+	}else{
 		Debug_Say(("CampaignManager::Init - Unable to load %s\n", CAMPAIGN_INI_FILENAME));
 	}
-
 }
 
-
-/*
-**
-*/
-void	CampaignManager::Shutdown( void )
-{
+void CampaignManager::Shutdown(void){
 	CampaignFlowDescriptions.Clear();
 }
 
 
-
-/*
-**
-*/
 //-----------------------------------------------------------------------------
 enum	{
 	CHUNKID_VARIABLES = 906011356,
@@ -157,8 +141,7 @@ bool CampaignManager::Save(ChunkSaveClass & csave)
 }
 
 //-----------------------------------------------------------------------------
-bool CampaignManager::Load(ChunkLoadClass &cload)
-{
+bool CampaignManager::Load( ChunkLoadClass& cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -185,14 +168,7 @@ bool CampaignManager::Load(ChunkLoadClass &cload)
 	return true;
 }
 
-
-
-
-/*
-**
-*/
-void	CampaignManager::Start_Campaign( int difficulty )
-{
+void CampaignManager::Start_Campaign( int difficulty ){
 	Debug_Say(( "CampaignManager::Start_Campaign( %d )\n", difficulty ));
 
 	State = -1;
@@ -210,11 +186,7 @@ void	CampaignManager::Start_Campaign( int difficulty )
 	Continue();
 }
 
-/*
-**
-*/
-void	CampaignManager::Continue( bool success )
-{
+void CampaignManager::Continue( bool success ){
 	BackdropIndex = 0;
 
 	if ( State == REPLAY_LEVEL ) {
@@ -350,16 +322,11 @@ void	CampaignManager::Continue( bool success )
 
 }
 
-void	CampaignManager::Reset()
-{
+void CampaignManager::Reset(){
 	State = NOT_IN_CAMPAIGN_STATE;		
 }
 
-/*
-**
-*/
-void	CampaignManager::Replay_Level( const char * mission_name, int difficulty )
-{
+void CampaignManager::Replay_Level( const char * mission_name, int difficulty ){
 	State = REPLAY_LEVEL;
 
 	cGod::Reset_Inventory();
@@ -368,24 +335,18 @@ void	CampaignManager::Replay_Level( const char * mission_name, int difficulty )
 	GameInitMgrClass::Start_Game( mission_name, PLAYERTYPE_RENEGADE, 0 );
 }
 
-/*
-**
-*/
-int	CampaignManager::Get_Backdrop_Description_Count( void )
-{
+int	CampaignManager::Get_Backdrop_Description_Count(void){
 	if (BackdropDescriptions.Count() > 0) {
 		return BackdropDescriptions[BackdropIndex].Lines.Count();
 	}
 	return 0;
 }
 
-const char * CampaignManager::Get_Backdrop_Description( int index )
-{
+const char* CampaignManager::Get_Backdrop_Description( int index ){
 	return BackdropDescriptions[BackdropIndex].Lines[index];
 }
 
-void	CampaignManager::Select_Backdrop_Number( int state_number )
-{
+void CampaignManager::Select_Backdrop_Number( int state_number ){
 	// Find Backdrop Index
 	BackdropIndex = 0;
 	for ( int i = 0; i < BackdropDescriptions.Count(); i++ ) {
@@ -399,33 +360,7 @@ void	CampaignManager::Select_Backdrop_Number( int state_number )
 	}
 }
 
-void	CampaignManager::Select_Backdrop_Number_By_MP_Type( int type )
-{
-	//
-	//	Setup Load Menu
-	//
-	/*
-	#define	MULTIPLAY_LOAD_MENU_NUMBER_DEATHMATCH			91
-	#define	MULTIPLAY_LOAD_MENU_NUMBER_TEAM_DEATHMATCH	92
-	#define	MULTIPLAY_LOAD_MENU_NUMBER_CTF					93
-	#define	MULTIPLAY_LOAD_MENU_NUMBER_CNC1					94
-	#define	MULTIPLAY_LOAD_MENU_NUMBER_CNC2					95
-	int load_menu_number = 0;
-	if ( type == cGameData::GAME_TYPE_DEATHMATCH ) {
-		load_menu_number = MULTIPLAY_LOAD_MENU_NUMBER_DEATHMATCH;	
-	}
-	if ( type == cGameData::GAME_TYPE_TEAM_DEATHMATCH ) {
-		load_menu_number = MULTIPLAY_LOAD_MENU_NUMBER_TEAM_DEATHMATCH;	
-	}
-	if ( type == cGameData::GAME_TYPE_CNC ) {
-		load_menu_number = MULTIPLAY_LOAD_MENU_NUMBER_CNC1;	
-		if ( FreeRandom.Get_Int() & 1 ) {
-			load_menu_number = MULTIPLAY_LOAD_MENU_NUMBER_CNC2;	
-		}
-	}
-	Select_Backdrop_Number( load_menu_number );
-	*/
-
+void CampaignManager::Select_Backdrop_Number_By_MP_Type( int type ){
 	WWASSERT(type == cGameData::GAME_TYPE_CNC);
 
 	#define	MULTIPLAY_LOAD_MENU_NUMBER_CNC1					94
@@ -438,34 +373,6 @@ void	CampaignManager::Select_Backdrop_Number_By_MP_Type( int type )
 		load_menu_number = MULTIPLAY_LOAD_MENU_NUMBER_CNC2;
 	}
 
-//	Select_Backdrop_Number(load_menu_number);
 	//forget the random screen, alwayds do 94 (BMG 11/24/01)
 	Select_Backdrop_Number( MULTIPLAY_LOAD_MENU_NUMBER_CNC1 );
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	if ( type == cGameData::GAME_TYPE_CTF ) {
-		load_menu_number = MULTIPLAY_LOAD_MENU_NUMBER_CTF;	
-	}
-	*/

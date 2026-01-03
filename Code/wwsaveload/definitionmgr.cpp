@@ -117,10 +117,7 @@ DefinitionClass* DefinitionMgrClass::Find_Definition( uint32 id, bool twiddle ){
 			}
 			
 		} else {
-
-			//
 			//	Cut our 'window' in half
-			//
 			if (id > curr_def->Get_ID ()) {
 				lower_index = index;
 				index += (upper_index - index) / 2;
@@ -131,12 +128,9 @@ DefinitionClass* DefinitionMgrClass::Find_Definition( uint32 id, bool twiddle ){
 		}
 	}
 
-	//	Should we twiddle this definition? (Twiddling refers to our randomizing
-	//	framework for definitions)
-	if (	twiddle &&
-			definition != NULL &&
-			definition->Get_Class_ID () == CLASSID_TWIDDLERS)
-	{
+	// Should we twiddle this definition? (Twiddling refers to our randomizing
+	// framework for definitions)
+	if( twiddle && definition != NULL && definition->Get_Class_ID () == CLASSID_TWIDDLERS ){
 		definition = ( (TwiddlerClass*) definition )->Twiddle();
 	}
 
@@ -150,7 +144,7 @@ DefinitionClass* DefinitionMgrClass::Find_Definition( uint32 id, bool twiddle ){
 //
 //////////////////////////////////////////////////////////////////////////////////
 DefinitionClass* DefinitionMgrClass::Find_Named_Definition( const char *name, bool twiddle ){
-	DefinitionClass *definition = NULL;
+	DefinitionClass* definition = NULL;
 
 	// Loop through all the definitions and see if we can
 	// find the one with the requested name
@@ -368,9 +362,7 @@ DefinitionMgrClass::Get_Next (DefinitionClass *curr_def)
 //	Free_Definitions
 //
 ////////////////////////////////////////////////////////////////////////////
-void
-DefinitionMgrClass::Free_Definitions (void)
-{
+void DefinitionMgrClass::Free_Definitions(void){
 	// Clear the hash table
 	if (DefinitionHash) {
 		HashTemplateIterator<StringClass,DynamicVectorClass<DefinitionClass*>*> ite(*DefinitionHash);

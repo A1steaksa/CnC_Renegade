@@ -57,22 +57,15 @@ FileFactoryListClass::~FileFactoryListClass( void )
 	Instance = NULL;
 }
 
-/*
-**
-*/
-void	FileFactoryListClass::Add_FileFactory( FileFactoryClass * factory, const char *name )
-{
+
+void FileFactoryListClass::Add_FileFactory( FileFactoryClass* factory, const char* name ){
 	FactoryList.Add( factory );
 	FactoryNameList.Add( name );
-	Reset_Search_Start ();
+	Reset_Search_Start();
 }
 
 
-/*
-**
-*/
-void	FileFactoryListClass::Remove_FileFactory( FileFactoryClass * factory )
-{
+void FileFactoryListClass::Remove_FileFactory( FileFactoryClass * factory ){
 	for (int index = 0; index < FactoryList.Count (); index ++) {
 
 		//

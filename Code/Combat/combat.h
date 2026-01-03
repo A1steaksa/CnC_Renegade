@@ -54,9 +54,6 @@
 #endif
 
 
-/*
-**
-*/
 class PhysicsSceneClass;
 class CameraClass;
 class CCameraClass;
@@ -72,56 +69,45 @@ class MessageWindowClass;
 class SoundEnvironmentClass;
 
 
-/*
-**
-*/
-#define	COMBAT_CAMERA				   CombatManager::Get_Camera()
-#define	COMBAT_STAR						CombatManager::Get_The_Star()
-#define	COMBAT_SCENE					CombatManager::Get_Scene()
-#define	COMBAT_DAZZLE_LAYER			CombatManager::Get_Dazzle_Layer()
+#define	COMBAT_CAMERA		CombatManager::Get_Camera()
+#define	COMBAT_STAR			CombatManager::Get_The_Star()
+#define	COMBAT_SCENE		CombatManager::Get_Scene()
+#define	COMBAT_DAZZLE_LAYER	CombatManager::Get_Dazzle_Layer()
 
 /*
 ** Collision Groups
 */
 typedef enum {
-	DEFAULT_COLLISION_GROUP			= 0,		// collides with everything
-	UNCOLLIDEABLE_GROUP,							// collides with nothing
+	DEFAULT_COLLISION_GROUP				= 0,	// collides with everything
+	UNCOLLIDEABLE_GROUP,						// collides with nothing
 	TERRAIN_ONLY_COLLISION_GROUP,				// collides only with terrain
 	BULLET_COLLISION_GROUP,						// collides with everything but itself
-	TERRAIN_AND_BULLET_COLLISION_GROUP,		// collides with terrain and bullets
+	TERRAIN_AND_BULLET_COLLISION_GROUP,			// collides with terrain and bullets
 	BULLET_ONLY_COLLISION_GROUP,				// collides only with bullets
 	SOLDIER_COLLISION_GROUP,					// collides with everything (but only soldiers use it)
-	SOLDIER_GHOST_COLLISION_GROUP,			// collides with everything but soldiers
-	TERRAIN_COLLISION_GROUP			= 15,		// Terrain must be 15
+	SOLDIER_GHOST_COLLISION_GROUP,				// collides with everything but soldiers
+	TERRAIN_COLLISION_GROUP				= 15, 	// Terrain must be 15
 } Collision_Group_Type;
 
-/*
-**
-*/
+
 class	CombatNetworkHandlerClass {
 public:
-   virtual	bool	Can_Damage(ArmedGameObj * p_armed_damager, PhysicalGameObj * p_phys_victim) = 0;
-   virtual	float	Get_Damage_Factor(ArmedGameObj * p_armed_damager, PhysicalGameObj * p_phys_victim) = 0;
-	virtual	void	On_Soldier_Kill(SoldierGameObj * p_soldier, SoldierGameObj * p_victim)						= 0;
-	virtual	void	On_Soldier_Death(SoldierGameObj * p_soldier)						= 0;
-	virtual	bool	Is_Gameplay_Permitted(void)											= 0;
+	virtual	bool	Can_Damage( ArmedGameObj* p_armed_damager, PhysicalGameObj * p_phys_victim) = 0;
+	virtual	float	Get_Damage_Factor( ArmedGameObj* p_armed_damager, PhysicalGameObj * p_phys_victim ) = 0;
+	virtual	void	On_Soldier_Kill( SoldierGameObj* p_soldier, SoldierGameObj * p_victim ) = 0;
+	virtual	void	On_Soldier_Death( SoldierGameObj* p_soldier ) = 0;
+	virtual	bool	Is_Gameplay_Permitted(void) = 0;
 };
 
 
-/*
-**
-*/
 class	CombatMiscHandlerClass {
 public:
-	virtual	void	Mission_Complete( bool success )												= 0;
-	virtual	void	Star_Killed( void )																= 0;
+	virtual	void	Mission_Complete( bool success ) = 0;
+	virtual	void	Star_Killed(void) = 0;
 };
 
-/*
-**
-*/
-class	CombatManager {
 
+class	CombatManager {
 public:
 	// Init and Shutdown should be called once per program execution
 	static	void	Init( bool render_available = true );

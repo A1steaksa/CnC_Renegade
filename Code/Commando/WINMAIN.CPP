@@ -149,78 +149,20 @@ long Top_Level_Exception_Filter(EXCEPTION_POINTERS *e_info)
  * HISTORY:                                                                                    *
  *   07/18/1997 GH  : Created.                                                                 *
  *=============================================================================================*/
-int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
-{
-	WWMemoryLogClass::Init();	// This switches memlog from static to dynamic allocations mode
+int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ){
+	WWMemoryLogClass::Init(); // This switches memlog from static to dynamic allocations mode
 
-#ifdef _DEBUG
-	/*
-	**	Setup to track memory heap integrity and check for
-	**	memory leaks. Output is dumped to the debug string console.
-	*/
-	if (cDevOptions::CrtDbgEnabled.Is_True()) {
-
-		_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-		_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
-		_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
-		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	}
-
-	/*
-	** Leak test
-	*/
-	//char *flibble = new char [1024];
-	//unsigned long *flibble2 = new unsigned long;
-	//void *flibble3 = malloc(128);
-
-	//flibble = flibble;
-	//flibble2 = flibble2;
-	//flibble3 = flibble3;
-#endif //_DEBUG
-
-#ifdef WWDEBUG
-	//
-	// If necessary, disable packet optimizations
-	//
-	if (cDevOptions::PacketOptimizationsEnabled.Is_False()) {
-		PacketManager.Disable_Optimizations();
-	}
-#endif //WWDEBUG
-
-#ifdef _DEBUG // Denzil - DO NOT COMPILE INTO FINAL BUILD
-	bool webInstalled = WebBrowser::InstallPrerequisites();
-
-	if (!webInstalled) {
-		::MessageBox(NULL, "Embedded browser prerequisites missing\n\nBrowser functionality questionable.\n\n(Please call Denzil @ 27272)",
-				"Renegade Warning!", MB_ICONWARNING|MB_OK);
-	}
-#endif // WWDEBUG
-
-   if (!cUserOptions::Parse_Command_Line(lpCmdLine)) {
-		return(0);
-	}
-
-	//
-	// There's a couple of options we need for the FDS
-	//
-#ifdef FREEDEDICATEDSERVER
-	if (!SlaveMaster.Am_I_Slave() && !ServerSettingsClass::Is_Server_Settings_File_Set()) {
-		cUserOptions::Set_Server_INI_File("STARTSERVER=server.ini");
-	}
-	ConsoleBox.Set_Exclusive(true);
-#endif //FREEDEDICATEDSERVER
-
-	//
-	//	Verify that we can execute (i.e. make sure there are no other instances running)
-	//
-	SingletonInstanceKeeperClass instance_keeper;
-	if (instance_keeper.Verify_Safe_To_Execute () == false) {
+	if( !cUserOptions::Parse_Command_Line( lpCmdLine ) ){
 		return 0;
 	}
 
-	//
-	//	Start the game!
-	//
+	// Verify that we can execute (i.e. make sure there are no other instances running)
+	SingletonInstanceKeeperClass instance_keeper;
+	if( instance_keeper.Verify_Safe_To_Execute() == false ){
+		return 0;
+	}
+
+	// Start the game!
 	int retval = Start_Application( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
 	return retval;
 }
@@ -417,20 +359,14 @@ static bool Video_Card_Driver_Check()
  * HISTORY:                                                                                    *
  *   09/19/2001 PDS  : Created.                                                                *
  *=============================================================================================*/
-int Start_Application( HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int nCmdShow )
-{
+int Start_Application( HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int nCmdShow ){
 	{
 		WWMEMLOG(MEM_GAMEINIT);
-		//LPSTR	command	= lpCmdLine;
 
-		/*
-		** Set the working directory.
-		*/
+		// Set the working directory.
 		Set_Working_Directory(hInstance);
 
-		//
 		// TEMP Dev code - check the working folder is correct!
-		//
 		char tmp_buffer[256];
 		char* tmp_ptr;
 		if (!SearchPath(
@@ -447,59 +383,31 @@ int Start_Application( HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /
 		/*
 		** Only do these checks if this isn't an auto-restart. If we are restarting then we must have run once OK already. Right?
 		*/
-		if (AutoRestart.Get_Restart_Flag() == false && !ConsoleBox.Is_Exclusive()) {
+		if( AutoRestart.Get_Restart_Flag() == false && !ConsoleBox.Is_Exclusive() ){
 			if (!Video_Card_Driver_Check()) return 0;
 			if (!Graphics_Settings_Trouble_Shooting()) return 0;
 		}
 
-		//Debug_Say(("Started logging at time %s", cMiscUtil::Get_Text_Time()));
+		if( !Create_Main_Window( hInstance, nCmdShow ) ) return 0;
 
-		if (!Create_Main_Window(hInstance, nCmdShow)) return 0;
-
-		Register_Thread_ID(GetCurrentThreadId(), "Main Thread", true);
+		Register_Thread_ID( GetCurrentThreadId(), "Main Thread", true );
 	}
 
 	int exitCode = EXIT_SUCCESS;
 
-#ifdef WWDEBUG
-	if (cDevOptions::EnableExceptionHandler.Is_False()) {
-		exitCode = Game_Main_Loop();
-	} else {
-#endif //WWDEBUG
+	Register_Application_Exception_Callback( Application_Exception_Callback& );
+	Register_Application_Version_Callback( BuildInfoClass&::Composite_Build_Info);
 
-		Register_Application_Exception_Callback(&Application_Exception_Callback);
-		Register_Application_Version_Callback(&BuildInfoClass::Composite_Build_Info);
 
-#ifdef _MSC_VER
-		/*
-		** The __try/__except construct is part of the WIN32 interface. This is not the same
-		** as C++ exception handling. There is no additional code overhead required
-		** with this interface and the compilers exception handling options should be disabled
-		** to prevent the compiler generating additional stack unwinding code.
-		*/
-		__try {
-#else
-		SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER) &Top_Level_Exception_Filter);
-#endif
-			WWDEBUG_SAY(("Game_Main_Loop\n"));
-			exitCode = Game_Main_Loop();
+	SetUnhandledExceptionFilter( (LPTOP_LEVEL_EXCEPTION_FILTER) Top_Level_Exception_Filter& );
+	
+	WWDEBUG_SAY(("Game_Main_Loop\n"));
+	exitCode = Game_Main_Loop();
 
-#ifdef _MSC_VER
-		} __except(Exception_Handler(GetExceptionCode(), GetExceptionInformation())) {};
 
-		/*
-		** Set the exception filter to use on shutdown.
-		*/
-#else
-		SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER) &Top_Level_Exception_Filter);
-#endif
-#ifdef WWDEBUG
-	}
-#endif //WWDEBUG
+	SetUnhandledExceptionFilter( (LPTOP_LEVEL_EXCEPTION_FILTER) Top_Level_Exception_Filter& );
 
-	Unregister_Thread_ID(GetCurrentThreadId(), "Main Thread");
-
-   //Debug_Say(("Finished logging at time %s", cMiscUtil::Get_Text_Time()));
+	Unregister_Thread_ID( GetCurrentThreadId(), "Main Thread" );
 
 	return exitCode;
 }
