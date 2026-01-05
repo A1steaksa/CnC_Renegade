@@ -78,13 +78,15 @@ public:
 	virtual	~GameModeClass() { WWASSERT( State == GAME_MODE_INACTIVE ); }	// assert inactive
 
 	// gets the current state
-	GameModeState	Get_State() { 	return State; }
+	GameModeState Get_State() {
+		return State;
+	}
 	
-	virtual void Activate();				// activates the mode
-	virtual void Deactivate();				// deactivates the mode (don't shutdown until safe)
+	virtual void Activate();			// activates the mode
+	virtual void Deactivate();			// deactivates the mode (don't shutdown until safe)
 	virtual void Safely_Deactivate();	// shutdown if requested
-	virtual void Suspend();					// suspends the mode from thinking, but does not deactivate it
-	virtual void Resume();					// resumes a suspended mode
+	virtual void Suspend();				// suspends the mode from thinking, but does not deactivate it
+	virtual void Resume();				// resumes a suspended mode
 
 	virtual bool	Is_Inactive( void )	{ return ( State == GAME_MODE_INACTIVE ) || ( State == GAME_MODE_INACTIVE_PENDING ); }
 	virtual bool	Is_Suspended( void )	{ return ( State == GAME_MODE_SUSPENDED ); }

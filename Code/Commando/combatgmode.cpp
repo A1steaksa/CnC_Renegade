@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***                            Confidential - Westwood Studios                              ***
  ***********************************************************************************************
@@ -114,9 +96,6 @@
 #include "dialogmgr.h"
 #include "GameSpy_QnR.h"
 
-/*
-**
-*/
 extern bool g_is_loading;
 bool g_b_core_restart;//TSS081401
 bool g_client_quit = false;
@@ -129,9 +108,6 @@ static int				DefaultToFirstPerson							= true;
 static bool				PendingCampaignContinue						= false;
 
 
-/*
-**
-*/
 class	CombatGameMiscHandlerClass : public CombatMiscHandlerClass {
 public:
 	virtual	void	Mission_Complete( bool success );
@@ -140,9 +116,6 @@ public:
 
 CombatGameMiscHandlerClass		GameMiscHandler;
 
-/*
-**
-*/
 static void Combat_To_Menu (RenegadeDialogMgrClass::LOCATION location)
 {
    //
@@ -158,7 +131,6 @@ static void Combat_To_Menu (RenegadeDialogMgrClass::LOCATION location)
 			GameModeManager::Find( "Combat" )->Suspend();	// suspend Combat Mode
 		}
 
-		//if (IS_SOLOPLAY) {
 		if (IS_MISSION) {
 			RenegadeDialogMgrClass::Goto_Location (location);
 		} else {
@@ -167,9 +139,6 @@ static void Combat_To_Menu (RenegadeDialogMgrClass::LOCATION location)
 	}
 }
 
-/*
-**
-*/
 static void Start_In_Game_Help(void)
 {
 	//
@@ -189,36 +158,9 @@ static void Start_In_Game_Help(void)
 	}
 }
 
-void	CombatGameModeClass::Combat_Keyboard( void )
-{
+void CombatGameModeClass::Combat_Keyboard(void){
 	WWPROFILE( "Combat_Keyboard" );
 
-#ifdef ATI_DEMO_HACK
-	// HACK: Make double-ESC exit back to desktop
-	static unsigned esc_pressed_time=0x7ffff;
-	if ( Input::Get_State( INPUT_FUNCTION_MENU_TOGGLE ) ) {
-		unsigned current_time=WW3D::Get_Sync_Time();
-		if ((current_time-esc_pressed_time)<5000) {
-			cDevOptions::QuickFullExit.Set(true);
-			esc_pressed_time=0x7ffff;
-		}
-		else {
-			Get_Text_Display()->Print_System( "Press ESC again to exit to desktop...\n" );
-		}
-		esc_pressed_time=current_time;
-	}
-
-
-	// HACK: In ATI demo toggle the statistics display using TAB
-	if ( Input::Get_State( INPUT_FUNCTION_EVA_MISSION_OBJECTIVES_TOGGLE ) ) {
-		if (StatisticsDisplayManager::Is_Current_Display( "fps" )) {
-			StatisticsDisplayManager::Set_Display( "off" );
-		}
-		else {
-			StatisticsDisplayManager::Set_Display( "fps" );
-		}
-	}
-#else
 	bool to_menu=Input::Get_State( INPUT_FUNCTION_MENU_TOGGLE );
 	// If game doesn't have a focus and combat is active, suspend combat by entering menu
 	if (!GameInFocus) {
@@ -230,9 +172,7 @@ void	CombatGameModeClass::Combat_Keyboard( void )
 		  Combat_To_Menu( RenegadeDialogMgrClass::LOC_ENCYCLOPEDIA );
 	}
 
-	//
 	//	Handle the in-game EVA mission objectives window
-	//
 	if ( IS_MISSION && Input::Get_State( INPUT_FUNCTION_EVA_MISSION_OBJECTIVES_TOGGLE ) ) {
 		if ( ObjectiveManager::Is_Viewer_Displayed() ) {
 			ObjectiveManager::Page_Down_Viewer();
@@ -240,7 +180,6 @@ void	CombatGameModeClass::Combat_Keyboard( void )
 			ObjectiveManager::Display_Viewer( true );
 		}
    }
-#endif
 
 	if ( Input::Get_State( INPUT_FUNCTION_HELP_SCREEN ) ) {
 		Start_In_Game_Help();
@@ -269,9 +208,7 @@ void	CombatGameModeClass::Combat_Keyboard( void )
 			START_DIALOG (CNCTeamInfoDialogClass);
 		} else if (Input::Get_State( INPUT_FUNCTION_BATTLE_INFO_TOGGLE )) {
 			START_DIALOG (CNCBattleInfoDialogClass);
-		}/* else if (Input::Get_State( INPUT_FUNCTION_SERVER_INFO_TOGGLE )) {
-			START_DIALOG (CNCServerInfoDialogClass);
-		}*/
+		}
 
 		// Handle radio commands
 		for (int radioCmdIndex = INPUT_FUNCTION_RADIO_CMD_01; radioCmdIndex <= INPUT_FUNCTION_RADIO_CMD_30; ++radioCmdIndex) {
@@ -296,25 +233,8 @@ void	CombatGameModeClass::Combat_Keyboard( void )
 	}
 
 	if (!IS_MISSION && Input::Get_State( INPUT_FUNCTION_EVA_MISSION_OBJECTIVES_TOGGLE )) {
-		//MultiHUDClass::Toggle_Verbose_Lists();
 		MultiHUDClass::Next_Playerlist_Format();
 	}
-
-#ifdef WWDEBUG
-   if ( Input::Get_State( INPUT_FUNCTION_QUICK_FULL_EXIT ) ) {
-		cDevOptions::QuickFullExit.Set(true);
-		WWDEBUG_SAY(("Quick full exit requested by keypress.\n"));
-	}
-	if (cDevOptions::QuickFullExit.Is_True()) {
-
-		GameInitMgrClass::End_Game();
-
-		GameInitMgrClass::End_Client_Server();
-
-		extern void Stop_Main_Loop (int exitCode);
-		Stop_Main_Loop (EXIT_SUCCESS);
-	}
-#endif
 
 	if (	(The_Game() != NULL &&
 		    (Input::Get_State(INPUT_FUNCTION_BEGIN_PUBLIC_MESSAGE) ||
@@ -421,7 +341,6 @@ public:
 		int count = CampaignManager::Get_Backdrop_Description_Count();
 		for ( int i = 0; i < count; i++ ) {
 			const char * read = CampaignManager::Get_Backdrop_Description( i );
-//			Debug_Say(( "Parse %s\n", read ));
 			StringClass desc = read;
 			while ( desc.Get_Length() && desc[0] <= ' ' ) desc.Erase( 0, 1 );
 			while ( desc.Get_Length() && desc[desc.Get_Length()-1]<=' ' ) desc.Erase(desc.Get_Length()-1, 1 );
@@ -547,11 +466,9 @@ public:
 	{
 	}
 
-	float	Get_Predicted_Percentage( int state )
-	{
-		switch( state )
-		{
-#define	TOTAL	(18.0f)
+	float Get_Predicted_Percentage( int state ){
+		switch( state ){
+#define	TOTAL( 18.0f )
 			case 0:	return 0.1f / TOTAL;
 			case 1:	return 0.2f / TOTAL;
 			case 2:	return 0.3f / TOTAL;
@@ -559,7 +476,7 @@ public:
 			case 4:	return 3.8f / TOTAL;
 			case 5:	return 15.5f / TOTAL;
 			case 6:	return 17.6f / TOTAL;
-			default:	return 1.0f;
+			default: return 1.0f;
 		}
 	}
 
@@ -594,11 +511,6 @@ public:
 			ConsoleBox.Print("Load %d%% complete\r", (int)(LoadPercentageDrawn * 100.0f));
 		}
 
-#if 0
-		StringClass txt=SaveLoadStatus::Get_Status_Text(0);
-		txt=SaveLoadStatus::Get_Status_Text(1);
-#endif
-
 		WW3D::End_Render();
 	}
 };
@@ -606,10 +518,7 @@ public:
 #define LOADTIME_NETWORK_UPDATE if (!IS_SOLOPLAY) cNetwork::Update()
 
 
-/*
-**
-*/
-void CombatGameModeClass::Load_Level( void )
+void  ::Load_Level( void )
 {
 	WWLOG_PREPARE_TIME_AND_MEMORY("CombatGameModeClass::Load_Level");
 	WWMEMLOG(MEM_GAMEDATA);
@@ -636,9 +545,6 @@ void CombatGameModeClass::Load_Level( void )
 		AssetStatusClass::Peek_Instance()->Enable_Load_On_Demand_Reporting(false);
 	}
 
-//	LoadingScreenClass loading_screen;
-//	loading_screen.Render(true);
-
 	PendingCampaignContinue	= false;
 	g_is_loading = true;
 
@@ -662,18 +568,11 @@ void CombatGameModeClass::Load_Level( void )
 
 	CombatManager::Set_Combat_Misc_Handler( &GameMiscHandler );
 
-	// Flush out current level
-//	INIT_STATUS("Release current level");
-//	LevelManager::Release_Level();
-
 	WWASSERT(PTheGameData != NULL);
 	StringClass map_name(The_Game()->Get_Map_Name(),true);
 	WWASSERT( !map_name.Is_Empty() );
 
 	bool preload_assets = true;
-#ifdef WWDEBUG
-	preload_assets = cDevOptions::PreloadAssets.Get();
-#endif
 
 	DIAG_LOG(( "LOAD", "%s", map_name ));
 

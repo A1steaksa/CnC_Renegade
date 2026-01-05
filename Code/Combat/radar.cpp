@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -66,10 +48,6 @@ Render2DSentenceClass *				RadarManager::CompassRenderers[8];
 int										RadarManager::CurrentCompassRendererIndex;
 
 static		Matrix3D					RadarTM;
-#if 0
-static		float						RadarSweep					= 0;
-static		float						RadarSweepMove;
-#endif
 
 DynamicVectorClass<Render2DClass *>		Blips;
 
@@ -86,9 +64,6 @@ const char * RadarManager::Get_Blip_Shape_Type_Name( int index )
 	return names[index];
 }
 
-/*
-**
-*/
 static	const RectClass &	Scale_UV( const RectClass & uv, float texture_size )
 {
 	static RectClass new_uv;

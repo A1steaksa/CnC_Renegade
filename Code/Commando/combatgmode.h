@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -49,9 +31,6 @@
 	#include "combat.h"
 #endif
 
-/*
-**
-*/
 class AudibleSoundClass;
 class PhysicsSceneClass;
 
@@ -62,17 +41,21 @@ class PhysicsSceneClass;
 */
 class	CombatGameModeClass : public GameMajorModeClass {
 public:
-	virtual	const char *Name()	{ return "Combat"; }	// the name of this mode
-	virtual	void	Init();		 	// called when the mode is activated
-	virtual	void 	Shutdown(); 	// called when the mode is deactivated
-	virtual	void 	Think();			// called each time through the main loop to think when non-inactive
-	virtual	void 	Render();		// called each time through the main loop to draw when non-inactive
-	virtual	void	Resume();		// activates the mode
-	virtual	void	Suspend();		// deactivates the mode (don't shutdown until safe)
+	// the name of this mode
+	virtual	const char *Name()	{
+		return "Combat";
+	} 
 
-				void	Load_Level();
-				void 	Core_Shutdown();
-				void 	Core_Restart();
+	virtual	void Init();		// called when the mode is activated
+	virtual	void Shutdown(); 	// called when the mode is deactivated
+	virtual	void Think();		// called each time through the main loop to think when non-inactive
+	virtual	void Render();		// called each time through the main loop to draw when non-inactive
+	virtual	void Resume();		// activates the mode
+	virtual	void Suspend();		// deactivates the mode (don't shutdown until safe)
+
+	void Load_Level();
+	void Core_Shutdown();
+	void Core_Restart();
 
 	static   void  Toggle_Multi_Hud( void );
 

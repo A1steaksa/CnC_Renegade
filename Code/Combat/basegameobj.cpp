@@ -175,7 +175,7 @@ bool BaseGameObj::Load( ChunkLoadClass& cload ){
 				break;
 			}
 
-			case MICROCHUNKID_DEFINITION_ID:
+			case MICROCHUNKID_DEFINITION_ID: {
 				int definition_id;
 				LOAD_MICRO_CHUNK( cload, definition_id );
 				WWASSERT( Definition == NULL );
@@ -187,13 +187,15 @@ bool BaseGameObj::Load( ChunkLoadClass& cload ){
 				// 07/30/01 attempting to load a level with temps will presently assert here.
 				WWASSERT( Definition != NULL );
 				break;
+			}
 
 			READ_MICRO_CHUNK( cload, MICROCHUNKID_ENABLE_CINEMATIC_FREEZE, EnableCinematicFreeze );
 
-			default:
+			default: {
 				Debug_Say(( "Unrecognized BaseGameObj Variable chunkID\n" ));
 				break;
 			}
+		}
 		cload.Close_Micro_Chunk();
 	}
 	cload.Close_Chunk();

@@ -253,9 +253,6 @@ WW3DAssetManager::~WW3DAssetManager(void)
 		delete [] PrototypeHashTable;
 		PrototypeHashTable = NULL;
 	}
-#ifdef WW3D_DX8
-	Close_Texture_File_Cache();
-#endif //WW3D_DX8
 }
 
 static void Create_Number_String(StringClass& number, unsigned value)
@@ -386,23 +383,6 @@ void WW3DAssetManager::Log_Texture_Statistics()
 	WWDEBUG_SAY(("\n%d un-initialized textures, totalling, totalling %14s bytes\n\n",
 		total_uninitialized_count,
 		number));
-/*
-	RenderObjIterator * rite=WW3DAssetManager::Get_Instance()->Create_Render_Obj_Iterator();
-	if (rite) {
-		for (rite->First(); !rite->Is_Done(); rite->Next()) {
-//			RenderObjClass * robj=Create_Render_Obj(rite->Current_Item_Name());	
-//			if (robj) {
-//
-//				robj->Release_Ref();
-//			}
-			if (rite->Current_Item_Class_ID()==RenderObjClass::CLASSID_HMODEL) {
-				WWDEBUG_SAY(("robj: %s\n",rite->Current_Item_Name()));
-			}
-		}
-
-		WW3DAssetManager::Get_Instance()->Release_Render_Obj_Iterator(rite);
-	}
-*/
 }
 
 /***********************************************************************************************

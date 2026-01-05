@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -65,13 +47,13 @@
 #include "persistfactory.h"
 
 
-#define MIN_FOV				0.02f
-#define MAX_FOV				2.6f
+#define MIN_FOV 0.02f
+#define MAX_FOV 2.6f
 
-#define CCAMERA_NEARZ						0.26f				// near clip plane distance
-#define CCAMERA_FARZ							300.0f			// far clip plane distance
-#define CCAMERA_SHRINK_NEARZ_DIST		0.5f				// third person distance below which we start shrinking nearz
-#define CCAMERA_MIN_NEARZ					0.2f				// how small nearz gets when we're up against a wall
+#define CCAMERA_NEARZ				0.26f		// near clip plane distance
+#define CCAMERA_FARZ				300.0f		// far clip plane distance
+#define CCAMERA_SHRINK_NEARZ_DIST	0.5f		// third person distance below which we start shrinking nearz
+#define CCAMERA_MIN_NEARZ			0.2f		// how small nearz gets when we're up against a wall
 
 
 Vector3	FirstPersonOffsetTweak( 0, 0, 0 );
@@ -101,52 +83,54 @@ HashTemplateClass<StringClass, CCameraProfileClass*> ProfileHash;
 #define	ENTRY_LAG_FORWARD						"LagForward"
 #define	ENTRY_TILTTWEAK						"TiltTweak"
 
-/*
-**
-*/
-class CCameraProfileClass 
-{
+class CCameraProfileClass {
 public:
-	static void Init( void );
-	static void	Shutdown( void );
+	static void Init(void);
+	static void	Shutdown(void);
 
-	void			Set_Zoom( float amount );
-	float			Get_Zoom( void );
+	void Set_Zoom( float amount );
+	float Get_Zoom(void);
 
-	void			Set_Height( float height )			{ Height = height; }
-	float			Get_Height( void )					{ return Height; }
+	void Set_Height( float height ){
+		Height = height;
+	}
 
-	void			Set_Distance( float distance )	{ Distance = distance; }
-	float			Get_Distance( void )					{ return Distance; }
+	float Get_Height(void){
+		return Height;
+	}
+
+	void Set_Distance( float distance ){
+		Distance = distance;
+	}
+
+	float Get_Distance(void){
+		return Distance;
+	}
 
 protected:
-	CCameraProfileClass( void );
-	~CCameraProfileClass( void );
-	const CCameraProfileClass & operator = ( const CCameraProfileClass & );
+	CCameraProfileClass(void);
+	~CCameraProfileClass(void);
+	const CCameraProfileClass& operator = ( const CCameraProfileClass& );
 
-	void	Lerp( const CCameraProfileClass & a, const CCameraProfileClass & b, float lerp );
+	void Lerp( const CCameraProfileClass& a, const CCameraProfileClass& b, float lerp );
 
-//	StringClass	Name;
-	float			FOV;						// field of view for the camera
-	float			Height;					// height above the origin of "focus" object
-	float			ViewTilt;				// default tilt of the camera
-	float			TiltTweak;				// default tilt tweak of the camera
-	float			TranslationTilt;		// tilt of translation vector for the camera (off of the z axis)
-	float			Distance;				// how far back the camera wants to be normally
-	Vector3		Lag;						// the camera lag
+	float FOV;				// field of view for the camera
+	float Height;			// height above the origin of "focus" object
+	float ViewTilt;			// default tilt of the camera
+	float TiltTweak;		// default tilt tweak of the camera
+	float TranslationTilt;	// tilt of translation vector for the camera (off of the z axis)
+	float Distance;			// how far back the camera wants to be normally
+	Vector3 Lag;			// the camera lag
 
 	static bool _ProfilesInitted;
 
-	static		CCameraProfileClass	*	Find( const char * name );
-	friend		CCameraClass;
+	static CCameraProfileClass* Find( const char* name );
+	friend CCameraClass;
 };
 
 bool CCameraProfileClass::_ProfilesInitted = false;
 
-/*
-**
-*/
-CCameraProfileClass::CCameraProfileClass( void ) : 
+CCameraProfileClass::CCameraProfileClass(void): 
 	FOV( DEG_TO_RADF( 65.0f ) ),
 	Height( 1.95f ),
 	ViewTilt( DEG_TO_RADF(20.0f) ),
@@ -161,15 +145,13 @@ CCameraProfileClass::~CCameraProfileClass( void )
 {
 }
 
-void	CCameraProfileClass::Set_Zoom( float amount )
-{
+void CCameraProfileClass::Set_Zoom( float amount ){
 	amount = WWMath::Sqrt(amount);
 	amount = WWMath::Clamp( (1-amount), 0, 1 );
 	FOV = MIN_FOV + ((0.8f - MIN_FOV) * amount);
 }
 
-float CCameraProfileClass::Get_Zoom( void )
-{
+float CCameraProfileClass::Get_Zoom(void){
 	// TSS - by my reckoning this is the actual zoom factor
 	return 0.8 / FOV;
 }
@@ -178,31 +160,31 @@ float CCameraProfileClass::Get_Zoom( void )
 	profile->v = DEG_TO_RADF( camerasINI->Get_Float(	section_name, e, RAD_TO_DEGF( profile->v ) ) )
 #define	Get_Camera_Profile_Float( v, e )			\
 	profile->v = camerasINI->Get_Float(	section_name, e, profile->v )
-//#define	Get_Camera_Profile_String( v, e )			\
-//	profile->v = camerasINI->Get_String( section_name, e, profile->v )
 
-void CCameraProfileClass::Init( void )
-{	
-	if (_ProfilesInitted) {
+
+void CCameraProfileClass::Init(void){	
+	if( _ProfilesInitted ){
 		CCameraProfileClass::Shutdown();
 	}
 
-	INIClass	* camerasINI = Get_INI( CAMERAS_INI_FILENAME );
-	if (camerasINI != NULL) {
+	INIClass* camerasINI = Get_INI( CAMERAS_INI_FILENAME );
+	if( camerasINI != NULL ){
 		WWASSERT( camerasINI && camerasINI->Section_Count() > 0 );
 
 		int count, entry;
-		count =  camerasINI->Entry_Count( SECTION_PROFILE_LIST );
-		for ( entry = 0; entry < count; entry++ )	{
-			StringClass	section_name(0,true);
-			camerasINI->Get_String(	section_name, SECTION_PROFILE_LIST,
-													camerasINI->Get_Entry( SECTION_PROFILE_LIST, entry) );
+		count = camerasINI->Entry_Count( SECTION_PROFILE_LIST );
+		for( entry = 0; entry < count; entry++ ){
+			StringClass	section_name( 0, true );
+			camerasINI->Get_String(
+				section_name,
+				SECTION_PROFILE_LIST,
+				camerasINI->Get_Entry( SECTION_PROFILE_LIST, entry )
+			);
 
-			CCameraProfileClass * profile = new CCameraProfileClass();
+			CCameraProfileClass* profile = new CCameraProfileClass();
 			WWASSERT( profile );
 			StringClass name(true);
 			camerasINI->Get_String( name, section_name, ENTRY_NAME, name );
-//			Get_Camera_Profile_String(		name,					ENTRY_NAME					);
 			Get_Camera_Profile_Radians(	FOV,					ENTRY_FOV					);
 			Get_Camera_Profile_Float(		Height,				ENTRY_HEIGHT				);
 			Get_Camera_Profile_Radians(	ViewTilt,			ENTRY_VIEWTILT				);
@@ -214,7 +196,6 @@ void CCameraProfileClass::Init( void )
 			Get_Camera_Profile_Float(		Lag.X,				ENTRY_LAG_LEFT				);
 			Get_Camera_Profile_Float(		Lag.Z,				ENTRY_LAG_FORWARD			);
 
-//			ProfileList.Add_Tail( profile );
 			// Convert to lower case
 			_strlwr(name.Peek_Buffer());
 			ProfileHash.Insert(name,profile);
@@ -229,12 +210,9 @@ void CCameraProfileClass::Init( void )
 
 void	CCameraProfileClass::Shutdown( void )
 {
-//	while( ProfileList.Get_Count() ) {
-//		delete	ProfileList.Remove_Head();
-//	}
 	HashTemplateIterator<StringClass,CCameraProfileClass*> ite(ProfileHash);
 	for (ite.First();!ite.Is_Done();ite.Next()) {
-		CCameraProfileClass * profile=ite.Peek_Value();
+		CCameraProfileClass* profile = ite.Peek_Value();
 		delete profile;
 	}
 	ProfileHash.Remove_All();
@@ -243,7 +221,6 @@ void	CCameraProfileClass::Shutdown( void )
 
 const CCameraProfileClass & CCameraProfileClass::operator = ( const CCameraProfileClass & src )
 {
-//	Name					= src.Name;
 	FOV					= src.FOV;
 	Height				= src.Height;
 	ViewTilt				= src.ViewTilt;
@@ -258,7 +235,6 @@ float	RadianLerp( float a, float b, float lerp )
 {
 	float diff = b - a;					// diff should be -180 .. 180
 	diff = WWMath::Wrap( diff, DEG_TO_RADF( -180 ), DEG_TO_RADF( 180 ) );
-//	diff += DEG_TO_RAD( 360 ) * WWMath::Sign( -diff );		// Take the long way
 	return a + diff * lerp;
 }
 
@@ -283,14 +259,6 @@ CCameraProfileClass	*	CCameraProfileClass::Find( const char * name )
 	StringClass tmp_string(tmp,true);
 	CCameraProfileClass* profile = ProfileHash.Get(tmp_string);
 	return profile;
-
-//	SLNode<CCameraProfileClass> *node;
-//	for (	node = ProfileList.Head(); node; node = node->Next()) {
-//		if ( !stricmp( node->Data()->Name, name ) ) {
-//			return node->Data();
-//		}
-//	}
-//	return NULL;
 }
 
 
@@ -357,9 +325,6 @@ CCameraClass::~CCameraClass(void)
 	REF_PTR_RELEASE (SniperListener);
 }
 
-/*
-**
-*/
 void CCameraClass::Init( void )
 {	
 	CCameraProfileClass::Init();
@@ -431,28 +396,21 @@ bool	CCameraClass::Save( ChunkSaveClass & csave )
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_LAST_ANCHOR_POSITION,	LastAnchorPosition );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_LAST_HEADING,				LastHeading );
 		if ( CurrentProfile != NULL ) {
-//			StringClass name = CurrentProfile->Name;
 			WRITE_MICRO_CHUNK_WWSTRING( csave, MICROCHUNKID_CURRENT_PROFILE,	CurrentProfileName );
 		}
 		if ( LastProfile != NULL ) {
-//			StringClass name = LastProfile->Name;
 			WRITE_MICRO_CHUNK_WWSTRING( csave, MICROCHUNKID_LAST_PROFILE,	LastProfileName );
 		}
 		if ( DefaultProfile != NULL ) {
-//			StringClass name = DefaultProfile->Name;
 			WRITE_MICRO_CHUNK_WWSTRING( csave, MICROCHUNKID_DEFAULT_PROFILE,	DefaultProfileName );
 		}
 
-// (gth) don't save and load NearClipPlane and FarClipPlane
-//		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_NEAR_CLIP_PLANE,			NearClipPlane );
-//		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_FAR_CLIP_PLANE,			FarClipPlane );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_IS_STAR_SNIPING,			IsStarSniping );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_WAS_STAR_SNIPING,			WasStarSniping );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_CINEMATIC_SNIPING_ENABLED,	CinematicSnipingEnabled );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_CINEMATIC_SNIPING_DESIRED_ZOOM, CinematicSnipingDesiredZoom );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_SNIPER_ZOOM,				SniperZoom );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_SNIPER_DISTANCE,			SniperDistance );
-//		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_SNIPER_LISTENER,			SniperListener );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_SNAP_SHOT_MODE,			SnapShotMode );
 	csave.End_Chunk();
 
@@ -490,16 +448,12 @@ bool	CCameraClass::Load( ChunkLoadClass &cload )
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_CURRENT_PROFILE,current_name );
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_LAST_PROFILE,	last_name );
 						READ_MICRO_CHUNK_WWSTRING( cload, MICROCHUNKID_DEFAULT_PROFILE,default_name );
-// (gth) don't save and load NearClipPlane and FarClipPlane
-//						READ_MICRO_CHUNK( cload, MICROCHUNKID_NEAR_CLIP_PLANE,			NearClipPlane );
-//						READ_MICRO_CHUNK( cload, MICROCHUNKID_FAR_CLIP_PLANE,				FarClipPlane );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_IS_STAR_SNIPING,			IsStarSniping );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_WAS_STAR_SNIPING,			WasStarSniping );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_CINEMATIC_SNIPING_ENABLED,	CinematicSnipingEnabled );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_CINEMATIC_SNIPING_DESIRED_ZOOM, CinematicSnipingDesiredZoom );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_SNIPER_ZOOM,					SniperZoom );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_SNIPER_DISTANCE,			SniperDistance );
-//						READ_MICRO_CHUNK( cload, MICROCHUNKID_SNIPER_LISTENER,			SniperListener );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_SNAP_SHOT_MODE,				SnapShotMode );
 
 						default:
@@ -542,10 +496,6 @@ bool	CCameraClass::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-
-/*
-**
-*/
 void	CCameraClass::Set_Host_Model( RenderObjClass * host )
 {
 	DisableLag = true;
@@ -565,7 +515,6 @@ void	CCameraClass::Set_Host_Model( RenderObjClass * host )
 	if ( HostModel == NULL && host != NULL ) {
 		SavedProfileName = CurrentProfileName;
 		Use_Profile( "Cinematic" );
-//		CurrentProfile->Set_Zoom( 0 );
 		CurrentProfile->FOV = DEG_TO_RADF( 75.0f );
 		CinematicSnipingEnabled = false;
 	}
@@ -606,70 +555,8 @@ void	CCameraClass::Use_Host_Model( void )
 		CurrentProfile->FOV = DEG_TO_RADF( 75.0f );
 	}
 	Set_View_Plane( CurrentProfile->FOV );
-
-#ifdef ATI_DEMO_HACK
-	static GameObjReference DemoFocusObject;
-
-	/*
-	** Focus change key pressed:
-	*/
-	if (Input::Get_State(INPUT_FUNCTION_PROFILE_RESET)) {
-		if (DemoFocusObject.Get_Ptr() == NULL) {
-
-			/*
-			** Count the soldiers in the level (ignoring the human controlled commando)
-			*/
-			int soldier_count = 0;
-			SLNode<SmartGameObj> * smart_objnode;
-			for (smart_objnode = GameObjManager::Get_Smart_Game_Obj_List()->Head(); smart_objnode; smart_objnode = smart_objnode->Next()) {
-				SmartGameObj * obj = smart_objnode->Data();
-				if ((obj->As_SoldierGameObj() != NULL) && (obj->Is_Human_Controlled() == false)) {
-					soldier_count++;
-				}
-			}
-
-			/*
-			** Pick a random soldier to watch
-			*/
-			int random_soldier = rand() % soldier_count;
-			soldier_count = 0;
-
-			for (smart_objnode = GameObjManager::Get_Smart_Game_Obj_List()->Head(); smart_objnode; smart_objnode = smart_objnode->Next()) {
-				SmartGameObj * obj = smart_objnode->Data();
-				if ((obj->As_SoldierGameObj() != NULL) && (obj->Is_Human_Controlled() == false)) {
-					if (soldier_count == random_soldier) {
-						DemoFocusObject = obj;
-						break;
-					}
-					soldier_count++;
-				}
-			}
-		} else {
-
-			/*
-			** Toggle out of demo focus mode
-			*/
-			DemoFocusObject = NULL;
-
-		}
-	}
-
-	/*
-	** Position the camera on this soldier
-	*/
-	if (DemoFocusObject.Get_Ptr() != NULL) {
-		Vector3 position;
-		DemoFocusObject.Get_Ptr()->Get_Position(&position);
-		Matrix3D camera_tm;
-		camera_tm.Look_At(position + Vector3(2.0f,0.0f,1.75f),position + Vector3(0.0f,0.0f,1.0f),0.0f);
-		Set_Transform(camera_tm);
-	}
-#endif
 }
 
-/*
-**
-*/
 void	CCameraClass::Set_Anchor_Position( Vector3 pos )	
 { 
 	AnchorPosition = pos; 
@@ -681,9 +568,7 @@ void	CCameraClass::Set_Anchor_Position( Vector3 pos )
 	}
 }
 
-/*
-**
-*/
+
 void	Ignore_Star_And_Vehicle( void ) 
 {
 	if (COMBAT_STAR != NULL) {
@@ -708,9 +593,6 @@ void	Unignore_Star_And_Vehicle( void )
 	}
 }
 
-/*
-**
-*/
 void CCameraClass::Update()
 {
 	Handle_Input();
@@ -775,7 +657,6 @@ void CCameraClass::Update()
 				if ( LagPersistTimer > 0 ) {
 					lag_ok = true;
 					LagPersistTimer -= TimeManager::Get_Frame_Seconds();
-//					Debug_Say(( "Lag Persist\n" ));
 				}
 			}
 			if ( DisableLag ) {
@@ -791,7 +672,7 @@ void CCameraClass::Update()
 				Matrix3D::Inverse_Transform_Vector( tm, LastAnchorPosition, &local_last );
 				Matrix3D::Inverse_Transform_Vector( tm, anchor_position, &local_current );
 				// Lerp				// ( left/right, up/down, forward/back )
-				Vector3	lerp = profile.Lag * WWMath::Clamp( LagPersistTimer, 0, 1);	//( 0, 0.5f, 0.2f );	//		( y, z, x )
+				Vector3	lerp = profile.Lag * WWMath::Clamp( LagPersistTimer, 0, 1);
 				lerp.X = ::pow( lerp.X, 10 * TimeManager::Get_Frame_Seconds() );
 				lerp.Y = ::pow( lerp.Y, 10 * TimeManager::Get_Frame_Seconds() );
 				lerp.Z = ::pow( lerp.Z, 10 * TimeManager::Get_Frame_Seconds() );
@@ -895,14 +776,6 @@ void CCameraClass::Update()
 			end_pos = tm.Get_Translation();
 		}
 
-		// When Physics_Debug is on, draw the camera collision box in its start point
-#ifdef WWDEBUG	
-		PhysicsSceneClass * scene = PhysicsSceneClass::Get_Instance();
-		if (scene && scene->Is_Debug_Display_Enabled()) {
-			scene->Add_Debug_OBBox(box,Vector3(1,0,0));
-		}
-#endif
-
 		// Now put the star back to his original 'ignore' state
 		Unignore_Star_And_Vehicle();
 
@@ -941,8 +814,6 @@ void CCameraClass::Update()
 
 	Set_Transform( tm );						// Set our new transform
 
-//	Debug_Say(( "Camera at %1.2f, %1.2f, %1.2f\n", tm.Get_Translation().X, tm.Get_Translation().Y, tm.Get_Translation().Z ));
-
 	// First, set the aiming point to where the camera is looking
 	if ( Determine_Targeting_Position() == false ) {
 		WWPROFILE( "Help" );
@@ -953,23 +824,8 @@ void CCameraClass::Update()
 	// Lastly, pass the aiming point to the star
 	bool is_star_determining_target = CombatManager::Is_Star_Determining_Target();
 	if ( COMBAT_STAR && is_star_determining_target ) {			// and tell the star what we are looking at...
-
-#if 0
-		// This didn't work with X key....
-		// Make sure it is forward in star space
-		Matrix3D star_tm = COMBAT_STAR->Get_Transform();
-		Vector3	star_space_pos;
-		Matrix3D::Inverse_Transform_Vector( star_tm, StarTargetingPosition, &star_space_pos );
-		if ( star_space_pos.X <= 0 ) {
-			star_space_pos.X = MAX( star_space_pos.X, 1 );
-		}
-		Debug_Say(( "SSP %f %f %f\n", star_space_pos.X, star_space_pos.Y, star_space_pos.Z ));
-		Matrix3D::Transform_Vector( star_tm, star_space_pos, &StarTargetingPosition );
-#endif
-
 		COMBAT_STAR->Set_Targeting( StarTargetingPosition ); 
 	}
-
 }
 
 /*
@@ -982,9 +838,7 @@ bool	CCameraClass::Determine_Targeting_Position( void )
 	bool	looking_at_object = false;
 
 	Matrix3D tm = Get_Transform();
-	/*
-	**
-	*/
+
 	SoldierGameObj * star = COMBAT_STAR;
 	bool is_star_determining_target = CombatManager::Is_Star_Determining_Target();
 	if ( star && is_star_determining_target ) {			// and tell the star what we are looking at...
@@ -1075,8 +929,6 @@ bool	CCameraClass::Determine_Targeting_Position( void )
 			}
 		}
 
-		//Debug_Say(( "Targeting %f %f %f\n", StarTargetingPosition.X, StarTargetingPosition.Y, StarTargetingPosition.Z ));
-
 		if ( raytest.CollidedPhysObj != NULL && raytest.CollidedPhysObj->Get_Observer() != NULL ) {
 			DamageableGameObj * obj = ((CombatPhysObserverClass *)raytest.CollidedPhysObj->Get_Observer())->As_DamageableGameObj();
 
@@ -1129,30 +981,15 @@ void	CCameraClass::Apply_Weapon_Help( void )
 	WWPROFILE( "Weapon Help" );
 	WeaponHelpTimer -= TimeManager::Get_Frame_Seconds();
 	if ( WeaponHelpTimer <= 0 ) {
-
-#if WEAPON_HELP_CHEAT
-		WeaponHelpTimer = 0.01f;
-#else
 		WeaponHelpTimer = 0.5f;	// Re-check every 1/2 second
-#endif
-
 		WeaponHelpTargetID = 0;		// Asuume we find nothing
 
 		SmartGameObj * star = COMBAT_STAR;
 
-//		if ( star && EnableWeaponHelp )	{
-#if WEAPON_HELP_CHEAT
-		if ( star )	{ 
-#else
 		if ( star && CombatManager::Get_Difficulty_Level() == 0 && IS_MISSION )	{	// if on easy difficulty
-#endif
 
 			// Make sure dot is off
-#if WEAPON_HELP_CHEAT
-			if ( !CombatManager::Is_Hit_Reticle_Enabled() ) {
-#else
 			if ( CombatManager::Is_Hit_Reticle_Enabled() ) {
-#endif
 				CombatManager::Toggle_Hit_Reticle_Enabled();
 			}
 
@@ -1164,11 +1001,8 @@ void	CCameraClass::Apply_Weapon_Help( void )
 			star->Get_Position( &star_pos );
 
 			SmartGameObj * best_obj = NULL;
-#if WEAPON_HELP_CHEAT
-			float best_distance = 10;
-#else
+
 			float best_distance = 0.1f;
-#endif
 
 			// Find a target object near the camera target vector
 			SLNode<SmartGameObj> * smart_objnode;
@@ -1178,12 +1012,6 @@ void	CCameraClass::Apply_Weapon_Help( void )
 				if ( obj == COMBAT_STAR ) {
 					continue;
 				}
-
-#if WEAPON_HELP_CHEAT
-				if ( !obj->Is_Enemy( COMBAT_STAR ) ) {
-					continue;
-				}
-#endif
 
 				Vector3 pos = obj->Get_Bullseye_Position();
 
@@ -1210,14 +1038,7 @@ void	CCameraClass::Apply_Weapon_Help( void )
 						Vector3 cast_start = Get_Transform().Get_Translation();
 						Vector3 cast_end = pos;
 						LineSegClass ray;
-						ray.Set( cast_start, cast_end );			
-
-	#if 0
-						// trim off Near Clip from Beginning
-						float start_fraction = NearClipPlane / ray.Get_Length();
-						ray.Compute_Point( start_fraction, &cast_start );
 						ray.Set( cast_start, cast_end );
-	#endif
 
 						CastResultStruct result;
 						PhysRayCollisionTestClass raytest(ray, &result, 
@@ -1229,8 +1050,6 @@ void	CCameraClass::Apply_Weapon_Help( void )
 						COMBAT_SCENE->Cast_Ray( raytest );
 	}
 						Unignore_Star_And_Vehicle();
-
-						//Debug_Say(( "Targeting %f %f %f\n", StarTargetingPosition.X, StarTargetingPosition.Y, StarTargetingPosition.Z ));
 
 						if ( raytest.CollidedPhysObj != NULL && raytest.CollidedPhysObj->Get_Observer() != NULL && 
 							 ((CombatPhysObserverClass *)raytest.CollidedPhysObj->Get_Observer())->As_PhysicalGameObj() ) {
@@ -1339,91 +1158,6 @@ void	CCameraClass::Handle_Input( void )
 	// Hold F9 to control the camera
 	assert( CurrentProfile != NULL );
 
-#ifdef WWDEBUG
-	if ( CombatManager::Is_First_Person() ) {
-
-		Vector3	tweak(0,0,0);
-
-		tweak.X	 =	( Input::Get_State( INPUT_FUNCTION_CAMERA_TRANSTILT_INC ) ? 1 : 0 ) + 
-						( Input::Get_State( INPUT_FUNCTION_CAMERA_TRANSTILT_DEC ) ? -1 : 0 );
-
-		tweak.Y	 =	( Input::Get_State( INPUT_FUNCTION_DEBUG_FAR_CLIP_IN ) ? -1 : 0 ) + 
-						( Input::Get_State( INPUT_FUNCTION_DEBUG_FAR_CLIP_OUT ) ? 1 : 0 );
-
-		tweak.Z	 =	( Input::Get_State( INPUT_FUNCTION_CAMERA_DIST_INC ) ? -1 : 0 ) + 
-						( Input::Get_State( INPUT_FUNCTION_CAMERA_DIST_DEC ) ? 1 : 0 );
-
-		tweak *= dt * FP_TWEAK_RATE;
-		if ( tweak.Length() ) {
-			FirstPersonOffsetTweak += tweak;
-			Vector3 offset( 0,0,0 );
-			if ( COMBAT_STAR != NULL && COMBAT_STAR->Get_Weapon() != NULL ) {
-				offset = COMBAT_STAR->Get_Weapon()->Get_First_Person_Model_Offset();
-			}
-			offset += FirstPersonOffsetTweak;
-			Debug_Say(( "First Person Offset ( %1.3f, %1.3f, %1.3f )\n", offset.X, offset.Y, offset.Z ));
-//			Debug_Say(( "First Person Tweak ( %1.3f, %1.3f, %1.3f )\n", FirstPersonOffsetTweak.X, FirstPersonOffsetTweak.Y, FirstPersonOffsetTweak.Z ));
-		}
-
-	} else {
-
-		float	tilt_amount =	( Input::Get_State( INPUT_FUNCTION_CAMERA_TRANSTILT_INC ) ? 1 : 0 ) + 
-									( Input::Get_State( INPUT_FUNCTION_CAMERA_TRANSTILT_DEC ) ? -1 : 0 );
-		CurrentProfile->TranslationTilt += TILT_ADJUST * tilt_amount * dt;
-		CurrentProfile->TranslationTilt = WWMath::Clamp( CurrentProfile->TranslationTilt, MIN_TILT, MAX_TILT );
-
-		float	view_tilt_amount =	( Input::Get_State( INPUT_FUNCTION_CAMERA_VIEWTILT_INC ) ? 1 : 0 ) + 
-									( Input::Get_State( INPUT_FUNCTION_CAMERA_VIEWTILT_DEC ) ? -1 : 0 );
-		CurrentProfile->ViewTilt += TILT_ADJUST * view_tilt_amount * dt;
-		CurrentProfile->ViewTilt = WWMath::Clamp( CurrentProfile->ViewTilt, MIN_TILT, MAX_TILT );
-
-		float	distance_amount =	( Input::Get_State( INPUT_FUNCTION_CAMERA_DIST_INC ) ? 1 : 0 ) + 
-										( Input::Get_State( INPUT_FUNCTION_CAMERA_DIST_DEC ) ? -1 : 0 );
-		CurrentProfile->Distance += DISTANCE_ADJUST * distance_amount * dt;
-		CurrentProfile->Distance = WWMath::Clamp( CurrentProfile->Distance, MIN_DISTANCE, MAX_DISTANCE );
-
-		float	fov_amount =	( Input::Get_State( INPUT_FUNCTION_CAMERA_FOV_INC ) ? 1 : 0 ) + 
-									( Input::Get_State( INPUT_FUNCTION_CAMERA_FOV_DEC ) ? -1 : 0 );
-		CurrentProfile->FOV += FOV_ADJUST * fov_amount * dt;
-		CurrentProfile->FOV = WWMath::Clamp( CurrentProfile->FOV, MIN_FOV, MAX_FOV );
-
-		float	height_amount =	( Input::Get_State( INPUT_FUNCTION_CAMERA_HEIGHT_INC ) ? 1 : 0 ) + 
-										( Input::Get_State( INPUT_FUNCTION_CAMERA_HEIGHT_DEC ) ? -1 : 0 );
-		CurrentProfile->Height += HEIGHT_ADJUST * height_amount * dt;
-		CurrentProfile->Height = WWMath::Clamp( CurrentProfile->Height, MIN_HEIGHT, MAX_HEIGHT );
-
-		if ( ( tilt_amount != 0 ) || (view_tilt_amount != 0) || ( distance_amount != 0 ) ||
-			  ( fov_amount != 0 ) || ( height_amount != 0 ) ) 
-		{
-		
-			Debug_Say(( " Dist: %3.1f Height: %3.1f FOV %3.1f TransTilt: %3.1f ViewTilt: %3.1f\n",
-				CurrentProfile->Distance,
-				CurrentProfile->Height,
-				RAD_TO_DEG( CurrentProfile->FOV ), 
-				RAD_TO_DEG( CurrentProfile->TranslationTilt ),
-				RAD_TO_DEG( CurrentProfile->ViewTilt )
-				));
-		}
-
-		if ( Input::Get_State( INPUT_FUNCTION_DEBUG_FAR_CLIP_IN ) || 
-			 Input::Get_State( INPUT_FUNCTION_DEBUG_FAR_CLIP_OUT ) ) {
-			float fog_start, fog_stop;
-			COMBAT_SCENE->Get_Fog_Range( &fog_start, &fog_stop );
-			if ( Input::Get_State( INPUT_FUNCTION_DEBUG_FAR_CLIP_OUT ) ) {
-				FarClipPlane *= 1.1f;
-				fog_start *= 1.1f;
-			} else {
-				FarClipPlane /= 1.1f;
-				fog_start /= 1.1f;
-			}
-			COMBAT_SCENE->Set_Fog_Range( fog_start, FarClipPlane );
-			Debug_Say(( "FarClipPlane %f\n", FarClipPlane ));
-			Set_Clip_Planes( NearClipPlane, FarClipPlane );
-		} 
-
-	}
-#endif
-
 	if ( CinematicSnipingEnabled ) {
 
 		float zoom_change = CinematicSnipingDesiredZoom - SniperZoom;
@@ -1432,13 +1166,6 @@ void	CCameraClass::Handle_Input( void )
 		SniperZoom += zoom_change;
 		CurrentProfile->Set_Zoom( SniperZoom );
 	}
-
-#ifdef WWDEBUG
-	if ( Input::Get_State( INPUT_FUNCTION_TOGGLE_SNAP_SHOT_MODE ) ) {
-		Set_Snap_Shot_Mode( Is_Snap_Shot_Mode() == SNAPSHOT_OFF );
-		Debug_Say(( "Snap Shot Mode %s\n", Is_Snap_Shot_Mode() ? "ON" : "OFF" ));
-	}
-#endif
 
 	if ( COMBAT_STAR != NULL && COMBAT_STAR->Is_Control_Enabled() == false ) {
 		// Don't move camera if control is disabled
@@ -1474,7 +1201,6 @@ void	CCameraClass::Handle_Input( void )
 		// Scale weapon tilt and turn from Zoom
 		float	sniper_scale = 0.3f;
 		float scale = 1 - SniperZoom * (1 - sniper_scale);
-//		Debug_Say(( "scale %f\n", scale ));
 		sniping_scale = scale * scale;
 
 		// Set Zoom
@@ -1493,7 +1219,6 @@ void	CCameraClass::Handle_Input( void )
 								Input::Get_Amount( INPUT_FUNCTION_WEAPON_RIGHT );
 
 	if ( Input::Get_State( INPUT_FUNCTION_TURN_AROUND ) ) {
-//		turn_amount += DEG_TO_RADF( 180.0F ) / dt;
 		Heading = Heading + DEG_TO_RADF( 180.0F );
 		if ( Heading > DEG_TO_RADF( 360.0F ) ) {
 			Heading -= DEG_TO_RADF( 360.0F );
@@ -1593,18 +1318,14 @@ void	CCameraClass::Set_Is_Star_Sniping( bool onoff )
 
 		IsStarSniping = onoff;
 
-		//
 		//	Add or remove the sniper listener from the world
-		//
 		if ( SniperListener != NULL && WWAudioClass::Get_Instance() != NULL ) {
 			if ( WWAudioClass::Get_Instance()->Get_Sound_Scene()->Peek_2nd_Listener() != NULL ) {
 				WWAudioClass::Get_Instance()->Get_Sound_Scene()->Set_2nd_Listener( NULL );
 			} else {
 				WWAudioClass::Get_Instance()->Get_Sound_Scene()->Set_2nd_Listener( SniperListener );
 
-				//
 				//	Update the listener's position in the world
-				//
 				Update_Sniper_Listener_Pos();
 			}
 		}
@@ -1633,21 +1354,15 @@ void CCameraClass::Update_Sniper_Listener_Pos( void )
 {
 	if ( SniperListener != NULL ) {
 		
-		//
 		//	Get the camera's transform
-		//
 		Matrix3D tm = Get_Transform();
 
-		//
 		//	Calculate what point in world space the sniper is zoomed into
-		//
 		float dist = ::tan (1.45F + ((1.5672F - 1.45F) * SniperZoom));	
 		dist = min (dist, SniperDistance);
 		Vector3 pos = tm.Get_Translation() - (tm.Get_Z_Vector() * dist);
 
-		//
 		//	Update the sniper's position
-		//
 		SniperListener->Set_Transform( Matrix3D( pos ) );
 	}
 
@@ -1657,9 +1372,7 @@ void CCameraClass::Update_Sniper_Listener_Pos( void )
 
 void CCameraClass::Set_Sniper_Distance( float dist )
 {
-	//
 	//	If the distance has changed, update the sniper's listener
-	//
 	if ( SniperDistance != dist ) {
 		SniperDistance = dist;
 		Update_Sniper_Listener_Pos();
@@ -1668,9 +1381,6 @@ void CCameraClass::Set_Sniper_Distance( float dist )
 	return ;
 }
 
-/*
-**
-*/
 void	CCameraClass::Handle_Snap_Shot_Mode( void )
 {
 	float dt = TimeManager::Get_Frame_Real_Seconds();

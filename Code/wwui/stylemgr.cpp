@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -54,106 +36,79 @@
 static const char *	DEFAULT_BACKDROP_NAME	= "GRADENT_TEST.TGA";
 
 
-struct FONT_DESC
-{
-	const char *	name;
-	int				point_size;
-	bool				is_bold;
+struct FONT_DESC {
+	const char* name;
+	int point_size;
+	bool is_bold;
 };
 
 
-static FONT_DESC	DEFAULT_FONTS[StyleMgrClass::FONT_MAX] =
-{
-	{ "Regatta Condensed LET",	52,	false },
-	{ "Arial MT",					12,	true },
-	{ "Arial MT",					8,		true },
-	{ "Arial MT",					8,		false },
-	{ "Arial MT",					8,		false },
+static FONT_DESC DEFAULT_FONTS[StyleMgrClass::FONT_MAX] = {
+	{ "Regatta Condensed LET", 52, false },
+	{ "Arial MT",	12,	true },
+	{ "Arial MT",	8,	true },
+	{ "Arial MT",	8,	false },
+	{ "Arial MT",	8,	false },
 	{ "Regatta Condensed LET",	32,	false },
 	{ "Regatta Condensed LET",	20,	false },
-	{ "Arial MT",					9,		true },
-	{ "Arial MT",					12,	true },
+	{ "Arial MT",	9,	true },
+	{ "Arial MT",	12,	true },
 	
-	{ "Arial MT",					10,	false },
-	{ "Arial MT",					10,	true },
+	{ "Arial MT",	10,	false },
+	{ "Arial MT",	10,	true },
 
-	{ "Arial MT",					8,		false },
-	{ "Arial MT",					16,	false },
-	{ "Arial MT",					14,	false },
-	{ "Arial MT",					9,		true }
-
-
-	/*{ "Arial Unicode MS",	52,	false },
-	{ "Arial Unicode MS",	12,	true },
-	{ "Arial Unicode MS",	12,		true },
-	{ "Arial Unicode MS",	12,		false },
-	{ "Arial Unicode MS",	12,		false },
-	{ "Arial Unicode MS",	32,	false },
-	{ "Arial Unicode MS",	20,	false },
-	{ "Arial Unicode MS",	13,		true },
-	{ "Arial Unicode MS",	14,	true }*/
-
+	{ "Arial MT",	8,	false },
+	{ "Arial MT",	16,	false },
+	{ "Arial MT",	14,	false },
+	{ "Arial MT",	9,	true }
 };
 
 
 ////////////////////////////////////////////////////////////////
 //	Local constants
 ////////////////////////////////////////////////////////////////
-TextureClass *				StyleMgrClass::BackdropTexture			= NULL;
+TextureClass* StyleMgrClass::BackdropTexture = NULL;
 
-uint32						StyleMgrClass::TitleColor					= RGB_TO_INT32 (255, 255, 255);
-uint32						StyleMgrClass::TitleHilightColor			= RGB_TO_INT32 (255, 255, 0);
-uint32						StyleMgrClass::TitleShadowColor			= RGB_TO_INT32 (0, 0, 0);
-uint32						StyleMgrClass::TextColor					= RGB_TO_INT32 (255, 213, 40);
-uint32						StyleMgrClass::TextShadowColor			= RGBA_TO_INT32 (0, 0, 0, 200);
-uint32						StyleMgrClass::LineColor					= RGB_TO_INT32 (255, 174, 40);
-uint32						StyleMgrClass::BkColor						= RGBA_TO_INT32 (255, 174, 40, 40);
-uint32						StyleMgrClass::DisabledTextColor			= RGBA_TO_INT32 (255, 213, 40, 140);
-uint32						StyleMgrClass::DisabledTextShadowColor	= RGBA_TO_INT32 (0, 0, 0, 96);
-uint32						StyleMgrClass::DisabledLineColor			= RGBA_TO_INT32 (230, 160, 35, 128);
-uint32						StyleMgrClass::DisabledBkColor			= RGBA_TO_INT32 (255, 174, 40, 30);
-uint32						StyleMgrClass::HilightColor				= RGB_TO_INT32 (70, 70, 70);
+uint32 StyleMgrClass::TitleColor				= RGBA_TO_INT32( 255, 255, 255, 255 );
+uint32 StyleMgrClass::TitleHilightColor			= RGBA_TO_INT32( 255, 255,	 0, 255 );
+uint32 StyleMgrClass::TitleShadowColor			= RGBA_TO_INT32(   0,   0,   0, 255 );
+uint32 StyleMgrClass::TextColor					= RGBA_TO_INT32( 255, 213,  40, 255 );
+uint32 StyleMgrClass::TextShadowColor			= RGBA_TO_INT32(   0,   0,   0, 200 );
+uint32 StyleMgrClass::LineColor					= RGBA_TO_INT32( 255, 174,  40, 255 );
+uint32 StyleMgrClass::BkColor					= RGBA_TO_INT32( 255, 174,  40,  40 );
+uint32 StyleMgrClass::DisabledTextColor			= RGBA_TO_INT32( 255, 213,  40, 140 );
+uint32 StyleMgrClass::DisabledTextShadowColor	= RGBA_TO_INT32(   0,   0,   0,  96 );
+uint32 StyleMgrClass::DisabledLineColor			= RGBA_TO_INT32( 230, 160,  35, 128 );
+uint32 StyleMgrClass::DisabledBkColor			= RGBA_TO_INT32( 255, 174,  40,  30 );
+uint32 StyleMgrClass::HilightColor				= RGBA_TO_INT32(  70,  70,  70, 255 );
 
-uint32						StyleMgrClass::TabTextColor				= RGB_TO_INT32 (255, 255, 255);
-uint32						StyleMgrClass::TabGlowColor				= RGB_TO_INT32 (16, 10, 0);
+uint32 StyleMgrClass::TabTextColor = RGBA_TO_INT32( 255, 255, 255, 255 );
+uint32 StyleMgrClass::TabGlowColor = RGBA_TO_INT32(  16,  10,   0, 255 );
 
-FontCharsClass *			StyleMgrClass::Fonts[FONT_MAX]			= { NULL };
-float							StyleMgrClass::ScaleX						= 1.0F;
-float							StyleMgrClass::ScaleY						= 1.0F;
+FontCharsClass* StyleMgrClass::Fonts[FONT_MAX] = { NULL };
+float StyleMgrClass::ScaleX = 1.0F;
+float StyleMgrClass::ScaleY = 1.0F;
 
 DynamicVectorClass<StringClass>	StyleMgrClass::FontFileList;
-StringClass								StyleMgrClass::EventAudioList[StyleMgrClass::EVENT_AUDIO_MAX];
+StringClass StyleMgrClass::EventAudioList[StyleMgrClass::EVENT_AUDIO_MAX];
 
 
-////////////////////////////////////////////////////////////////
-//
-//	Initialize
-//
-////////////////////////////////////////////////////////////////
-void
-StyleMgrClass::Initialize (void)
-{
-	//
-	//	Compute the scale
-	//
+void StyleMgrClass::Initialize(void){
+	// Compute the scale
 	ScaleX = Render2DClass::Get_Screen_Resolution().Width () / 800.0F;
 	ScaleY = Render2DClass::Get_Screen_Resolution().Height () / 600.0F;
 
-	//
-	//	Load each font
-	//
-	for (int index = 0; index < FONT_MAX; index ++) {
+	// Load each font
+	for( int index = 0; index < FONT_MAX; index++ ){
+		// Scale the point size to fit this resolution
+		float point_size = ( (float) DEFAULT_FONTS[index].point_size ) * ScaleY;
 
-		//
-		//	Scale the point size to fit this resolution
-		//
-		float point_size = ((float)DEFAULT_FONTS[index].point_size) * ScaleY;
-
-		//
-		//	Create the font
-		//
-		Fonts[index] = WW3DAssetManager::Get_Instance()->Get_FontChars (DEFAULT_FONTS[index].name,
-								point_size, DEFAULT_FONTS[index].is_bold);
+		// Create the font
+		Fonts[index] = WW3DAssetManager::Get_Instance()->Get_FontChars(
+			DEFAULT_FONTS[index].name,
+			point_size,
+			DEFAULT_FONTS[index].is_bold
+		);
 	}
 
 	//
@@ -169,9 +124,7 @@ StyleMgrClass::Initialize (void)
 //	Initialize_From_INI
 //
 ////////////////////////////////////////////////////////////////
-void
-StyleMgrClass::Initialize_From_INI (const char *filename)
-{
+void StyleMgrClass::Initialize_From_INI( const char* filename ){
 	Shutdown ();
 
 	//
@@ -326,37 +279,19 @@ StyleMgrClass::Shutdown (void)
 	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Get_Font
-//
-////////////////////////////////////////////////////////////////
-FontCharsClass *
-StyleMgrClass::Get_Font (FONT_STYLE style)
-{
-	FontCharsClass *font = Fonts[style];
+FontCharsClass* StyleMgrClass::Get_Font( FONT_STYLE style ){
+	FontCharsClass* font = Fonts[style];
 	if (font != NULL) {
 		font->Add_Ref ();
 	}
 	return font;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Render_Backdrop
-//
-////////////////////////////////////////////////////////////////
-void
-StyleMgrClass::Render_Backdrop (Render2DClass *renderer, const RectClass &rect)
-{
-	//
-	//	Simply set the texture, and render a quad filling the rectangle
-	//
-	renderer->Set_Texture (BackdropTexture);
-	renderer->Add_Quad (rect, RectClass (0, 0, 1, 1));
-	return ;
+void StyleMgrClass::Render_Backdrop( Render2DClass* renderer, const RectClass& rect ){
+	// Simply set the texture, and render a quad filling the rectangle
+	renderer->Set_Texture( BackdropTexture );
+	renderer->Add_Quad( rect, RectClass( 0, 0, 1, 1 ) );
+	return;
 }
 
 
@@ -372,62 +307,6 @@ StyleMgrClass::Assign_Font (Render2DSentenceClass *renderer, FONT_STYLE style)
 	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Render_Text
-//
-////////////////////////////////////////////////////////////////
-/*void
-StyleMgrClass::Render_Text
-(
-	const WCHAR *			text,
-	Render2DTextClass *	renderer,
-	int						x_pos,
-	int						y_pos,
-	bool						do_shadow,
-	const RectClass *		clipping_rect,
-	bool						is_enabled
-)
-{
-	//
-	//	If necessary, assign the clipping rectangle
-	//
-	if (clipping_rect != NULL) {
-		renderer->Set_Clipping_Rect (*clipping_rect);
-	}
-
-	//
-	//	Determine what color to render the text in
-	//
-	int text_color		= TextColor;
-	int shadow_color	= TextShadowColor;
-	if (is_enabled == false) {
-		text_color		= DisabledTextColor;
-		shadow_color	= DisabledTextShadowColor;
-	}
-
-	//
-	//	Render the shadow (if necessary)
-	//
-	if (do_shadow) {
-		renderer->Set_Location (Vector2 (x_pos - 1, y_pos + 1));
-		renderer->Draw_Text (text, shadow_color);
-	}
-
-	//
-	//	Set the position where text will be drawn
-	//
-	renderer->Set_Location (Vector2 (x_pos, y_pos));
-
-	//
-	//	Draw the text
-	//
-	renderer->Draw_Text (text, text_color);
-	return ;
-}*/
-
-
 ////////////////////////////////////////////////////////////////
 //
 //	Render_Title_Text
@@ -441,10 +320,6 @@ StyleMgrClass::Render_Title_Text
 	const RectClass &			rect
 )
 {
-	//
-	//	Set the clipping rectangle
-	//
-	//renderer->Set_Clipping_Rect (rect);
 
 	//
 	//	Get the extents of the text we will be drawing
@@ -593,152 +468,6 @@ StyleMgrClass::Render_Text
 	renderer->Draw_Sentence (text_color);
 	return ;
 }
-
-
-////////////////////////////////////////////////////////////////
-//
-//	Render_Text
-//
-////////////////////////////////////////////////////////////////
-/*void
-StyleMgrClass::Render_Text
-(
-	const WCHAR *			text,
-	Render2DTextClass *	renderer,
-	uint32					text_color,
-	uint32					shadow_color,
-	const RectClass &		rect,	
-	bool						do_shadow,
-	bool						do_clip,
-	JUSTIFICATION			justify
-)
-{
-	//
-	//	If necessary, assign the clipping rectangle
-	//
-	if (do_clip) {
-		renderer->Set_Clipping_Rect (rect);
-	}
-
-	//
-	//	Get the extents of the text we will be drawing
-	//
-	Vector2 text_extent = renderer->Get_Text_Extents (text);
-
-	//
-	//	Assume left justification
-	//
-	int x_pos = rect.Left + 1;
-	int y_pos = int(rect.Top + (rect.Height () / 2) - (text_extent.Y / 2));
-
-	//
-	//	Handle other justifications
-	//
-	if (justify == RIGHT_JUSTIFY) {
-		
-		//
-		//	Caclulate right justification
-		//
-		x_pos = int(rect.Right - text_extent.X);
-	} else if (justify == CENTER_JUSTIFY) {
-
-		//
-		//	Calculate center justification
-		//
-		x_pos = int(rect.Left + (rect.Width () / 2) - (text_extent.X / 2));
-	}
-
-	//
-	//	Render the shadow (if necessary)
-	//
-	if (do_shadow) {
-		renderer->Set_Location (Vector2 (x_pos - 1, y_pos + 1));
-		renderer->Draw_Text (text, shadow_color);
-	}
-
-	//
-	//	Render the text
-	//
-	renderer->Set_Location (Vector2 (x_pos, y_pos));
-	renderer->Draw_Text (text, text_color);
-	return ;
-}*/
-
-
-
-////////////////////////////////////////////////////////////////
-//
-//	Render_Text
-//
-////////////////////////////////////////////////////////////////
-/*void
-StyleMgrClass::Render_Text
-(
-	const WCHAR *				text,
-	Render2DSentenceClass *	renderer,
-	uint32						text_color,
-	uint32						shadow_color,
-	const RectClass &			rect,	
-	bool							do_shadow,
-	bool							do_clip,
-	JUSTIFICATION				justify
-)
-{
-	//
-	//	If necessary, assign the clipping rectangle
-	//
-	if (do_clip) {
-		renderer->Set_Clipping_Rect (rect);
-	}
-
-	//
-	//	Get the extents of the text we will be drawing
-	//
-	Vector2 text_extent = renderer->Get_Text_Extents (text);
-
-	//
-	//	Assume left justification
-	//
-	int x_pos = rect.Left + 1;
-	int y_pos = int(rect.Top + (rect.Height () / 2) - (text_extent.Y / 2));
-
-	//
-	//	Handle other justifications
-	//
-	if (justify == RIGHT_JUSTIFY) {
-		
-		//
-		//	Caclulate right justification
-		//
-		x_pos = int(rect.Right - text_extent.X);
-	} else if (justify == CENTER_JUSTIFY) {
-
-		//
-		//	Calculate center justification
-		//
-		x_pos = int(rect.Left + (rect.Width () / 2) - (text_extent.X / 2));
-	}
-
-	//
-	//	Build up the text we want to render
-	//
-	renderer->Build_Sentence (text);
-
-	//
-	//	Render the shadow (if necessary)
-	//
-	if (do_shadow) {
-		renderer->Set_Location (Vector2 (x_pos - 1, y_pos + 1));
-		renderer->Draw_Sentence (shadow_color);
-	}
-
-	//
-	//	Render the text
-	//
-	renderer->Set_Location (Vector2 (x_pos, y_pos));
-	renderer->Draw_Sentence (text_color);
-	return ;
-}*/
 
 ////////////////////////////////////////////////////////////////
 //
@@ -973,9 +702,7 @@ StyleMgrClass::Configure_Hilighter (Render2DClass *renderer)
 	//
 	ShaderClass *shader = renderer->Get_Shader ();
 	shader->Set_Dst_Blend_Func (ShaderClass::DSTBLEND_ONE);
-	shader->Set_Src_Blend_Func (ShaderClass::SRCBLEND_ONE);	
-	//shader->Set_Primary_Gradient (ShaderClass::GRADIENT_ADD);
-	//shader->Set_Secondary_Gradient (ShaderClass::SECONDARY_GRADIENT_DISABLE);
+	shader->Set_Src_Blend_Func (ShaderClass::SRCBLEND_ONE);
 	return ;
 }
 
@@ -1045,13 +772,9 @@ StyleMgrClass::Render_Glow
 	// desired result
 	//
 	float max_radius	= max (radius_x, radius_y);
-	int pass_count		= 4;//max_radius / 3;
-	//pass_count			= min (pass_count, 5);
-	//pass_count			= max (pass_count, 3);
+	int pass_count		= 4;
 
-	int step_count		= 7;//max_radius;
-	//step_count			= min (step_count, 10);
-	//step_count			= max (step_count, 4);
+	int step_count		= 7;
 	float angle_inc	= DEG_TO_RADF (360) / step_count;
 
 	float x_inc = radius_x / pass_count;
@@ -1104,11 +827,6 @@ StyleMgrClass::Configure_Renderer (Render2DClass *renderer)
 	//
 	renderer->Set_Coordinate_Range (Render2DClass::Get_Screen_Resolution ());
 
-	//
-	//	Turn depth-buffer reading on for this renderer
-	//
-	//ShaderClass *shader = renderer->Get_Shader ();
-	//shader->Set_Depth_Compare (ShaderClass::PASS_LEQUAL);
 	return ;
 }
 

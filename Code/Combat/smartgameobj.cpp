@@ -970,30 +970,22 @@ void	SmartGameObj::Export_Creation( BitStreamClass &packet )
 }
 
 
-/*
-**
-*/
-void	SmartGameObj::Import_Creation( BitStreamClass &packet )
-{
+void SmartGameObj::Import_Creation( BitStreamClass& packet ){
 	ArmedGameObj::Import_Creation( packet );
 
-	//
-	//	Get the control owner from the server
-	//
+	// Get the control owner from the server
 	int control_owner = 0;
 	packet.Get( control_owner );
 	Set_Control_Owner( control_owner );
 
-	//
-	//	Hookup the control input for this player
-	//
-	if (control_owner  == CombatManager::Get_My_Id() ) {
+	// Hookup the control input for this player
+	if( control_owner == CombatManager::Get_My_Id() ){
 		ActionParamsStruct parameters;
 		Get_Action()->Follow_Input( parameters );
 		CombatManager::Set_The_Star( As_SoldierGameObj() );
 	}
 
-	return ;
+	return;
 }
 
 

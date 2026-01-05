@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -39,17 +21,13 @@
 #include "debug.h"
 #include "ffactory.h"
 
-/*
-**
-*/
-INIClass *	Get_INI( const char * filename )
-{
-	INIClass * ini = NULL;
+INIClass* Get_INI( const char* filename ){
+	INIClass* ini = NULL;
 
-	FileClass * INIfile = _TheFileFactory->Get_File( filename );
-	if ( INIfile ) {
-		if ( INIfile->Is_Available() ) {
-			ini = new INIClass( *INIfile );
+	FileClass* INIfile = _TheFileFactory->Get_File( filename );
+	if( INIfile ){
+		if( INIfile->Is_Available() ){
+			ini = new INIClass( INIfile* );
 		}
 		_TheFileFactory->Return_File( INIfile );
 	}
@@ -57,8 +35,7 @@ INIClass *	Get_INI( const char * filename )
 	return ini;
 }
 
-void Save_INI( INIClass * p_ini, const char * filename )
-{
+void Save_INI( INIClass * p_ini, const char* filename ){
 	WWASSERT(p_ini != NULL);
 	WWASSERT(filename != NULL);
 
@@ -69,15 +46,11 @@ void Save_INI( INIClass * p_ini, const char * filename )
 	}
 }
 
-void	Release_INI( INIClass * ini )
-{
+void Release_INI( INIClass* ini ){
 	WWASSERT( ini );
 	delete ini;
 }
 
-/*
-**
-*/
 void Strip_Path_From_Filename( StringClass& new_name, const char * filename )
 {
 	if ( ::strchr( filename, '\\' ) != 0 ) {
@@ -97,25 +70,19 @@ void Get_Render_Obj_Name_From_Filename( StringClass& new_name, const char * file
 	}
 }
 
-RenderObjClass * Create_Render_Obj_From_Filename( const char * filename )
-{
+RenderObjClass* Create_Render_Obj_From_Filename( const char* filename ){
 	StringClass	render_obj_name(true);
 	Strip_Path_From_Filename( render_obj_name, filename );
 	render_obj_name.Erase( render_obj_name.Get_Length() - 4, 4 );
 
-	RenderObjClass *model = WW3DAssetManager::Get_Instance()->Create_Render_Obj( render_obj_name );
+	RenderObjClass* model = WW3DAssetManager::Get_Instance()->Create_Render_Obj( render_obj_name );
 	if ( model == NULL ) {
-		Debug_Say(( "Failed to create \"%s\" from \"%s\"\n", (const char *)render_obj_name, filename ));
+		Debug_Say(( "Failed to create \"%s\" from \"%s\"\n", (const char*) render_obj_name, filename ));
 	}
 	return model;
 }
 
-TextureClass * Get_Texture_From_Filename
-( 
-	const char * filename, 
-	TextureClass::MipCountType mip_level_count 
-)
-{
+TextureClass * Get_Texture_From_Filename( const char* filename, TextureClass::MipCountType mip_level_count ){
 	StringClass	tex_name(true);
 	Strip_Path_From_Filename( tex_name, filename );
 	return WW3DAssetManager::Get_Instance()->Get_Texture( tex_name, mip_level_count );

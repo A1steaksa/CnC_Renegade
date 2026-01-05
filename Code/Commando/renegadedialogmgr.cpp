@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -85,8 +67,7 @@ WWUIInputClass *	_TheWWUIInput = NULL;
 ////////////////////////////////////////////////////////////////
 //	Static data
 ////////////////////////////////////////////////////////////////
-DialogFactoryBaseClass *FactoryArray[FACTORY_COUNT] =
-{
+DialogFactoryBaseClass* FactoryArray[FACTORY_COUNT] = {
 	new DialogFactoryClass<StartSPGameDialogClass>,
 	NULL,
 	NULL,
@@ -110,11 +91,10 @@ DialogFactoryBaseClass *FactoryArray[FACTORY_COUNT] =
 	new DialogFactoryClass<MainMenuDialogClass>,
 	new DialogFactoryClass<SaveGameMenuClass>,
 	new DialogFactoryClass<MPLanMenuClass>,
-	//new DialogFactoryClass<MPInternetMenuClass>,
 	NULL,
-	NULL,//new DialogFactoryClass<MPGameMenuClass>,
+	NULL,
 	new DialogFactoryClass<MPJoinMenuClass>,
-	NULL,//new DialogFactoryClass<MPServerStartMenuClass>,
+	NULL,
 	new DialogFactoryClass<MultiplayOptionsMenuClass>,
 	NULL,
 	new DialogFactoryClass<MPWolMainMenuClass>,
@@ -133,50 +113,40 @@ void	Stop_Main_Loop (int);
 ////////////////////////////////////////////////////////////////
 //	RenegadeUIInputClass
 ////////////////////////////////////////////////////////////////
-class RenegadeUIInputClass : public WWUIInputClass
-{
-	const Vector3 &
-	Get_Mouse_Pos (void) const
-	{
-		DirectInput::Get_Cursor_Pos (&MousePos);
+class RenegadeUIInputClass : public WWUIInputClass {
+	const Vector3& Get_Mouse_Pos(void) const {
+		DirectInput::Get_Cursor_Pos( MousePos& );
 		return MousePos;
 	}
 
-	void
-	Set_Mouse_Pos (const Vector3 &pos)
-	{
+	void Set_Mouse_Pos( const Vector3& pos){
 		MousePos = pos;
-		DirectInput::Reset_Cursor_Pos (Vector2 (pos.X, pos.Y));
-		return ;
+		DirectInput::Reset_Cursor_Pos( Vector2( pos.X, pos.Y ) );
+		return;
 	}
 
-	bool
-	Is_Button_Down (int vk_mouse_button_id)
-	{
+	bool Is_Button_Down( int vk_mouse_button_id ){
 		bool retval = false;
-		switch (vk_mouse_button_id)
-		{
+		switch( vk_mouse_button_id ){
 			case VK_LBUTTON:
-				retval = Input::Is_Button_Down (DirectInput::BUTTON_MOUSE_LEFT);
+				retval = Input::Is_Button_Down( DirectInput::BUTTON_MOUSE_LEFT );
 				break;
 
 			case VK_MBUTTON:
-				retval = Input::Is_Button_Down (DirectInput::BUTTON_MOUSE_CENTER);
+				retval = Input::Is_Button_Down( DirectInput::BUTTON_MOUSE_CENTER );
 				break;
 
 			case VK_RBUTTON:
-				retval = Input::Is_Button_Down (DirectInput::BUTTON_MOUSE_RIGHT);
+				retval = Input::Is_Button_Down( DirectInput::BUTTON_MOUSE_RIGHT );
 				break;
 		}
 
 		return retval;
 	}
 
-	void
-	Enter_Menu_Mode (void)
-	{
-		Input::Menu_Enable (true);
-		return ;
+	void Enter_Menu_Mode(void){
+		Input::Menu_Enable( true );
+		return;
 	}
 
 	void
@@ -191,30 +161,20 @@ private:
 	mutable Vector3 MousePos;
 };
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Initialize
-//
-////////////////////////////////////////////////////////////////
-void
-RenegadeDialogMgrClass::Initialize (void)
-{
+void RenegadeDialogMgrClass::Initialize(void){
 	WWMEMLOG(MEM_GAMEDATA);
-	const char *	STYLE_MGR_INI	= "stylemgr.ini";
+	const char* STYLE_MGR_INI = "stylemgr.ini";
 
 	_TheWWUIInput = new RenegadeUIInputClass;
 	_TheWWUIInput->InitIME(MainWindow);
 
-	//
-	//	Simple-pass thru to the WWUI dialog mgr system
-	//
-	if (!ConsoleBox.Is_Exclusive()) {
-		DialogBaseClass::Set_Default_Command_Handler (Default_On_Command);
-		DialogMgrClass::Initialize (STYLE_MGR_INI);
+	// Simple-pass thru to the WWUI dialog mgr system
+	if( !ConsoleBox.Is_Exclusive() ){
+		DialogBaseClass::Set_Default_Command_Handler( Default_On_Command );
+		DialogMgrClass::Initialize( STYLE_MGR_INI );
 	}
-	DialogMgrClass::Install_Input (_TheWWUIInput);
-	return ;
+	DialogMgrClass::Install_Input( _TheWWUIInput );
+	return;
 }
 
 
@@ -223,16 +183,12 @@ RenegadeDialogMgrClass::Initialize (void)
 //	Do_Simple_Dialog
 //
 ////////////////////////////////////////////////////////////////
-void
-RenegadeDialogMgrClass::Do_Simple_Dialog (int dlg_res_id)
-{
-	//
-	//	Show the dialog
-	//
-	PopupDialogClass *dialog = new PopupDialogClass (dlg_res_id);
-	dialog->Start_Dialog ();
-	REF_PTR_RELEASE (dialog);
-	return ;
+void RenegadeDialogMgrClass::Do_Simple_Dialog( int dlg_res_id ){
+	// Show the dialog
+	PopupDialogClass* dialog = new PopupDialogClass( dlg_res_id );
+	dialog->Start_Dialog();
+	REF_PTR_RELEASE(dialog);
+	return;
 }
 
 
@@ -345,15 +301,7 @@ RenegadeDialogMgrClass::Shutdown (void)
 	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Default_On_Command
-//
-////////////////////////////////////////////////////////////////
-bool CALLBACK
-Default_On_Command (DialogBaseClass *dialog, int ctrl_id, int mesage_id, DWORD param)
-{
+bool CALLBACK Default_On_Command (DialogBaseClass *dialog, int ctrl_id, int mesage_id, DWORD param){
 	bool handled = true;
 
 	//
@@ -426,20 +374,7 @@ Default_On_Command (DialogBaseClass *dialog, int ctrl_id, int mesage_id, DWORD p
 			break;
 
 		case IDC_QUIT:
-#ifdef MULTIPLAYERDEMO
-				DialogMgrClass::Flush_Dialogs ();
-
-				START_DIALOG (SplashOutroMenuDialogClass);
-				/*dialog->End_Dialog ();
-				{
-					MainMenuDialogClass *main_menu = MainMenuDialogClass::Get_Instance ();
-					if (main_menu != NULL) {
-						main_menu->End_Dialog ();
-					}
-				}*/
-#else
-				Stop_Main_Loop (EXIT_SUCCESS);
-#endif //MULTIPLAYERDEMO
+			Stop_Main_Loop (EXIT_SUCCESS);
 			break ;
 
 		default:
@@ -448,58 +383,4 @@ Default_On_Command (DialogBaseClass *dialog, int ctrl_id, int mesage_id, DWORD p
 	}
 
 	return handled;
-}
-
-
-//
-// Called as follows: If IDS_TEST is the string you wish to load and
-// WCHAR Buffer[128] is your buffer, the call would be
-// MyLoadStringW(IDS_TEST,Buffer,128);
-// If it succeeds, the function returns the number of characters copied
-// into the buffer, not including the NULL terminating character, or
-// zero if the string resource does not exist.
-//
-int MyLoadStringW (UINT str_id, LPWSTR buffer, int buffer_len)
-{
-	//
-	//	Compute the block and offset
-	//
-	int block	= (str_id >> 4) + 1;
-	int num		= str_id & 0xF;
-
-	//
-	//	Find the resource
-	//
-	HRSRC resource = ::FindResourceEx (NULL, RT_STRING, MAKEINTRESOURCE (block),
-								MAKELANGID (LANG_NEUTRAL, SUBLANG_NEUTRAL));
-
-	//
-	//	Load the resource into memory
-	//
-	HGLOBAL hglobal	= ::LoadResource (NULL, resource);
-	LPWSTR res_string	= (LPWSTR)::LockResource (hglobal);
-
-	int length = 0;
-	if (res_string != NULL) {
-
-		for (int index = 0; index < num; index ++) {
-			res_string += *res_string + 1;
-		}
-
-		//
-		//	Copy the string to our buffer
-		//
-		length = min ((int)(buffer_len - 1), (int)(*res_string));
-		::wcsncpy (buffer, res_string + 1, length);
-	}
-
-	//
-	//	Null terminate the buffer
-	//
-	buffer[length] = '\0';
-
-	//
-	//	Return the number of bytes copied
-	//
-	return length;
 }
