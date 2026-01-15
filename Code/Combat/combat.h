@@ -138,13 +138,13 @@ public:
 	static	bool	Load( ChunkLoadClass &cload );
 
 	// Client/Server Settings
-	static	void	Set_I_Am_Server( bool yes )		{ IAmServer = yes; }
-	static	void	Set_I_Am_Client( bool yes )		{ IAmClient = yes; }
-	static	bool	I_Am_Server( void )					{ return IAmServer; }
-	static	bool	I_Am_Client( void )					{ return IAmClient; }
-	static	bool	I_Am_Only_Client( void )			{ return IAmClient && !IAmServer; }
-	static	bool	I_Am_Only_Server( void )			{ return IAmServer && !IAmClient; }
-   static	bool	I_Am_Client_Server(void)			{ return IAmClient && IAmServer;}
+	static	void	Set_I_Am_Server( bool yes ){ IAmServer = yes; }
+	static	void	Set_I_Am_Client( bool yes ){ IAmClient = yes; }
+	static	bool	I_Am_Server( void ){ return IAmServer; }
+	static	bool	I_Am_Client( void ){ return IAmClient; }
+	static	bool	I_Am_Only_Client( void ){ return IAmClient && !IAmServer; }
+	static	bool	I_Am_Only_Server( void ){ return IAmServer && !IAmClient; }
+   static	bool	I_Am_Client_Server(void){ return IAmClient && IAmServer;}
 
 	static	void	Set_Friendly_Fire_Permitted( bool yes )	{ FriendlyFirePermitted = yes; }
 	static	bool	Is_Friendly_Fire_Permitted( void )			{ return FriendlyFirePermitted; }
@@ -176,8 +176,11 @@ public:
 	static	void	Star_Killed( void );
 
 	// The Star
-	static	void 	Set_The_Star( SoldierGameObj *target, bool is_star_determining_target = true );
-	static	SoldierGameObj * Get_The_Star( void )		{ return (SoldierGameObj *)TheStar.Get_Ptr(); }
+	static void Set_The_Star( SoldierGameObj* target, bool is_star_determining_target = true );
+	static SoldierGameObj* Get_The_Star(void){
+		return (SoldierGameObj*) TheStar.Get_Ptr();
+	}
+
 	static	void	Update_Star( void );
 	static	void	Update_Star_Targeting( void );
 

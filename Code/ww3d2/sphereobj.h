@@ -54,24 +54,37 @@
 
 class TextureClass;
 
-struct AlphaVectorStruct
-{
-	AlphaVectorStruct (void)
-		:	angle (true),
-			intensity (1.0F)		{ }
-	AlphaVectorStruct (const AlphaVectorStruct &src) { *this = src; }
+struct AlphaVectorStruct {
+	AlphaVectorStruct(void) : angle( true ), intensity( 1.0F ){
+	}
 
-	bool operator== (const AlphaVectorStruct &src)	{ return (angle.X == src.angle.X) && (angle.Y == src.angle.Y) && (angle.Z == src.angle.Z) && (intensity == src.intensity); }
-	bool operator!= (const AlphaVectorStruct &src)	{ return ! operator== (src); }
+	AlphaVectorStruct( const AlphaVectorStruct& src ){
+		*this = src;
+	}
 
-	const AlphaVectorStruct &	operator= (const AlphaVectorStruct &src)	{ angle = src.angle; intensity = src.intensity; return *this; }
+	bool operator==( const AlphaVectorStruct& src ){
+		return 
+			( angle.X == src.angle.X ) && 
+			( angle.Y == src.angle.Y ) &&
+			( angle.Z == src.angle.Z ) &&
+			( intensity == src.intensity );
+	}
+	
+	bool operator!=( const AlphaVectorStruct& src ){
+		return ! operator==( src );
+	}
 
-	Quaternion	angle;
-	float			intensity;
+	const AlphaVectorStruct& operator =( const AlphaVectorStruct& src ){
+		angle = src.angle;
+		intensity = src.intensity;
+		return this*;
+	}
+
+	Quaternion angle;
+	float intensity;
 };
 
-class AlphaVectorChannel : public PrimitiveAnimationChannelClass<AlphaVectorStruct>
-{
+class AlphaVectorChannel : public PrimitiveAnimationChannelClass<AlphaVectorStruct> {
 public:
 	AlphaVectorStruct	Evaluate (float time)
 	{

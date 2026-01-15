@@ -67,8 +67,8 @@
 #include "GameSpy_QnR.h"
 
 
-bool	RunMainLoop = true;
-int		ExitCode = EXIT_SUCCESS;
+bool RunMainLoop = true;
+int ExitCode = EXIT_SUCCESS;
 
 void Stop_Main_Loop( int exitCode ){
 	RunMainLoop = false;
@@ -77,50 +77,31 @@ void Stop_Main_Loop( int exitCode ){
 
 
 void _Game_Main_Loop_Loop(void){
-	WWPROFILE( "Main Loop" );
-
 	unsigned long time1 = TIMEGETTIME();
 
 	TimeManager::Update();
 
 	Input::Update();
 
-
-{	WWPROFILE( "Pathfind Evaluate" );
-   if (COMBAT_CAMERA != NULL) {
+	// Pathfind Evaluate
+	if( COMBAT_CAMERA != NULL ){
 		Vector3 camera_pos = COMBAT_CAMERA->Get_Position();
 		PathMgrClass::Resolve_Paths( camera_pos );
 	}
-}
 
-{	WWPROFILE( "Think" );
-   GameModeManager::Think();
+	GameModeManager::Think();
 	GameInitMgrClass::Think();
-}
 
-{	WWPROFILE( "Dialog Mgr Update" );
-   DialogMgrClass::On_Frame_Update ();
-}
+	DialogMgrClass::On_Frame_Update();
 
-{	WWPROFILE( "Network Object Mgr Think" );
-   NetworkObjectMgrClass::Think ();
+	NetworkObjectMgrClass::Think();
 	ServerControl.Service();
-}
 
-{	WWPROFILE("GameSpy_QnR");
 	GameSpyQnR.Think();
-}
-
 	if( cGameSpyAdmin::Is_Gamespy_Game() ){
 		WWPROFILE( "cGameSpyAdmin Think" );
 		cGameSpyAdmin::Think();
 	}
-
-	//
-	// If the following assert hits it may indicate that your
-	// working directory pathname got cleared in the project settings.
-	//
-	WWASSERT( GameModeManager::Find("Combat") != NULL );
 
 	if( !GameModeManager::Find( "Combat" )->Is_Active() ){
 		cNetwork::Update();
@@ -135,21 +116,15 @@ void _Game_Main_Loop_Loop(void){
 		AutoRestart.Think();
 	}
 
-{	WWPROFILE("ConsoleBox");
 	ConsoleBox.Think();
-}
 
-	DEMO_SECURITY_CHECK;
-
-{	WWPROFILE( "Audio" );
-	if (!ConsoleBox.Is_Exclusive()) {
-		WWAudioClass::Get_Instance ()->On_Frame_Update (0);
+	if( !ConsoleBox.Is_Exclusive() ){
+		WWAudioClass::Get_Instance()->On_Frame_Update( 0 );
 	}
-}
 
-   Windows_Message_Handler();
+	Windows_Message_Handler();
 
-   DebugManager::Update();
+	DebugManager::Update();
 
 	/*
 	** Sleep for a while if we are hogging the CPU.

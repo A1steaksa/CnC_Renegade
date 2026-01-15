@@ -61,7 +61,7 @@
 ////////////////////////////////////////////////////////////////
 //	Globals
 ////////////////////////////////////////////////////////////////
-WWUIInputClass *	_TheWWUIInput = NULL;
+WWUIInputClass* _TheWWUIInput = NULL;
 
 
 ////////////////////////////////////////////////////////////////
@@ -107,8 +107,8 @@ DialogFactoryBaseClass* FactoryArray[FACTORY_COUNT] = {
 ////////////////////////////////////////////////////////////////
 //	Local Prototypes
 ////////////////////////////////////////////////////////////////
-bool CALLBACK Default_On_Command (DialogBaseClass *dialog, int ctrl_id, int mesage_id, DWORD param);
-void	Stop_Main_Loop (int);
+bool CALLBACK Default_On_Command( DialogBaseClass* dialog, int ctrl_id, int mesage_id, DWORD param );
+void Stop_Main_Loop( int );
 
 ////////////////////////////////////////////////////////////////
 //	RenegadeUIInputClass
@@ -149,12 +149,10 @@ class RenegadeUIInputClass : public WWUIInputClass {
 		return;
 	}
 
-	void
-	Exit_Menu_Mode (void)
-	{
-		Input::Menu_Enable (false);
-		DirectInput::Eat_Mouse_Held_States ();
-		return ;
+	void Exit_Menu_Mode(void){
+		Input::Menu_Enable(false);
+		DirectInput::Eat_Mouse_Held_States();
+		return;
 	}
 
 private:
@@ -342,12 +340,6 @@ bool CALLBACK Default_On_Command (DialogBaseClass *dialog, int ctrl_id, int mesa
 		case IDC_MP_SHORTCUT_ACCOUNT:
 			DlgWOLSettings::DoDialog();
 			break;
-
-		#ifdef QUICKMATCH_OPTIONS
-		case IDC_MP_SHORTCUT_QUICKMATCH_OPTIONS:
-			START_DIALOG(MPWolQuickMatchOptionsMenuClass);
-			break;
-		#endif // QUICKMATCH_OPTIONS
 
 		case IDC_MP_SHORTCUT_NET_STATUS:
 			DlgWebPage::DoDialog("NetStatus");

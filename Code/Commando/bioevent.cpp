@@ -1,34 +1,16 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***                            Confidential - Westwood Studios                              ***
  ***********************************************************************************************
  *                                                                                             *
  *                 Project Name : Commando                                                     *
  *                                                                                             *
- *                     $Archive:: /Commando/Code/Commando/bioevent.cpp                    $*
+ *                     $Archive:: /Commando/Code/Commando/bioevent.cpp                    	   *
  *                                                                                             *
- *                      $Author:: Steve_t                                                     $*
+ *                      $Author:: Steve_t                                                      *
  *                                                                                             *
- *                     $Modtime:: 2/20/02 11:01p                                              $*
+ *                     $Modtime:: 2/20/02 11:01p                                               *
  *                                                                                             *
- *                    $Revision:: 26                                                          $*
+ *                    $Revision:: 26                                                           *
  *                                                                                             *
  *---------------------------------------------------------------------------------------------*
  * Functions:                                                                                  *
@@ -55,41 +37,31 @@
 DECLARE_NETWORKOBJECT_FACTORY(cBioEvent, NETCLASSID_BIOEVENT);
 
 //-----------------------------------------------------------------------------
-cBioEvent::cBioEvent(void) :
-	SenderId(0),
-	TeamChoice(-1),
-	ClanID(0)
-{
-	Set_App_Packet_Type(APPPACKETTYPE_BIOEVENT);
+cBioEvent::cBioEvent(void) : SenderId(0), TeamChoice(-1), ClanID(0) {
+	Set_App_Packet_Type( APPPACKETTYPE_BIOEVENT );
 }
 
-//-----------------------------------------------------------------------------
-void
-cBioEvent::Init(int teamChoice, unsigned long clanID)
-{
-	WWASSERT(cNetwork::I_Am_Client());
+void cBioEvent::Init( int teamChoice, unsigned long clanID ){
+	WWASSERT( cNetwork::I_Am_Client() );
 
-	SenderId		= cNetwork::Get_My_Id();
-	Nickname		= cNetInterface::Get_Nickname();
-	TeamChoice	= teamChoice;
-	ClanID		= clanID;
+	SenderId = cNetwork::Get_My_Id();
+	Nickname = cNetInterface::Get_Nickname();
+	TeamChoice = teamChoice;
+	ClanID = clanID;
 
-	strcpy(MapName, The_Game()->Get_Map_Name().Peek_Buffer());
+	strcpy( MapName, The_Game()->Get_Map_Name().Peek_Buffer() );
 
-	Set_Network_ID(NetworkObjectMgrClass::Get_New_Client_ID());
+	Set_Network_ID( NetworkObjectMgrClass::Get_New_Client_ID() );
 
-	if (cNetwork::I_Am_Server()) {
+	if( cNetwork::I_Am_Server() ){
 		Act();
-	} else {
-		Set_Object_Dirty_Bit(0, BIT_CREATION, true);
+	}else{
+		Set_Object_Dirty_Bit( 0, BIT_CREATION, true );
 	}
 }
 
-//-----------------------------------------------------------------------------
-void
-cBioEvent::Act(void)
-{
-   WWASSERT(cNetwork::I_Am_Server());
+void cBioEvent::Act(void){
+   WWASSERT( cNetwork::I_Am_Server() );
 
    //
    // This is where we validate a player. If we don't want him to play,
@@ -117,8 +89,7 @@ cBioEvent::Act(void)
 		}
 
 		//GAMESPY
-		if (cGameSpyAdmin::Is_Gamespy_Game() &&
-			cGameSpyAdmin::Is_Nickname_Collision(Nickname))	{
+		if( cGameSpyAdmin::Is_Gamespy_Game() && cGameSpyAdmin::Is_Nickname_Collision( Nickname ) ){
 
 			WideStringClass new_nickname;
 			int count = 1;
@@ -132,7 +103,7 @@ cBioEvent::Act(void)
 		cPlayer * p_player = cGod::Create_Player(SenderId, Nickname, TeamChoice, ClanID);
 		WWASSERT(p_player != NULL);
 
-		if (!IS_SOLOPLAY) {
+		if( !IS_SOLOPLAY ){
 			//
 			// Record his IP address for diagnostic purposes
 			//
@@ -214,7 +185,7 @@ cBioEvent::Export_Creation(BitStreamClass & packet)
 
 //-----------------------------------------------------------------------------
 void
-cBioEvent::Import_Creation(BitStreamClass & packet)
+cBioEvent::Import_Creation( BitStreamClass& packet )
 {
 	cNetEvent::Import_Creation(packet);
 

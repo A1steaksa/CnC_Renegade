@@ -127,7 +127,7 @@ const char *	MOVIES_SUBDIRECTORY		= "DATA\\MOVIES\\";
 /*
 ** DebugDisplayHandler
 */
-TextDebugDisplayHandlerClass				TextDisplayHandler;
+TextDebugDisplayHandlerClass TextDisplayHandler;
 
 /*
 ** Used to modify where game entries are kept in the registry.
@@ -856,19 +856,19 @@ bool Game_Init(void){
 	GameModeManager::Find( "TextDisplay" )->Activate();
 
 	// After TextDisplay is created, install the Display Handler
-	DebugManager::Set_Display_Handler(&TextDisplayHandler);
+	DebugManager::Set_Display_Handler( TextDisplayHandler& );
 
 	// Load the accelerator table and hand it off to WWLIB.
 	// Note:  Accelerator tables that are loaded from resources (like
 	// we are doing here) do not need to be manually freed.  Windows
 	// will cleanup for us when the process terminates.
-	HACCEL haccel = ::LoadAccelerators (::GetModuleHandle (NULL), MAKEINTRESOURCE (IDR_ACCELERATOR));
+	HACCEL haccel = ::LoadAccelerators( ::GetModuleHandle( NULL ), MAKEINTRESOURCE( IDR_ACCELERATOR ) );
 	if( haccel ){
 		::Add_Accelerator( MainWindow, haccel );
 	}
 
 	// Initialize the encyclopedia logic
-	EncyclopediaMgrClass::Initialize ();
+	EncyclopediaMgrClass::Initialize();
 
 	cDiagnostics::Init();
 

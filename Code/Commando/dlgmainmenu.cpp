@@ -185,22 +185,14 @@ MainMenuDialogClass::On_Menu_Activate (bool onoff)
 //
 ////////////////////////////////////////////////////////////////
 void
-MainMenuDialogClass::On_Init_Dialog (void)
-{
+MainMenuDialogClass::On_Init_Dialog(void){
 	Update_Version_Number ();
 
-#if defined(BETACLIENT) || defined(FREEDEDICATEDSERVER) || defined(MULTIPLAYERDEMO)
-	Get_Dlg_Item(IDC_MENU_START_SP_GAME_BUTTON)->Enable(false);
-	Get_Dlg_Item(IDC_MENU_START_PRACTICE_GAME_BUTTON)->Enable(false);
-#endif
-
-#ifndef BETACLIENT
-	if (Get_Dlg_Item (IDC_BETA_TEST_TEXT) != NULL) {
-		Get_Dlg_Item (IDC_BETA_TEST_TEXT)->Show (false);
+	if( Get_Dlg_Item( IDC_BETA_TEST_TEXT ) != NULL ){
+		Get_Dlg_Item( IDC_BETA_TEST_TEXT )->Show( false );
 	}
-#endif
 
-	ImageCtrlClass *image_ctrl = (ImageCtrlClass *)Get_Dlg_Item (IDC_IMAGE);
+	ImageCtrlClass* image_ctrl = (ImageCtrlClass*) Get_Dlg_Item( IDC_IMAGE );
 	if (image_ctrl != NULL) {
 		image_ctrl->Set_Texture ("ESRB_RATING.TGA");
 	}
@@ -297,9 +289,7 @@ MainMenuDialogClass::Get_Transition_Out (DialogBaseClass *next_dlg)
 //	Choose_Skirmish_Map
 //
 ////////////////////////////////////////////////////////////////
-StringClass
-MainMenuDialogClass::Choose_Skirmish_Map (void)
-{
+StringClass MainMenuDialogClass::Choose_Skirmish_Map(void){
 	DynamicVectorClass<StringClass>	map_list;
 	WIN32_FIND_DATA find_info	= { 0 };
 	BOOL keep_going				= TRUE;
@@ -439,27 +429,18 @@ MainMenuDialogClass::Display (void)
 		//
 		MainMenuDialogClass *dialog = new MainMenuDialogClass;
 
-		//
-		//	Create the backdrop if necessary
-		//
-		if (Animated) {
+		// Create the backdrop if necessary
+		if( Animated ){
 
-			if (dialog->Get_BackDrop ()->Peek_Model () == NULL) {
-				dialog->Get_BackDrop ()->Set_Model ("IF_BACK01");
-				dialog->Get_BackDrop ()->Set_Animation ("IF_BACK01.IF_BACK01");
-
-				/*RenderObjClass *model = WW3DAssetManager::Get_Instance ()->Create_Render_Obj ("IF_RENLOGO");
-				if (model != NULL) {
-					dialog->Get_BackDrop ()->Peek_Scene ()->Add_Render_Object(model);
-				}*/
+			if( dialog->Get_BackDrop()->Peek_Model() == NULL ){
+				dialog->Get_BackDrop()->Set_Model( "IF_BACK01" );
+				dialog->Get_BackDrop()->Set_Animation( "IF_BACK01.IF_BACK01" );
 			}
 		}
 
-		//
-		//	Start the dialog
-		//
+		// Start the dialog
 		dialog->Start_Dialog ();
-		REF_PTR_RELEASE (dialog);
+		REF_PTR_RELEASE( dialog );
 
 	} else {
 		if (_TheInstance->Is_Active_Menu () == false) {
@@ -497,42 +478,3 @@ MainMenuDialogClass::Update_Version_Number (void)
 	version_string.Format (L"v%d.%.3d %s-%s %s", (version_major >> 16), (version_major & 0xFFFF), build_initials, build_number, build_date);
 	Set_Dlg_Item_Text (IDC_VERSION_STATIC, version_string);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				//TRANSLATE_ME
-				//const WCHAR * title	= L"Unable to initialize LAN";
-				//IDS_MP_UNABLE_INITIALIZE_LAN
-				//const WCHAR * text	= L"No LAN IP addresses found.";
-				//IDS_MP_NO_LAN_IP_ADDRESSES_FOUND
-
-				//DlgMsgBox::DoDialog(title, text);
-
-/*
-#ifdef MULTIPLAYERDEMO
-			START_DIALOG (GameSpyMainDialogClass);
-#else
-			START_DIALOG (InternetMainDialogClass);
-#endif
-*/

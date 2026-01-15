@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /* $Header: /Commando/Code/ww3d2/rendobj.cpp 21    1/07/03 3:51p Bhayes $ */
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
@@ -125,24 +107,25 @@ Filename_From_Asset_Name (const char *asset_name)
 	return filename;
 }
 
-static inline bool Check_Is_Transform_Identity(const Matrix3D& m)
-{
-	const float zero=0.0f;
-	const float one=1.0f;
+static inline bool Check_Is_Transform_Identity( const Matrix3D& m ){
+	const float zero = 0.0f;
+	const float one = 1.0f;
 
-	unsigned d=
-		((unsigned&)m[0][0]^(unsigned&)one) |
-		((unsigned&)m[0][1]^(unsigned&)zero) |
-		((unsigned&)m[0][2]^(unsigned&)zero) |
-		((unsigned&)m[0][3]^(unsigned&)zero) |
-		((unsigned&)m[1][0]^(unsigned&)zero) |
-		((unsigned&)m[1][1]^(unsigned&)one) |
-		((unsigned&)m[1][2]^(unsigned&)zero) |
-		((unsigned&)m[1][3]^(unsigned&)zero) |
-		((unsigned&)m[2][0]^(unsigned&)zero) |
-		((unsigned&)m[2][1]^(unsigned&)zero) |
-		((unsigned&)m[2][2]^(unsigned&)one) |
-		((unsigned&)m[2][3]^(unsigned&)zero);
+	unsigned d =
+		( (unsigned&) m[0][0]^ (unsigned&) one	) |
+		( (unsigned&) m[0][1]^ (unsigned&) zero	) |
+		( (unsigned&) m[0][2]^ (unsigned&) zero	) |
+		( (unsigned&) m[0][3]^ (unsigned&) zero	) |
+
+		( (unsigned&) m[1][0]^ (unsigned&) zero	) |
+		( (unsigned&) m[1][1]^ (unsigned&) one	) |
+		( (unsigned&) m[1][2]^ (unsigned&) zero	) |
+		( (unsigned&) m[1][3]^ (unsigned&) zero	) |
+
+		( (unsigned&) m[2][0]^ (unsigned&) zero	) |
+		( (unsigned&) m[2][1]^ (unsigned&) zero	) |
+		( (unsigned&) m[2][2]^ (unsigned&) one	) |
+		( (unsigned&) m[2][3]^ (unsigned&) zero	);
 	return !d;
 }
 
@@ -160,15 +143,15 @@ static inline bool Check_Is_Transform_Identity(const Matrix3D& m)
  *   11/04/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
 RenderObjClass::RenderObjClass(void) :
-	Bits(DEFAULT_BITS),
-	Transform(1),
-	NativeScreenSize(WW3D::Get_Default_Native_Screen_Size()),
-	Scene(NULL),
-	Container(NULL),
-	User_Data(NULL),
-	CachedBoundingSphere(Vector3(0,0,0),1.0f),
-	CachedBoundingBox(Vector3(0,0,0),Vector3(1,1,1)),
-	IsTransformIdentity(false)
+	Bits( DEFAULT_BITS ),
+	Transform( 1 ),
+	NativeScreenSize( WW3D::Get_Default_Native_Screen_Size() ),
+	Scene( NULL ),
+	Container( NULL ),
+	User_Data( NULL ),
+	CachedBoundingSphere( Vector3( 0, 0, 0), 1.0f ),
+	CachedBoundingBox( Vector3( 0, 0, 0), Vector3( 1, 1, 1 ) ),
+	IsTransformIdentity( false )
 {
 }
 
@@ -386,8 +369,7 @@ void RenderObjClass::Set_Container(RenderObjClass * con)
  * HISTORY:                                                                                    *
  *   3/4/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-RenderObjClass * RenderObjClass::Get_Container(void) const													
-{ 
+RenderObjClass* RenderObjClass::Get_Container(void) const {
 	return Container; 
 }
 
@@ -404,10 +386,9 @@ RenderObjClass * RenderObjClass::Get_Container(void) const
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void RenderObjClass::Set_Transform(const Matrix3D &m)
-{
+void RenderObjClass::Set_Transform( const Matrix3D& m ){
 	Transform = m;
-	IsTransformIdentity=Check_Is_Transform_Identity(m);
+	IsTransformIdentity = Check_Is_Transform_Identity( m );
 	Invalidate_Cached_Bounding_Volumes();
 }
 
@@ -425,10 +406,9 @@ void RenderObjClass::Set_Transform(const Matrix3D &m)
  *   2/25/99    GTH : Created.                                                                 *
  *   07/14/2001 SKB : Add Check_Is_Transform_Identity                                          * 
  *=============================================================================================*/
-void RenderObjClass::Set_Position(const Vector3 &v)
-{
-	Transform.Set_Translation(v);
-	IsTransformIdentity=Check_Is_Transform_Identity(Transform);
+void RenderObjClass::Set_Position( const Vector3& v ){
+	Transform.Set_Translation( v );
+	IsTransformIdentity = Check_Is_Transform_Identity( Transform );
 	Invalidate_Cached_Bounding_Volumes();
 }
 
@@ -445,18 +425,17 @@ void RenderObjClass::Set_Position(const Vector3 &v)
  * HISTORY:                                                                                    *
  *   6/15/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void RenderObjClass::Validate_Transform(void) const
-{
+void RenderObjClass::Validate_Transform(void) const {
 	/*
 	** Recurse up the tree to see if any of my parents are saying that their sub-object 
 	** transforms are dirty
 	*/
-	RenderObjClass * con = Get_Container();
-	bool dirty=false;
-	if (con != NULL) {
+	RenderObjClass* con = Get_Container();
+	bool dirty = false;
+	if( con != NULL ){
 		dirty = con->Are_Sub_Object_Transforms_Dirty();
 
-		while (con->Get_Container() != NULL) {
+		while( con->Get_Container() != NULL ){
 			dirty |= con->Are_Sub_Object_Transforms_Dirty();
 			con = con->Get_Container();
 		}
@@ -464,11 +443,14 @@ void RenderObjClass::Validate_Transform(void) const
 		/*
 		** If the transforms are dirty, update them
 		*/
-		if (dirty) {
+		if( dirty ){
 			con->Update_Sub_Object_Transforms();
 		}
 	}
-	if (dirty) IsTransformIdentity=Check_Is_Transform_Identity(Transform);
+
+	if( dirty ){
+		IsTransformIdentity=Check_Is_Transform_Identity(Transform);
+	}
 }
 
 /***********************************************************************************************
@@ -485,8 +467,7 @@ void RenderObjClass::Validate_Transform(void) const
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-Vector3 RenderObjClass::Get_Position(void) const
-{
+Vector3 RenderObjClass::Get_Position(void) const {
 	Validate_Transform();
 	return Transform.Get_Translation();
 }

@@ -64,15 +64,24 @@ class RenderInfoClass;
 ** camera to render into.  A viewport which filled the entire screen would be
 ** (0,0) - (1,1) with 0,0 being the upper left and 1,1 being the lower right.
 */
-class ViewportClass
-{
+class ViewportClass {
 public:	
-	ViewportClass(void) : Min(0,0), Max(1,1)													{ }
-	ViewportClass(const Vector2 & min,const Vector2 & max) : Min(min), Max(max)	{ }
-	ViewportClass(const ViewportClass & vp) : Min(vp.Min), Max(vp.Max)				{ }
+	ViewportClass(void) : Min( 0, 0 ), Max( 1, 1 ){
+	}
+
+	ViewportClass( const Vector2& min, const Vector2& max ) : Min( min ), Max( max ) {
+	}
 	
-	float	Width(void)	const																			{ return Max.X - Min.X; }
-	float Height(void) const																		{ return Max.Y - Min.Y; }
+	ViewportClass( const ViewportClass& vp ) : Min( vp.Min ), Max( vp.Max ){
+	}
+	
+	float Width(void) const {
+		return Max.X - Min.X;
+	}
+
+	float Height(void) const {
+		return Max.Y - Min.Y;
+	}
 
 	Vector2 Min;
 	Vector2 Max;
@@ -101,18 +110,15 @@ public:
 ** case where a camera is using a transform from an animation; the programmer
 ** is usually requesting the transform and plugging it into the camera anyway.
 */
-class CameraClass : public RenderObjClass
-{
+class CameraClass : public RenderObjClass {
 public:
 
-	enum ProjectionType
-	{
+	enum ProjectionType {
 		PERSPECTIVE = 0,
 		ORTHO
 	};
 
-	enum ProjectionResType
-	{
+	enum ProjectionResType {
 		INSIDE_FRUSTUM,
 		OUTSIDE_FRUSTUM,
 		OUTSIDE_NEAR_CLIP,
@@ -120,11 +126,14 @@ public:
 	};
 
 	CameraClass(void);
-	CameraClass(const CameraClass & src);
-	CameraClass & operator = (const CameraClass &);
+	CameraClass( const CameraClass& src );
+	CameraClass& operator =( const CameraClass& );
 	virtual ~CameraClass(void);
-	virtual RenderObjClass *	Clone(void) const;
-	virtual int						Class_ID(void) const { return CLASSID_CAMERA; }
+	virtual RenderObjClass* Clone(void) const;
+	
+	virtual int Class_ID(void) const {
+		return CLASSID_CAMERA;
+	}
 		
 	/////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface -  Rendering, cameras don't "render"
@@ -136,34 +145,34 @@ public:
 	// Cameras cache their frustum description, this is invalidated whenever 
 	// the transform/position is changed
 	/////////////////////////////////////////////////////////////////////////////
-	virtual void 					Set_Transform(const Matrix3D &m);
-	virtual void 					Set_Position(const Vector3 &v);
+	virtual void Set_Transform(const Matrix3D &m);
+	virtual void Set_Position(const Vector3 &v);
 
   	/////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface - Bounding Volumes
 	/////////////////////////////////////////////////////////////////////////////
-	virtual void					Get_Obj_Space_Bounding_Sphere(SphereClass & sphere) const;
-   virtual void					Get_Obj_Space_Bounding_Box(AABoxClass & box) const;
+	virtual void Get_Obj_Space_Bounding_Sphere( SphereClass& sphere ) const;
+	virtual void Get_Obj_Space_Bounding_Box( AABoxClass& box ) const;
 
 	///////////////////////////////////////////////////////////////////////////
 	// Camera parameter control
 	///////////////////////////////////////////////////////////////////////////
 	// Depth of the scene.
-	float								Get_Depth(void) const;
+	float Get_Depth(void) const;
 
 	// Setting the projection type
-	void								Set_Projection_Type(ProjectionType ptype);
-	ProjectionType					Get_Projection_Type(void);
+	void Set_Projection_Type(ProjectionType ptype);
+	ProjectionType Get_Projection_Type(void);
 	
 	// Setting the clipping ranges in world space distances
-	void								Set_Clip_Planes(float znear,float zfar);
-	void								Get_Clip_Planes(float & znear,float & zfar) const;
+	void Set_Clip_Planes( float znear, float zfar );
+	void Get_Clip_Planes( float& znear, float& zfar ) const;
 
 	// Methods for setting the View Plane.  
 	// NOTE: View plane is always at a distance of 1.0 from the eye.
-	void								Set_View_Plane(const Vector2 & min,const Vector2 & max);
-	void								Set_View_Plane(float hfov,float vfov = -1);
-	void								Set_Aspect_Ratio(float width_to_height);
+	void Set_View_Plane( const Vector2& min, const Vector2& max );
+	void Set_View_Plane( float hfov, float vfov = -1 );
+	void Set_Aspect_Ratio( float width_to_height );
 
 	// Methods for querying the View Plane settings.		
 	void								Get_View_Plane(Vector2 & set_min,Vector2 & set_max) const;
@@ -229,67 +238,60 @@ public:
 
 protected:
 	
-	void								Update_Frustum(void) const;
+	void Update_Frustum(void) const;
 
-	ProjectionType					Projection;		// projection type, orthographic or perspective
-	ViewportClass					Viewport;		// pixel viewport to render into
-	ViewportClass					ViewPlane;		// corners of a slice through the frustum at z=-1.0
-	float								AspectRatio;	// aspect ratio of the camera, width / height
-	float								ZNear;			// near clip plane distance
-	float								ZFar;				// far clip plane distance
-	float								ZBufferMin;		// smallest value we'll write into the z-buffer (usually 0.0)
-	float								ZBufferMax;		// largest value we'll write into the z-buffer (usually 1.0)
+	ProjectionType Projection; // projection type, orthographic or perspective
+	ViewportClass Viewport; // pixel viewport to render into
+	ViewportClass ViewPlane; // corners of a slice through the frustum at z=-1.0
+	float AspectRatio;	// aspect ratio of the camera, width / height
+	float ZNear; // near clip plane distance
+	float ZFar; // far clip plane distance
+	float ZBufferMin; // smallest value we'll write into the z-buffer (usually 0.0)
+	float ZBufferMax; // largest value we'll write into the z-buffer (usually 1.0)
 
-	mutable bool					FrustumValid;
-	mutable FrustumClass			Frustum;							// world-space frustum and clip planes
-	mutable FrustumClass			ViewSpaceFrustum;				// view-space frustum and clip planes
-	mutable OBBoxClass			NearClipBBox;					// obbox which bounds the near clip plane
-	mutable Matrix4				ProjectionTransform;
-	mutable Matrix3D				CameraInvTransform;
+	mutable bool FrustumValid;
+	mutable FrustumClass Frustum; // world-space frustum and clip planes
+	mutable OBBoxClass NearClipBBox; // obbox which bounds the near clip plane
+	mutable Matrix4 ProjectionTransform;
+	mutable Matrix3D CameraInvTransform;
 };
 
-
-inline float CameraClass::Get_Depth(void) const 
-{ 
+inline float CameraClass::Get_Depth(void) const {
 	return ZFar;
 }
 
-inline void CameraClass::Set_Projection_Type(ProjectionType ptype)
-{
+inline void CameraClass::Set_Projection_Type( ProjectionType ptype ){
 	FrustumValid = false;
 	Projection = ptype;
 }
 
-inline CameraClass::ProjectionType CameraClass::Get_Projection_Type(void)
-{
+inline CameraClass::ProjectionType CameraClass::Get_Projection_Type(void){
 	return Projection;
 }
 
-inline void CameraClass::Set_Viewport(const Vector2 & min,const Vector2 & max)		
-{ 
-	Viewport.Min = min; Viewport.Max = max; 
+inline void CameraClass::Set_Viewport( const Vector2& min, const Vector2& max ){
+	Viewport.Min = min;
+	Viewport.Max = max; 
 	FrustumValid = false;
 }
 
-inline void	CameraClass::Get_Viewport(Vector2 & set_min,Vector2 & set_max) const	
-{ 
-	set_min = Viewport.Min; 
-	set_max = Viewport.Max; 
+inline void	CameraClass::Get_Viewport( Vector2& set_min, Vector2& set_max ) const {
+	set_min = Viewport.Min;
+	set_max = Viewport.Max;
 }
 
-inline void	CameraClass::Set_Depth_Range(float zmin,float zmax)
-{
+inline void	CameraClass::Set_Depth_Range( float zmin, float zmax ){
 	ZBufferMin = zmin;
 	ZBufferMax = zmax;
 }
 
-inline void	CameraClass::Get_Depth_Range(float * set_zmin,float * set_zmax) const
-{
-	if (set_zmin != NULL) {
-		*set_zmin = ZBufferMin;
+inline void	CameraClass::Get_Depth_Range( float* set_zmin, float* set_zmax ) const {
+	if( set_zmin != NULL ){
+		set_zmin* = ZBufferMin;
 	}
-	if (set_zmax != NULL) {
-		*set_zmax = ZBufferMax;
+
+	if( set_zmax != NULL ){
+		set_zmax* = ZBufferMax;
 	}
 }
 
@@ -379,25 +381,6 @@ CameraClass::Get_Frustum_Corners(void) const
 {
 	const FrustumClass & frustum = Get_Frustum();
 	return frustum.Corners;
-}
-
-
-/***********************************************************************************************
- * CameraClass::Get_View_Space_Frustum -- returns the view-space frustum for this camera       *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   5/16/2001  gth : Created.                                                                 *
- *=============================================================================================*/
-inline const FrustumClass & CameraClass::Get_View_Space_Frustum(void) const
-{
-	Update_Frustum();
-	return ViewSpaceFrustum;
 }
 
 

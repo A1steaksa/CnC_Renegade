@@ -89,15 +89,15 @@ DEFAULT_DLG_CMD_HANDLER		DialogBaseClass::DefaultCmdHandler = NULL;
 //	DialogBaseClass
 //
 ////////////////////////////////////////////////////////////////
-DialogBaseClass::DialogBaseClass (int res_id)	:
-	DialogResID (res_id),
-	AreControlsHidden (false),
-	LastFocusControl (NULL),
-	LastMouseClickTime (0),
-	IsVisible (true),
-	IsRunning (false)
+DialogBaseClass::DialogBaseClass( int res_id ) :
+	DialogResID( res_id ),
+	AreControlsHidden( false ),
+	LastFocusControl( NULL ),
+	LastMouseClickTime( 0 ),
+	IsVisible( true ),
+	IsRunning( false )
 {
-	return ;
+	return;
 }
 
 
@@ -106,10 +106,9 @@ DialogBaseClass::DialogBaseClass (int res_id)	:
 //	~DialogBaseClass
 //
 ////////////////////////////////////////////////////////////////
-DialogBaseClass::~DialogBaseClass (void)
-{
-	Free_Controls ();
-	return ;
+DialogBaseClass::~DialogBaseClass(void){
+	Free_Controls();
+	return;
 }
 
 
@@ -118,9 +117,7 @@ DialogBaseClass::~DialogBaseClass (void)
 //	Start_Dialog
 //
 ////////////////////////////////////////////////////////////////
-void
-DialogBaseClass::Start_Dialog (void)
-{
+void DialogBaseClass::Start_Dialog(void){
 	int dlg_width = 0;
 	int dlg_height = 0;
 	DynamicVectorClass<ControlDefinitionStruct> control_list;
@@ -254,12 +251,12 @@ DialogBaseClass::Start_Dialog (void)
 			//
 			//	Set the generic control information
 			//
-			control->Set_Parent (this);
-			control->Set_Text (info.title);
-			control->Set_Style (info.style);
-			control->Set_ID (info.id);
+			control->Set_Parent( this );
+			control->Set_Text( info.title );
+			control->Set_Style( info.style );
+			control->Set_ID( info.id );
 
-			int ctrl_width		= int((((float)info.cx) / RES_SCREEN_WIDTH) * screen_rect.Width ());
+			int ctrl_width = int((((float)info.cx) / RES_SCREEN_WIDTH) * screen_rect.Width ());
 			int ctrl_height	= int((((float)info.cy) / RES_SCREEN_HEIGHT) * screen_rect.Height ());
 
 			//

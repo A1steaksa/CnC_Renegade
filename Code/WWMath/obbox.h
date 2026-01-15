@@ -70,53 +70,54 @@ class PlaneClass;
 ** the bounding box you could use this equation:
 ** Vector3 corner = Center + Basis * Extent;
 */
-class OBBoxClass
-{
+class OBBoxClass {
 public:
 
-	OBBoxClass(void) { }
+	OBBoxClass(void){
+	}
 
-	OBBoxClass(const OBBoxClass & that) :
-		Basis(that.Basis),
-		Center(that.Center),
-		Extent(that.Extent)
-	{ }
+	OBBoxClass( const OBBoxClass& that ):
+		Basis( that.Basis ), Center( that.Center ), Extent( that.Extent )
+	{
+	}
 
-	OBBoxClass(const Vector3 & center,const Vector3 & extent) : 
-		Basis(1),
-		Center(center),
-		Extent(extent)
-	{ }
+	OBBoxClass(const Vector3 & center,const Vector3 & extent):
+		Basis( 1 ), Center( center ), Extent( extent )
+	{
+	}
 	
-	OBBoxClass(const Vector3 & center,const Vector3 & extent,const Matrix3 & basis) :
-		Basis(basis),
-		Center(center),
-		Extent(extent)
-	{ }
+	OBBoxClass(const Vector3& center, const Vector3& extent, const Matrix3& basis ):
+		Basis( basis ), Center( center ), Extent( extent )
+	{
+	}
 
-	OBBoxClass(const Vector3 * points, int num_points);
+	OBBoxClass( const Vector3* points, int num_points );
 
-	bool operator== (const OBBoxClass &src);
-	bool operator!= (const OBBoxClass &src);
+	bool operator ==( const OBBoxClass& src );
+	bool operator !=( const OBBoxClass& src );
 
-	void		Init_From_Box_Points(Vector3 * points,int num_points);
-	void		Init_Random(float min_extent = 0.5f,float max_extent = 1.0f);
-	float		Project_To_Axis(const Vector3 & axis) const;
-	float		Volume(void) const { return 2.0*Extent.X * 2.0*Extent.Y * 2.0*Extent.Z; }
-	void		Compute_Point(float params[3],Vector3 * set_point) const;
-	void		Compute_Axis_Aligned_Extent(Vector3 * set_extent) const;
+	void Init_From_Box_Points( Vector3* points, int num_points );
+	void Init_Random( float min_extent = 0.5f, float max_extent = 1.0f );
+	float Project_To_Axis( const Vector3& axis ) const;
+	
+	float Volume(void) const {
+		return 2.0 * Extent.X * 2.0 * Extent.Y * 2.0 * Extent.Z;
+	}
+
+	void Compute_Point( float params[3], Vector3* set_point ) const;
+	void Compute_Axis_Aligned_Extent( Vector3* set_extent ) const;
 
 	Matrix3	Basis;
 	Vector3	Center;
 	Vector3	Extent;
 
-	static void	Transform(const Matrix3D & tm,const OBBoxClass & in,OBBoxClass * out);
+	static void	Transform( const Matrix3D& tm, const OBBoxClass& in, OBBoxClass* out );
 };
 
 // Test functions: slow, easy to understand version of box intersection code :)
-bool Oriented_Boxes_Intersect(const OBBoxClass & box0,const OBBoxClass & box1);
-bool Oriented_Boxes_Collide(const OBBoxClass & box0,const Vector3 & v0,const OBBoxClass & box1,const Vector3 & v1,float dt);
-bool Oriented_Box_Intersects_Tri(const OBBoxClass & box,const TriClass & tri);
+bool Oriented_Boxes_Intersect( const OBBoxClass& box0, const OBBoxClass& box1 );
+bool Oriented_Boxes_Collide( const OBBoxClass& box0, const Vector3& v0, const OBBoxClass& box1, const Vector3& v1, float dt );
+bool Oriented_Box_Intersects_Tri( const OBBoxClass& box, const TriClass& tri );
 
 
 /***********************************************************************************************
@@ -131,8 +132,7 @@ bool Oriented_Box_Intersects_Tri(const OBBoxClass & box,const TriClass & tri);
  * HISTORY:                                                                                    *
  *   2/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-inline float OBBoxClass::Project_To_Axis(const Vector3 & axis) const
-{
+inline float OBBoxClass::Project_To_Axis(const Vector3 & axis) const {
 	float x = Extent[0] * Vector3::Dot_Product(axis,Vector3(Basis[0][0],Basis[1][0],Basis[2][0]));
 	float y = Extent[1] * Vector3::Dot_Product(axis,Vector3(Basis[0][1],Basis[1][1],Basis[2][1]));
 	float z = Extent[2] * Vector3::Dot_Product(axis,Vector3(Basis[0][2],Basis[1][2],Basis[2][2]));
@@ -154,19 +154,13 @@ inline float OBBoxClass::Project_To_Axis(const Vector3 & axis) const
  * HISTORY:                                                                                    *
  *   2/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-inline void OBBoxClass::Transform
-(
-	const Matrix3D &		tm,
-	const OBBoxClass &	in,
-	OBBoxClass *			out
-)
-{
-	WWASSERT(out);
-	WWASSERT(out!=&in);
+inline void OBBoxClass::Transform( const Matrix3D& tm, const OBBoxClass& in, OBBoxClass* out ){
+	WWASSERT( out );
+	WWASSERT( out != in& );
 
 	out->Extent = in.Extent;
-	Matrix3D::Transform_Vector(tm,in.Center,&(out->Center));
-	Matrix3::Multiply(tm,in.Basis,&(out->Basis));
+	Matrix3D::Transform_Vector( tm, in.Center, &(out->Center) );
+	Matrix3::Multiply( tm, in.Basis, &(out->Basis) );
 }
 
 
@@ -186,15 +180,14 @@ inline void OBBoxClass::Transform
  * HISTORY:                                                                                    *
  *   4/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-inline void OBBoxClass::Compute_Point(float params[3],Vector3 * set_point) const
-{
+inline void OBBoxClass::Compute_Point( float params[3], Vector3* set_point ) const {
 	Vector3 point = Extent;
 	point.X *= params[0];
 	point.Y *= params[1];
 	point.Z *= params[2];
 
-	Matrix3::Rotate_Vector(Basis,point,set_point);
-	Vector3::Add(Center,*set_point,set_point);
+	Matrix3::Rotate_Vector( Basis, point, set_point );
+	Vector3::Add( Center, set_point*, set_point );
 }
 
 
@@ -211,8 +204,7 @@ inline void OBBoxClass::Compute_Point(float params[3],Vector3 * set_point) const
  * HISTORY:                                                                                    *
  *   11/15/99   gth : Created.                                                                 *
  *=============================================================================================*/
-inline void OBBoxClass::Compute_Axis_Aligned_Extent(Vector3 * set_extent) const
-{
+inline void OBBoxClass::Compute_Axis_Aligned_Extent(Vector3 * set_extent) const {
 	WWASSERT(set_extent != NULL);
 
 	// x extent is the box projected onto the x axis
@@ -242,8 +234,7 @@ inline void OBBoxClass::Compute_Axis_Aligned_Extent(Vector3 * set_extent) const
  * HISTORY:                                                                                    *
  *   6/21/00    PDS : Created.                                                                 *
  *=============================================================================================*/
-inline bool OBBoxClass::operator== (const OBBoxClass &src)
-{
+inline bool OBBoxClass::operator== (const OBBoxClass &src){
 	return (Center == src.Center) && (Extent == src.Extent) && (Basis == src.Basis);
 }
 
@@ -260,9 +251,8 @@ inline bool OBBoxClass::operator== (const OBBoxClass &src)
  * HISTORY:                                                                                    *
  *   6/21/00    PDS : Created.                                                                 *
  *=============================================================================================*/
-inline bool OBBoxClass::operator!= (const OBBoxClass &src)
-{
-	return (Center != src.Center) || (Extent != src.Extent) && (Basis == src.Basis);
+inline bool OBBoxClass::operator !=( const OBBoxClass& src ){
+	return ( Center != src.Center ) || ( Extent != src.Extent ) && ( Basis == src.Basis );
 }
 
 #endif

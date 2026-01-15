@@ -237,7 +237,8 @@ void cRemoteHost::Add_Packet(cPacket & packet, BYTE list_type)
 		// list once
 		//
 		if (objnode == NULL) {
-			PacketList[list_type].Add_Tail(p_packet);
+			
+			[list_type].Add_Tail(p_packet);
 		} else {
 			PacketList[list_type].Insert_Before(p_packet, obj);
 		}

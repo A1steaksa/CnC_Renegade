@@ -491,7 +491,6 @@ long FAR PASCAL Main_Window_Proc( HWND hwnd, UINT message, WPARAM wParam, LPARAM
 		** getch()
 		*/
 		case WM_CHAR:
-			//Debug_Say(("WM_CHAR %d\n", wParam));
 			Input::Console_Add_Key( wParam );
 			break;
 
@@ -534,48 +533,10 @@ long FAR PASCAL Main_Window_Proc( HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			}
 			break;
 
-// Denzil - Using WM_xxxFOCUS messages to switch to windowed / fullscreen fails.
-#if(0)
-		case WM_KILLFOCUS:
-		{
-			if (WW3D::Is_Initted ()) {
-
-				// Get the current state of the redendering device
-				int width = 0;
-				int height = 0;
-				int bits = 0;
-				bool bwindowed = false;
-				WW3D::Get_Device_Resolution (width, height, bits, bwindowed);
-
-				// If we are running fullscreen, then toggle to 'windowed'
-				// and minimze the window.
-				if (bwindowed == false) {
-					//Debug_Say(("WM_KILLFOCUS minimize"));
-					WW3D::Set_Device_Resolution (-1, -1, -1, true);
-					::ShowWindow (hwnd, SW_MINIMIZE);
-					_reset = true;
-				}
-			}
-		}
-		break;
-
-		case WM_SETFOCUS:
-
-			// If we need to reset the app to 'fullscreen' mode then
-			// do so an restore the window.
-			if (_reset == true) {
-				WW3D::Set_Device_Resolution (-1, -1, -1, false);
-				::ShowWindow (hwnd, SW_RESTORE);
-				_reset = false;
-			}
-			break;
-#endif
-
 		case WM_COMMAND:
 			if (LOWORD (wParam) == IDM_TOGGLE_FULLSCREEN) {
-
 				// Ask WW3D to toggle the fullscreen mode for us.
-				WW3D::Toggle_Windowed ();
+				WW3D::Toggle_Windowed();
 			}
 
 			break;

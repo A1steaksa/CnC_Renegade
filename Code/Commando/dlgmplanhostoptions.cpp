@@ -70,12 +70,12 @@
 //
 ////////////////////////////////////////////////////////////////
 MPLanHostOptionsMenuClass::MPLanHostOptionsMenuClass (void)	:
-	MenuDialogClass (IDD_MP_LAN_HOST_OPTIONS),
-	mStartTheGame (false),
-	mClanID (0),
-	MapCycleDialog (NULL)
+	MenuDialogClass(IDD_MP_LAN_HOST_OPTIONS),
+	mStartTheGame(false),
+	mClanID(0),
+	MapCycleDialog(NULL)
 {
-	return ;
+	return;
 }
 
 

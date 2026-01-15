@@ -71,22 +71,27 @@
 class SphereClass
 {
 public:
-	inline SphereClass(void) { };
-	inline SphereClass(const Vector3 & center,float radius) { Init(center,radius); }
-	inline SphereClass(const Vector3 & center,const SphereClass & s0);
-	inline SphereClass(const Vector3 *Position, const int VertCount);
+	inline SphereClass(void) {
+	};
 
-	inline void Init(const Vector3 & pos,float radius);
-	inline void Re_Center(const Vector3 & center);
-	inline void Add_Sphere(const SphereClass & s);
-	inline void Transform(const Matrix3D & tm);
+	inline SphereClass( const Vector3& center, float radius ){
+		Init(center,radius);
+	}
+	
+	inline SphereClass( const Vector3& center, const SphereClass& s0 );
+	inline SphereClass( const Vector3* Position, const int VertCount );
+
+	inline void Init( const Vector3& pos, float radius );
+	inline void Re_Center( const Vector3& center );
+	inline void Add_Sphere( const SphereClass& s );
+	inline void Transform( const Matrix3D& tm );
 	inline float Volume(void) const;
 	
-	inline SphereClass & operator += (const SphereClass & s);
-	inline SphereClass & operator *= (const Matrix3D & m);
+	inline SphereClass& operator +=( const SphereClass& s );
+	inline SphereClass& operator *=( const Matrix3D& m );
 
 	Vector3	Center;
-	float		Radius;
+	float Radius;
 };
 
 

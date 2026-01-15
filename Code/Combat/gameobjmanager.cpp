@@ -248,11 +248,9 @@ void GameObjManager::Destroy_All()		// Destroy each object in the list
 **	GameObjectManager::Update_Control()
 ** This routine allows each SmartGameObject to generate input controls
 */
-int	GameObjManager::Generate_Control()
-{
+int	GameObjManager::Generate_Control(){
 	SLNode<SmartGameObj> *objnode;
-	for (	objnode = SmartGameObjList.Head(); objnode; objnode = objnode->Next()) {
-
+	for( objnode = SmartGameObjList.Head(); objnode; objnode = objnode->Next() ){
 		// Don't genreate_control when cinematic frozen
 		if ( Is_Cinematic_Freeze_Active() && objnode->Data()->Is_Cinematic_Freeze_Enabled() ) {
 			continue;

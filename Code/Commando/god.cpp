@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 //
 // Filename:     god.cpp
 // Author:       Tom Spencer-Smith
@@ -47,9 +29,7 @@
 #include "specialbuilds.h"
 #include "demosupport.h"
 
-/*
-**
-*/
+
 typedef enum {
 	GOD_STATE_UNINITIALIZED,
 	GOD_STATE_MULTIPLAYER,
@@ -61,19 +41,18 @@ typedef enum {
 
 } GodState;
 
-int		cGod::State		= GOD_STATE_UNINITIALIZED;
-InventoryClass	cGod::LevelStartInventory;
+int cGod::State		= GOD_STATE_UNINITIALIZED;
+InventoryClass cGod::LevelStartInventory;
 
-//-----------------------------------------------------------------------------
-enum	{
+
+enum {
 	CHUNKID_VARIABLES = 112374,
 
 	MICROCHUNK_STATE = 1,
 };
 
-//-----------------------------------------------------------------------------
-bool cGod::Save(ChunkSaveClass & csave)
-{
+
+bool cGod::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk(CHUNKID_VARIABLES);
 	WRITE_MICRO_CHUNK(csave, MICROCHUNK_STATE, State);
 	csave.End_Chunk();
@@ -110,23 +89,20 @@ bool cGod::Load(ChunkLoadClass &cload)
 
 
 //-----------------------------------------------------------------------------
-void cGod::Think(void)
-{
-	WWASSERT(cNetwork::I_Am_Server());
+void cGod::Think(void){
+	WWASSERT( cNetwork::I_Am_Server() );
 
-	//if (The_Game()->IsIntermission.Is_True()) {
-	WWASSERT(PTheGameData != NULL);
-	if (The_Game()->IsIntermission.Is_True() ||
-		 cPlayerManager::Get_Player_Object_List()->Head() == NULL) {
+	WWASSERT( PTheGameData != NULL );
+	if( The_Game()->IsIntermission.Is_True() || cPlayerManager::Get_Player_Object_List()->Head() == NULL ){
 		return;
 	}
 
-	if ( State == GOD_STATE_UNINITIALIZED ) {
+	if( State == GOD_STATE_UNINITIALIZED ){
 		//XXX
 		State = ( IS_MISSION ) ? GOD_STATE_SINGLE_INIT : GOD_STATE_MULTIPLAYER;
 	}
 
-	if ( State == GOD_STATE_SINGLE_INIT ) {
+	if( State == GOD_STATE_SINGLE_INIT ){
 
 		WWASSERT( cPlayerManager::Get_Player_Object_List()->Head() != NULL );
 		// Create a Commando for the Player
@@ -142,7 +118,7 @@ void cGod::Think(void)
 	}
 
 	// This code may need to get cleaned up
-	if ( State == GOD_STATE_SINGLE_RUNNING ) {
+	if( State == GOD_STATE_SINGLE_RUNNING ){
 		//If we just loaded, we may have a play and a solder, but they will not be linked.
 		if (cPlayerManager::Get_Player_Object_List() != NULL &&
 			 cPlayerManager::Get_Player_Object_List()->Head() != NULL ) {
@@ -280,19 +256,16 @@ void cGod::Create_Ai_Player(void)
 }
 
 //-----------------------------------------------------------------------------
-SoldierGameObj * cGod::Create_Commando(int client_id, int player_type/*, int model_num*/)
-{
-   WWASSERT(cNetwork::I_Am_Server());
-	WWASSERT(player_type >= PLAYERTYPE_NEUTRAL && player_type <= PLAYERTYPE_LAST);
+SoldierGameObj* cGod::Create_Commando( int client_id, int player_type ){
+	WWASSERT( cNetwork::I_Am_Server() );
+	WWASSERT( player_type >= PLAYERTYPE_NEUTRAL && player_type <= PLAYERTYPE_LAST );
 
 	WWASSERT(PTheGameData != NULL);
 
 	StringClass preset_name;
-	preset_name.Format("Commando");
+	preset_name.Format( "Commando" );
 
-	if (IS_MISSION) {
-
-#ifndef MULTIPLAYERDEMO
+	if( IS_MISSION ){
 		SpawnerClass * p_spawner = SpawnManager::Get_Primary_Spawner();
 		if (p_spawner != NULL) {
 			const DynamicVectorClass<int>	& def_list = p_spawner->Get_Definition().Get_Spawn_Definition_ID_List();
@@ -302,13 +275,12 @@ SoldierGameObj * cGod::Create_Commando(int client_id, int player_type/*, int mod
 				preset_name.Format("%s", p_def->Get_Name());
 			}
 		}
-#endif // !MULTIPLAYERDEMO
 
-	} else if (The_Game()->Is_Cnc() || The_Game()->Is_Skirmish()) {
-		if (player_type == PLAYERTYPE_NOD) {
-			preset_name.Format("CnC_Nod_Minigunner_0");
-		} else {
-			preset_name.Format("CnC_GDI_MiniGunner_0");
+	}else if( The_Game()->Is_Cnc() || The_Game()->Is_Skirmish() ){
+		if( player_type == PLAYERTYPE_NOD ){
+			preset_name.Format( "CnC_Nod_Minigunner_0" );
+		}else{
+			preset_name.Format( "CnC_GDI_MiniGunner_0" );
 		}
 	}
 
@@ -385,28 +357,22 @@ SoldierGameObj * cGod::Create_Commando(int client_id, int player_type/*, int mod
 		//	Let the cheat manager apply its cheats to the new player
 		//
 		CheatMgrClass::Get_Instance()->Apply_Cheats();
-
-
-#ifdef WWDEBUG
-		Reinitialize_Ai_On_Star();
-#endif // WWDEBUG
 	}
 
 	return p_soldier;
 }
 
-//-----------------------------------------------------------------------------
-SoldierGameObj * cGod::Create_Commando(cPlayer * p_player)
-{
-   WWASSERT(cNetwork::I_Am_Server());
-	WWASSERT(p_player != NULL);
 
-	int client_id		= p_player->Get_Id();
+SoldierGameObj * cGod::Create_Commando( cPlayer* p_player ){
+	WWASSERT( cNetwork::I_Am_Server() );
+	WWASSERT( p_player != NULL );
+
+	int client_id = p_player->Get_Id();
 	int player_type	= p_player->Get_Player_Type();
-	//int model_num		= p_player->Get_Model();
 
-	return Create_Commando(client_id, player_type/*, model_num*/);
+	return Create_Commando( client_id, player_type );
 }
+
 
 //-----------------------------------------------------------------------------
 void cGod::Create_Grunt(Vector3 & pos)
@@ -417,48 +383,14 @@ void cGod::Create_Grunt(Vector3 & pos)
 
 	WWASSERT(PTheGameData != NULL);
 	int player_type	= The_Game()->Choose_Player_Type(NULL, -1, true);
-	//int model_num		= rand() % NUM_MP_PLAYABLE_MODELS;
 
-	SoldierGameObj * p_soldier = Create_Commando(
-		client_id, player_type/*, model_num*/);
-	WWASSERT(p_soldier != NULL);
+	SoldierGameObj* p_soldier = Create_Commando( client_id, player_type );
+	WWASSERT( p_soldier != NULL );
 
 	p_soldier->Set_Position(pos);
 	p_soldier->Perturb_Position();
 }
 
-//-----------------------------------------------------------------------------
-#ifdef WWDEBUG
-void cGod::Reinitialize_Ai_On_Star(void)
-{
-	WWASSERT(cNetwork::I_Am_Client());
-
-	SmartGameObj * p_my_soldier = GameObjManager::Find_Soldier_Of_Client_ID(cNetwork::Get_My_Id());
-
-	if (p_my_soldier != NULL) {
-
-		//
-		// Remove any innate observers
-		//
-		const GameObjObserverList & observer_list = p_my_soldier->Get_Observers();
-		for (int index = 0; index < observer_list.Count(); index++) {
-			if (!stricmp(observer_list[index]->Get_Name(), "Innate Soldier")) {
-				p_my_soldier->Remove_Observer(observer_list[index]);
-				break; // probably not safe to continue
-			}
-		}
-
-		cPlayer * p_player = cNetwork::Get_My_Player_Object();
-		WWASSERT(p_player != NULL);
-
-		ActionParamsStruct parameters;
-		WWASSERT(p_my_soldier->Get_Action() != NULL);
-		p_my_soldier->Get_Action()->Follow_Input(parameters);
-
-		CombatManager::Set_Is_Star_Determining_Target(true);
-	}
-}
-#endif // WWDEBUG
 
 //-----------------------------------------------------------------------------
 Matrix3D		_StarRespawnTM;
@@ -474,8 +406,7 @@ void cGod::Exit( void )
 	State = GOD_STATE_EXITING;
 }
 
-void cGod::Star_Killed( void )
-{
+void cGod::Star_Killed(void){
 	if ( State == GOD_STATE_SINGLE_RUNNING ) {
 		State = GOD_STATE_SINGLE_DEAD;
 		WWDEBUG_SAY(( "Star Killed\n" ));
@@ -515,10 +446,8 @@ void cGod::Respawn( void )
 	State = GOD_STATE_SINGLE_RUNNING;
 }
 
-void cGod::Restart( void )
-{
+void cGod::Restart( void ){
 	if ( State == GOD_STATE_SINGLE_DEAD ) {
-//		WWASSERT( State == GOD_STATE_SINGLE_DEAD );
 
 		State = GOD_STATE_SINGLE_RUNNING;	// Incase we get a second call!
 		((CombatGameModeClass *)GameModeManager::Find("Combat"))->Core_Restart();

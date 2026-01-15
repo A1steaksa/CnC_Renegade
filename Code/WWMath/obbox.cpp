@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -52,8 +34,6 @@
 #include "plane.h"
 #include "quat.h"
 #include <assert.h>
-//#include <stdlib.h>
-
 
 /***********************************************************************************************
  * OBBoxClass::OBBoxClass -- Constructor that computes the box for a set of points             *
@@ -67,119 +47,8 @@
  * HISTORY:                                                                                    *
  *   2/4/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-OBBoxClass::OBBoxClass(const Vector3 * /*points*/, int /*n*/)
-{
-	// TODO: IMPLEMENT THIS!!!
+OBBoxClass::OBBoxClass( const Vector3* /*points*/, int /*n*/ ){
 	assert(0);
-
-#if 0	
-	int i;
-
-	// compute mean and covariances of points
-	float xsum = 0.0f, ysum = 0.0f, zsum = 0.0f;;
-	float xxsum = 0.0f, xysum = 0.0f, xzsum = 0.0f;
-	float yysum = 0.0f, yzsum = 0.0f, zzsum = 0.0f;
-
-	for (i = 0; i < n; i++)
-	{
-		xsum += points[i].X;
-		ysum += points[i].Y;
-		zsum += points[i].Z;
-
-		xxsum += points[i].X * points[i].X;
-		xysum += points[i].X * points[i].Y;
-		xzsum += points[i].X * points[i].Z;
-
-		yysum += points[i].Y * points[i].Y;
-		yzsum += points[i].Y * points[i].Z;
-		zzsum += points[i].Z * points[i].Z;
-	}
-
-	float xmean = xsum/n;
-	float ymean = ysum/n;
-	float zmean = zsum/n;
-	float xxcov = xxsum/n - xmean*xmean;
-	float xycov = xysum/n - xmean*ymean;
-	float xzcov = xzsum/n - xmean*zmean;
-	float yycov = yysum/n - ymean*ymean;
-	float yzcov = yzsum/n - ymean*zmean;
-	float zzcov = zzsum/n - zmean*zmean;
-
-	// compute eigenvectors for covariance matrix,
-	// these will be the axes.
-	mgcEigen eig(3);
-	eig.Matrix(0,0) = xxcov;
-	eig.Matrix(0,1) = xycov;
-	eig.Matrix(0,2) = xzcov;
-	eig.Matrix(1,0) = xycov;
-	eig.Matrix(1,1) = yycov;
-	eig.Matrix(1,2) = yzcov;
-	eig.Matrix(2,0) = xzcov;
-	eig.Matrix(2,1) = yzcov;
-	eig.Matrix(2,2) = zzcov;
-
-	eig.EigenStuff3();
-	Point3 U =
-	{
-		eig.Eigenvector(0,0),
-		eig.Eigenvector(1,0),
-		eig.Eigenvector(2,0)
-	};
-	Point3 V =
-	{
-		eig.Eigenvector(0,1),
-		eig.Eigenvector(1,1),
-		eig.Eigenvector(2,1)
-	};
-	Point3 W =
-	{
-		eig.Eigenvector(0,2),
-		eig.Eigenvector(1,2),
-		eig.Eigenvector(2,2)
-	};
-
-	// box center is the mean of the distribution
-	box.center.x = xmean;
-	box.center.y = ymean;
-	box.center.z = zmean;
-
-
-	// Box axes are the eigenvectors of the covariance matrix with
-	// adjusted lengths to enclose the points.  If U, V, and W are the
-	// eigenvectors, C is the center of the box, and X is a point in
-	// the input list, then X = C + a*U + b*V + c*W.  The box extent is
-	// determined by max|a|, max|b|, and max|c|.  The box axes are then
-	// defined to be (max|a|)*U and (max|b|)*V.  Note that since U and V
-	// are unit length and orthogonal, a = Dot(U,X-C), b = Dot(V,X-C),
-	// and c = Dot(W,X-C).
-	float amax = 0.0f, bmax = 0.0f, cmax = 0.0f;
-	for (i = 0; i < n; i++)
-	{
-		float dx = pt[i].x - box.center.x;
-		float dy = pt[i].y - box.center.y;
-		float dz = pt[i].z - box.center.z;
-		float absdot = float(WWMath::Fabs(U.x*dx+U.y*dy+U.z*dz));
-		if ( absdot > amax )
-			amax = absdot;
-		absdot = float(WWMath::Fabs(V.x*dx+V.y*dy+V.z*dz));
-		if ( absdot > bmax )
-			bmax = absdot;
-		absdot = float(WWMath::Fabs(W.x*dx+W.y*dy+W.z*dz));
-		if ( absdot > cmax )
-			cmax = absdot;
-	}
-
-	box.axis[0].x = amax*U.x;
-	box.axis[0].y = amax*U.y;
-	box.axis[0].z = amax*U.z;
-	box.axis[1].x = bmax*V.x;
-	box.axis[1].y = bmax*V.y;
-	box.axis[1].z = bmax*V.z;
-	box.axis[2].x = cmax*W.x;
-	box.axis[2].y = cmax*W.y;
-	box.axis[2].z = cmax*W.z;
-
-#endif
 }
 
 /***********************************************************************************************
@@ -194,9 +63,8 @@ OBBoxClass::OBBoxClass(const Vector3 * /*points*/, int /*n*/)
  * HISTORY:                                                                                    *
  *   2/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void OBBoxClass::Init_From_Box_Points(Vector3 * points,int num)
-{
-	int i,j;
+void OBBoxClass::Init_From_Box_Points( Vector3* points, int num ){
+	int i, j;
 
 	/*
 	** This function assumes that you pass in 8 points which are the
@@ -281,8 +149,7 @@ void OBBoxClass::Init_From_Box_Points(Vector3 * points,int num)
  * HISTORY:                                                                                    *
  *   4/21/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void OBBoxClass::Init_Random(float min_extent,float max_extent)
-{
+void OBBoxClass::Init_Random( float min_extent, float max_extent ){
 	Center.Set(0,0,0);
 	
 	Extent.X = min_extent + WWMath::Random_Float() * (max_extent - min_extent);
@@ -314,28 +181,25 @@ void OBBoxClass::Init_Random(float min_extent,float max_extent)
  * HISTORY:                                                                                    *
  *   4/7/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-bool Oriented_Boxes_Intersect_On_Axis
-(
-	const OBBoxClass & box0,
-	const OBBoxClass & box1,
-	const Vector3 & axis
-)
-{
-	float ra,rb,rsum;
+bool Oriented_Boxes_Intersect_On_Axis( const OBBoxClass& box0, const OBBoxClass& box1, const Vector3& axis ){
+	float ra, rb, rsum;
 
-	if (axis.Length2() < WWMATH_EPSILON) return true;
+	if( axis.Length2() < WWMATH_EPSILON){
+		return true;
+	}
 
-	ra = box0.Project_To_Axis(axis);
-	rb = box1.Project_To_Axis(axis);
-	rsum = WWMath::Fabs(ra) + WWMath::Fabs(rb);
+	ra = box0.Project_To_Axis( axis );
+	rb = box1.Project_To_Axis( axis );
+	rsum = WWMath::Fabs( ra ) + WWMath::Fabs( rb );
 
 	// project the center distance onto the line:
 	Vector3 C = box1.Center - box0.Center;
 	float cdist = Vector3::Dot_Product(axis,C);
 
-	if ((cdist > rsum) || (cdist < -rsum)) {
+	if( ( cdist > rsum ) || ( cdist < -rsum ) ){
 		return false;
 	}
+
 	return true;
 }
 
@@ -352,14 +216,9 @@ bool Oriented_Boxes_Intersect_On_Axis
  * HISTORY:                                                                                    *
  *   4/7/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-bool Oriented_Boxes_Intersect
-(
-	const OBBoxClass & box0,
-	const OBBoxClass & box1
-)
-{
+bool Oriented_Boxes_Intersect( const OBBoxClass& box0, const OBBoxClass& box1 ){
 	Vector3 axis;
-	Vector3 A[3],B[3];
+	Vector3 A[3], B[3];
 
 	// vectors for the axis directions of the two boxes in world space
 	A[0].Set(box0.Basis[0][0],box0.Basis[1][0],box0.Basis[2][0]);
@@ -433,16 +292,14 @@ bool Oriented_Boxes_Intersect
  * HISTORY:                                                                                    *
  *   4/7/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-bool Oriented_Boxes_Collide_On_Axis
-(
-	const OBBoxClass & box0,
-	const Vector3 & v0,
-	const OBBoxClass & box1,
-	const Vector3 & v1,
-	const Vector3 & axis,
+bool Oriented_Boxes_Collide_On_Axis(
+	const OBBoxClass& box0,
+	const Vector3& v0,
+	const OBBoxClass& box1,
+	const Vector3& v1,
+	const Vector3& axis,
 	float dt
-)
-{
+){
 	float ra,rb,rsum;
 
 	if (axis.Length2() < WWMATH_EPSILON) return true;
@@ -477,15 +334,13 @@ bool Oriented_Boxes_Collide_On_Axis
  * HISTORY:                                                                                    *
  *   4/7/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-bool Oriented_Boxes_Collide
-(
-	const OBBoxClass & box0,
-	const Vector3 & v0,
-	const OBBoxClass & box1,
-	const Vector3 & v1,
+bool Oriented_Boxes_Collide(
+	const OBBoxClass& box0,
+	const Vector3& v0,
+	const OBBoxClass& box1,
+	const Vector3& v1,
 	float dt
-)
-{
+){
 	bool intersect = true;
 
 	// variables for holding the separating axis and the projected distances
@@ -733,8 +588,7 @@ bool Oriented_Box_Intersects_Tri_On_Axis(const OBBoxClass & box,const TriClass &
  * HISTORY:                                                                                    *
  *   4/7/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-bool Oriented_Box_Intersects_Tri(const OBBoxClass & box,const TriClass & tri)
-{
+bool Oriented_Box_Intersects_Tri( const OBBoxClass& box, const TriClass& tri ){
 	Vector3 axis;
 
 	// vectors for the axis directions of the two boxes in world space

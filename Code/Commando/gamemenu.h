@@ -48,24 +48,36 @@
 /*
 ** Game Mode to do menus
 */
-class	MenuGameModeClass2 : public GameModeClass {
-
+class MenuGameModeClass2 : public GameModeClass {
 public:
 	MenuGameModeClass2 (void);
 
-	virtual	const char *Name()	{ return "Menu"; }	// the name of this mode
-	virtual	void	Init();		 	// called when the mode is activated
-	virtual	void 	Shutdown(); 	// called when the mode is deactivated
-	virtual	void 	Think();			// called each time through the main loop
-	virtual	void 	Render();		// called each time through the main loop
+	// The name of this mode
+	virtual	const char* Name(){
+		return "Menu";
+	}
 
-	virtual	void Activate();		// activates the mode
-	virtual	void Deactivate();	// deactivates the mode (don't shutdown until safe)
+	// Called when the mode is activated
+	virtual	void Init();
+
+	// Called when the mode is deactivated
+	virtual	void Shutdown();
+
+	// Called each time through the main loop
+	virtual	void Think();
+
+	// Called each time through the main loop
+	virtual	void Render();
+
+	// Activates the mode
+	virtual	void Activate();
+
+	// Deactivates the mode (don't shutdown until safe)
+	virtual	void Deactivate();
 
 private:
-	class AudibleSoundClass *	MenuMusic;
+	class AudibleSoundClass* MenuMusic;
 };
-
 
 #endif
 

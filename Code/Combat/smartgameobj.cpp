@@ -447,57 +447,27 @@ void SmartGameObj::Set_Player_Data( PlayerDataClass * player_data )
 
 
 //-----------------------------------------------------------------------------
-void SmartGameObj::Import_Frequent(BitStreamClass & packet)
-{
-   WWASSERT(CombatManager::I_Am_Only_Client());
-	
-	/*TSS091301
-	//
-	//	Update the player data structure from the server
-	//
-	if (PlayerData != NULL) {
-		PlayerData->Import_Frequent( packet );
-	}
-	*/
+void SmartGameObj::Import_Frequent( BitStreamClass& packet ){
+   WWASSERT( CombatManager::I_Am_Only_Client() );
 
-	//
 	//	Import all data from the base classes
-	//
-	ArmedGameObj::Import_Frequent(packet);
+	ArmedGameObj::Import_Frequent( packet );
 
-   //
 	//	Don't import the controller if the player is controlling
 	// this object
-	//
-	if (Is_Controlled_By_Me()) {
-      packet.Flush();
-   } else {
-		Import_Control_Sc(packet);
-   }
+	if( Is_Controlled_By_Me() ){
+		packet.Flush();
+	}else{
+		Import_Control_Sc( packet );
+	}
 
-   WWASSERT(packet.Is_Flushed());
-	return ;
+	WWASSERT( packet.Is_Flushed() );
 }
 
-
-//-----------------------------------------------------------------------------
-void SmartGameObj::Export_Frequent(BitStreamClass & packet)
-{
-	/*TSS091301
-	//
-	//	Send the player data to the client
-	//
-	if (PlayerData != NULL) {
-		PlayerData->Export_Frequent( packet );
-	}
-	*/
-
-	//
-	//	Send data from the base class to the client
-	//
-	ArmedGameObj::Export_Frequent(packet);
-	Export_Control_Sc(packet);
-	return ;
+void SmartGameObj::Export_Frequent( BitStreamClass& packet ){
+	// Send data from the base class to the client
+	ArmedGameObj::Export_Frequent( packet );
+	Export_Control_Sc( packet );
 }
 
 //-----------------------------------------------------------------------------
@@ -513,78 +483,54 @@ void SmartGameObj::Import_State_Cs(BitStreamClass & packet)
 }
 
 //-----------------------------------------------------------------------------
-void SmartGameObj::Generate_Control(void)
-{
-	if (CombatManager::I_Am_Server() && 
-		 (ControlOwner == SERVER_CONTROL_OWNER || !Is_Human_Controlled())) {
-		
+void SmartGameObj::Generate_Control(void){
+	if( CombatManager::I_Am_Server() && ( ControlOwner == SERVER_CONTROL_OWNER || !Is_Human_Controlled() ) ){	
 		Action.Act(); 
 	}
 
-	if (CombatManager::I_Am_Client() && 
-		 ControlOwner == CombatManager::Get_My_Id()) {
+	if( CombatManager::I_Am_Client() && ControlOwner == CombatManager::Get_My_Id() ){
 		
 		Action.Act(); 
 	
-		// 
 		// Notify server 
-		//
-		/*
-		if (PClientControl != NULL && !Is_Delete_Pending()) {
-			PClientControl->Set_Update_Flag(Get_ID());
-		}
-		*/
-
-		//TSS092101
-		if (PClientControl != NULL) {
-			if (Is_Delete_Pending()) {
-				PClientControl->Set_Update_Flag(-1);
-			} else {
-				PClientControl->Set_Update_Flag(Get_ID());
+		if( PClientControl != NULL ){
+			if( Is_Delete_Pending() ){
+				PClientControl->Set_Update_Flag( -1 );
+			}else{
+				PClientControl->Set_Update_Flag( Get_ID() );
 			}
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-bool SmartGameObj::Is_Control_Data_Dirty(cPacket & packet)
-{	
-	//
+bool SmartGameObj::Is_Control_Data_Dirty( cPacket& packet ){	
 	// future optimization
-	//
-
-   return true;
+	return true;
 }
 
-bool SmartGameObj::Has_Player(void)
-{
+bool SmartGameObj::Has_Player(void){
 	// There is a cPlayer object for this smart object
-   return (ControlOwner != SERVER_CONTROL_OWNER);
+	return ( ControlOwner != SERVER_CONTROL_OWNER );
 }
 
-bool SmartGameObj::Is_Human_Controlled(void)
-{
+bool SmartGameObj::Is_Human_Controlled(void){
 	// There is a human cPlayer object for this smart object
-   //return ControlOwner >= 0 && !CombatManager::Player_Is_Afk(ControlOwner);
-   return ControlOwner >= 0;
+	return ControlOwner >= 0;
 }
 
 bool SmartGameObj::Is_Controlled_By_Me(void)
 {
-//	WWASSERT(CombatManager::I_Am_Client());
-	if (!CombatManager::I_Am_Client()) {
+	if( !CombatManager::I_Am_Client() ){
 		return false;
 	}
 
 	SmartGameObj *game_obj = this;
 
-	//
-	//	If this is a vehicle, then passthru to the driver
-	//
-	VehicleGameObj *vehicle = As_VehicleGameObj();
-	if (vehicle != NULL) {
-		SoldierGameObj *driver = vehicle->Get_Driver();
-		if (driver != NULL) {
+	// If this is a vehicle, then passthru to the driver
+	VehicleGameObj* vehicle = As_VehicleGameObj();
+	if( vehicle != NULL ){
+		SoldierGameObj* driver = vehicle->Get_Driver();
+		if( driver != NULL ){
 			game_obj = driver;
 		}
 	}
@@ -716,15 +662,13 @@ void SmartGameObj::Think()
 
 		MovingSoundTimer -= TimeManager::Get_Frame_Seconds();
 		if ( MovingSoundTimer < 0 ) {
-			WWPROFILE("See");
-//			MovingSoundTimer += FreeRandom.Get_Float( 1, 2 );	// sound every 1-2 seconds
 			MovingSoundTimer += FreeRandom.Get_Float( 0.5f, 1 );	// sound every 0.5 - 1 seconds
 
 			// if I have sight, see who I see
 			if ( Is_Enemy_Seen_Enabled() ) {
 				// for all physicalgameobjs
 				SLNode<BaseGameObj> *objnode;
-				for (	objnode = GameObjManager::Get_Game_Obj_List()->Head(); objnode; objnode = objnode->Next()) {
+				for( objnode = GameObjManager::Get_Game_Obj_List()->Head(); objnode; objnode = objnode->Next()) {
 					SmartGameObj *obj = objnode->Data()->As_SmartGameObj();
 					if ( obj ) {
 						if ( obj == this )	continue;
@@ -810,15 +754,15 @@ void	SmartGameObj::Apply_Damage(const OffenseObjectClass & damager, float scale,
 	PhysicalGameObj::Apply_Damage(damager,scale,alternate_skin);
 }
 
-bool	SmartGameObj::Is_Obj_Visible( PhysicalGameObj *obj ) 
-{
+
+bool SmartGameObj::Is_Obj_Visible( PhysicalGameObj *obj ){
 	Vector3 diff = obj->Get_Bullseye_Position();
 
-	Matrix3D	look_tm = Get_Look_Transform();
+	Matrix3D look_tm = Get_Look_Transform();
 	Matrix3D::Inverse_Transform_Vector( look_tm, diff, &diff );
 
 	float dist = diff.Length();
-	if ( dist < Get_Definition().SightRange * GlobalSightRangeScale) {
+	if( dist < Get_Definition().SightRange * GlobalSightRangeScale ){
 		// find view angle
 		diff.Z = 0;
 		diff.Normalize();
@@ -835,22 +779,12 @@ bool	SmartGameObj::Is_Obj_Visible( PhysicalGameObj *obj )
 			CastResultStruct res;
 			LineSegClass ray( me, him );
 			PhysRayCollisionTestClass raytest(ray, &res, BULLET_COLLISION_GROUP);
-{ WWPROFILE( "Cast Ray" );
+
 			PhysicsSceneClass::Get_Instance()->Cast_Ray(raytest);
-}
 
 			Peek_Physical_Object()->Dec_Ignore_Counter();
-
-#if 0
-			if (raytest.Result->StartBad) {
-//				Debug_Say(( "Is_Vis Start Bad\n" ));
-			} else if ( raytest.CollidedPhysObj == obj->Peek_Physical_Object() ) {
-				return true;
-	  		}
-#else
 			return ((raytest.Result->Fraction == 1.0f ) ||
 					 ( raytest.CollidedPhysObj == obj->Peek_Physical_Object() ));
-#endif
 		}
 	}
 	return false;
@@ -1045,9 +979,3 @@ void	SmartGameObj::Reset_Controller( void )
 {
 	Controller.Reset();
 }
-
-		/*
-		CombatManager::Send_Control_Packet(this);
-		CombatManager::Send_State_Packet(this);
-		*/
-

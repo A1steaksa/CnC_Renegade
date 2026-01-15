@@ -37,19 +37,13 @@ const int	TITLE_BORDER_HEIGHT	= 8;
 //	PopupDialogClass
 //
 ////////////////////////////////////////////////////////////////
-PopupDialogClass::PopupDialogClass (int res_id)	:
-	DialogBaseClass (res_id)
-{
-	//
-	//	Configure the renderers
-	//
-	StyleMgrClass::Configure_Renderer (&BackgroundRenderer);
-	StyleMgrClass::Configure_Renderer (&BlackoutRenderer);
-	StyleMgrClass::Assign_Font (&TextRenderer, StyleMgrClass::FONT_HEADER);
+PopupDialogClass::PopupDialogClass( int res_id ) : DialogBaseClass( res_id ){
+	// Configure the renderers
+	StyleMgrClass::Configure_Renderer( BackgroundRenderer& );
+	StyleMgrClass::Configure_Renderer( BlackoutRenderer& );
+	StyleMgrClass::Assign_Font( TextRenderer&, StyleMgrClass::FONT_HEADER );
 
-	//
-	//	Force this renderer to always render
-	//
+	// Force this renderer to always render
 	BlackoutRenderer.Get_Shader ()->Set_Depth_Compare (ShaderClass::PASS_ALWAYS);
 
 	//

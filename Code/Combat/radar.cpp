@@ -64,8 +64,7 @@ const char * RadarManager::Get_Blip_Shape_Type_Name( int index )
 	return names[index];
 }
 
-static	const RectClass &	Scale_UV( const RectClass & uv, float texture_size )
-{
+static const RectClass& Scale_UV( const RectClass & uv, float texture_size ){
 	static RectClass new_uv;
 	new_uv = uv;
 	new_uv.Scale( 1/texture_size );
@@ -73,9 +72,8 @@ static	const RectClass &	Scale_UV( const RectClass & uv, float texture_size )
 }
 
 
-void	RadarManager::Set_Hidden( bool onoff )	
-{ 
-	if ( IsHidden != onoff ) {
+void RadarManager::Set_Hidden( bool onoff ){ 
+	if( IsHidden != onoff ){
 
 		int sound_id = 0;
 		if ( onoff ) {
@@ -92,11 +90,8 @@ void	RadarManager::Set_Hidden( bool onoff )
 	}
 }
 
-/*
-**
-*/
 
-#define		RADAR_TEXTURE		"HUD_MAIN.TGA"
+#define RADAR_TEXTURE "HUD_MAIN.TGA"
 
 extern Vector2 INFO_UV_SCALE;
 extern Vector2 RADAR_RINGS_UV_UL;
@@ -117,8 +112,7 @@ extern Vector2 RADAR_SWEEP_UV_UL;
 extern Vector2 RADAR_SWEEP_UV_LR;
 
 
-void 	RadarManager::Init()
-{
+void RadarManager::Init(){
 	int i;
 
 	BracketObj = NULL;
@@ -128,10 +122,11 @@ void 	RadarManager::Init()
 	Renderer->Set_Coordinate_Range( Render2DClass::Get_Screen_Resolution() ); 
 
 	// Init Colors
-	for ( i = 0; i < NUM_BLIP_COLOR_TYPES; i++ ) {
-		BlipColors[ i ] = 0xFFFFFFFF;
+	for( i = 0; i < NUM_BLIP_COLOR_TYPES; i++ ){
+		BlipColors[i] = 0xFFFFFFFF;
 	}
-	if ( HUDGlobalSettingsDef::Get_Instance() != NULL ) {
+
+	if( HUDGlobalSettingsDef::Get_Instance() != NULL ){
 		BlipColors[ BLIP_COLOR_TYPE_NOD ] =						HUDGlobalSettingsDef::Get_Instance()->Get_Nod_Color().Convert_To_ARGB(); 
 		BlipColors[ BLIP_COLOR_TYPE_GDI ] =						HUDGlobalSettingsDef::Get_Instance()->Get_GDI_Color().Convert_To_ARGB(); 
 		BlipColors[ BLIP_COLOR_TYPE_NEUTRAL ] =					HUDGlobalSettingsDef::Get_Instance()->Get_Neutral_Color().Convert_To_ARGB(); 
@@ -142,32 +137,19 @@ void 	RadarManager::Init()
 		BlipColors[ BLIP_COLOR_TYPE_TERTIARY_OBJECTIVE ] =		HUDGlobalSettingsDef::Get_Instance()->Get_Tertiary_Objective_Color().Convert_To_ARGB(); 
 	}
 
-#if 0
-	const HUDGlobalSettingsDef * settings = HUDGlobalSettingsDef::Get_Instance();
-	float radar_texture_size = settings->RadarTextureSize;
-
-	BlipUV[ BLIP_SHAPE_TYPE_NONE ] =			RectClass( 0,0,0,0 );
-	BlipUV[ BLIP_SHAPE_TYPE_HUMAN ] =		Scale_UV( settings->RadarHumanBlipUV, radar_texture_size );
-	BlipUV[ BLIP_SHAPE_TYPE_VEHICLE ] =		Scale_UV( settings->RadarVehicleBlipUV, radar_texture_size );
-	BlipUV[ BLIP_SHAPE_TYPE_STATIONARY ] =	Scale_UV( settings->RadarStationaryBlipUV, radar_texture_size );
-	BlipUV[ BLIP_SHAPE_TYPE_OBJECTIVE ] =	Scale_UV( settings->RadarObjectiveBlipUV, radar_texture_size );
-	BlipUV[ BLIP_BRACKET ] =					Scale_UV( settings->RadarBlipBracketUV, radar_texture_size );
-	BlipUV[ BLIP_SWEEP ] =						Scale_UV( settings->RadarSweepUV, radar_texture_size );
-#else
-	BlipUV[ BLIP_SHAPE_TYPE_NONE ] =		RectClass( 0,0,0,0 );
-	BlipUV[ BLIP_SHAPE_TYPE_HUMAN ] =		RectClass( RADAR_CIRCLE_UV_UL, RADAR_CIRCLE_UV_LR );
-	BlipUV[ BLIP_SHAPE_TYPE_VEHICLE ] =		RectClass( RADAR_TRIANGLE_UV_UL, RADAR_TRIANGLE_UV_LR );
-	BlipUV[ BLIP_SHAPE_TYPE_STATIONARY ] =	RectClass( RADAR_SQUARE_UV_UL, RADAR_SQUARE_UV_LR );
-	BlipUV[ BLIP_SHAPE_TYPE_OBJECTIVE ] =	RectClass( RADAR_STAR_UV_UL, RADAR_STAR_UV_LR );
-	BlipUV[ BLIP_BRACKET ] =				RectClass( RADAR_BRACKET_UV_UL, RADAR_BRACKET_UV_LR );
-	BlipUV[ BLIP_SWEEP ] =					RectClass( RADAR_SWEEP_UV_UL, RADAR_SWEEP_UV_LR );
+	BlipUV[ BLIP_SHAPE_TYPE_NONE ] 		 = RectClass( 0,0,0,0 );
+	BlipUV[ BLIP_SHAPE_TYPE_HUMAN ] 	 = RectClass( RADAR_CIRCLE_UV_UL, RADAR_CIRCLE_UV_LR );
+	BlipUV[ BLIP_SHAPE_TYPE_VEHICLE ] 	 = RectClass( RADAR_TRIANGLE_UV_UL, RADAR_TRIANGLE_UV_LR );
+	BlipUV[ BLIP_SHAPE_TYPE_STATIONARY ] = RectClass( RADAR_SQUARE_UV_UL, RADAR_SQUARE_UV_LR );
+	BlipUV[ BLIP_SHAPE_TYPE_OBJECTIVE ]	 = RectClass( RADAR_STAR_UV_UL, RADAR_STAR_UV_LR );
+	BlipUV[ BLIP_BRACKET ] 				 = RectClass( RADAR_BRACKET_UV_UL, RADAR_BRACKET_UV_LR );
+	BlipUV[ BLIP_SWEEP ] 				 = RectClass( RADAR_SWEEP_UV_UL, RADAR_SWEEP_UV_LR );
 	BlipUV[ BLIP_SHAPE_TYPE_HUMAN ].Scale( INFO_UV_SCALE );
 	BlipUV[ BLIP_SHAPE_TYPE_VEHICLE ].Scale( INFO_UV_SCALE );
 	BlipUV[ BLIP_SHAPE_TYPE_STATIONARY ].Scale( INFO_UV_SCALE );
 	BlipUV[ BLIP_SHAPE_TYPE_OBJECTIVE ].Scale( INFO_UV_SCALE );
 	BlipUV[ BLIP_BRACKET ].Scale( INFO_UV_SCALE );
 	BlipUV[ BLIP_SWEEP ].Scale( INFO_UV_SCALE );
-#endif
 
 	// Clear radar renderer pointers, these are initialized on demand
 	for (i=0;i<8;++i) {
@@ -179,37 +161,30 @@ void 	RadarManager::Init()
 	HiddenTimer = 0;
 }
 
-/*
-**
-*/
-void 	RadarManager::Shutdown()
-{
-	if ( Renderer ) {
+void RadarManager::Shutdown(){
+	if( Renderer ){
 		delete Renderer;
 		Renderer = NULL;
 	}
 
-	while ( Blips.Count() > 0 ) {
+	while( Blips.Count() > 0 ){
 		int index = Blips.Count() - 1;
-		delete Blips[ index ];
+		delete Blips[index];
 		Blips.Delete( index );
 	}
 
-	for (int i=0;i<8;++i) {
+	for( int i=0; i<8; ++i ){
 		delete CompassRenderers[i];
 		CompassRenderers[i] = NULL;
 	}
 
-
 	Markers.Delete_All();
 
-	IsHidden = false;		// Do this here rather than init, because init is called after load
+	// Do this here rather than init, because init is called after load
+	IsHidden = false;
 }
 
-/*
-**
-*/
-enum	{
+enum {
 	CHUNKID_MANAGER_VARIABLES			=	630001357,
 	CHUNKID_MARKER_ENTRY,
 
@@ -217,11 +192,7 @@ enum	{
 	MICROCHUNKID_HIDDEN_TIMER,
 };
 
-/*
-**
-*/
-bool	RadarManager::Save( ChunkSaveClass &csave )
-{
+bool RadarManager::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_MANAGER_VARIABLES );
 		WRITE_MICRO_CHUNK( csave, 	MICROCHUNKID_IS_HIDDEN,	IsHidden );
 		WRITE_MICRO_CHUNK( csave, 	MICROCHUNKID_HIDDEN_TIMER,	HiddenTimer );
@@ -236,8 +207,7 @@ bool	RadarManager::Save( ChunkSaveClass &csave )
 	return true;
 }
 
-bool	RadarManager::Load( ChunkLoadClass &cload )
-{
+bool RadarManager::Load( ChunkLoadClass& cload ){
 	WWASSERT( Markers.Count() == 0 );
 
 	while (cload.Open_Chunk()) {
@@ -307,19 +277,8 @@ float	RadarManager::Add_Blip( const Vector3 & pos, int shape_type, int color_typ
 			}
 		}
 
-		if ( dist <= RADAR_FADE_STOP ) 
-		{
-#if 0
-			// Find blip bearing
-			float bearing = WWMath::Atan2( screen.Y, screen.X );
-			// find the bering relative to sweep
-			bearing = WWMath::Wrap( bearing - RadarSweep, -DEG_TO_RADF( 360 ), 0 );
-			if ( bearing > -RadarSweepMove*2 ) {
-				intensity = 1.0;		// Ping
-			}
-#else
+		if ( dist <= RADAR_FADE_STOP ){
 			intensity = 1.0;		// Always Ping
-#endif
 
 			float alpha = 1.0f - ((dist - RADAR_FADE_START) / (RADAR_FADE_STOP - RADAR_FADE_START) );
 			alpha = WWMath::Clamp( alpha, 0, 1 );
@@ -361,23 +320,12 @@ float	RadarManager::Add_Blip( const Vector3 & pos, int shape_type, int color_typ
 #define	COMPASS_OFFSET			Vector2( 2, -73 )
 #define	RADAR_Z_RANGE			3
 
-void	RadarManager::Update( const Matrix3D & player_tm, const Vector2 & center )
-{
-	WWPROFILE( "Radar Update" );
-
+void RadarManager::Update( const Matrix3D & player_tm, const Vector2 & center ){
 	OldRadarCenter=RadarCenter;
 	RadarCenter = center;
 
 	RadarTM = player_tm;
 	RadarTM.Pre_Rotate_Z( DEG_TO_RAD( -90 ) );
-
-#if 0
-	RadarSweepMove = TimeManager::Get_Frame_Seconds() * 2;
-	RadarSweep -= RadarSweepMove;
-	if ( RadarSweep < 0 ) {
-		RadarSweep += DEG_TO_RAD( 360 );
-	}
-#endif
 
 	HiddenTimer += TimeManager::Get_Frame_Seconds() * (IsHidden ? 1 : -1);
 	HiddenTimer = WWMath::Clamp( HiddenTimer, 0, 1 );
@@ -404,39 +352,6 @@ void	RadarManager::Update( const Matrix3D & player_tm, const Vector2 & center )
 	draw += center + RADAR_RINGS_R_OFFSET - draw.Upper_Left();
 	Renderer->Add_Quad_Backfaced( draw.Lower_Right(), draw.Lower_Left(), draw.Upper_Right(), draw.Upper_Left(), uv, RadarColor );
 
-#if 0
-{WWPROFILE( "Sweep" );
-	// Draw sweep Line
-	Vector2 edge = Vector2( -WWMath::Cos( RadarSweep ), WWMath::Sin( RadarSweep ) ) * RADAR_FADE_STOP + center;
-	float width = 20;
-	Vector2	corner_offset = center - edge;  	// get line relative to edge
-	float temp = corner_offset.X;					// Rotate 90
-	corner_offset.X = corner_offset.Y;
-	corner_offset.Y = -temp;
-	corner_offset.Normalize();						// scale to length width/2
-	corner_offset *= width;
-	RectClass uv = BlipUV[ BLIP_SWEEP ];
-	Renderer->Add_Tri( edge - corner_offset, center, edge,  
-		uv.Lower_Left(),	uv.Upper_Right(), uv.Upper_Left(),	0xFF00FF00 & RadarColor );
-}
-#endif
-
-#if 0
-{WWPROFILE( "Compass" );
-	// Draw the compass
-	const HUDGlobalSettingsDef * settings = HUDGlobalSettingsDef::Get_Instance();
-	float radar_texture_size = settings->RadarTextureSize;
-	float	bering = WWMath::Wrap( (player_tm.Get_Z_Rotation() / DEG_TO_RAD( 360.0f )) + 0.25f, 0, 1 );
-	int frame = (int)((bering * 8.0f) + 0.5f);
-	RectClass compass( Vector2( 0, 0 ), settings->RadarCompassSize );
-//	compass += Render2DClass::Get_Screen_Resolution().Lower_Left() + settings->RadarCompassOffset;
-	compass += center + COMPASS_OFFSET;
-	RectClass compass_uv = Scale_UV( settings->RadarCompassBaseUV, radar_texture_size );
-	compass_uv += (settings->RadarCompassUVOffset/radar_texture_size) * (frame & 7);
-	Renderer->Add_Quad( compass, compass_uv, RadarColor );
-}
-
-#else
 	float	bering = WWMath::Wrap( (player_tm.Get_Z_Rotation() / DEG_TO_RAD( 360.0f )) + 0.25f, 0, 1 );
 	CurrentCompassRendererIndex = (int)((bering * 8.0f) + 0.5f);
 	CurrentCompassRendererIndex&=7;
@@ -474,9 +389,6 @@ void	RadarManager::Update( const Matrix3D & player_tm, const Vector2 & center )
 		}
 	}
 
-#endif
-
-
 	// Now build the blips
 	float star_z = 0;
 	if ( COMBAT_STAR ) {
@@ -485,7 +397,6 @@ void	RadarManager::Update( const Matrix3D & player_tm, const Vector2 & center )
 		star_z = p.Z;
 	}
 
-{WWPROFILE( "Blips" );
 	// for all physicalgameobjs
 	SLNode<BaseGameObj> *objnode;
 	for (	objnode = GameObjManager::Get_Game_Obj_List()->Head(); objnode; objnode = objnode->Next()) {
@@ -541,22 +452,15 @@ void	RadarManager::Update( const Matrix3D & player_tm, const Vector2 & center )
 				altitude_fade = true;
 			}
 
-//			if ( (WWMath::Fabs( z_diff ) < RADAR_Z_RANGE) || (obj->Get_Radar_Blip_Shape_Type() == BLIP_SHAPE_TYPE_OBJECTIVE) ) {
-				float intensity = obj->Get_Radar_Blip_Intensity();
-				bool bracket = obj == BracketObj;
-				intensity = Add_Blip( objpos, obj->Get_Radar_Blip_Shape_Type(), obj->Get_Radar_Blip_Color_Type(), intensity, bracket, altitude_fade );
-	#if 0
-				intensity -= RadarSweepMove / DEG_TO_RAD( 360 ) * 0.666f;				// Drop Blip intensity
-	#endif
-				obj->Set_Radar_Blip_Intensity( WWMath::Clamp( intensity, 0, 1 ) );
-//			}
+			float intensity = obj->Get_Radar_Blip_Intensity();
+			bool bracket = obj == BracketObj;
+			intensity = Add_Blip( objpos, obj->Get_Radar_Blip_Shape_Type(), obj->Get_Radar_Blip_Color_Type(), intensity, bracket, altitude_fade );
+
+			obj->Set_Radar_Blip_Intensity( WWMath::Clamp( intensity, 0, 1 ) );
+
 		}
 	}
-}
 
-	int i;
-
-{WWPROFILE( "Objectives" );
 	// for all objectives with a position
 	int count = ObjectiveManager::Get_Objective_Count();
 	for ( int i = 0; i < count; i++ ) {
@@ -564,31 +468,18 @@ void	RadarManager::Update( const Matrix3D & player_tm, const Vector2 & center )
 		if ( objective->DrawBlip && objective->Status == ObjectiveManager::STATUS_IS_PENDING ) {
 			float intensity = objective->BlipIntensity;
 			intensity = Add_Blip( objective->Position, BLIP_SHAPE_TYPE_OBJECTIVE, objective->Radar_Blip_Color_Type(), intensity, false );
-#if 0
-			intensity -= RadarSweepMove / DEG_TO_RAD( 360 ) * 0.666f;				// Drop Blip intensity
-#endif
 			objective->BlipIntensity = WWMath::Clamp( intensity, 0, 1 );
 		}
 	}
-}
 
-{WWPROFILE( "Markers" );
 	// for all markers
-	for ( i = 0; i < Markers.Count(); i++ ) {
+	for ( int i = 0; i < Markers.Count(); i++ ) {
 		float intensity = Markers[i].Intensity;
 		intensity = Add_Blip( Markers[i].Position, Markers[i].Type, Markers[i].Color, intensity, false );
-#if 0
-		intensity -= RadarSweepMove / DEG_TO_RAD( 360 ) * 0.666f;				// Drop Blip intensity
-#endif
 		Markers[i].Intensity = WWMath::Clamp( intensity, 0, 1 );
 	}
 }
 
-}
-
-/*
-**
-*/
 void	RadarManager::Render( void )
 {
 	if ( (HiddenTimer < 1) && Renderer ) {
@@ -600,9 +491,6 @@ void	RadarManager::Render( void )
 	}
 }
 
-/*
-**
-*/
 void	RadarManager::Clear_Marker( int id )
 {
 	for ( int i = 0; i < Markers.Count(); i++ ) {
@@ -622,20 +510,11 @@ void	RadarManager::Change_Marker_Color( int id, int color )
 	}
 }
 
-/*
-**
-*/
-RadarMarkerClass::RadarMarkerClass( void ) :
-	ID( 0 ),
-	Type( 0 ),
-	Color( 0 ),
-	Position( 0,0,0 ),
-	Intensity( 0 )
-{
+RadarMarkerClass::RadarMarkerClass( void ) : ID( 0 ), Type( 0 ), Color( 0 ), Position( 0, 0, 0 ), Intensity( 0 ){
 }
 
 
-enum	{
+enum {
 	CHUNKID_VARIABLES						=	630001403,
 	XXXCHUNKID_GAME_OBJ_REF,
 
@@ -648,8 +527,7 @@ enum	{
 	MICROCHUNKID_COLOR,
 };
 
-bool	RadarMarkerClass::Save( ChunkSaveClass & csave )
-{
+bool RadarMarkerClass::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_VARIABLES );
 		WRITE_MICRO_CHUNK( csave, 	MICROCHUNKID_ID, ID );
 		WRITE_MICRO_CHUNK( csave, 	MICROCHUNKID_POSITION, Position );                    
@@ -660,18 +538,16 @@ bool	RadarMarkerClass::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	RadarMarkerClass::Load( ChunkLoadClass &cload )
-{
+bool RadarMarkerClass::Load( ChunkLoadClass& cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
-
 			case CHUNKID_VARIABLES:
 				while (cload.Open_Micro_Chunk()) {
 					switch(cload.Cur_Micro_Chunk_ID()) {
-						READ_MICRO_CHUNK( cload, 	MICROCHUNKID_ID, ID );
-						READ_MICRO_CHUNK( cload, 	MICROCHUNKID_POSITION, Position );                    
-						READ_MICRO_CHUNK( cload, 	MICROCHUNKID_TYPE, Type );                  
-						READ_MICRO_CHUNK( cload, 	MICROCHUNKID_COLOR, Color );                  
+						READ_MICRO_CHUNK( cload, MICROCHUNKID_ID, ID );
+						READ_MICRO_CHUNK( cload, MICROCHUNKID_POSITION, Position );                    
+						READ_MICRO_CHUNK( cload, MICROCHUNKID_TYPE, Type );                  
+						READ_MICRO_CHUNK( cload, MICROCHUNKID_COLOR, Color );                  
 
 						default:
 							Debug_Say(("Unhandled Chunk:%d File:%s Line:%d\r\n",cload.Cur_Chunk_ID(),__FILE__,__LINE__));

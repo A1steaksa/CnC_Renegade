@@ -125,31 +125,24 @@ void StyleMgrClass::Initialize(void){
 //
 ////////////////////////////////////////////////////////////////
 void StyleMgrClass::Initialize_From_INI( const char* filename ){
-	Shutdown ();
+	Shutdown();
 
-	//
-	//	Compute the scale
-	//
-	ScaleX = Render2DClass::Get_Screen_Resolution().Width () / 800.0F;
-	ScaleY = Render2DClass::Get_Screen_Resolution().Height () / 600.0F;
+	// Compute the scale
+	ScaleX = Render2DClass::Get_Screen_Resolution().Width() / 800.0F;
+	ScaleY = Render2DClass::Get_Screen_Resolution().Height() / 600.0F;
 
-	//
-	//	Get the INI file
-	//
-	INIClass *ini_file = NULL;
-	FileClass *file_obj = _TheFileFactory->Get_File (filename);
-	if (file_obj != NULL && file_obj->Is_Available( ) ) {
-		ini_file = new INIClass (*file_obj);
-		_TheFileFactory->Return_File (file_obj);
+	// Get the INI file
+	INIClass* ini_file = NULL;
+	FileClass* file_obj = _TheFileFactory->Get_File (filename);
+	if( file_obj != NULL && file_obj->Is_Available() ){
+		ini_file = new INIClass( file_obj* );
+		_TheFileFactory->Return_File( file_obj );
 	}
 
-	if (ini_file != NULL) {
-
-		const char *FONT_FILE_SECTION	= "Font File List";
-		const char *FONT_NAME_SECTION	= "Font Names";
-
-		const char *FONT_INI_ENTRIES[FONT_MAX] = 
-		{		
+	if( ini_file != NULL ){
+		const char* FONT_FILE_SECTION = "Font File List";
+		const char* FONT_NAME_SECTION = "Font Names";
+		const char* FONT_INI_ENTRIES[FONT_MAX] = {
 			"FONT_TITLE",
 			"FONT_LG_CONTROLS",
 			"FONT_CONTROLS",
@@ -167,59 +160,40 @@ void StyleMgrClass::Initialize_From_INI( const char* filename ){
 			"FONT_INGAME_HEADER_TXT"
 		};
 
-		//
-		//	Load each font into windows
-		//
-		int count = ini_file->Entry_Count (FONT_FILE_SECTION);
-		for (int index = 0; index < count; index ++) {
-			StringClass	filename (0, true);
-			ini_file->Get_String (filename, FONT_FILE_SECTION, ini_file->Get_Entry (FONT_FILE_SECTION, index));
+		// Load each font into windows
+		int count = ini_file->Entry_Count( FONT_FILE_SECTION );
+		for( int index = 0; index < count; index++ ){
+			StringClass	filename( 0, true );
+			ini_file->Get_String( filename, FONT_FILE_SECTION, ini_file->Get_Entry( FONT_FILE_SECTION, index ) );
 
-			//
-			//	Install the font into windows
-			//
-			::AddFontResource (filename);
-			FontFileList.Add (filename);
+			// Install the font into windows
+			::AddFontResource( filename );
+			FontFileList.Add( filename );
 		}
 
-		//
-		//	Read information about each font and load it into the system
-		//
-		for (index = 0; index < FONT_MAX; index ++) {
-			
-			//
-			//	Read information about this font
-			//
+		// Read information about each font and load it into the system
+		for( index = 0; index < FONT_MAX; index++ ){
+			// Read information about this font
 			StringClass font_entry;
-			ini_file->Get_String (font_entry, FONT_NAME_SECTION, FONT_INI_ENTRIES[index]);
+			ini_file->Get_String( font_entry, FONT_NAME_SECTION, FONT_INI_ENTRIES[index] );
 			
-			//
-			//	Parse the information
-			//
-			StringClass font_name	= ::strtok (font_entry.Peek_Buffer (), ",");
-			StringClass font_size	= ::strtok (NULL, ",");
-			StringClass font_bold	= ::strtok (NULL, ",");
-			bool is_bold				= (::atoi (font_bold) != 0);
+			// Parse the information
+			StringClass font_name = ::strtok( font_entry.Peek_Buffer(), "," );
+			StringClass font_size = ::strtok( NULL, "," );
+			StringClass font_bold = ::strtok( NULL, "," );
+			bool is_bold = (::atoi( font_bold ) != 0);
 
-			//
-			//	Scale the point size to fit this resolution
-			//
-			float point_size = ((float)::atoi (font_size)) * ScaleY;			
+			// Scale the point size to fit this resolution
+			float point_size = ( (float)::atoi( font_size ) ) * ScaleY;			
 			
-			//
-			//	Remove bold from "small" fonts if they're scaled down
-			//
-			point_size = max (point_size, 8.0F);
-			if (point_size < 10.0F && ScaleY < 1.0F) {
+			// Remove bold from "small" fonts if they're scaled down
+			point_size = max( point_size, 8.0F );
+			if( point_size < 10.0F && ScaleY < 1.0F ){
 				is_bold = false;
 			}
 
-			//
-			//	Create the font
-			//
-			Fonts[index] = WW3DAssetManager::Get_Instance()->Get_FontChars (font_name,
-									point_size, is_bold);
-
+			// Create the font
+			Fonts[index] = WW3DAssetManager::Get_Instance()->Get_FontChars( font_name, point_size, is_bold );
 		}
 
 		//
@@ -245,8 +219,6 @@ void StyleMgrClass::Initialize_From_INI( const char* filename ){
 		delete ini_file;
 		ini_file = NULL;
 	}
-
-	return ;
 }
 
 
@@ -255,9 +227,7 @@ void StyleMgrClass::Initialize_From_INI( const char* filename ){
 //	Shutdown
 //
 ////////////////////////////////////////////////////////////////
-void
-StyleMgrClass::Shutdown (void)
-{
+void StyleMgrClass::Shutdown(void){
 	//
 	//	Free each font
 	//
@@ -295,16 +265,8 @@ void StyleMgrClass::Render_Backdrop( Render2DClass* renderer, const RectClass& r
 }
 
 
-////////////////////////////////////////////////////////////////
-//
-//	Assign_Font
-//
-////////////////////////////////////////////////////////////////
-void
-StyleMgrClass::Assign_Font (Render2DSentenceClass *renderer, FONT_STYLE style)
-{
-	renderer->Set_Font (Fonts[style]);
-	return ;
+void StyleMgrClass::Assign_Font( Render2DSentenceClass* renderer, FONT_STYLE style ){
+	renderer->Set_Font( Fonts[style] );
 }
 
 ////////////////////////////////////////////////////////////////

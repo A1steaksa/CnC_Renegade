@@ -55,11 +55,7 @@
 // between WWUI and the outside application.
 //
 ////////////////////////////////////////////////////////////////
-class WWUIInputClass :
-	public RefCountClass,
-	protected Observer<IME::UnicodeChar>,
-	protected Observer<IME::IMEEvent>
-{
+class WWUIInputClass : public RefCountClass, protected Observer<IME::UnicodeChar>, protected Observer<IME::IMEEvent> {
 public:
 
 	////////////////////////////////////////////////////////////////
@@ -80,13 +76,13 @@ public:
 	//	reset the mouse position in the calling application.  Dialogs
 	// use this to snap the mouse to the default control.
 	//
-	virtual const Vector3 &	Get_Mouse_Pos (void) const				= 0;
-	virtual void				Set_Mouse_Pos (const Vector3 &pos)	= 0;
+	virtual const Vector3& Get_Mouse_Pos(void) const = 0;
+	virtual void Set_Mouse_Pos( const Vector3& pos ) = 0;
 
 	//
 	//	Mouse button input
 	//
-	virtual bool				Is_Button_Down (int vk_mouse_button_id) = 0;
+	virtual bool Is_Button_Down( int vk_mouse_button_id ) = 0;
 
 	//
 	//	Menu enter/exit callback
@@ -94,18 +90,21 @@ public:
 	//		This is used so the controlling application can filter
 	// input while in the menu system (if necessary).
 	//
-	virtual void				Enter_Menu_Mode (void)	{};
-	virtual void				Exit_Menu_Mode (void)	{};
+	virtual void Enter_Menu_Mode(void){
+	};
 
-	bool ProcessMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT& result);
+	virtual void Exit_Menu_Mode(void){
+	};
 
-	void InitIME(HWND hwnd);
+	bool ProcessMessage( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT& result );
+
+	void InitIME( HWND hwnd );
 
 	IME::IMEManager* GetIME(void) const;
 		
 	protected:
-		void HandleNotification(IME::UnicodeChar& unicode);
-		void HandleNotification(IME::IMEEvent&);
+		void HandleNotification( IME::UnicodeChar& unicode );
+		void HandleNotification( IME::IMEEvent& );
 
 	private:
 		IME::IMEManager* mIMEManager;

@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -72,8 +54,7 @@
 /*
 ** Chunk ID's used by SceneClass
 */
-enum 
-{
+enum  {
 	SCENECLASS_CHUNK_VARIABLES			= 0x00042300,
 
 	SCENECLASS_VARIABLE_AMBIENTLIGHT	= 0x00,
@@ -92,18 +73,18 @@ enum
 class SimpleSceneIterator : public SceneIterator
 {
 public:
-	virtual void					First(void);
-	virtual void					Next(void);
-	virtual bool					Is_Done(void);
-	virtual RenderObjClass *	Current_Item(void);
+	virtual void First(void);
+	virtual void Next(void);
+	virtual bool Is_Done(void);
+	virtual RenderObjClass* Current_Item(void);
 
 protected:
 
-	SimpleSceneIterator(RefRenderObjListClass * renderlist,bool onlyvis);
+	SimpleSceneIterator( RefRenderObjListClass* renderlist, bool onlyvis );
 
-	RefRenderObjListIterator	RobjIterator;	
-	SimpleSceneClass *			Scene;	
-	bool								OnlyVis;
+	RefRenderObjListIterator RobjIterator;
+	SimpleSceneClass* Scene;	
+	bool OnlyVis;
 
 	friend class SimpleSceneClass;
 };
@@ -122,13 +103,13 @@ protected:
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
 SceneClass::SceneClass(void) : 
-	AmbientLight(0.5f,0.5f,0.5f),
-	PolyRenderMode(FILL),
-	ExtraPassPolyRenderMode(EXTRA_PASS_DISABLE),
-	FogEnabled(false),
-	FogColor(0,0,0),
-	FogStart(0.0f),
-	FogEnd(1000.0f)	// Arbitrary default value
+	AmbientLight( 0.5f, 0.5f, 0.5f ),
+	PolyRenderMode( FILL ),
+	ExtraPassPolyRenderMode( EXTRA_PASS_DISABLE ),
+	FogEnabled( false ),
+	FogColor( 0, 0, 0),
+	FogStart( 0.0f ),
+	FogEnd( 1000.0f ) // Arbitrary default value
 {
 }
 
@@ -145,8 +126,7 @@ SceneClass::SceneClass(void) :
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-SceneClass::~SceneClass(void)
-{
+SceneClass::~SceneClass(void){
 }
 
 /***********************************************************************************************
@@ -166,9 +146,8 @@ SceneClass::~SceneClass(void)
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void SceneClass::Add_Render_Object(RenderObjClass * obj)
-{
-	obj->Notify_Added(this);
+void SceneClass::Add_Render_Object( RenderObjClass* obj ){
+	obj->Notify_Added( this );
 }
 
 
@@ -188,9 +167,8 @@ void SceneClass::Add_Render_Object(RenderObjClass * obj)
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void SceneClass::Remove_Render_Object(RenderObjClass * obj)
-{
-	obj->Notify_Removed(this);
+void SceneClass::Remove_Render_Object( RenderObjClass* obj ){
+	obj->Notify_Removed( this );
 }
 
 
@@ -206,35 +184,36 @@ void SceneClass::Remove_Render_Object(RenderObjClass * obj)
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-void SceneClass::Render(RenderInfoClass & rinfo)
-{
-	DX8Wrapper::Set_Fog(FogEnabled, FogColor, FogStart, FogEnd);
+void SceneClass::Render( RenderInfoClass& rinfo ){
+	DX8Wrapper::Set_Fog( FogEnabled, FogColor, FogStart, FogEnd );
 
-	if (Get_Extra_Pass_Polygon_Mode()==EXTRA_PASS_DISABLE) {
-		Customized_Render(rinfo);
-	}
-	else {
-		bool old_enable=WW3D::Is_Texturing_Enabled();
+	if( Get_Extra_Pass_Polygon_Mode() == EXTRA_PASS_DISABLE ){
+		Customized_Render( rinfo );
+	}else{
+		bool old_enable = WW3D::Is_Texturing_Enabled();
 
-		DX8Wrapper::Set_DX8_Render_State (D3DRS_ZBIAS, 0);
-		Customized_Render(rinfo);
-		switch (Get_Extra_Pass_Polygon_Mode()) {
-		case EXTRA_PASS_LINE:
-			WW3D::Enable_Texturing(false);
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
-			DX8Wrapper::Set_DX8_Render_State (D3DRS_ZBIAS, 7);
-			Customized_Render(rinfo);
-			break;
-		case EXTRA_PASS_CLEAR_LINE:
-			DX8Wrapper::Clear(true, false, Vector3(0.0f,0.0f,0.0f));	// Clear color but not z
-			WW3D::Enable_Texturing(false);
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
-			DX8Wrapper::Set_DX8_Render_State (D3DRS_ZBIAS, 7);
-			Customized_Render(rinfo);
-			break;
+		DX8Wrapper::Set_DX8_Render_State( D3DRS_ZBIAS, 0 );
+		Customized_Render( rinfo );
+		switch( Get_Extra_Pass_Polygon_Mode() ){
+			case EXTRA_PASS_LINE:{
+				WW3D::Enable_Texturing( false );
+				DX8Wrapper::Set_DX8_Render_State( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+				DX8Wrapper::Set_DX8_Render_State( D3DRS_ZBIAS, 7 );
+				Customized_Render( rinfo );
+				break;
+			}
+
+			case EXTRA_PASS_CLEAR_LINE:{
+				DX8Wrapper::Clear( true, false, Vector3( 0.0f, 0.0f, 0.0f ) ); // Clear color but not z
+				WW3D::Enable_Texturing( false );
+				DX8Wrapper::Set_DX8_Render_State( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+				DX8Wrapper::Set_DX8_Render_State ( D3DRS_ZBIAS, 7 );
+				Customized_Render( rinfo );
+				break;
+			}
 		}
 
-		WW3D::Enable_Texturing(old_enable);
+		WW3D::Enable_Texturing( old_enable );
 	}
 }
 
@@ -249,15 +228,14 @@ void SceneClass::Render(RenderInfoClass & rinfo)
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-void SceneClass::Save(ChunkSaveClass & csave)
-{
-	csave.Begin_Chunk(SCENECLASS_CHUNK_VARIABLES);
-	WRITE_MICRO_CHUNK(csave,SCENECLASS_VARIABLE_AMBIENTLIGHT,AmbientLight);
-	WRITE_MICRO_CHUNK(csave,SCENECLASS_VARIABLE_POLYRENDERMODE,PolyRenderMode);
-	WRITE_MICRO_CHUNK(csave,SCENECLASS_VARIABLE_FOGCOLOR,FogColor);
-	WRITE_MICRO_CHUNK(csave,SCENECLASS_VARIABLE_FOGENABLED,FogEnabled);
-	WRITE_MICRO_CHUNK(csave,SCENECLASS_VARIABLE_FOGSTART,FogStart);
-	WRITE_MICRO_CHUNK(csave,SCENECLASS_VARIABLE_FOGEND,FogEnd);
+void SceneClass::Save( ChunkSaveClass& csave ){
+	csave.Begin_Chunk( SCENECLASS_CHUNK_VARIABLES );
+	WRITE_MICRO_CHUNK( csave, SCENECLASS_VARIABLE_AMBIENTLIGHT, AmbientLight );
+	WRITE_MICRO_CHUNK( csave, SCENECLASS_VARIABLE_POLYRENDERMODE, PolyRenderMode );
+	WRITE_MICRO_CHUNK( csave, SCENECLASS_VARIABLE_FOGCOLOR, FogColor );
+	WRITE_MICRO_CHUNK( csave, SCENECLASS_VARIABLE_FOGENABLED, FogEnabled );
+	WRITE_MICRO_CHUNK( csave, SCENECLASS_VARIABLE_FOGSTART, FogStart );
+	WRITE_MICRO_CHUNK( csave, SCENECLASS_VARIABLE_FOGEND, FogEnd );
 	csave.End_Chunk();
 }
 
@@ -273,25 +251,23 @@ void SceneClass::Save(ChunkSaveClass & csave)
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-void SceneClass::Load(ChunkLoadClass & cload)
-{
+void SceneClass::Load( ChunkLoadClass& cload ){
 	cload.Open_Chunk();
-	if (cload.Cur_Chunk_ID() == SCENECLASS_CHUNK_VARIABLES) {
+	if( cload.Cur_Chunk_ID() == SCENECLASS_CHUNK_VARIABLES ){
 		
-		while (cload.Open_Micro_Chunk()) {
-			switch(cload.Cur_Micro_Chunk_ID()) {
-				READ_MICRO_CHUNK(cload,SCENECLASS_VARIABLE_AMBIENTLIGHT,AmbientLight);
-				READ_MICRO_CHUNK(cload,SCENECLASS_VARIABLE_POLYRENDERMODE,PolyRenderMode);
-				READ_MICRO_CHUNK(cload,SCENECLASS_VARIABLE_FOGCOLOR,FogColor);
-				READ_MICRO_CHUNK(cload,SCENECLASS_VARIABLE_FOGENABLED,FogEnabled);
-				READ_MICRO_CHUNK(cload,SCENECLASS_VARIABLE_FOGSTART,FogStart);
-				READ_MICRO_CHUNK(cload,SCENECLASS_VARIABLE_FOGEND,FogEnd);
+		while( cload.Open_Micro_Chunk() ){
+			switch( cload.Cur_Micro_Chunk_ID() ){
+				READ_MICRO_CHUNK( cload, SCENECLASS_VARIABLE_AMBIENTLIGHT, AmbientLight );
+				READ_MICRO_CHUNK( cload, SCENECLASS_VARIABLE_POLYRENDERMODE, PolyRenderMode );
+				READ_MICRO_CHUNK( cload, SCENECLASS_VARIABLE_FOGCOLOR, FogColor );
+				READ_MICRO_CHUNK( cload, SCENECLASS_VARIABLE_FOGENABLED, FogEnabled );
+				READ_MICRO_CHUNK( cload, SCENECLASS_VARIABLE_FOGSTART, FogStart );
+				READ_MICRO_CHUNK( cload, SCENECLASS_VARIABLE_FOGEND, FogEnd );
 			}
 			cload.Close_Micro_Chunk();
 		}
-
-	} else {
-		WWDEBUG_SAY(("Unhandled Chunk: 0x%X in file: %s line: %d\r\n",cload.Cur_Chunk_ID(),__FILE__,__LINE__));
+	}else{
+		WWDEBUG_SAY( ( "Unhandled Chunk: 0x%X in file: %s line: %d\r\n", cload.Cur_Chunk_ID(), __FILE__, __LINE__ ) );
 	}
 	cload.Close_Chunk();
 }
@@ -310,10 +286,7 @@ void SceneClass::Load(ChunkLoadClass & cload)
  *   3/24/98    GTH : Created.                                                                 *
  *   9/10/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-SimpleSceneClass::SimpleSceneClass(void) :
-   Visibility_Checked(false)
-{
-
+SimpleSceneClass::SimpleSceneClass(void) : Visibility_Checked( false ) {
 }
 
 /***********************************************************************************************
@@ -328,8 +301,7 @@ SimpleSceneClass::SimpleSceneClass(void) :
  * HISTORY:                                                                                    *
  *   3/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-SimpleSceneClass::~SimpleSceneClass(void)
-{
+SimpleSceneClass::~SimpleSceneClass(void){
 	Remove_All_Render_Objects();
 }
 
@@ -348,12 +320,11 @@ SimpleSceneClass::~SimpleSceneClass(void)
  * HISTORY:                                                                                    *
  *   8/27/2001  hy : Created.                                                                  *
  *=============================================================================================*/
-void SimpleSceneClass::Remove_All_Render_Objects(void)
-{
-	RenderObjClass * obj;
-	while ( ( obj = RenderList.Remove_Head() ) != NULL ) {
-		SceneClass::Remove_Render_Object(obj);
-		obj->Release_Ref();							// remove head gets a ref
+void SimpleSceneClass::Remove_All_Render_Objects(void){
+	RenderObjClass* obj;
+	while( ( obj = RenderList.Remove_Head() ) != NULL ){
+		SceneClass::Remove_Render_Object( obj );
+		obj->Release_Ref(); // remove head gets a ref
 	}
 }
 
@@ -369,10 +340,9 @@ void SimpleSceneClass::Remove_All_Render_Objects(void)
  * HISTORY:                                                                                    *
  *   3/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void SimpleSceneClass::Add_Render_Object(RenderObjClass * obj)
-{
-	SceneClass::Add_Render_Object(obj);
-	RenderList.Add(obj);
+void SimpleSceneClass::Add_Render_Object( RenderObjClass* obj ){
+	SceneClass::Add_Render_Object( obj );
+	RenderList.Add( obj );
 }
 
 
@@ -388,45 +358,41 @@ void SimpleSceneClass::Add_Render_Object(RenderObjClass * obj)
  * HISTORY:                                                                                    *
  *   3/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void SimpleSceneClass::Remove_Render_Object(RenderObjClass * obj)
-{
-	SceneClass::Remove_Render_Object(obj);
+void SimpleSceneClass::Remove_Render_Object( RenderObjClass* obj ){
+	SceneClass::Remove_Render_Object( obj );
 	// HY
 	// this line must come last because otherwise it might cause
 	// a premature release ref and cause a crash
-	RenderList.Remove(obj);
+	RenderList.Remove( obj );
 }
 
-void SimpleSceneClass::Register(RenderObjClass * obj,RegType for_what)
-{
-	switch (for_what) {
+void SimpleSceneClass::Register( RenderObjClass* obj, RegType for_what ){
+	switch( for_what ){
 		case ON_FRAME_UPDATE:	
-			UpdateList.Add(obj);			
+			UpdateList.Add( obj );			
 			break;
 		case LIGHT:	
-			LightList.Add(obj);	
+			LightList.Add( obj );	
 			break;
 		case RELEASE:				
-			ReleaseList.Add(obj);		
+			ReleaseList.Add( obj );		
 			break;
 	};
 }
 
-void SimpleSceneClass::Unregister(RenderObjClass * obj,RegType for_what)
-{
-	switch (for_what) {
+void SimpleSceneClass::Unregister( RenderObjClass* obj, RegType for_what ){
+	switch( for_what ){
 		case ON_FRAME_UPDATE:	
-			UpdateList.Remove(obj);			
+			UpdateList.Remove( obj );			
 			break;
 		case LIGHT:	
-			LightList.Remove(obj);	
+			LightList.Remove( obj );	
 			break;
 		case RELEASE:				
-			ReleaseList.Remove(obj);		
+			ReleaseList.Remove( obj );		
 			break;
 	}
 }
-
 
 
 /***********************************************************************************************
@@ -442,25 +408,24 @@ void SimpleSceneClass::Unregister(RenderObjClass * obj,RegType for_what)
  *   3/24/98    GTH : Created.                                                                 *
  *   4/13/98    NH : Added non-trivial checking (sphere vs. frustum).                          *
  *=============================================================================================*/
-void SimpleSceneClass::Visibility_Check(CameraClass * camera)
-{
-	RefRenderObjListIterator it(&RenderList);
+void SimpleSceneClass::Visibility_Check( CameraClass* camera ){
+	RefRenderObjListIterator it( RenderList& );
 
 	// Loop over all top-level RenderObjects in this scene. If the bounding sphere is not in front
 	// of all the frustum planes, it is invisible.
-	for (it.First(); !it.Is_Done(); it.Next()) {
+	for( it.First(); !it.Is_Done(); it.Next() ){
 
-		RenderObjClass * robj = it.Peek_Obj();
+		RenderObjClass* robj = it.Peek_Obj();
 
-		if (robj->Is_Force_Visible()) {
-			robj->Set_Visible(true);
-		} else {
-			robj->Set_Visible(!camera->Cull_Sphere(robj->Get_Bounding_Sphere()));
+		if( robj->Is_Force_Visible() ){
+			robj->Set_Visible( true );
+		}else{
+			robj->Set_Visible( !camera->Cull_Sphere( robj->Get_Bounding_Sphere() ) );
 		}
 
 		// Prepare visible objects for LOD:
-		if (robj->Is_Really_Visible()) {
-			robj->Prepare_LOD(*camera);
+		if( robj->Is_Really_Visible() ){
+			robj->Prepare_LOD( camera* );
 		}
 	}
 

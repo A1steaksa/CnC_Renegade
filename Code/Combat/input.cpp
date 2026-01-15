@@ -840,9 +840,8 @@ void	Input::Update_Sliders( void )
 }
 
 
-void	Input::Update( void )
-{
-	if (!UsingDirectInput) {
+void Input::Update(void){
+	if( !UsingDirectInput ){
 		return;
 	}
 

@@ -97,60 +97,49 @@
 #include "GameSpy_QnR.h"
 
 extern bool g_is_loading;
-bool g_b_core_restart;//TSS081401
+bool g_b_core_restart; //TSS081401
 bool g_client_quit = false;
 
-AudibleSoundClass	*	CombatGameModeClass::BackgroundMusic	= NULL;
-int						CombatGameModeClass::IsHudShown			= true;
-static int				ForceGod											= false;
-static bool				ForceGodPending								= true;
-static int				DefaultToFirstPerson							= true;
-static bool				PendingCampaignContinue						= false;
+AudibleSoundClass* CombatGameModeClass::BackgroundMusic = NULL;
+int CombatGameModeClass::IsHudShown = true;
+static int ForceGod = false;
+static bool ForceGodPending = true;
+static int DefaultToFirstPerson = true;
+static bool PendingCampaignContinue = false;
 
 
-class	CombatGameMiscHandlerClass : public CombatMiscHandlerClass {
+class CombatGameMiscHandlerClass : public CombatMiscHandlerClass {
 public:
-	virtual	void	Mission_Complete( bool success );
-	virtual	void	Star_Killed( void );
+	virtual	void Mission_Complete( bool success );
+	virtual	void Star_Killed(void);
 };
 
-CombatGameMiscHandlerClass		GameMiscHandler;
+CombatGameMiscHandlerClass GameMiscHandler;
 
-static void Combat_To_Menu (RenegadeDialogMgrClass::LOCATION location)
-{
-   //
+static void Combat_To_Menu( RenegadeDialogMgrClass::LOCATION location ){
 	// Remember: Combat and Menu are not mutually exclusive.
 	// Therefore this function may be called when menu is already active.
-	//
-	if (!GameModeManager::Find("Menu")->Is_Active()) {
-
-		//
+	if( !GameModeManager::Find( "Menu" )->Is_Active() ){
 		// Do not suspend Combat in Multiplayer game!
-		//
-		if (IS_SOLOPLAY) {
-			GameModeManager::Find( "Combat" )->Suspend();	// suspend Combat Mode
+		if( IS_SOLOPLAY ){
+			// Suspend Combat Mode
+			GameModeManager::Find( "Combat" )->Suspend();
 		}
 
-		if (IS_MISSION) {
-			RenegadeDialogMgrClass::Goto_Location (location);
-		} else {
-			RenegadeDialogMgrClass::Goto_Location (RenegadeDialogMgrClass::LOC_CNC_REFERENCE);
+		if( IS_MISSION ){
+			RenegadeDialogMgrClass::Goto_Location( location );
+		}else{
+			RenegadeDialogMgrClass::Goto_Location( RenegadeDialogMgrClass::LOC_CNC_REFERENCE );
 		}
 	}
 }
 
-static void Start_In_Game_Help(void)
-{
-	//
+static void Start_In_Game_Help(void){
 	// Remember: Combat and Menu are not mutually exclusive.
 	// Therefore this function may be called when menu is already active.
-	//
-	if (!GameModeManager::Find("Menu")->Is_Active()) {
-
-		//
+	if( !GameModeManager::Find("Menu")->Is_Active() ){
 		// Do not suspend Combat in Multiplayer game!
-		//
-		if (IS_SOLOPLAY) {
+		if( IS_SOLOPLAY ){
 			GameModeManager::Find( "Combat" )->Suspend();	// suspend Combat Mode
 		}
 
@@ -161,19 +150,20 @@ static void Start_In_Game_Help(void)
 void CombatGameModeClass::Combat_Keyboard(void){
 	WWPROFILE( "Combat_Keyboard" );
 
-	bool to_menu=Input::Get_State( INPUT_FUNCTION_MENU_TOGGLE );
+	bool to_menu = Input::Get_State( INPUT_FUNCTION_MENU_TOGGLE );
+	
 	// If game doesn't have a focus and combat is active, suspend combat by entering menu
-	if (!GameInFocus) {
+	if( !GameInFocus ){
 		if (IS_SOLOPLAY && COMBAT_CAMERA && !COMBAT_CAMERA->Is_In_Cinematic() ) {
 			to_menu|=GameModeManager::Find( "Combat" )->Is_Active();
 		}
 	}
-	if ( to_menu ) {
+	if( to_menu ){
 		  Combat_To_Menu( RenegadeDialogMgrClass::LOC_ENCYCLOPEDIA );
 	}
 
-	//	Handle the in-game EVA mission objectives window
-	if ( IS_MISSION && Input::Get_State( INPUT_FUNCTION_EVA_MISSION_OBJECTIVES_TOGGLE ) ) {
+	// Handle the in-game EVA mission objectives window
+	if( IS_MISSION && Input::Get_State( INPUT_FUNCTION_EVA_MISSION_OBJECTIVES_TOGGLE ) ){
 		if ( ObjectiveManager::Is_Viewer_Displayed() ) {
 			ObjectiveManager::Page_Down_Viewer();
 		} else {
@@ -193,16 +183,12 @@ void CombatGameModeClass::Combat_Keyboard(void){
 		Combat_To_Menu( RenegadeDialogMgrClass::LOC_MAP );
 	}
 
-	//
 	// Display the server info screen
-	//
 	if (!IS_MISSION && Input::Get_State( INPUT_FUNCTION_SERVER_INFO_TOGGLE )) {
 		START_DIALOG (CNCServerInfoDialogClass);
 	}
 
-	//
-	//	Display the team information page
-	//
+	// Display the team information page
 	if (!IS_MISSION && cNetwork::I_Am_Client() && COMBAT_STAR != NULL) {
 		if (Input::Get_State( INPUT_FUNCTION_TEAM_INFO_TOGGLE )) {
 			START_DIALOG (CNCTeamInfoDialogClass);
@@ -268,11 +254,10 @@ void CombatGameModeClass::Combat_Keyboard(void){
 /*
 ** called when the mode is activated
 */
-void	CombatGameModeClass::Init()
-{
+void CombatGameModeClass::Init(){
 	Debug_Say(("CombatGameModeClass::Init\n"));
 
-	if (!IS_MISSION) {
+	if( !IS_MISSION ){
 		MultiHUDClass::Init();
 	}
 
@@ -281,7 +266,7 @@ void	CombatGameModeClass::Init()
 	//
 	//	Initialize the radio command display window
 	//
-	RadioCommandDisplayClass::Initialize ();
+	RadioCommandDisplayClass::Initialize();
 
 	//
 	// Notify combat about the state of the CameraLockedToTurret user option.
@@ -292,33 +277,27 @@ void	CombatGameModeClass::Init()
 /*
 ** called when the mode is deactivated
 */
-void 	CombatGameModeClass::Shutdown()
-{
-	Debug_Say(("CombatGameModeClass::Shutdown\n"));
+void CombatGameModeClass::Shutdown(){
+	Debug_Say( ( "CombatGameModeClass::Shutdown\n" ) );
 
-   Core_Shutdown();
+	Core_Shutdown();
 
-	//
-	//	Shutdown the radio command display window
-	//
-	RadioCommandDisplayClass::Shutdown ();
-	return ;
+	// Shutdown the radio command display window
+	RadioCommandDisplayClass::Shutdown();
 }
 
-class LoadingScreenClass
-{
+class LoadingScreenClass {
 	MenuBackDropClass	backdrop;
 	Render2DSentenceClass backdropText;
 	Render2DSentenceClass backdropText2;	// The BIG text
-	float	LoadTime;
-	float	LoadPercentage;
-	float	LoadPercentageDrawn;
-	float	LoadPercentageClamp;
-	float	LoadPercentageRate;
+	float LoadTime;
+	float LoadPercentage;
+	float LoadPercentageDrawn;
+	float LoadPercentageClamp;
+	float LoadPercentageRate;
 
 public:
-	LoadingScreenClass()
-	{
+	LoadingScreenClass(){
 		int color = 0xFFFFFFFF;
 
 		WWMEMLOG(MEM_GAMEDATA);
@@ -331,7 +310,7 @@ public:
 		LoadPercentageDrawn = 0;
 		LoadPercentageRate = 0;
 
-		FontCharsClass *font	= StyleMgrClass::Peek_Font( StyleMgrClass::FONT_INGAME_TXT );
+		FontCharsClass* font = StyleMgrClass::Peek_Font( StyleMgrClass::FONT_INGAME_TXT );
 		backdropText.Set_Font( font );
 
 		font = StyleMgrClass::Peek_Font( StyleMgrClass::FONT_INGAME_BIG_TXT );
@@ -340,15 +319,21 @@ public:
 		// Parse Descriptions
 		int count = CampaignManager::Get_Backdrop_Description_Count();
 		for ( int i = 0; i < count; i++ ) {
-			const char * read = CampaignManager::Get_Backdrop_Description( i );
+			const char* read = CampaignManager::Get_Backdrop_Description( i );
 			StringClass desc = read;
-			while ( desc.Get_Length() && desc[0] <= ' ' ) desc.Erase( 0, 1 );
-			while ( desc.Get_Length() && desc[desc.Get_Length()-1]<=' ' ) desc.Erase(desc.Get_Length()-1, 1 );
+
+			while( desc.Get_Length() && desc[0] <= ' ' ){
+				desc.Erase( 0, 1 );	
+			}
+
+			while( desc.Get_Length() && desc[desc.Get_Length() - 1] <= ' ' ){
+				desc.Erase( desc.Get_Length() - 1, 1 );
+			}
 
 			// Parse Big Translated Text
 			if ( ::strnicmp( "Text2", desc, 5 ) == 0 ) {
 				desc.Erase( 0, 5 );
-				while ( desc.Get_Length() && desc[0] <= ' ' ) desc.Erase( 0, 1 );
+				while( desc.Get_Length() && desc[0] <= ' ' ) desc.Erase( 0, 1 );
 				float x,y;
 				::sscanf( desc, "%f,%f,", &x, &y );
 				const char * str = ::strchr( desc, ',' );
@@ -462,8 +447,7 @@ public:
 		SaveLoadStatus::Reset_Status_Count();
 	}
 
-	~LoadingScreenClass()
-	{
+	~LoadingScreenClass(){
 	}
 
 	float Get_Predicted_Percentage( int state ){
@@ -481,12 +465,11 @@ public:
 	}
 
 
-	void Render(bool update_network = false)
-	{
+	void Render( bool update_network = false ){
 		TimeManager::Update_Frame_Time();
 		LoadTime += TimeManager::Get_Frame_Seconds();
 
-	   WW3D::Begin_Render( true, true, Vector3(0.0f,0.0f,0.0f), update_network ? &cNetwork::Update : NULL);
+		WW3D::Begin_Render( true, true, Vector3(0.0f,0.0f,0.0f), update_network ? &cNetwork::Update : NULL );
 
 		backdrop.Render();
 		backdropText.Render();
@@ -494,21 +477,21 @@ public:
 
 		static int last_count = -1;
 		static int _last_percent_drawn = -1;
-		if ( last_count != CombatManager::Get_Load_Progress() ) {
+		if( last_count != CombatManager::Get_Load_Progress() ){
 			last_count = CombatManager::Get_Load_Progress();
 			Debug_Say(( " ****** Status Count %d at %f\n", last_count, LoadTime ));
 			LoadPercentage = Get_Predicted_Percentage( last_count );
 			LoadPercentageRate = LoadPercentage / LoadTime;
-			LoadPercentageClamp = Get_Predicted_Percentage( last_count+1 );
+			LoadPercentageClamp = Get_Predicted_Percentage( last_count + 1 );
 		}
 
 		LoadPercentage += LoadPercentageRate * TimeManager::Get_Frame_Seconds();
 		LoadPercentage = WWMath::Clamp( LoadPercentage, 0, LoadPercentageClamp );
 		LoadPercentageDrawn += ( LoadPercentage - LoadPercentageDrawn ) * 0.1f;
 		backdrop.Set_Animation_Percentage( LoadPercentageDrawn );
-		if (ConsoleBox.Is_Exclusive() && _last_percent_drawn != LoadPercentageDrawn) {
+		if( ConsoleBox.Is_Exclusive() && _last_percent_drawn != LoadPercentageDrawn ){
 			_last_percent_drawn = LoadPercentageDrawn;
-			ConsoleBox.Print("Load %d%% complete\r", (int)(LoadPercentageDrawn * 100.0f));
+			ConsoleBox.Print( "Load %d%% complete\r", (int) ( LoadPercentageDrawn * 100.0f ) );
 		}
 
 		WW3D::End_Render();
@@ -518,58 +501,46 @@ public:
 #define LOADTIME_NETWORK_UPDATE if (!IS_SOLOPLAY) cNetwork::Update()
 
 
-void  ::Load_Level( void )
-{
-	WWLOG_PREPARE_TIME_AND_MEMORY("CombatGameModeClass::Load_Level");
-	WWMEMLOG(MEM_GAMEDATA);
-	Debug_Say(("CombatGameModeClass::Load_Level\n"));
-
+void ::Load_Level(void){
 	ConsoleBox.Print("Loading level %s\n", The_Game()->Get_Map_Name());
 
-	CombatManager::Set_Load_Progress(0);
-	LoadingScreenClass loading_screen;	// Try moving this to very start of loading
-	loading_screen.Render(true);
+	CombatManager::Set_Load_Progress( 0 );
+	LoadingScreenClass loading_screen; // Try moving this to very start of loading
+	loading_screen.Render( true );
 
 	// Hack load reg for default first person.  Is dont again later.
 	Load_Registry_Keys();
-	WWLOG_INTERMEDIATE("Load_REgistry_Keys");
-
+	
 	// Flush out current level
-	INIT_STATUS("Release current level");
 	LevelManager::Release_Level();
-	WWLOG_INTERMEDIATE("Releasing old level");
-
+	
 	if (!ConsoleBox.Is_Exclusive()) {
 		WW3D::_Invalidate_Textures();
-		WWLOG_INTERMEDIATE("WW3D::_Invalidate_Textures()");
 		AssetStatusClass::Peek_Instance()->Enable_Load_On_Demand_Reporting(false);
 	}
 
 	PendingCampaignContinue	= false;
 	g_is_loading = true;
 
-	//
 	// Stop the network layer from processing packets. This is needed in case a packet import or export accesses the datasafe
 	// from the main thread while the loader thread is loading stuff into the datasafe. This won't shut off packet acks so no-one
 	// will be disconnected as a result of this.
-	//
-	if (cNetwork::PServerConnection) {
-		cNetwork::PServerConnection->Allow_Packet_Processing(false);
+	if( cNetwork::PServerConnection ){
+		cNetwork::PServerConnection->Allow_Packet_Processing( false );
 	}
 
-	if (!IS_SOLOPLAY && cNetwork::PClientConnection != NULL) {
+	if( !IS_SOLOPLAY && cNetwork::PClientConnection != NULL ){
 		cNetwork::PClientConnection->Allow_Extra_Timeout_For_Loading();
 	}
 
-	CombatManager::Pre_Load_Level(ConsoleBox.Is_Exclusive() ? false : true);
+	CombatManager::Pre_Load_Level( ConsoleBox.Is_Exclusive() ? false : true );
 
-	INIT_STATUS("Apply system settings");
 	SystemSettings::Apply_All();
 
-	CombatManager::Set_Combat_Misc_Handler( &GameMiscHandler );
+	CombatManager::Set_Combat_Misc_Handler( GameMiscHandler& );
 
-	WWASSERT(PTheGameData != NULL);
-	StringClass map_name(The_Game()->Get_Map_Name(),true);
+	WWASSERT( PTheGameData != NULL );
+	StringClass map_name( The_Game()->Get_Map_Name(), true );
 	WWASSERT( !map_name.Is_Empty() );
 
 	bool preload_assets = true;
@@ -668,12 +639,12 @@ void  ::Load_Level( void )
 
 	// Radar init --------------------------------------------------------------
 	INIT_STATUS("Init radar class");		// Init the radar after the game is loaded (so we have the global settings
-	loading_screen.Render(true);
-   Windows_Message_Handler();
+	loading_screen.Render( true );
+	Windows_Message_Handler();
 	LOADTIME_NETWORK_UPDATE;
 	RadarManager::Init();
-	WWASSERT(PTheGameData != NULL);
-	RadarManager::Set_Radar_Mode(The_Game()->Get_Radar_Mode());
+	WWASSERT( PTheGameData != NULL );
+	RadarManager::Set_Radar_Mode( The_Game()->Get_Radar_Mode() );
 	WWLOG_INTERMEDIATE("Init Radar");
 	// -------------------------------------------------------------------------
 
@@ -708,11 +679,6 @@ void  ::Load_Level( void )
 	WWLOG_INTERMEDIATE("The_Game()->On_Game_Begin()");
 
 	ForceGodPending = ForceGod != 0;
-
-/*	if ( GameModeManager::Find( "Overlay3D" ) ) {
-	   ((Overlay3DGameModeClass*)GameModeManager::Find( "Overlay3D" ))->Start_Intro();
-	}
-*/
 
 	LOADTIME_NETWORK_UPDATE;
 	AssetStatusClass::Peek_Instance()->Enable_Load_On_Demand_Reporting(true);
@@ -755,8 +721,7 @@ void  ::Load_Level( void )
 }
 
 
-void 	CombatGameModeClass::Core_Shutdown()
-{
+void CombatGameModeClass::Core_Shutdown(){
 	Debug_Say(("CombatGameModeClass::Core_Shutdown\n"));
 
 	//
@@ -804,8 +769,6 @@ void CombatGameModeClass::Post_Load_Id_Uniqueness_Check(void)
 	// Make sure no 2 phys objects have the same id.
 	//
 
-//	Debug_Say(("Testing id uniqueness for physical objects:\n"));
-
 	int phys_obj_count = 0;
 	SLNode<BaseGameObj> * objnode;
 	for (objnode = GameObjManager::Get_Game_Obj_List()->Head(); objnode; objnode = objnode->Next()) {
@@ -839,21 +802,14 @@ void CombatGameModeClass::Post_Load_Id_Uniqueness_Check(void)
 		}
 	}
 
-//	Debug_Say(("  %d unique physical objects were loaded.\n", phys_obj_count));
-
-
-
 	//
 	// Make sure no 2 static objects have the same id.
 	//
-//	Debug_Say(("Testing id uniqueness for static objects:\n"));
 
 	WWASSERT(COMBAT_SCENE != NULL);
 	int static_obj_count = 0;
 	RefPhysListIterator iter_1 = COMBAT_SCENE->Get_Static_Object_Iterator();
 	for (iter_1.First(); !iter_1.Is_Done(); iter_1.Next()) {
-
-		//StaticPhysClass * p_obj_1 = (StaticPhysClass *) iter_1.Peek_Obj();
 		PhysClass * p_obj_1 = iter_1.Peek_Obj();
 		WWASSERT(p_obj_1 != NULL);
 		int object_id_1 = p_obj_1->Get_ID();
@@ -861,7 +817,6 @@ void CombatGameModeClass::Post_Load_Id_Uniqueness_Check(void)
 		static_obj_count++;
 
 		if (list_ids) {
-			//Debug_Say(("  Object %d\n", object_id_1));
 			Debug_Say(("  Object %d, model %s\n",
 				p_obj_1->Get_ID(),
 				p_obj_1->Peek_Model()->Get_Name()));
@@ -869,7 +824,6 @@ void CombatGameModeClass::Post_Load_Id_Uniqueness_Check(void)
 
 		RefPhysListIterator iter_2 = COMBAT_SCENE->Get_Static_Object_Iterator();
 		for (iter_2.First(); !iter_2.Is_Done(); iter_2.Next()) {
-			//StaticPhysClass * p_obj_2 = (StaticPhysClass *) iter_2.Peek_Obj();
 			PhysClass * p_obj_2 = iter_2.Peek_Obj();
 			WWASSERT(p_obj_2 != NULL);
 			int object_id_2 = p_obj_2->Get_ID();
@@ -886,13 +840,10 @@ void CombatGameModeClass::Post_Load_Id_Uniqueness_Check(void)
 			}
 		}
 	}
-
-//	Debug_Say(("  %d unique static objects were loaded.\n", static_obj_count));
 }
 
 //-----------------------------------------------------------------------------
-void CombatGameModeClass::Post_Load_Dynamic_Object_Filtering(void)
-{
+void CombatGameModeClass::Post_Load_Dynamic_Object_Filtering(void){
 	//
 	// Look through the soldiers and remove any that aren't
 	// appropriate for this particular game type.
@@ -947,21 +898,16 @@ void CombatGameModeClass::Compute_World_Size(void)
 	//
 	Vector3 min;
 	Vector3 max;
-	WWASSERT(PhysicsSceneClass::Get_Instance() != NULL);
-	PhysicsSceneClass::Get_Instance()->Get_Level_Extents(min, max);
-	//Debug_Say(("World extends from (%5.2f, %5.2f, %5.2f) to (%5.2f, %5.2f, %5.2f)\n",
-	//	min.X, min.Y, min.Z, max.X, max.Y, max.Z));
+	WWASSERT( PhysicsSceneClass::Get_Instance() != NULL );
+	PhysicsSceneClass::Get_Instance()->Get_Level_Extents( min, max );
 
 	Vector3 longest_distance = max - min;
-	//Debug_Say(("Longest distance is %5.2fm\n", longest_distance.Length()));
-	WWASSERT(PTheGameData != NULL);
+	WWASSERT( PTheGameData != NULL );
 	The_Game()->Set_Maximum_World_Distance(longest_distance.Length());
 
 	double margin = 1; // comfort zone
 
-	//
 	// Also, set encoding precision for positional information
-	//
 	cEncoderList::Set_Precision(BITPACK_WORLD_POSITION_X,
 		min.X - margin, max.X + margin, 0.2);
 	cEncoderList::Set_Precision(BITPACK_WORLD_POSITION_Y,
@@ -974,8 +920,7 @@ void CombatGameModeClass::Compute_World_Size(void)
 
 //-----------------------------------------------------------------------------
 #define ADD_CASE(exp) case exp: return #exp; break;
-static LPCSTR Playertype_To_String(int player_type)
-{
+static LPCSTR Playertype_To_String( int player_type ){
 	switch (player_type) {
 		ADD_CASE(PLAYERTYPE_MUTANT);
 		ADD_CASE(PLAYERTYPE_NEUTRAL);
@@ -1081,17 +1026,10 @@ void CombatGameModeClass::Core_Restart(void)
 	PacketManager.Reset_Stats();
 
 	Load_Level();
-
-#ifdef WW3D_COMPILE_WITH_DX8__
-	DX8MeshRendererContainerClass::Invalidate_All();
-#endif
 }
 
 //-----------------------------------------------------------------------------
 
-/*
-**
-*/
 void CombatGameModeClass::Load_Registry_Keys(void)
 {
 	RegistryClass * registry = new RegistryClass( APPLICATION_SUB_KEY_NAME_OPTIONS );
@@ -1125,55 +1063,45 @@ void CombatGameModeClass::Save_Registry_Keys(void)
 /*
 ** called each time through the main loop when active
 */
-void 	CombatGameModeClass::Think()
-{
-	WWPROFILE( "Combat Think" );
-
-	if ( !Is_Active() ) {
+void CombatGameModeClass::Think(){
+	if( !Is_Active() ){
 		return;
 	}
 
 	Combat_Keyboard();
 
-	//
 	// Test again to see if we are active, because quick exit may inactivate us.
-	//
-	if ( !Is_Active() ) {
+	if( !Is_Active() ){
 		return;
 	}
 
 	CombatManager::Generate_Control();
 
-	//
 	// Network Update needs to be between input and think
-	//
 
 	float time_1;
 	{
-	WWMeasureItClass net_upd_time_s(&time_1);
-	cNetwork::Update();
+		WWMeasureItClass net_upd_time_s( time_1& );
+		cNetwork::Update();
 	}
 
 	float time_2;
 	{
-	WWMeasureItClass combat_think_time_s(&time_2);
-	CombatManager::Think();
+		WWMeasureItClass combat_think_time_s( time_2& );
+		CombatManager::Think();
 	}
 
-	if (cNetwork::I_Am_Server())
-	{
-		WWPROFILE( "cSbboManager stuff" );
-		cSbboManager::Increment_Accum_Time_S_Net_Update(time_1);
-		cSbboManager::Increment_Accum_Time_S_Combat_Think(time_2);
+	if( cNetwork::I_Am_Server() ){
+		cSbboManager::Increment_Accum_Time_S_Net_Update( time_1 );
+		cSbboManager::Increment_Accum_Time_S_Combat_Think( time_2 );
 		cSbboManager::Think();
 	}
 
 	DEMO_SECURITY_CHECK;
 
-	if ( COMBAT_STAR ) {
-		WWPROFILE( "Stuff 1" );
+	if( COMBAT_STAR ){
 		Vector3 pos;
-		COMBAT_STAR->Get_Position( &pos );
+		COMBAT_STAR->Get_Position( pos& );
 		float facing = COMBAT_STAR->Get_Facing();
 		Get_Console()->Set_Player_Position( pos, facing );
 
@@ -1188,134 +1116,81 @@ void 	CombatGameModeClass::Think()
 	cPlayerManager::Think();
 	cTeamManager::Think();
 
-	if ( PendingCampaignContinue ) {
-		WWPROFILE( "Stuff 2" );
+	if( PendingCampaignContinue ){
 		PendingCampaignContinue	= false;
-		Debug_Say(( "Handle Pending Campaign Continue\n" ));
 		CampaignManager::Continue();
 	}
 
-
-#ifdef MULTIPLAYERDEMO
-	//
-	// Security check. Randomly every few minutes, check to see if a special
-	// MP demo object (id 100277) exists. If it doesn't, assume someone has hacked in
-	// a different map. Bail.
-	//
-	if ((::rand() % 10131 == 939) && (NetworkObjectMgrClass::Find_Object(100277) == NULL)) {
-		WWDEBUG_SAY(("MP DEMO OBJECT NOT FOUND... BAILING.\n"));
-		Suspend();
-		GameInitMgrClass::End_Game();
-		extern void Stop_Main_Loop (int);
-		Stop_Main_Loop(EXIT_SUCCESS);
-	}
-#endif // MULTIPLAYERDEMO
-
-
-	if (g_b_core_restart)	{
-		WWPROFILE( "g_b_core_restart" );
+	if( g_b_core_restart ){
 
 		g_b_core_restart = false;
 
-		//Core_Restart();
+		cPlayer* p_me = cNetwork::Get_My_Player_Object();
 
-		cPlayer * p_me = cNetwork::Get_My_Player_Object();
+		if( p_me != NULL ){
 
-		if (p_me != NULL) {// && cNetwork::I_Am_Only_Client()) {
-
-			p_me->Set_Is_In_Game(false);
-			cLoadingEvent * p_loading_1 = new cLoadingEvent;
-			p_loading_1->Init(true);
+			p_me->Set_Is_In_Game( false );
+			cLoadingEvent* p_loading_1 = new cLoadingEvent;
+			p_loading_1->Init( true );
 
 			Core_Restart();
 
-			p_me->Set_Is_In_Game(true);
-			cLoadingEvent * p_loading_2 = new cLoadingEvent;
-			p_loading_2->Init(false);
+			p_me->Set_Is_In_Game( true );
+			cLoadingEvent* p_loading_2 = new cLoadingEvent;
+			p_loading_2->Init( false );
 
-		} else {
+		}else{
 			Core_Restart();
 		}
 
-		if (!IS_MISSION) {
+		if( !IS_MISSION ){
 			MultiHUDClass::Init();
 		}
 
 		cNetwork::Enable_Waiting_Players();
-
-/*
-#if(0)
-		WWDEBUG_SAY(("****** CombatGameModeClass::Think On_Game_Begin()\n"));
-		WWASSERT(The_Game() != NULL);
-
-		//		The_Game()->On_Game_End();
-		The_Game()->Reset_Game(false);
-		The_Game()->On_Game_Begin();//TSS091201
-#endif
-*/
 	}
 
 	// Autosave, after one run throught main loop
 	if ( CombatManager::Is_Autosave_Requested() ) {
-		WWPROFILE( "Autosaving" );
-		Debug_Say(( "Autosaving\n" ));
-		int time=TIMEGETTIME();
+		int time = TIMEGETTIME();
 		CombatManager::Request_Autosave( false );
 		SaveGameManager::Set_Description( TRANSLATE( IDS_SAVE_AUTOSAVE ) );
 		SaveGameManager::Save_Game( "save\\autosave.sav", &_CommandoSaveLoad, NULL );
-		time=TIMEGETTIME()-time;
+		time = TIMEGETTIME() - time;
 		Debug_Say(( "Autosaving Complete, took %d.%2.2d seconds\n",time/1000,(time/10)%100 ));
 	}
 
-	//TSS090401
-	if (g_client_quit)
-	{
-		WWPROFILE( "g_client_quit" );
-
-		//
+	if( g_client_quit ){
 		// This becomes true when the connection to the server breaks
-		//
 		g_client_quit = false;
 
 		Suspend();
 		GameInitMgrClass::End_Game();
 
 		//GAMESPY
-		if (cGameSpyAdmin::Get_Is_Launched_From_Gamespy())
-		{
-#ifdef MULTIPLAYERDEMO
-			DialogMgrClass::Flush_Dialogs ();
-			START_DIALOG (SplashOutroMenuDialogClass);
-#else
-			extern void Stop_Main_Loop (int);
-			Stop_Main_Loop(EXIT_SUCCESS);
-#endif // MULTIPLAYERDEMO
-		}
-		else
-		{
+		if( cGameSpyAdmin::Get_Is_Launched_From_Gamespy() ){
+			extern void Stop_Main_Loop( int );
+			Stop_Main_Loop( EXIT_SUCCESS );
+		}else{
 			GameInitMgrClass::Display_End_Game_Menu();
 		}
 	}
 }
 
-void 	CombatGameModeClass::Render()
-{
-	if ( !Is_Active() ) {
+void CombatGameModeClass::Render(){
+	if( !Is_Active() ){
 		return;
 	}
 
-	if (cNetwork::I_Am_Client()) {
-
-		/*
-		** In multi-play, only render the combatmanager when we have a valid camera and the menu is not active
-		*/
+	if( cNetwork::I_Am_Client() ){
+		// In multi-play, only render the combatmanager when we have a valid camera and the menu is not active
 		bool menu_active = false;
-		GameModeClass * menu_mode = GameModeManager::Find( "Menu" );		// Activate the main menu
-		if ((menu_mode != NULL) && (menu_mode->Get_State() == GAME_MODE_ACTIVE)) {
+		GameModeClass* menu_mode = GameModeManager::Find( "Menu" ); // Activate the main menu
+		if( ( menu_mode != NULL ) && ( menu_mode->Get_State() == GAME_MODE_ACTIVE ) ){
 			menu_active = true;
 		}
 
-		if ( COMBAT_CAMERA && COMBAT_CAMERA->Is_Valid() && (menu_active == false)) {
+		if( COMBAT_CAMERA && COMBAT_CAMERA->Is_Valid() && ( menu_active == false ) ){
 			CombatManager::Render();
 		}
    }
@@ -1329,84 +1204,52 @@ void 	CombatGameModeClass::Render()
 	RadioCommandDisplayClass::Render ();
 }
 
-//-----------------------------------------------------------------------------
-void CombatGameModeClass::Toggle_Multi_Hud(void)
-{
+void CombatGameModeClass::Toggle_Multi_Hud(void){
 	MultiHUDClass::Toggle();
 }
 
-// --------------------------------------------------------------
-
-void	CombatGameMiscHandlerClass::Mission_Complete( bool success )
-{
-	if (IS_MISSION) {
-		if ( success ) {
+void CombatGameMiscHandlerClass::Mission_Complete( bool success ){
+	if( IS_MISSION ){
+		if( success ){
 			PendingCampaignContinue	= true;
-		} else {
+		}else{
 			cGod::Mission_Failed();
 		}
-#if 0
-		GameModeManager::Find("Combat")->Suspend();
-//		GameModeManager::Find("Combat")->Deactivate();
-//		GameModeManager::Find("ScoreScreen")->Activate();
-//		((ScoreScreenGameModeClass*)GameModeManager::Find("ScoreScreen"))->Set_Success( success );
-
-		if ( GameModeManager::Find( "Overlay3D" ) ) {
-		   ((Overlay3DGameModeClass*)GameModeManager::Find( "Overlay3D" ))->Start_End_Screen();
-		}
-#endif
 	}
 }
 
-void	CombatGameMiscHandlerClass::Star_Killed( void )
-{
+void CombatGameMiscHandlerClass::Star_Killed(void){
 	cGod::Star_Killed();
 }
 
-void	CombatGameModeClass::Resume(void)
-{
-	//
-	//	Show the message window (if necessary)
-	//
-	if (	CombatManager::Get_Message_Window () != NULL &&
-			CombatManager::Get_Message_Window ()->Has_Data ())
-	{
-		CombatManager::Get_Message_Window ()->Force_Display (true);
+void CombatGameModeClass::Resume(void){
+	// Show the message window (if necessary)
+	if( CombatManager::Get_Message_Window() != NULL && CombatManager::Get_Message_Window()->Has_Data() ){
+		CombatManager::Get_Message_Window ()->Force_Display( true );
 	}
 
 	GameMajorModeClass::Resume();
-	return ;
 }
 
-void	CombatGameModeClass::Suspend(void)
-{
-	//
-	//	Hide the message window
-	//
-	if (CombatManager::Get_Message_Window () != NULL) {
-		CombatManager::Get_Message_Window ()->Force_Display (false);
+void CombatGameModeClass::Suspend(void){
+	// Hide the message window
+	if( CombatManager::Get_Message_Window() != NULL) {
+		CombatManager::Get_Message_Window()->Force_Display( false );
 	}
 
-	//
-	//	Hide the objective viewer
-	//
-	ObjectiveManager::Display_Viewer (false);
+	// Hide the objective viewer
+	ObjectiveManager::Display_Viewer( false );
 
 	GameMajorModeClass::Suspend();
-	return ;
 }
 
 
-/*
-**
-*/
-void	CombatGameModeClass::Quick_Save( void )
-{
-	bool	saveA = true;
+void CombatGameModeClass::Quick_Save(void){
+	bool saveA = true;
 
-	RegistryClass * registry = new RegistryClass( APPLICATION_SUB_KEY_NAME_OPTIONS );
+	RegistryClass* registry = new RegistryClass( APPLICATION_SUB_KEY_NAME_OPTIONS );
 	WWASSERT( registry );
-	if ( registry->Is_Valid() ) {
+	if( registry->Is_Valid() ){
 		saveA = registry->Get_Bool( "QuicksaveA", saveA );
 	}
 
@@ -1414,75 +1257,29 @@ void	CombatGameModeClass::Quick_Save( void )
 #define	SAVEGAME_NAME_B	"save\\quicksaveB.sav"
 
 	// Check for a missing file
-   if ( !cMiscUtil::File_Exists(SAVEGAME_NAME_B) ) {
+   if( !cMiscUtil::File_Exists(SAVEGAME_NAME_B) ){
 		saveA = false;
    }
-   if ( !cMiscUtil::File_Exists(SAVEGAME_NAME_A) ) {
+   if( !cMiscUtil::File_Exists(SAVEGAME_NAME_A) ){
 		saveA = true;
    }
 
-	if ( saveA ) {
+	if( saveA ){
 		SaveGameManager::Set_Description( TRANSLATE(IDS_SAVE_QUICKSAVE_A) );
 		SaveGameManager::Save_Game( SAVEGAME_NAME_A, &_CommandoSaveLoad, NULL );
 		Debug_Say(( "Quicksaved A\n" ));
-	} else {
+	}else{
 		SaveGameManager::Set_Description( TRANSLATE(IDS_SAVE_QUICKSAVE_B) );
 		SaveGameManager::Save_Game( SAVEGAME_NAME_B, &_CommandoSaveLoad, NULL );
 		Debug_Say(( "Quicksaved B\n" ));
 	}
 	saveA = !saveA;
 
-	if ( registry->Is_Valid() ) {
-		registry->Set_Bool( "QuicksaveA",	saveA );
+	if( registry->Is_Valid() ){
+		registry->Set_Bool( "QuicksaveA", saveA );
 	}
 	delete registry;
 
 	// Display "Quick Saved"
 	HUDInfo::Set_HUD_Help_Text( TRANSLATE( IDS_M00DSGN_DSGN1017I1DSGN_TXT ), Vector3( 0,1,0 ) );
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/**/
-	/*
-	if (::rand() % 10131 == 939)) {
-		bool bail = true;
-
-		ScriptableGameObj * p_obj = GameObjManager::Find_ScriptableGameObj(100277);
-		if (p_obj != NULL && p_obj->Get_Definition().Get_Name()) {
-			bail = false;
-		}
-
-		if (bail) {
-			Suspend();
-			GameInitMgrClass::End_Game();
-			extern void Stop_Main_Loop (int);
-			Stop_Main_Loop(EXIT_SUCCESS);
-		}
-	}
-	*/

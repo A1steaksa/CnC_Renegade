@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -55,8 +37,7 @@ class WideStringClass;
 ////////////////////////////////////////////////////////////////
 //	Constants
 ////////////////////////////////////////////////////////////////
-typedef enum
-{
+typedef enum {
 	BUTTON	= 0x0080,
 	EDIT,
 	STATIC,
@@ -80,32 +61,28 @@ typedef enum
 ////////////////////////////////////////////////////////////////
 //	Structures
 ////////////////////////////////////////////////////////////////
-typedef struct _ControlDefinitionStruct
-{
-	int					id;
-	CONTROL_TYPE		type;
-	uint32				style;
-	int					x;
-	int					y;
-	int					cx;
-	int					cy;
+typedef struct _ControlDefinitionStruct {
+	int id;
+	CONTROL_TYPE type;
+	uint32 style;
+	int x;
+	int y;
+	int cx;
+	int cy;
 	WideStringClass	title;
 	
-	//
-	//	Required by DynamicVectorClass
-	//
-	bool operator== (const _ControlDefinitionStruct &src) { return false; }
-	bool operator!= (const _ControlDefinitionStruct &src) { return true; }
+	// Required by DynamicVectorClass
 
-	_ControlDefinitionStruct (void)	:
-		id (0),
-		type (BUTTON),
-		style (0),
-		x (0),
-		y (0),
-		cx (0),
-		cy (0)
-		{}
+	bool operator==( const _ControlDefinitionStruct& src ){
+		return false;
+	}
+
+	bool operator!=( const _ControlDefinitionStruct& src ){
+		return true;
+	}
+
+	_ControlDefinitionStruct(void) : id( 0 ), type( BUTTON ), style(0), x(0), y(0), cx(0), cy(0) {
+	}
 
 } ControlDefinitionStruct;
 
@@ -115,14 +92,12 @@ typedef struct _ControlDefinitionStruct
 //	DialogParserClass
 //
 ////////////////////////////////////////////////////////////////
-class DialogParserClass
-{
+class DialogParserClass {
 public:
-
 	////////////////////////////////////////////////////////////////
 	//	Static methods
 	////////////////////////////////////////////////////////////////
-	static void	Parse_Template (int res_id, int *dlg_width, int *dlg_height, WideStringClass *dlg_title, DynamicVectorClass<ControlDefinitionStruct> *control_list);
+	static void	Parse_Template( int res_id, int* dlg_width, int* dlg_height, WideStringClass* dlg_title, DynamicVectorClass<ControlDefinitionStruct>* control_list );
 };
 
 

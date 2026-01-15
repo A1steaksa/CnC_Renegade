@@ -189,7 +189,7 @@ long														WW3D::UserStat0 = 0;
 long														WW3D::UserStat1 = 0;
 long														WW3D::UserStat2 = 0;
 
-float														WW3D::DefaultNativeScreenSize = 1.0f;
+float WW3D::DefaultNativeScreenSize = 1.0f;
 
 RefRenderObjListClass *								WW3D::DefaultStaticSortLists = NULL;
 RefRenderObjListClass *								WW3D::CurrentStaticSortLists = NULL;
@@ -900,55 +900,54 @@ WW3DErrorType WW3D::Render(const LayerClass &Layer)
  * HISTORY:                                                                                    *
  *   3/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType WW3D::Render(SceneClass * scene,CameraClass * cam,bool clear,bool clearz,const Vector3 & color)
-{
-	if (!IsInitted) {
-		return(WW3D_ERROR_OK);
+WW3DErrorType WW3D::Render( SceneClass* scene, CameraClass * cam, bool clear, bool clearz, const Vector3& color ){
+	if( !IsInitted ){
+		return( WW3D_ERROR_OK );
 	}
 
-	WWPROFILE("WW3D::Render");
-	WWMEMLOG(MEM_GAMEDATA);
-	WWASSERT(IsInitted);
-	WWASSERT(IsRendering);
-	WWASSERT(scene);
-	WWASSERT(cam);
+	WWPROFILE( "WW3D::Render" );
+	WWMEMLOG( MEM_GAMEDATA );
+	WWASSERT( IsInitted );
+	WWASSERT( IsRendering );
+	WWASSERT( scene );
+	WWASSERT( cam );
 
 	cam->On_Frame_Update();
-	RenderInfoClass rinfo(*cam);
+	RenderInfoClass rinfo( cam* );
 
 	// Apply the camera and viewport (including depth range)
 	cam->Apply();
 
 	// Clear the viewport
-	if (clear || clearz) {
-		DX8Wrapper::Clear(clear, clearz, color);
+	if( clear || clearz ){
+		DX8Wrapper::Clear( clear, clearz, color );
 	}
 
 	// set the rendering mode
-	switch(scene->Get_Polygon_Mode()) {
+	switch( scene->Get_Polygon_Mode() ){
 		case SceneClass::POINT:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_POINT);
+			DX8Wrapper::Set_DX8_Render_State( D3DRS_FILLMODE, D3DFILL_POINT );
 			break;
 		case SceneClass::LINE:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_WIREFRAME);
+			DX8Wrapper::Set_DX8_Render_State( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
 			break;
 		case SceneClass::FILL:
-			DX8Wrapper::Set_DX8_Render_State(D3DRS_FILLMODE,D3DFILL_SOLID);
+			DX8Wrapper::Set_DX8_Render_State( D3DRS_FILLMODE, D3DFILL_SOLID );
 			break;
 	}
 
 	// Set the global ambient light value here.  If the scene is using the LightEnvironment system
 	// this setting will get overriden.
 	Vector3 ambient = scene->Get_Ambient_Light();
-	DX8Wrapper::Set_DX8_Render_State(D3DRS_AMBIENT, DX8Wrapper::Convert_Color(ambient,0.0f));
+	DX8Wrapper::Set_DX8_Render_State( D3DRS_AMBIENT, DX8Wrapper::Convert_Color( ambient, 0.0f ) );
 
 	// render the scene
 
-	TheDX8MeshRenderer.Set_Camera(&rinfo.Camera);
+	TheDX8MeshRenderer.Set_Camera( rinfo&.Camera );
 
-	scene->Render(rinfo);
+	scene->Render( rinfo );
 
-	Flush(rinfo);
+	Flush( rinfo );
 
 	return WW3D_ERROR_OK;
 }

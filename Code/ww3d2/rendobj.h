@@ -131,16 +131,12 @@ template<class T> class DynamicVectorClass;
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-class RenderObjClass : public RefCountClass , public PersistClass, public MultiListObjectClass
-{
+class RenderObjClass : public RefCountClass , public PersistClass, public MultiListObjectClass {
 public:
 
-	//
 	//	Note:  It is very important that these values NEVER CHANGE.  That means
 	//	when adding a new class id, it should be added to the end of the enum.
-	//
-	enum 
-	{
+	enum {
 		CLASSID_UNKNOWN	= 0xFFFFFFFF,
 		CLASSID_MESH		= 0,
 		CLASSID_HMODEL,
@@ -183,21 +179,39 @@ public:
 	};
 
 	RenderObjClass(void);
-	RenderObjClass(const RenderObjClass & src);
-	RenderObjClass & RenderObjClass::operator = (const RenderObjClass &);
-	virtual ~RenderObjClass(void)																					{ }
+	RenderObjClass( const RenderObjClass& src );
+	RenderObjClass& RenderObjClass::operator =( const RenderObjClass& );
+	
+	virtual ~RenderObjClass(void){
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface - Cloning and Identification
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	virtual RenderObjClass *	Clone(void) const																= 0;		
-	virtual int						Class_ID(void)	const															{ return CLASSID_UNKNOWN; }
-	virtual const char *			Get_Name(void) const															{ return "UNNAMED"; }
-	virtual void					Set_Name(const char * name)												{ }
-	virtual const char *			Get_Base_Model_Name (void) const											{ return NULL; }
-	virtual void					Set_Base_Model_Name (const char *name)									{ }
-	virtual int						Get_Num_Polys(void) const													{ return 0; }
+	virtual RenderObjClass* Clone(void) const = 0;		
+	
+	virtual int Class_ID(void) const {
+		return CLASSID_UNKNOWN;
+	}
+	
+	virtual const char* Get_Name(void) const {
+		return "UNNAMED";
+	}
+	
+	virtual void Set_Name( const char* name ){
+	}
+	
+	virtual const char* Get_Base_Model_Name(void) const {
+		return NULL;
+	}
+	
+	virtual void Set_Base_Model_Name( const char* name ){
+	}
+	
+	virtual int Get_Num_Polys(void) const {
+		return 0;
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,10 +225,16 @@ public:
 	//           put itself back into a state as if it has never been rendered (e.g. particle emitters 
 	//           should reset their "emitted particle counts" so they can be re-used.)
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	virtual void					Render(RenderInfoClass & rinfo)											= 0;
-	virtual void					Special_Render(SpecialRenderInfoClass & rinfo)						{ }
-	virtual void					On_Frame_Update(void) 														{ }
-	virtual void					Restart(void)																	{ }	
+	virtual void Render( RenderInfoClass& rinfo ) = 0;
+	
+	virtual void Special_Render( SpecialRenderInfoClass& rinfo ){
+	}
+
+	virtual void On_Frame_Update(void){
+	}
+
+	virtual void Restart(void){
+	}	
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,18 +249,18 @@ public:
 	virtual SceneClass *			Get_Scene(void);
 	virtual SceneClass *			Peek_Scene(void)																{ return Scene; }
 	virtual void					Set_Container(RenderObjClass * con);
-	virtual RenderObjClass *	Get_Container(void) const;
-	virtual void					Validate_Transform(void) const;
+	virtual RenderObjClass*	Get_Container(void) const;
+	virtual void Validate_Transform(void) const;
 
-	virtual void 					Set_Transform(const Matrix3D &m);
-	virtual void 					Set_Position(const Vector3 &v);
-	const Matrix3D &				Get_Transform(void) const;
-	const Matrix3D &				Get_Transform(bool& is_transform_identity) const;
-	const Matrix3D &				Get_Transform_No_Validity_Check(void) const;
-	const Matrix3D &				Get_Transform_No_Validity_Check(bool& is_transform_identity) const;
-	bool								Is_Transform_Identity() const;
-	bool								Is_Transform_Identity_No_Validity_Check() const;
-	Vector3							Get_Position(void) const;
+	virtual void Set_Transform( const Matrix3D& m );
+	virtual void Set_Position( const Vector3& v );
+	const Matrix3D& Get_Transform(void) const;
+	const Matrix3D& Get_Transform( bool& is_transform_identity ) const;
+	const Matrix3D& Get_Transform_No_Validity_Check(void) const;
+	const Matrix3D& Get_Transform_No_Validity_Check( bool& is_transform_identity ) const;
+	bool Is_Transform_Identity() const;
+	bool Is_Transform_Identity_No_Validity_Check() const;
+	Vector3 Get_Position(void) const;
 
 	virtual void					Notify_Added(SceneClass * scene);
 	virtual void					Notify_Removed(SceneClass * scene);
@@ -259,7 +279,7 @@ public:
 	virtual int						Remove_Sub_Objects_From_Bone(const char * bname);
 
 	// This is public only so objects can recursively call this on their sub-objects
-	virtual void					Update_Sub_Object_Transforms(void);
+	virtual void Update_Sub_Object_Transforms(void);
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -322,7 +342,7 @@ public:
 	virtual const AABoxClass &	Get_Bounding_Box(void) const;
 	virtual void		 			Get_Obj_Space_Bounding_Sphere(SphereClass & sphere) const;
 	virtual void					Get_Obj_Space_Bounding_Box(AABoxClass & box) const;
-   virtual void               Update_Obj_Space_Bounding_Volumes(void)								{ };
+	virtual void               Update_Obj_Space_Bounding_Volumes(void)								{ };
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,19 +355,47 @@ public:
 	static const float	AT_MIN_LOD;
 	static const float	AT_MAX_LOD;
 
-	virtual void	Prepare_LOD(CameraClass &camera);
-   virtual void   Recalculate_Static_LOD_Factors(void)													{ }
-	virtual void	Increment_LOD(void)																			{ }
-	virtual void	Decrement_LOD(void)																			{ }
-	virtual float	Get_Cost(void) const;
-	virtual float	Get_Value(void) const																		{ return AT_MIN_LOD; }
-	virtual float	Get_Post_Increment_Value(void) const													{ return AT_MAX_LOD; }
-	virtual void	Set_LOD_Level(int lod)																		{ }
-	virtual int		Get_LOD_Level(void) const																	{ return 0; }
-	virtual int		Get_LOD_Count(void) const																	{ return 1; }
-	virtual void	Set_LOD_Bias(float bias)																	{ }
-	virtual int	Calculate_Cost_Value_Arrays(float screen_area, float *values, float *costs) const;
-	virtual RenderObjClass *	Get_Current_LOD(void)														{ Add_Ref(); return this; }
+	virtual void Prepare_LOD(CameraClass& camera);
+
+   	virtual void Recalculate_Static_LOD_Factors(void){
+	}
+
+	virtual void Increment_LOD(void){
+	}
+
+	virtual void Decrement_LOD(void){
+	}
+
+	virtual float Get_Cost(void) const;
+	
+	virtual float Get_Value(void) const{
+		return AT_MIN_LOD;
+	}
+
+	virtual float Get_Post_Increment_Value(void) const {
+		return AT_MAX_LOD;
+	}
+
+	virtual void Set_LOD_Level( int lod ){
+	}
+
+	virtual int Get_LOD_Level(void) const{
+		return 0;
+	}
+
+	virtual int Get_LOD_Count(void) const{
+		return 1;
+	}
+
+	virtual void Set_LOD_Bias( float bias ){
+	}
+
+	virtual int	Calculate_Cost_Value_Arrays( float screen_area, float* values, float* costs ) const;
+	
+	virtual RenderObjClass* Get_Current_LOD(void){
+		Add_Ref();
+		return this;
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,14 +425,12 @@ public:
 	virtual void *					Get_User_Data()																{ return User_Data; };
 	virtual int						Get_Num_Snap_Points(void)													{ return 0; }
 	virtual void					Get_Snap_Point(int index,Vector3 * set)								{ }
-//	virtual float					Calculate_Texture_Reduction_Factor(float norm_screensize);
-//	virtual void					Set_Texture_Reduction_Factor(float trf);
 	virtual float					Get_Screen_Size(CameraClass &camera);
 	virtual void					Scale(float scale) 															{ };
 	virtual void					Scale(float scalex, float scaley, float scalez)						{ };
 
-   virtual int						Get_Sort_Level(void) const													{ return 0; /* SORT_LEVEL_NONE */ }
-   virtual void					Set_Sort_Level(int level)													{ }
+   	virtual int						Get_Sort_Level(void) const													{ return 0; /* SORT_LEVEL_NONE */ }
+   	virtual void					Set_Sort_Level(int level)													{ }
 	
 	virtual int						Is_Really_Visible(void)														{ return ((Bits & IS_REALLY_VISIBLE) == IS_REALLY_VISIBLE); }
 	virtual int						Is_Not_Hidden_At_All(void)													{ return ((Bits & IS_NOT_HIDDEN_AT_ALL) == IS_NOT_HIDDEN_AT_ALL); }
@@ -403,7 +449,7 @@ public:
 	virtual void					Set_Translucent(int onoff)													{ if (onoff) { Bits |= IS_TRANSLUCENT; } else { Bits &= ~IS_TRANSLUCENT; } }
 	virtual int						Get_Collision_Type(void) const											{ return (Bits & COLLISION_TYPE_MASK); }
 	virtual void					Set_Collision_Type(int type)												{ Bits &= ~COLLISION_TYPE_MASK; Bits |= (type & COLLISION_TYPE_MASK) | COLLISION_TYPE_ALL; }
-   virtual bool					Is_Complete(void)																{ return false; }
+   	virtual bool					Is_Complete(void)																{ return false; }
 	virtual bool					Is_In_Scene(void)																{ return Scene != NULL; }
 	virtual float					Get_Native_Screen_Size(void) const										{ return NativeScreenSize; }
 	virtual void					Set_Native_Screen_Size(float screensize)								{ NativeScreenSize = screensize; }
@@ -412,7 +458,10 @@ public:
 	int								Is_Sub_Objects_Match_LOD_Enabled(void)									{ return Bits & SUBOBJS_MATCH_LOD; }
 
 	void								Set_Sub_Object_Transforms_Dirty(bool onoff)							{ if (onoff) { Bits |= SUBOBJ_TRANSFORMS_DIRTY; } else { Bits &= ~SUBOBJ_TRANSFORMS_DIRTY; } }
-	bool								Are_Sub_Object_Transforms_Dirty(void)									{ return (Bits & SUBOBJ_TRANSFORMS_DIRTY) != 0; }
+	
+	bool Are_Sub_Object_Transforms_Dirty(void){
+		return ( Bits & SUBOBJ_TRANSFORMS_DIRTY ) != 0;
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Persistant object save-load interface
@@ -426,59 +475,64 @@ public:
 
 protected:
 
-	virtual void					Add_Dependencies_To_List (DynamicVectorClass<StringClass> &file_list, bool textures_only = false);
+	virtual void Add_Dependencies_To_List(DynamicVectorClass<StringClass> &file_list, bool textures_only = false);
 
-	virtual void					Update_Cached_Bounding_Volumes(void) const;
-	virtual void					Update_Sub_Object_Bits(void);
+	virtual void Update_Cached_Bounding_Volumes(void) const;
+	virtual void Update_Sub_Object_Bits(void);
 	
-	bool								Bounding_Volumes_Valid(void) const										{ return (Bits & BOUNDING_VOLUMES_VALID) != 0; }
-	void								Invalidate_Cached_Bounding_Volumes(void) const						{ Bits &= ~BOUNDING_VOLUMES_VALID; }
-	void								Validate_Cached_Bounding_Volumes(void)	const							{ Bits |= BOUNDING_VOLUMES_VALID; }
+	bool Bounding_Volumes_Valid(void) const {
+		return ( Bits & BOUNDING_VOLUMES_VALID ) != 0;
+	}
+	
+	void Invalidate_Cached_Bounding_Volumes(void) const {
+		Bits &= ~BOUNDING_VOLUMES_VALID;
+	}
 
-	void								Save_Sub_Object_User_Lighting(ChunkSaveClass & csave,RenderObjClass * sub_obj,int bone_index);
-	void								Load_Sub_Object_User_Lighting(ChunkLoadClass & cload);
+	void Validate_Cached_Bounding_Volumes(void)	const {
+		Bits |= BOUNDING_VOLUMES_VALID;
+	}
 
+	void Save_Sub_Object_User_Lighting( ChunkSaveClass& csave, RenderObjClass* sub_obj, int bone_index );
+	void Load_Sub_Object_User_Lighting( ChunkLoadClass& cload );
 
-	enum 
-	{
-		COLLISION_TYPE_MASK =		0x000000FF,
+	enum {
+		COLLISION_TYPE_MASK 	= 0x000000FF,
 
-		IS_VISIBLE =					0x00000100,
-		IS_NOT_HIDDEN =				0x00000200,
-		IS_NOT_ANIMATION_HIDDEN =	0x00000400,
-		IS_FORCE_VISIBLE =			0x00000800,
-		BOUNDING_VOLUMES_VALID =	0x00002000,		
-		IS_TRANSLUCENT =				0x00004000,			// is additive or alpha blended on any poly
-		//IS_VERTEX_PROCESSOR =		0x00008000,			// is or has a vertex processor, OBSOLETE!
-		SUBOBJS_MATCH_LOD =			0x00010000,			// force sub-objects to have same LOD level
-		SUBOBJ_TRANSFORMS_DIRTY =	0x00020000,			// my sub-objects need me to update their transform
-		HAS_USER_LIGHTING =			0x00040000,			// the user has installed a static lighting solve.
+		IS_VISIBLE 				= 0x00000100,
+		IS_NOT_HIDDEN 			= 0x00000200,
+		IS_NOT_ANIMATION_HIDDEN = 0x00000400,
+		IS_FORCE_VISIBLE 		= 0x00000800,
+		BOUNDING_VOLUMES_VALID 	= 0x00002000,		
+		IS_TRANSLUCENT 			= 0x00004000,			// is additive or alpha blended on any poly
+		SUBOBJS_MATCH_LOD 		= 0x00010000,			// force sub-objects to have same LOD level
+		SUBOBJ_TRANSFORMS_DIRTY = 0x00020000,			// my sub-objects need me to update their transform
+		HAS_USER_LIGHTING 		= 0x00040000,			// the user has installed a static lighting solve.
 		
-		IS_REALLY_VISIBLE =			IS_VISIBLE | IS_NOT_HIDDEN | IS_NOT_ANIMATION_HIDDEN,
-      IS_NOT_HIDDEN_AT_ALL =     IS_NOT_HIDDEN | IS_NOT_ANIMATION_HIDDEN,
-		DEFAULT_BITS =					COLLISION_TYPE_ALL | IS_NOT_HIDDEN | IS_NOT_ANIMATION_HIDDEN,
+		IS_REALLY_VISIBLE 		= IS_VISIBLE | IS_NOT_HIDDEN | IS_NOT_ANIMATION_HIDDEN,
+		IS_NOT_HIDDEN_AT_ALL	= IS_NOT_HIDDEN | IS_NOT_ANIMATION_HIDDEN,
+		DEFAULT_BITS 			= COLLISION_TYPE_ALL | IS_NOT_HIDDEN | IS_NOT_ANIMATION_HIDDEN,
 	};
 
-	mutable unsigned long		Bits;
-	Matrix3D							Transform;
-	mutable SphereClass			CachedBoundingSphere;
-	mutable AABoxClass			CachedBoundingBox;
-	float								NativeScreenSize;		// The screen size at which the object was designed to be viewed (used in texture resizing).
-	mutable bool					IsTransformIdentity;
+	mutable unsigned long Bits;
+	Matrix3D Transform;
+	mutable SphereClass CachedBoundingSphere;
+	mutable AABoxClass CachedBoundingBox;
+	float NativeScreenSize; // The screen size at which the object was designed to be viewed (used in texture resizing).
+	mutable bool IsTransformIdentity;
 
-	SceneClass *					Scene;
-	RenderObjClass *				Container;
-	void *							User_Data;
+	SceneClass* Scene;
+	RenderObjClass* Container;
+	void* User_Data;
 	
 	friend class SceneClass;
 	friend class RenderObjProxyClass;
 };
 
-WWINLINE const SphereClass & RenderObjClass::Get_Bounding_Sphere(void) const
-{
-	if (!(Bits & BOUNDING_VOLUMES_VALID)) {
+WWINLINE const SphereClass& RenderObjClass::Get_Bounding_Sphere(void) const {
+	if( !( Bits & BOUNDING_VOLUMES_VALID ) ){
 		Update_Cached_Bounding_Volumes();
-	} 
+	}
+
 	return CachedBoundingSphere;
 }
 
@@ -524,45 +578,37 @@ WWINLINE float Bound_Degrees(float angle)
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE const Matrix3D & RenderObjClass::Get_Transform(void) const
-{
+WWINLINE const Matrix3D & RenderObjClass::Get_Transform(void) const {
 	Validate_Transform();
 	return Transform;
 }
 
-WWINLINE const Matrix3D & RenderObjClass::Get_Transform(bool &is_transform_identity) const
-{
+WWINLINE const Matrix3D & RenderObjClass::Get_Transform( bool& is_transform_identity ) const {
 	Validate_Transform();
-	is_transform_identity=IsTransformIdentity;
+	is_transform_identity = IsTransformIdentity;
 	return Transform;
 }
 
-WWINLINE bool RenderObjClass::Is_Transform_Identity() const
-{
+WWINLINE bool RenderObjClass::Is_Transform_Identity() const {
 	Validate_Transform();
 	return IsTransformIdentity;
 }
 
 // Warning: Be sure to call this function only if the transform is known to be valid!
-WWINLINE const Matrix3D & RenderObjClass::Get_Transform_No_Validity_Check(void) const
-{
+WWINLINE const Matrix3D& RenderObjClass::Get_Transform_No_Validity_Check(void) const {
 	return Transform;
 }
 
 // Warning: Be sure to call this function only if the transform is known to be valid!
-WWINLINE const Matrix3D & RenderObjClass::Get_Transform_No_Validity_Check(bool& is_transform_identity) const
-{
-	is_transform_identity=IsTransformIdentity;
+WWINLINE const Matrix3D& RenderObjClass::Get_Transform_No_Validity_Check( bool& is_transform_identity ) const {
+	is_transform_identity = IsTransformIdentity;
+
 	return Transform;
 }
 
 // Warning: Be sure to call this function only if the transform is known to be valid!
-WWINLINE bool RenderObjClass::Is_Transform_Identity_No_Validity_Check() const
-{
+WWINLINE bool RenderObjClass::Is_Transform_Identity_No_Validity_Check() const {
 	return IsTransformIdentity;
 }
-
-
-
 
 #endif

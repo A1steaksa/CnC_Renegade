@@ -1,19 +1,19 @@
 /*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
+** Command & Conquer Renegade(tm)
+** Copyright 2025 Electronic Arts Inc.
 **
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
+** This program is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
 **
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
 **
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+** You should have received a copy of the GNU General Public License
+** along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /***********************************************************************************************
@@ -189,7 +189,7 @@ void CombatManager::Init( bool render_available ){
 
 	HUDClass::Init( render_available );
 	ScreenFadeManager::Init();
-	FirstPerson	= FirstPersonDefault;
+	FirstPerson = FirstPersonDefault;
 }
 
 
@@ -570,45 +570,34 @@ void CombatManager::Handle_Input(){
 void CombatManager::Think(){
 	SyncTime += (int) ( ( TimeManager::Get_Frame_Seconds() * 1000.0f ) + 0.5f );
 
-	WWPROFILE( "CombatManager Think" );
-
 	IsGameplayPermitted=NetworkHandler->Is_Gameplay_Permitted();
-{	WWPROFILE( "Input" );
-	Handle_Input();
-}
 
-	// Display debug boxes for the coordinate zones as necessary
-	if( SoldierGameObj::Is_Ghost_Collision_Debug_Display_Enabled() ){
-		UnitCoordinationZoneMgr::Display_Debug_Boxes();
-	}
-{	WWPROFILE( "Bullets" );
+	Handle_Input();
+
 	BulletManager::Update();
-}
 
 	ObjectiveManager::Update( TimeManager::Get_Frame_Seconds() );
 
 	// Now, Process all objects logically
-	ConversationMgrClass::Think();{	WWPROFILE( "Game Obj Think" );
+	ConversationMgrClass::Think();
+	
 	GameObjManager::Think();
 
 	// Now, Process all objects physically
-}{	WWPROFILE( "Scene" );
   	COMBAT_SCENE->Update( TimeManager::Get_Frame_Seconds(), 0 );
 
-}{	WWPROFILE( "Star" );
 	Update_Star();
 
 	// In normal mode, the camera must think before Post_Think, since the
 	// camera update calls Set_Targeting on the star, which must feed Update_Animation
-}{	WWPROFILE( "Camera 1" );
+
 	if( !MainCamera->Is_Using_Host_Model() ){
 		MainCamera->Update();
 	}
 
 	// Now, Post Process all objects logically
-}{	WWPROFILE( "Post Think" );
 	GameObjManager::Post_Think();
-}
+
 	// In host_model mode, the camera must think after Post_Think, so the host model has
 	// a chance to determine where the camera should be
 	if( MainCamera->Is_Using_Host_Model() ){
@@ -618,26 +607,17 @@ void CombatManager::Think(){
 	// The targeting comes from the update weapons in the post_think
 	Update_Star_Targeting();
 
-	Do_Skeleton_Slider_Demo();
-{	WWPROFILE( "Message Window" );
 	MessageWindow->On_Frame_Update();
-}
 
 	SpawnManager::Update();
-{	WWPROFILE( "Sound Environment" );
 
 	if( SoundEnvironment != NULL ){
-		SoundEnvironment->Update (COMBAT_SCENE, MainCamera);
+		SoundEnvironment->Update( COMBAT_SCENE, MainCamera );
 	}
-}
-{	WWPROFILE( "Background" );
 
-	BackgroundMgrClass::Update (COMBAT_SCENE, MainCamera);
-}
-{  WWPROFILE( "Weather" );
+	BackgroundMgrClass::Update( COMBAT_SCENE, MainCamera );
 
-	WeatherMgrClass::Update (COMBAT_SCENE, MainCamera);
-}
+	WeatherMgrClass::Update( COMBAT_SCENE, MainCamera );
 
 	HUDClass::Think();
 	WeaponViewClass::Think();
@@ -652,30 +632,17 @@ void CombatManager::Render(){
 	if( MultiplayRenderingAllowed ){
 		SystemInfoLog::Record_Frame();
 
-		{
-			WWPROFILE( "Camera Shakes" );
-			COMBAT_SCENE->Apply_Camera_Shakes( *MainCamera );
-		}
+		COMBAT_SCENE->Apply_Camera_Shakes( *MainCamera );
 
 		DazzleRenderObjClass::Install_Dazzle_Visibility_Handler( &_TheCombatDazzleHandler );
 
-		{
-			WWPROFILE( "Combat Render BG" );
+		WW3D::Render( BackgroundScene, MainCamera );
 
-			WW3D::Render( BackgroundScene, MainCamera );
-		}
+		WW3D::Render( COMBAT_SCENE, MainCamera );
 
-		{
-			WWPROFILE( "Combat Render FG" );
-			WW3D::Render( COMBAT_SCENE, MainCamera );
-		}
-
-		{
-			WWPROFILE( "DazzleRenderer" );
-			DazzleLayerClass* dlayer = COMBAT_DAZZLE_LAYER;
-			if( dlayer != NULL ){
-				dlayer->Render(COMBAT_CAMERA);
-			}
+		DazzleLayerClass* dlayer = COMBAT_DAZZLE_LAYER;
+		if( dlayer != NULL ){
+			dlayer->Render(COMBAT_CAMERA);
 		}
 
 		DazzleRenderObjClass::Install_Dazzle_Visibility_Handler(NULL);
@@ -686,19 +653,16 @@ void CombatManager::Render(){
 	}
 }
 
-/*
-**
-*/
-enum	{
-	CHUNKID_THE_STAR							=	916991712,
+enum {
+	CHUNKID_THE_STAR =	916991712,
 	CHUNKID_FIRST_LOAD,
 	CHUNKID_NOT_FIRST_LOAD,				// Delete this one, ( and change default to false )
 	CHUNKID_VARIABLES,
 	CHUNKID_CCAMERA,
 
-	MICROCHUNKID_FIRST_LOAD					=	1,
-	MICROCHUNKID_DIFFICULTY_LEVEL			=	2,
-	MICROCHUNKID_SYNC_TIME					=	3,
+	MICROCHUNKID_FIRST_LOAD =	1,
+	MICROCHUNKID_DIFFICULTY_LEVEL =	2,
+	MICROCHUNKID_SYNC_TIME =	3,
 	MICROCHUNKID_START_SCRIPT,
 	MICROCHUNKID_RESPAWN_SCRIPT,
 	MICROCHUNKID_RELOAD_COUNT,
@@ -712,7 +676,7 @@ bool CombatManager::Save( ChunkSaveClass &csave ){
 	csave.End_Chunk();
 
 	csave.Begin_Chunk( CHUNKID_VARIABLES );
-		bool	first_load = !Are_Observers_Active();
+		bool first_load = !Are_Observers_Active();
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_FIRST_LOAD, first_load );
 		if( !first_load ){
 			WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DIFFICULTY_LEVEL, DifficultyLevel );
@@ -746,7 +710,7 @@ bool CombatManager::Load( ChunkLoadClass& cload ){
 	int cheat_history = 0;
 	FirstPerson = FirstPersonDefault;
 
-	while (cload.Open_Chunk()){
+	while(cload.Open_Chunk()){
 		switch(cload.Cur_Chunk_ID()){
 
 			case CHUNKID_THE_STAR:
@@ -754,7 +718,7 @@ bool CombatManager::Load( ChunkLoadClass& cload ){
 				break;
 
 			case CHUNKID_VARIABLES:
-				while (cload.Open_Micro_Chunk()){
+				while(cload.Open_Micro_Chunk()){
 					switch(cload.Cur_Micro_Chunk_ID()){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_FIRST_LOAD, IsFirstLoad );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_DIFFICULTY_LEVEL, DifficultyLevel );
@@ -800,9 +764,7 @@ bool CombatManager::Load( ChunkLoadClass& cload ){
 	return true;
 }
 
-/*
-**
-*/
+
 bool CombatManager::Can_Damage( ArmedGameObj* p_armed_damager, PhysicalGameObj* p_phys_victim ){
 	if( NetworkHandler != NULL ){
 		return NetworkHandler->Can_Damage( p_armed_damager, p_phys_victim );
@@ -867,7 +829,7 @@ void CombatManager::Set_Camera_Profile( const char * profile_name ){
 	}
 }
 
-void CombatManager::Set_The_Star( SoldierGameObj *target, bool is_star_determining_target ){
+void CombatManager::Set_The_Star( SoldierGameObj* target, bool is_star_determining_target ){
 	if( TheStar != target ){
 		HUDClass::Reset();	// Reset the HUD (clear damage and powerups)
 	}
@@ -1080,7 +1042,7 @@ void CombatManager::Set_Combat_Mode( int mode ){
 
 void CombatManager::Update_Combat_Mode(void){
 	SoldierGameObj * star = COMBAT_STAR;
-	Vector3	pos;
+	Vector3 pos;
 	star->Get_Position( &pos );
 	COMBAT_CAMERA->Set_Anchor_Position( pos );
 
@@ -1111,7 +1073,7 @@ void CombatManager::Update_Combat_Mode(void){
 			VehicleGameObj * vehicle = star->Get_Profile_Vehicle();
 			WWASSERT( vehicle );
 
-			Vector3	pos;
+			Vector3 pos;
 			vehicle->Get_Position( &pos );
 			COMBAT_CAMERA->Set_Anchor_Position( pos );
 

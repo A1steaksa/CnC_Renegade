@@ -111,8 +111,8 @@ protected:
 	RenderObjClass	 *		HostModel;
 
 	// Camera Anchor Position
-	Vector3					AnchorPosition;
-	bool						IsValid;
+	Vector3 AnchorPosition;
+	bool IsValid;
 
 	// Current orientation of the camera
 	float						Tilt;

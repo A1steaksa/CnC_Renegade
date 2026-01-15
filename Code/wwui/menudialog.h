@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -57,8 +39,7 @@ class MenuBackDropClass;
 //	MenuDialogClass
 //
 ////////////////////////////////////////////////////////////////
-class MenuDialogClass : public DialogBaseClass
-{
+class MenuDialogClass : public DialogBaseClass {
 public:
 
 	////////////////////////////////////////////////////////////////
@@ -74,31 +55,38 @@ public:
 	//
 	//	Initialization
 	//
-	static void						Initialize (void);
-	static void						Shutdown (void);
+	static void Initialize(void);
+	static void Shutdown(void);
 
 	//
 	//	RTTI
 	//
-	virtual MenuDialogClass *	As_MenuDialogClass (void)	{ return this; }
+	virtual MenuDialogClass* As_MenuDialogClass(void){
+		return this;
+	}
 
 	//
 	//	Configuration methods
 	//
-	static MenuBackDropClass *	Get_BackDrop (void)		{ return BackDrop; }
-	static MenuBackDropClass *	Replace_BackDrop (MenuBackDropClass *backdrop);
+	static MenuBackDropClass* Get_BackDrop(void){
+		return BackDrop;
+	}
+
+	static MenuBackDropClass* Replace_BackDrop( MenuBackDropClass* backdrop );
 
 	//
 	//	Informational
 	//
-	bool						Is_Active_Menu (void) const	{ return (ActiveMenu == this); }
+	bool Is_Active_Menu(void) const {
+		return ( ActiveMenu == this );
+	}
 
 	//
 	//	From DialogBaseClass
 	//
-	virtual void			Start_Dialog (void);
-	virtual void			Render (void);
-	virtual void			End_Dialog (void);
+	virtual void Start_Dialog(void);
+	virtual void Render(void);
+	virtual void End_Dialog(void);
 
 protected:
 
@@ -109,21 +97,22 @@ protected:
 	//
 	//	From DialogBaseClass
 	//
-	virtual void			On_Activate (bool onoff);
+	virtual void On_Activate( bool onoff );
 
 	//
 	//	New notifications
 	//
-	virtual void			On_Menu_Activate (bool onoff);
-	virtual void			On_Last_Menu_Ending (void) {}
+	virtual void On_Menu_Activate( bool onoff );
+	virtual void On_Last_Menu_Ending(void){
+	}
 
 
 	////////////////////////////////////////////////////////////////
 	//	Protected member data
 	////////////////////////////////////////////////////////////////	
-	static MenuDialogClass *								ActiveMenu;
-	static MenuBackDropClass *								BackDrop;
-	static DynamicVectorClass<MenuDialogClass *>		MenuStack;
+	static MenuDialogClass* ActiveMenu;
+	static MenuBackDropClass* BackDrop;
+	static DynamicVectorClass<MenuDialogClass*> MenuStack;
 };
 
 

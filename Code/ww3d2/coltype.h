@@ -69,9 +69,9 @@
 // do queries against every piece of geometry in a render obj if desired.
 // 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-enum
-{
-	COLLISION_TYPE_ALL	= 0x01,		// perform this test against *EVERYTHING*
+
+enum {
+	COLLISION_TYPE_ALL		= 0x01,		// perform this test against *EVERYTHING*
 	COLLISION_TYPE_0		= 0x02,		// perform this test against type 0 collision objects
 	COLLISION_TYPE_1		= 0x04,		// perform this test against type 1 collision objects
 	COLLISION_TYPE_2		= 0x08,
@@ -87,7 +87,4 @@ enum
 	COLLISION_TYPE_VEHICLE =		COLLISION_TYPE_4,		// vehicles will collide with physical and this.
 };
 
-
-
 #endif
-

@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -101,21 +83,19 @@ static void _reload_game_configuration_files(void);
 ////////////////////////////////////////////////////////////////
 //	Static member initialization
 ////////////////////////////////////////////////////////////////
-bool		GameInitMgrClass::IsClientRequired	= false;
-bool		GameInitMgrClass::IsServerRequired	= false;
-bool		GameInitMgrClass::RestoreSFX			= false;
-bool		GameInitMgrClass::RestoreMusic		= false;
-bool		GameInitMgrClass::NeedsGameExit		= false;
-bool		GameInitMgrClass::NeedsGameExitAll	= false;
-int		GameInitMgrClass::Mode					= MODE_UNKNOWN;
-int		GameInitMgrClass::WOLReturnDialog	= RenegadeDialogMgrClass::LOC_INTERNET_MAIN;
+bool GameInitMgrClass::IsClientRequired	= false;
+bool GameInitMgrClass::IsServerRequired	= false;
+bool GameInitMgrClass::RestoreSFX		= false;
+bool GameInitMgrClass::RestoreMusic		= false;
+bool GameInitMgrClass::NeedsGameExit	= false;
+bool GameInitMgrClass::NeedsGameExitAll	= false;
+int GameInitMgrClass::Mode				= MODE_UNKNOWN;
+int GameInitMgrClass::WOLReturnDialog	= RenegadeDialogMgrClass::LOC_INTERNET_MAIN;
 
 
-bool GameInitMgrClass::Is_Game_In_Progress(void)
-{
+bool GameInitMgrClass::Is_Game_In_Progress(void){
 	GameModeClass* mode = GameModeManager::Find("Combat");
-	//return (mode && mode->Is_Active());
-	return (mode != NULL && !mode->Is_Inactive());
+	return( mode != NULL && !mode->Is_Inactive() );
 }
 
 
@@ -127,8 +107,8 @@ bool GameInitMgrClass::Is_Game_In_Progress(void)
 void GameInitMgrClass::Start_Game( const char *map_name, int teamChoice, unsigned long clanID ){
 	unsigned long time;
 
-	WWASSERT(map_name != NULL);
-	WWDEBUG_SAY (("GameInitMgrClass::Start_Game(%s)\n", map_name));
+	WWASSERT( map_name != NULL );
+	WWDEBUG_SAY( ( "GameInitMgrClass::Start_Game(%s)\n", map_name ) );
 
 	// NOTE: Multi-play does not need this fix because it does not sound page swap.
 	if( IS_SOLOPLAY ){
@@ -137,11 +117,11 @@ void GameInitMgrClass::Start_Game( const char *map_name, int teamChoice, unsigne
 		// been started by the caller.
 		time = TIMEGETTIME();
 		while (TIMEGETTIME() - time < PRE_SERVICE_TIME) {
-			WWAudioClass::Get_Instance ()->On_Frame_Update (0);
+			WWAudioClass::Get_Instance()->On_Frame_Update(0);
 		}
 		
  		// IML: Ensure that there are no sound effects lingering on any playlist. 
-		WWAudioClass::Get_Instance ()->Flush_Playlist();
+		WWAudioClass::Get_Instance()->Flush_Playlist();
 
 		// IML: Allow audio system to clean-up after flush.
 		time = TIMEGETTIME();
@@ -155,37 +135,25 @@ void GameInitMgrClass::Start_Game( const char *map_name, int teamChoice, unsigne
 	//
 	if( GameModeManager::Find( "Combat" )->Is_Suspended() ){
 		End_Game();
-		GameModeManager::Safely_Deactivate ();
+		GameModeManager::Safely_Deactivate();
 	}
 
 	//
 	//	Set the map name
 	//
-	StringClass map(map_name,true);
+	StringClass map( map_name,true );
 	WWASSERT(PTheGameData != NULL);
-	The_Game ()->Set_Map_Name (map);
+	The_Game()->Set_Map_Name( map );
 
 	//
 	//	Determine if there is a mod specified... if so, load the mod package
 	//
-	ModPackageMgrClass::Load_Current_Mod ();
+	ModPackageMgrClass::Load_Current_Mod();
 
 	//
 	// Reload the sub-systems that may be affected by a mod
 	//
 	_reload_game_configuration_files();
-
-	//
-	//	Check to ensure the game is configured correctly
-	//
-	#ifdef WWDEBUG
-	WideStringClass outMsg;
-	
-	if (!The_Game()->Is_Valid_Settings(outMsg)) {
-		WWDEBUG_SAY(("ERROR: %S\n", (const WCHAR*)outMsg));
-		WWASSERT("The_Game()->Is_Valid_Settings()");
-	}
-	#endif
 
 	//
 	// Reset Data Safe state.
@@ -201,33 +169,33 @@ void GameInitMgrClass::Start_Game( const char *map_name, int teamChoice, unsigne
 	//	Start either the client or server (or both) depending
 	// on which mode we are in.
 	//
-	Start_Client_Server ();
+	Start_Client_Server();
 
 	//
 	//	Deactivate the menu system
 	//
 	INIT_STATUS ("Deactivate menu");
-	GameModeManager::Find ("Menu")->Deactivate ();
+	GameModeManager::Find( "Menu" )->Deactivate();
 
 	//
 	//	Active the combat system
 	//
 	INIT_STATUS ("Activate combat");
-   GameModeManager::Find ("Combat")->Activate ();
+   	GameModeManager::Find( "Combat" )->Activate();
 	INIT_STATUS ("");
 
 	//
 	//	Load the level
 	//
-	CombatGameModeClass *game_mode = static_cast<CombatGameModeClass*>(GameModeManager::Find ("Combat"));
-	game_mode->Load_Level ();
+	CombatGameModeClass* game_mode = static_cast<CombatGameModeClass*>( GameModeManager::Find( "Combat" ) );
+	game_mode->Load_Level();
 
-   //
+  	//
 	//	Let the LAN or WOL interface know we are starting a game
 	//
 	if (Mode == MODE_LAN) {
 		INIT_STATUS ("Go to location");
-		PLC->Go_To_Location (LANLOC_INGAME);
+		PLC->Go_To_Location( LANLOC_INGAME );
 	} else if (Mode == MODE_WOL) {
 		INIT_STATUS ("Go to game channel");
 	}
@@ -257,8 +225,6 @@ void GameInitMgrClass::Start_Game( const char *map_name, int teamChoice, unsigne
 	// Listen for server control messages.
 	//
 	GameSideServerControlClass::Init();
-
-	return ;
 }
 
 
@@ -548,10 +514,6 @@ GameInitMgrClass::Start_Client_Server (void)
 		The_Game()->Set_Port(cUserOptions::GameSpyGamePort.Get());
 	}
 
-#ifdef WWDEBUG
-	cRemoteHost::Set_Allow_Extra_Modem_Bandwidth_Throttling(cDevOptions::ExtraModemBandwidthThrottling.Get());
-#endif //WWDEBUG
-
 	//
 	//	Start the server (if necessary)
 	//
@@ -618,146 +580,81 @@ GameInitMgrClass::Start_Client_Server (void)
 //	End_Client_Server
 //
 ////////////////////////////////////////////////////////////////
-void
-GameInitMgrClass::End_Client_Server (void)
-{
-   WWDEBUG_SAY (("GameInitMgrClass::End_Client_Server\n"));
-
-	//
-	//	Cleanup the client
-	//
-	if (cNetwork::I_Am_Client ()) {
-		cNetwork::Cleanup_Client ();
+void GameInitMgrClass::End_Client_Server(void){
+   WWDEBUG_SAY( ( "GameInitMgrClass::End_Client_Server\n" ) );
+	
+   // Cleanup the client
+	if( cNetwork::I_Am_Client() ){
+		cNetwork::Cleanup_Client();
 	}
 
-	//
 	//	Cleanup the server
-	//
-	if (cNetwork::I_Am_Server ()) {
-		cNetwork::Cleanup_Server ();
+	if( cNetwork::I_Am_Server() ){
+		cNetwork::Cleanup_Server();
 	}
-
-	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Initialize_SP
-//
-////////////////////////////////////////////////////////////////
-void
-GameInitMgrClass::Initialize_SP (void)
-{
-#ifndef MULTIPLAYERDEMO
-
+void GameInitMgrClass::Initialize_SP(void){
    WWDEBUG_SAY (("GameInitMgrClass::Initialize_SP\n"));
 
-	if (Mode != MODE_UNKNOWN) {
-		Shutdown ();
+	if( Mode != MODE_UNKNOWN ){
+		Shutdown();
 	}
 
-	//
 	// Notify combat
-	//
-	//cSingleData::Set_Is_Single_Player (true);
-	cGameType::Set_Game_Type(GAMETYPE_MISSION);
+	cGameType::Set_Game_Type( GAMETYPE_MISSION );
 
-	//
 	// Notify wwnet
-	//
-	cSinglePlayerData::Init ();
+	cSinglePlayerData::Init();
 
 	WideStringClass widestring;
-	widestring.Convert_From("Renegade");
-   cNetInterface::Set_Nickname(widestring);
+	widestring.Convert_From( "Renegade" );
+	cNetInterface::Set_Nickname( widestring );
 
-	//
-	//	Create the new game type
-	//
-	WWASSERT (PTheGameData == NULL);
+	// Create the new game type
+	WWASSERT( PTheGameData == NULL );
 	PTheGameData = new cGameDataSinglePlayer;
-	WWASSERT(PTheGameData != NULL);
+	WWASSERT( PTheGameData != NULL );
 
-	//
-	//	Remember our state
-	//
-	IsClientRequired	= true;
-	IsServerRequired	= true;
-	Mode					= MODE_SP;
-	return ;
-
-#endif // !MULTIPLAYERDEMO
+	// Remember our state
+	IsClientRequired = true;
+	IsServerRequired = true;
+	Mode = MODE_SP;
 }
 
 
-////////////////////////////////////////////////////////////////
-//
-//	Shutdown_SP
-//
-////////////////////////////////////////////////////////////////
-void
-GameInitMgrClass::Shutdown_SP (void)
-{
-#ifndef MULTIPLAYERDEMO
-
-   WWDEBUG_SAY (("GameInitMgrClass::Shutdown_SP\n"));
-
-//#pragma message ("TSS Fix memory leak here")
-
-	//cSingleData::Set_Is_Single_Player(false);
-	cGameType::Set_Game_Type(GAMETYPE_NONE);
-
-#endif // !MULTIPLAYERDEMO
+void GameInitMgrClass::Shutdown_SP(void){
+	WWDEBUG_SAY( ( "GameInitMgrClass::Shutdown_SP\n" ) );
+	cGameType::Set_Game_Type( GAMETYPE_NONE );
 }
 
 
-////////////////////////////////////////////////////////////////
-//
-//	Initialize_Skirmish
-//
-////////////////////////////////////////////////////////////////
-void
-GameInitMgrClass::Initialize_Skirmish(void)
-{
-#ifndef MULTIPLAYERDEMO
-
+void GameInitMgrClass::Initialize_Skirmish(void){
    WWDEBUG_SAY(("GameInitMgrClass::Initialize_Skirmish\n"));
 
 	if (Mode != MODE_UNKNOWN) {
 		Shutdown ();
 	}
 
-	//
 	// Notify combat
-	//
-	//cSingleData::Set_Is_Single_Player(true);
 	cGameType::Set_Game_Type(GAMETYPE_SKIRMISH);
 
-	//
-	//	Notify wwnet
-	//
+	// Notify wwnet
 	cSinglePlayerData::Init ();
 
 	WideStringClass widestring;
 	widestring.Convert_From("Renegade");
-   cNetInterface::Set_Nickname(widestring);
+   	cNetInterface::Set_Nickname(widestring);
 
-	//
-	//	Create the new game type
-	//
-	WWASSERT (PTheGameData == NULL);
+	// Create the new game type
+	WWASSERT( PTheGameData == NULL );
 	PTheGameData = new cGameDataSkirmish;
-	WWASSERT(PTheGameData != NULL);
+	WWASSERT( PTheGameData != NULL );
 
-	//
-	//	Remember our state
-	//
+	// Remember our state
 	IsClientRequired	= true;
 	IsServerRequired	= true;
 	Mode					= MODE_SKIRMISH;
-
-#endif // !MULTIPLAYERDEMO
 }
 
 
@@ -898,8 +795,7 @@ GameInitMgrClass::Shutdown (void)
 {
    WWDEBUG_SAY (("GameInitMgrClass::Shutdown\n"));
 
-	switch (Mode)
-	{
+	switch( Mode ){
 		case MODE_SP:
 			Shutdown_SP ();
 			break;

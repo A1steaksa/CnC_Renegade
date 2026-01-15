@@ -44,8 +44,7 @@
 ////////////////////////////////////////////////////////////////
 //	Local constants
 ////////////////////////////////////////////////////////////////
-static const char * TEXTURE_NAME[MouseMgrClass::CURSOR_COUNT] =
-{
+static const char * TEXTURE_NAME[MouseMgrClass::CURSOR_COUNT] = {
 	"cursor_arrow.tga",
 	"cursor_text.tga",
 	"cursor_action.tga",
@@ -55,14 +54,13 @@ static const char * TEXTURE_NAME[MouseMgrClass::CURSOR_COUNT] =
 };
 
 
-static Vector2 HOTSPOTS[MouseMgrClass::CURSOR_COUNT] =
-{
-	Vector2 (0, 0),
-	Vector2 (15, 15),
-	Vector2 (7, 1),
-	Vector2 (15, 15),
-	Vector2 (15, 17),
-	Vector2 (15, 15)
+static Vector2 HOTSPOTS[MouseMgrClass::CURSOR_COUNT] = {
+	Vector2( 0, 0 ),
+	Vector2( 15, 15 ),
+	Vector2( 7, 1 ),
+	Vector2( 15, 15 ),
+	Vector2( 15, 17 ),
+	Vector2( 15, 15 )
 };
 
 
@@ -79,14 +77,10 @@ unsigned int MouseMgrClass::CursorWaitCount = 0;
 //	Initialize
 //
 ////////////////////////////////////////////////////////////////
-void
-MouseMgrClass::Initialize (void)
-{
-	//
-	//	Load each mouse cursor texture
-	//
-	for (int index = 0; index < CURSOR_COUNT; index ++) {
-		Textures[index] = WW3DAssetManager::Get_Instance()->Get_Texture (TEXTURE_NAME[index], TextureClass::MIP_LEVELS_1);
+void MouseMgrClass::Initialize(void){
+	// Load each mouse cursor texture
+	for( int index = 0; index < CURSOR_COUNT; index++ ){
+		Textures[index] = WW3DAssetManager::Get_Instance()->Get_Texture( TEXTURE_NAME[index], TextureClass::MIP_LEVELS_1 );
 	}
 
 	return ;

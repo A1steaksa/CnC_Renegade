@@ -71,8 +71,7 @@ enum
 //	DialogMgrClass
 //
 ////////////////////////////////////////////////////////////////
-class DialogMgrClass
-{
+class DialogMgrClass {
 public:
 	
 	////////////////////////////////////////////////////////////////
@@ -82,30 +81,37 @@ public:
 	//
 	//	Library management
 	//
-	static void		Initialize (const char *stylemgr_ini);
-	static void		Shutdown (void);
+	static void Initialize( const char* stylemgr_ini );
+	static void Shutdown(void);
 
 	//
 	//	Per-frame processing
 	//
-	static void		Render (void);
-	static void		On_Frame_Update (void);
+	static void Render(void);
+	static void On_Frame_Update(void);
 
 	//
 	//	Input support
 	//
-	static void		Install_Input (WWUIInputClass *instance)			{ REF_PTR_SET (Input, instance); }
+	static void Install_Input( WWUIInputClass* instance ){
+		REF_PTR_SET( Input, instance );
+	}
 
-	static IME::IMEManager* Get_IME(void)
-		{return Input->GetIME();}
+	static IME::IMEManager* Get_IME(void){
+		return Input->GetIME();
+	}
 
-	static void Show_IME_Message(const wchar_t* message, uint32 duration);
+	static void Show_IME_Message( const wchar_t* message, uint32 duration );
 
 	//
 	//	Keyboard Input
 	//
-	static BYTE *	Get_Keyboard_State (void)								{ return KeyboardState; }
-	static BYTE		Get_VKey_State (BYTE index)							{ return KeyboardState[index]; }
+	static BYTE* Get_Keyboard_State(void){
+		return KeyboardState;
+	}
+	static BYTE Get_VKey_State( BYTE index ){
+		return KeyboardState[index];
+	}
 
 	static void Reset (void);
 
@@ -115,25 +121,38 @@ public:
 	//		Note X,Y are screen coordinates, while the Z component is the mouse wheel
 	// position.
 	//
-	static const Vector3 &	Get_Mouse_Pos (void)							{ return Input->Get_Mouse_Pos (); }
-	static void					Set_Mouse_Pos (const Vector3 &pos)		{ Input->Set_Mouse_Pos (pos); }
+	static const Vector3& Get_Mouse_Pos(void){
+		return Input->Get_Mouse_Pos();
+	}
 	
-	static const Vector3 &	Get_Last_Mouse_Pos (void)					{ return LastMousePos; }
-	static void					Set_Last_Mouse_Pos (const Vector3 &pos){ LastMousePos = pos; }
+	static void Set_Mouse_Pos( const Vector3& pos ){
+		Input->Set_Mouse_Pos( pos );
+	}
+	
+	static const Vector3& Get_Last_Mouse_Pos(void){
+		return LastMousePos;
+	}
+
+	static void Set_Last_Mouse_Pos( const Vector3& pos ){
+		LastMousePos = pos;
+	}
 
 	//
 	//	Mouse button input
 	//
-	static bool		Is_Button_Down (int vk_mouse_button_id)			{ return Input->Is_Button_Down (vk_mouse_button_id); };
-	static bool		Was_Button_Down (int vk_mouse_button_id);
+	static bool Is_Button_Down( int vk_mouse_button_id ){
+		return Input->Is_Button_Down( vk_mouse_button_id );
+	};
+
+	static bool Was_Button_Down( int vk_mouse_button_id );
 
 	//
 	//	Dialog registration
 	//
-	static void		Register_Dialog (DialogBaseClass *dialog);
-	static void		UnRegister_Dialog (DialogBaseClass *dialog);
-	static void		Flush_Dialogs (void);
-	static bool		Is_Flushing_Dialogs(void);
+	static void Register_Dialog( DialogBaseClass* dialog );
+	static void UnRegister_Dialog( DialogBaseClass* dialog );
+	static void Flush_Dialogs(void);
+	static bool Is_Flushing_Dialogs(void);
 
 	//
 	//	Timing support
@@ -182,8 +201,7 @@ private:
 	////////////////////////////////////////////////////////////////
 	//	Private constants
 	////////////////////////////////////////////////////////////////
-	enum
-	{
+	enum {
 		MB_LBUTTON	= 0,
 		MB_MBUTTON,
 		MB_RBUTTON,
@@ -193,43 +211,43 @@ private:
 	////////////////////////////////////////////////////////////////
 	//	Private methods
 	////////////////////////////////////////////////////////////////
-	static void		On_Dialog_Added (void);
-	static void		On_Dialog_Removed (void);
-	static void		Update_Transition (void);
-	static void		Reset_Inputs (void);
-	static void		Internal_Set_Active_Dialog (DialogBaseClass *dialog);
+	static void On_Dialog_Added(void);
+	static void On_Dialog_Removed(void);
+	static void Update_Transition(void);
+	static void Reset_Inputs(void);
+	static void Internal_Set_Active_Dialog( DialogBaseClass* dialog );
 
 	//
 	//	Keyboard input
 	//
-	static bool		On_Key_Down (uint32 key_id, uint32 key_data);
-	static bool		On_Key_Up (uint32 key_id);
-	static void		On_Unicode_Char(uint16 unicode);
+	static bool On_Key_Down( uint32 key_id, uint32 key_data );
+	static bool On_Key_Up( uint32 key_id );
+	static void On_Unicode_Char( uint16 unicode );
 
 	////////////////////////////////////////////////////////////////
 	//	Private member data
 	////////////////////////////////////////////////////////////////
-	static DynamicVectorClass<DialogBaseClass *>	DialogList;	
-	static DialogBaseClass **							TestArray;
-	static int												TestArrayCount;
-	static int												TestArrayMaxCount;
-	static bool												IsFirstRender;
-	static bool												IsInMenuMode;
-	static DialogBaseClass *							ActiveDialog;
-	static BYTE												KeyboardState[256];
-	static bool												LastMouseButtonState[MB_COUNT];
-	static DialogControlClass *						InputCapture;
-	static DialogControlClass *						FocusControl;
-	static WWUIInputClass *								Input;
+	static DynamicVectorClass<DialogBaseClass*>	DialogList;	
+	static DialogBaseClass** TestArray;
+	static int TestArrayCount;
+	static int TestArrayMaxCount;
+	static bool IsFirstRender;
+	static bool IsInMenuMode;
+	static DialogBaseClass* ActiveDialog;
+	static BYTE KeyboardState[256];
+	static bool LastMouseButtonState[MB_COUNT];
+	static DialogControlClass* InputCapture;
+	static DialogControlClass* FocusControl;
+	static WWUIInputClass* Input;
 	
-	static DialogTransitionClass *					Transition;
-	static DialogBaseClass *							TransitionDialog;
-	static DialogBaseClass *							PendingActiveDialog;
+	static DialogTransitionClass* Transition;
+	static DialogBaseClass* TransitionDialog;
+	static DialogBaseClass* PendingActiveDialog;
 
-	static uint32											CurrTime;
-	static uint32											LastFrameTime;
+	static uint32 CurrTime;
+	static uint32 LastFrameTime;
 
-	static Vector3											LastMousePos;
+	static Vector3 LastMousePos;
 
 	static bool IsFlushing;
 

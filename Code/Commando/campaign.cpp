@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -71,11 +53,16 @@ struct BackdropDescriptionStruct {
 	int State;
 	DynamicVectorClass<StringClass>	Lines;
 
-	bool operator == (BackdropDescriptionStruct const & rec) const	{ return false; }
-	bool operator != (BackdropDescriptionStruct const & rec) const	{ return true; }
+	bool operator ==( BackdropDescriptionStruct const rec& ) const {
+		return false;
+	}
+
+	bool operator !=( BackdropDescriptionStruct const rec& ) const {
+		return true;
+	}
 };
 
-DynamicVectorClass<BackdropDescriptionStruct>	BackdropDescriptions;
+DynamicVectorClass<BackdropDescriptionStruct> BackdropDescriptions;
 
 
 void CampaignManager::Init(void){
@@ -102,6 +89,7 @@ void CampaignManager::Init(void){
 			if ( count != 0 ) {
 				int index = BackdropDescriptions.Count();
 				BackdropDescriptions.Uninitialized_Add();
+
 				BackdropDescriptions[index].State = state;
 				for ( int entry = 0; entry < count; entry++ )	{
 					StringClass	description(0,true);
@@ -198,14 +186,15 @@ void CampaignManager::Continue( bool success ){
 		 	ss->Save_Stats();
 		}
 
-		GameModeManager::Find ("Movie")->Deactivate();
-		GameModeManager::Find ("Combat")->Suspend();
+		GameModeManager::Find( "Movie" )->Deactivate();
+		GameModeManager::Find( "Combat" )->Suspend();
 		GameInitMgrClass::End_Game();
-		GameModeManager::Find ("Menu")->Deactivate();
+		GameModeManager::Find( "Menu" )->Deactivate();
 
 		if ( ss != NULL ) {
 			ss->Activate();
 		}
+
 		return;
 	}
 
@@ -270,7 +259,7 @@ void CampaignManager::Continue( bool success ){
 
 		int mission = cGameData::Get_Mission_Number_From_Map_Name( state_description );
 		Select_Backdrop_Number( mission );
-		GameInitMgrClass::Start_Game ( state_description, PLAYERTYPE_RENEGADE, 0 );
+		GameInitMgrClass::Start_Game( state_description, PLAYERTYPE_RENEGADE, 0 );
 
 		// Hack to not autosave for Mission 0 (M13)
 		if ( ::strnicmp( state_description, "M13", 3 ) != 0 ) {
@@ -319,11 +308,10 @@ void CampaignManager::Continue( bool success ){
 		State = NOT_IN_CAMPAIGN_STATE;		
 		RenegadeDialogMgrClass::Goto_Location (RenegadeDialogMgrClass::LOC_MAIN_MENU);
 	}
-
 }
 
 void CampaignManager::Reset(){
-	State = NOT_IN_CAMPAIGN_STATE;		
+	State = NOT_IN_CAMPAIGN_STATE;
 }
 
 void CampaignManager::Replay_Level( const char * mission_name, int difficulty ){
@@ -336,7 +324,7 @@ void CampaignManager::Replay_Level( const char * mission_name, int difficulty ){
 }
 
 int	CampaignManager::Get_Backdrop_Description_Count(void){
-	if (BackdropDescriptions.Count() > 0) {
+	if( BackdropDescriptions.Count() > 0 ){
 		return BackdropDescriptions[BackdropIndex].Lines.Count();
 	}
 	return 0;

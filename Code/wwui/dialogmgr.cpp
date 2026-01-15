@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -57,25 +39,25 @@
 ////////////////////////////////////////////////////////////////
 //	Static member initialization
 ////////////////////////////////////////////////////////////////
-DynamicVectorClass<DialogBaseClass *>	DialogMgrClass::DialogList;
-DialogBaseClass **							DialogMgrClass::TestArray;
-int												DialogMgrClass::TestArrayCount;
-int												DialogMgrClass::TestArrayMaxCount;
-bool												DialogMgrClass::IsFirstRender	= false;
-bool												DialogMgrClass::IsInMenuMode	= false;
-DialogBaseClass *								DialogMgrClass::ActiveDialog	= NULL;
-BYTE												DialogMgrClass::KeyboardState[256];
-DialogControlClass *							DialogMgrClass::InputCapture = NULL;
-DialogControlClass *							DialogMgrClass::FocusControl = NULL;
-WWUIInputClass *								DialogMgrClass::Input = NULL;
-DialogTransitionClass *						DialogMgrClass::Transition = NULL;
-DialogBaseClass *								DialogMgrClass::PendingActiveDialog	= NULL;
-DialogBaseClass *								DialogMgrClass::TransitionDialog = NULL;
-uint32											DialogMgrClass::CurrTime		= 0;
-uint32											DialogMgrClass::LastFrameTime	= 0;
-Vector3											DialogMgrClass::LastMousePos (0, 0, 0);
-bool												DialogMgrClass::LastMouseButtonState[MB_COUNT] = { 0 };
-bool												DialogMgrClass::IsFlushing = false;
+DynamicVectorClass<DialogBaseClass*> DialogMgrClass::DialogList;
+DialogBaseClass** DialogMgrClass::TestArray;
+int DialogMgrClass::TestArrayCount;
+int DialogMgrClass::TestArrayMaxCount;
+bool DialogMgrClass::IsFirstRender = false;
+bool DialogMgrClass::IsInMenuMode = false;
+DialogBaseClass* DialogMgrClass::ActiveDialog = NULL;
+BYTE DialogMgrClass::KeyboardState[256];
+DialogControlClass* DialogMgrClass::InputCapture = NULL;
+DialogControlClass* DialogMgrClass::FocusControl = NULL;
+WWUIInputClass* DialogMgrClass::Input = NULL;
+DialogTransitionClass* DialogMgrClass::Transition = NULL;
+DialogBaseClass* DialogMgrClass::PendingActiveDialog = NULL;
+DialogBaseClass* DialogMgrClass::TransitionDialog = NULL;
+uint32 DialogMgrClass::CurrTime = 0;
+uint32 DialogMgrClass::LastFrameTime = 0;
+Vector3 DialogMgrClass::LastMousePos( 0, 0, 0);
+bool DialogMgrClass::LastMouseButtonState[MB_COUNT] = { 0 };
+bool DialogMgrClass::IsFlushing = false;
 
 ToolTipClass* DialogMgrClass::mIMEMessage = NULL;
 uint32 DialogMgrClass::mIMEMessageTime = 0;
@@ -88,18 +70,16 @@ static bool	GameWasInFocus;
 //	Initialize
 //
 ////////////////////////////////////////////////////////////////
-void
-DialogMgrClass::Initialize (const char *stylemgr_ini)
-{
-	StyleMgrClass::Initialize_From_INI (stylemgr_ini);
-	MouseMgrClass::Initialize ();
-	ToolTipMgrClass::Initialize ();
-	MenuDialogClass::Initialize ();
+void DialogMgrClass::Initialize( const char* stylemgr_ini ){
+	StyleMgrClass::Initialize_From_INI( stylemgr_ini );
+	MouseMgrClass::Initialize();
+	ToolTipMgrClass::Initialize();
+	MenuDialogClass::Initialize();
 
-	::memset (KeyboardState, 0, sizeof (KeyboardState));
+	::memset( KeyboardState, 0, sizeof( KeyboardState ) );
 	TestArrayMaxCount = 0;
 
-	return ;
+	return;
 }
 
 
@@ -362,45 +342,27 @@ DialogMgrClass::Update_Transition (void)
 	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	On_Frame_Update
-//
-////////////////////////////////////////////////////////////////
-void
-DialogMgrClass::On_Frame_Update (void)
-{
-	WWMEMLOG(MEM_GAMEDATA);
-
-	//
-	//	Update the timing
-	//
+void DialogMgrClass::On_Frame_Update(void){
+	// Update the timing
 	uint32 old_time	= CurrTime;
-	CurrTime				= TIMEGETTIME ();
-	LastFrameTime		= CurrTime - old_time;
+	CurrTime = TIMEGETTIME();
+	LastFrameTime = CurrTime - old_time;
 
-
-//	DynamicVectorClass<DialogBaseClass *> test_list = DialogList;
-	if (DialogList.Count()>TestArrayMaxCount) {
+	if( DialogList.Count() > TestArrayMaxCount ){
 		delete[] TestArray;
-		TestArrayMaxCount=DialogList.Count();
-		TestArray=new DialogBaseClass*[TestArrayMaxCount];
+		TestArrayMaxCount = DialogList.Count();
+		TestArray = new DialogBaseClass*[TestArrayMaxCount];
 	}
-	TestArrayCount=DialogList.Count();
-	for (int i=0;i<TestArrayCount;++i) {
-		TestArray[i]=DialogList[i];
+	TestArrayCount = DialogList.Count();
+	for( int i = 0; i < TestArrayCount; ++i ){
+		TestArray[i] = DialogList[i];
 	}
 
-	//
-	//	Let each dialog think
-	//
-	for (int index = 0; index < DialogList.Count (); index ++) {
-		//
-		//	Simple check to ensure that the DialogList hasn't changed
-		//	due to this On_Frame_Update () call
-		//
-		if (index >= TestArrayCount || DialogList[index] != TestArray[index]) {
+	// Let each dialog think
+	for( int index = 0; index < DialogList.Count(); index++ ){
+		// Simple check to ensure that the DialogList hasn't changed
+		// due to this On_Frame_Update () call
+		if( index >= TestArrayCount || DialogList[index] != TestArray[index] ){
 			break;
 		}
 
@@ -409,26 +371,20 @@ DialogMgrClass::On_Frame_Update (void)
 
 		dialog->Add_Ref();
 
-		if (dialog->Is_Active () && dialog->As_ChildDialogClass () == NULL) {
-			dialog->On_Frame_Update ();
+		if( dialog->Is_Active() && dialog->As_ChildDialogClass() == NULL ){
+			dialog->On_Frame_Update();
 		}
 
-		//
-		//	Force an "On_Periodic" for dialogs that aren't in focus...
-		//
+		// Force an "On_Periodic" for dialogs that aren't in focus...
 		dialog->On_Periodic ();
 		dialog->Release_Ref();
 	}
 
-	//
-	//	Return from "dialog" mode if the ESC key has been let up...
-	//
-	if (IsInMenuMode && DialogList.Count () == 0 && ((KeyboardState[VK_ESCAPE] & 0x80) == 0)) {
+	// Return from "dialog" mode if the ESC key has been let up...
+	if( IsInMenuMode && DialogList.Count() == 0 && ( ( KeyboardState[VK_ESCAPE] & 0x80 ) == 0 ) ){
 		IsInMenuMode = false;
-		Input->Exit_Menu_Mode ();
+		Input->Exit_Menu_Mode();
 	}
-
-	return ;
 }
 
 
@@ -437,9 +393,7 @@ DialogMgrClass::On_Frame_Update (void)
 //	Render
 //
 ////////////////////////////////////////////////////////////////
-void
-DialogMgrClass::Render (void)
-{
+void DialogMgrClass::Render(void){
 	WWMEMLOG(MEM_GAMEDATA);
 
 	if (!GameInFocus) {
@@ -597,11 +551,6 @@ DialogMgrClass::Set_Active_Dialog (DialogBaseClass *dialog)
 void
 DialogMgrClass::Reset (void)
 {
-//	REF_PTR_RELEASE (Transition);
-//	if (PendingActiveDialog) {
-//		REF_PTR_SET(ActiveDialog,PendingActiveDialog);
-//		REF_PTR_RELEASE(PendingActiveDialog);
-//	}
 
 //	Internal_Set_Active_Dialog (ActiveDialog);
 

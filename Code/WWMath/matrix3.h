@@ -73,8 +73,7 @@ class Matrix3D;
 class Matrix4;
 class Quaternion;
 
-class Matrix3
-{
+class Matrix3 {
 public:
 
 	/*
