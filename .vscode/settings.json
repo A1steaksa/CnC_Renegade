@@ -1,0 +1,7 @@
+{
+    "Lua.workspace.library": [],
+    "Lua.runtime.version": "LuaJIT",
+    "Lua.runtime.nonstandardSymbol": [],
+    "Lua.diagnostics.disable": [],
+    "Lua.workspace.checkThirdParty": false
+}

@@ -55,22 +55,19 @@ EncyclopediaMgrClass _TheEncyclopediaMgrSaveLoadSubsystem;
 ////////////////////////////////////////////////////////////////
 //	Local constants
 ////////////////////////////////////////////////////////////////
-enum
-{
+enum {
 	CHUNKID_VARIABLES		= 0x09221214,
 	CHUNKID_TYPE_DATA
 };
 
-enum
-{
+enum {
 	VARID_TEXTURE_NAME		= 0x01,
 	VARID_CENTER_POINT,
 	VARID_SCALE,
 };
 
 
-const char *ENCY_INI_FILENAMES[EncyclopediaMgrClass::TYPE_COUNT] =
-{
+const char *ENCY_INI_FILENAMES[EncyclopediaMgrClass::TYPE_COUNT] = {
 	"characters.ini",
 	"weapons.ini",
 	"vehicles.ini",
@@ -90,9 +87,7 @@ BooleanVectorClass	EncyclopediaMgrClass::CopyOfKnownObjectVector[TYPE_COUNT];
 //	Initialize
 //
 //////////////////////////////////////////////////////////////////////
-void
-EncyclopediaMgrClass::Initialize (void)
-{
+void EncyclopediaMgrClass::Initialize(void) {
 	//
 	//	Initialize the bit vector for each type
 	//
@@ -100,7 +95,7 @@ EncyclopediaMgrClass::Initialize (void)
 		Build_Bit_Vector ((TYPE)index);
 	}
 
-	Store_Data ();
+	Store_Data();
 	return ;
 }
 

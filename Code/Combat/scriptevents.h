@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -37,7 +19,7 @@
 #ifndef	SCRIPTEVENTS_H
 #define	SCRIPTEVENTS_H
 
-#include	"gameobjobserver.h"
+#include "gameobjobserver.h"
 
 
 /*
@@ -50,35 +32,28 @@ class ScriptLoader;
 /*
 ** Script Class
 */
-class	ScriptClass : public GameObjObserverClass
-{
+class ScriptClass : public GameObjObserverClass {
 	public:
 		virtual ~ScriptClass() {}
-
-//		virtual const char* Get_Name(void) = 0;
 
 		virtual GameObject* Owner() = 0;
 
 		virtual GameObject** Get_Owner_Ptr() = 0;
 
-		virtual void Set_Parameters_String(const char* params) = 0;
+		virtual void Set_Parameters_String( const char* params ) = 0;
 
-		virtual void Get_Parameters_String(char* buffer, unsigned int size) = 0;
+		virtual void Get_Parameters_String( char* buffer, unsigned int size ) = 0;
 
 		// Save and Load specific script
-		virtual	void Save(ScriptSaver& saver) = 0;
-		virtual	void Load(ScriptLoader& loader) = 0;
+		virtual	void Save( ScriptSaver& saver ) = 0;
+		virtual	void Load( ScriptLoader& loader ) = 0;
 };
 
 
 /*
 ** DLL import/export macros
 */
-#ifdef BUILDING_DLL
-	#define	SCRIPT_DLL_FUNCT extern "C" _declspec(dllexport)
-#else
-	#define	SCRIPT_DLL_FUNCT _declspec(dllimport)
-#endif
+#define	SCRIPT_DLL_FUNCT _declspec(dllimport)
 
 
 const char* const LPSTR_CREATE_SCRIPT = "Create_Script";
@@ -119,8 +94,7 @@ SCRIPT_DLL_FUNCT const char* Get_Script_Param_Description(int index);
 /*
 ** Script parameter datatype definitions
 */
-typedef enum
-{
+typedef enum {
 	PARAM_TYPE_INT = 0,
 	PARAM_TYPE_FLOAT,
 	PARAM_TYPE_STRING,
@@ -141,8 +115,7 @@ typedef enum
 } PARAM_TYPES;
 
 
-const char * const PARAM_TYPE_STRINGS[PARAM_TYPE_COUNT] =
-{
+const char * const PARAM_TYPE_STRINGS[PARAM_TYPE_COUNT] = {
 	"int",
 	"float",
 	"string",

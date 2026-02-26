@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -43,81 +25,41 @@
 ////////////////////////////////////////////////////////////////
 NetworkObjectMgrClass::OBJECT_LIST	NetworkObjectMgrClass::_ObjectList;
 NetworkObjectMgrClass::OBJECT_LIST	NetworkObjectMgrClass::_DeletePendingList;
-int											NetworkObjectMgrClass::_NewDynamicID = NETID_DYNAMIC_OBJECT_MIN;
-int											NetworkObjectMgrClass::_NewClientID = 0;
-bool											NetworkObjectMgrClass::_IsLevelLoading = false;
+int NetworkObjectMgrClass::_NewDynamicID = NETID_DYNAMIC_OBJECT_MIN;
+int NetworkObjectMgrClass::_NewClientID = 0;
+bool NetworkObjectMgrClass::_IsLevelLoading = false;
 
-////////////////////////////////////////////////////////////////
-//
-//	Register_Object
-//
-////////////////////////////////////////////////////////////////
-void
-NetworkObjectMgrClass::Register_Object (NetworkObjectClass *object)
-{
-	int object_id = object->Get_Network_ID ();
-	if (object_id != 0) {
 
-		//
-		//	Check to ensure the object isn't already in the list
-		//
+void NetworkObjectMgrClass::Register_Object( NetworkObjectClass* object ) {
+	int object_id = object->Get_Network_ID();
+	if( object_id != 0 ) {
+		// Check to ensure the object isn't already in the list
 		int index = 0;
-		if (Find_Object (object_id, &index) == false) {
-			
-			//
-			//	Insert the object into the list
-			//
+		if( Find_Object( object_id, &index ) == false ) {
+			// Insert the object into the list
 			_ObjectList.Insert (index, object);
 		}
 	}
-
-	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Unregister_Object
-//
-////////////////////////////////////////////////////////////////
-void
-NetworkObjectMgrClass::Unregister_Object (NetworkObjectClass *object)
-{
-	int object_id = object->Get_Network_ID ();
-	if (object_id != 0) {
-
-		//
-		//	Try to find the object in the list
-		//
+void NetworkObjectMgrClass::Unregister_Object( NetworkObjectClass* object ){
+	int object_id = object->Get_Network_ID();
+	if( object_id != 0 ) {
+		// Try to find the object in the list
 		int index = 0;
-		if (Find_Object (object_id, &index)) {
-					
-			//
-			//	Remove the object from the list
-			//
-			_ObjectList.Delete (index);
+		if( Find_Object( object_id, &index ) ) {
+			// Remove the object from the list
+			_ObjectList.Delete( index );
 		}
 	}
-
-	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Find_Object
-//
-////////////////////////////////////////////////////////////////
-NetworkObjectClass *
-NetworkObjectMgrClass::Find_Object (int object_id)
-{
+NetworkObjectClass* NetworkObjectMgrClass::Find_Object( int object_id ){
 	NetworkObjectClass *object = NULL;
 	
-	//
-	//	Lookup the object in the sorted list
-	//
+	// Lookup the object in the sorted list
 	int index = 0;
-	if (Find_Object (object_id, &index)) {
+	if( Find_Object( object_id, &index ) ) {
 		object = _ObjectList[index];
 	}
 
@@ -143,30 +85,14 @@ NetworkObjectMgrClass::Set_New_Dynamic_ID (int id)
 //	Get_New_Dynamic_ID
 //
 ////////////////////////////////////////////////////////////////
-int
-NetworkObjectMgrClass::Get_New_Dynamic_ID (void)
-{
+int NetworkObjectMgrClass::Get_New_Dynamic_ID(void) {
 	WWASSERT(_NewDynamicID >= NETID_DYNAMIC_OBJECT_MIN && _NewDynamicID < NETID_DYNAMIC_OBJECT_MAX);
 
-	/*
-	//TSS091001
-	NetworkObjectClass * p_object = Find_Object(_NewDynamicID);
-	//WWASSERT(p_object == NULL);
-	if (p_object != NULL) {
-		int iii;
-		iii = 111;
-	}
-	/**/
-
 	//TSS091201
-	NetworkObjectClass * p_object = Find_Object(_NewDynamicID);
-	while (p_object != NULL) {
-		/*
-		WWDEBUG_SAY(("NetworkObjectMgrClass::Get_New_Dynamic_ID :skipping id %d (already in use)\n", 
-			_NewDynamicID));
-		*/
+	NetworkObjectClass* p_object = Find_Object( _NewDynamicID );
+	while( p_object != NULL ) {
 		_NewDynamicID++;
-		p_object = Find_Object(_NewDynamicID);
+		p_object = Find_Object( _NewDynamicID );
 	}
 
 	return _NewDynamicID++;
@@ -216,15 +142,13 @@ NetworkObjectMgrClass::Get_New_Client_ID (void)
 //	Find_Object
 //
 ////////////////////////////////////////////////////////////////
-bool
-NetworkObjectMgrClass::Find_Object (int id_to_find, int *index)
-{
+bool NetworkObjectMgrClass::Find_Object( int id_to_find, int *index ){
 	WWASSERT(index != NULL);
 
-	bool found		= false;	
-	(*index)			= 0;
-	int min_index	= 0;
-	int max_index	= _ObjectList.Count () - 1;		
+	bool found = false;
+	(*index) = 0;
+	int min_index = 0;
+	int max_index = _ObjectList.Count () - 1;
 	
 	//
 	//	Keep looping until we've closed the window of possiblity
@@ -275,18 +199,12 @@ NetworkObjectMgrClass::Find_Object (int id_to_find, int *index)
 //	Think
 //
 ////////////////////////////////////////////////////////////////
-void
-NetworkObjectMgrClass::Think (void)
-{
-	//
-	//	Simply let each object think
-	//
-	for (int index = 0; index < _ObjectList.Count (); index ++) {
+void NetworkObjectMgrClass::Think(void){
+	// Simply let each object think
+	for( int index = 0; index < _ObjectList.Count(); index++ ) {
 		WWASSERT(_ObjectList[index] != NULL);
-		_ObjectList[index]->Network_Think ();
+		_ObjectList[index]->Network_Think();
 	}
-
-	return ;
 }
 
 

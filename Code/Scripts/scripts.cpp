@@ -590,14 +590,8 @@ int ScriptImpClass::Get_Parameter_Index(const char* parameterName)
 *
 ******************************************************************************/
 
-void ScriptImpClass::Save(ScriptSaver& saver)
-{
-/*	Commands->Begin_Chunk(saver, CHUNKID_SCRIPTDATA);
-	Save_Data(saver);
-	Commands->End_Chunk(saver);
-*/
-
-	ScriptVariableClass * var = AutoVariableList;
+void ScriptImpClass::Save( ScriptSaver& saver ) {
+	ScriptVariableClass* var = AutoVariableList;
 	if ( var != NULL ) {
 		Commands->Begin_Chunk(saver, CHUNKID_SCRIPT_AUTO_VARIABLES);
 	 	while ( var != NULL ) {

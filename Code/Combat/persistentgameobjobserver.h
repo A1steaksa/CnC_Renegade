@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -54,34 +36,29 @@
 #endif
 
 
-/*
-** PersistentGameObjObserverClass
-*/
-class	PersistentGameObjObserverClass : public PersistClass, public GameObjObserverClass {
+class PersistentGameObjObserverClass : public PersistClass, public GameObjObserverClass {
 public:
-				 PersistentGameObjObserverClass( void );
-	virtual	~PersistentGameObjObserverClass( void );
+    PersistentGameObjObserverClass( void );
+	virtual ~PersistentGameObjObserverClass( void );
 
-	virtual	bool	Save( ChunkSaveClass & csave );
-	virtual	bool	Load( ChunkLoadClass & cload );
+	virtual bool Save( ChunkSaveClass & csave );
+	virtual bool Load( ChunkLoadClass & cload );
 
 };
 
-/*
-** class	PersistentGameObjObserverManager
-*/
-class	PersistentGameObjObserverManager {
+
+class PersistentGameObjObserverManager {
 public:
-	static	void	Add( PersistentGameObjObserverClass * observer );
-	static	void	Remove( PersistentGameObjObserverClass * observer );
+	static void Add( PersistentGameObjObserverClass* observer );
+	static void Remove( PersistentGameObjObserverClass* observer );
 
-	static	bool	Save( ChunkSaveClass & csave );
-	static	bool	Load( ChunkLoadClass & cload );
+	static bool Save( ChunkSaveClass & csave );
+	static bool Load( ChunkLoadClass & cload );
 
-	static	void	Reset( void );
+	static void Reset( void );
 
 private:
-	static	DynamicVectorClass<PersistentGameObjObserverClass *>	ObserverList;
+	static DynamicVectorClass<PersistentGameObjObserverClass*> ObserverList;
 };
 
 #endif	//	PERSISTENTGAMEOBJOBSERVER_H

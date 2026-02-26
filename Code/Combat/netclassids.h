@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -46,8 +28,7 @@
 ////////////////////////////////////////////////////////////////
 //	Network class IDs
 ////////////////////////////////////////////////////////////////
-enum
-{
+enum {
 	//
 	// S-created objects
 	//
@@ -55,7 +36,6 @@ enum
 	NETCLASSID_SCTEXTOBJ,
 	NETCLASSID_PLAYERKILL,
 	NETCLASSID_WIN,
-	//NETCLASSID_FLAGCAPEVENT,
 	NETCLASSID_PURCHASERESPONSEEVENT,
 	NETCLASSID_CONSOLECOMMANDEVENT,
 	NETCLASSID_RESETWINSEVENT,
@@ -86,7 +66,6 @@ enum
 	NETCLASSID_LOADINGEVENT,
 	NETCLASSID_GODMODEEVENT,
 	NETCLASSID_VIPMODEEVENT,
-	//NETCLASSID_STEALTHEVENT,
 	NETCLASSID_SCOREEVENT,
 	NETCLASSID_CLIENTBBOEVENT,
 	NETCLASSID_CLIENTFPS,
@@ -100,25 +79,4 @@ enum
 	NETCLASSID_GAMESPYCSCHALLENGERESPONSEEVENT,
 };	
 
-
 #endif //__NET_CLASSIDS_H
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//NETCLASSID_MOBIUSCAPEVENT,
-	//NETCLASSID_LMSPLAYEROUTEVENT,
-	//NETCLASSID_MUTATIONEVENT,
-	//NETCLASSID_LMSREAPEVENT,
-	//NETCLASSID_SPECTATINGEVENT,

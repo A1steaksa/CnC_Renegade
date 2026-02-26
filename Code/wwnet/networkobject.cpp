@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***                            Confidential - Westwood Studios                              ***
  ***********************************************************************************************
@@ -46,7 +28,7 @@
 ////////////////////////////////////////////////////////////////
 //	Static member initializtaion
 ////////////////////////////////////////////////////////////////
-bool		NetworkObjectClass::IsServer		= false;
+bool NetworkObjectClass::IsServer = false;
 
 
 ////////////////////////////////////////////////////////////////
@@ -54,34 +36,28 @@ bool		NetworkObjectClass::IsServer		= false;
 //	NetworkObjectClass
 //
 ////////////////////////////////////////////////////////////////
-NetworkObjectClass::NetworkObjectClass (void)	:
-	ImportStateCount (0),
-	LastClientsideUpdateTime (0),
-	NetworkID (0),
-	IsDeletePending (false),
-	CachedPriority (0),
-	UnreliableOverride (false),
-	AppPacketType (0),
-	FrequentExportPacketSize(0),
-	ClientsideUpdateFrequencySampleStartTime(TIMEGETTIME()),
-	ClientsideUpdateFrequencySampleCount(0),
-	ClientsideUpdateRate(0),
-#ifdef WWDEBUG
-	CreatedByPacketID(0),
-#endif //WWDEBUG
-	LastObjectIdIDamaged(-1),
-	LastObjectIdIGotDamagedBy(-1)
-
+NetworkObjectClass::NetworkObjectClass(void) :
+	ImportStateCount = 0,
+	LastClientsideUpdateTime = 0,
+	NetworkID = 0,
+	IsDeletePending = false,
+	CachedPriority = 0,
+	UnreliableOverride = false,
+	AppPacketType = 0,
+	FrequentExportPacketSize = 0,
+	ClientsideUpdateFrequencySampleStartTime = TIMEGETTIME(),
+	ClientsideUpdateFrequencySampleCount = 0,
+	ClientsideUpdateRate = 0,
+	LastObjectIdIDamaged = -1,
+	LastObjectIdIGotDamagedBy = -1
 {
-	if (IsServer)
-	{
+	if( IsServer ) {
 		//
 		//	Assign the object a unique ID. This will happen on the client too during object
 		// imports, but will be corrected immediately with an explicit Set_Network_ID call.
 		//
 		int new_id = NetworkObjectMgrClass::Get_New_Dynamic_ID();
-		//WWDEBUG_SAY(("New network id = %d\n", new_id));//TSS2001
-		Set_Network_ID(new_id);
+		Set_Network_ID( new_id );
 	}
 
 	//
@@ -89,48 +65,26 @@ NetworkObjectClass::NetworkObjectClass (void)	:
 	// Static objects therefore don't need to remember to set this in their constructor.
 	// Game objects will set BIT_CREATION.
 	//
-	Clear_Object_Dirty_Bits ();
+	Clear_Object_Dirty_Bits();
 
-	memset(CachedPriority_2, 0, sizeof(CachedPriority_2));
-
-	return ;
+	memset( CachedPriority_2, 0, sizeof( CachedPriority_2 ) );
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	~NetworkObjectClass
-//
-////////////////////////////////////////////////////////////////
-NetworkObjectClass::~NetworkObjectClass (void)
-{
-	//
-	//	Unregister this object from network updates
-	//
-	NetworkObjectMgrClass::Unregister_Object (this);
-	return ;
+NetworkObjectClass::~NetworkObjectClass(void){
+	// Unregister this object from network updates
+	NetworkObjectMgrClass::Unregister_Object( this );
 }
 
 extern bool SensibleUpdates;
 
-////////////////////////////////////////////////////////////////
-//
-//	Set_Network_ID
-//
-////////////////////////////////////////////////////////////////
-void
-NetworkObjectClass::Set_Network_ID (int id)
-{
+void NetworkObjectClass::Set_Network_ID( int id ){
 	WWASSERT(id > 0);
 
-	//
-	//	Remove the object from the manager, change it's ID,
+	// Remove the object from the manager, change it's ID,
 	// and re-insert it.
-	//
-	NetworkObjectMgrClass::Unregister_Object (this);
+	NetworkObjectMgrClass::Unregister_Object( this );
 	NetworkID = id;
-	NetworkObjectMgrClass::Register_Object (this);
-	return ;
+	NetworkObjectMgrClass::Register_Object( this );
 }
 
 
@@ -239,30 +193,13 @@ NetworkObjectClass::Set_Object_Dirty_Bit (DIRTY_BIT dirty_bit, bool onoff)
 	return ;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Is_Client_Dirty
-//
-////////////////////////////////////////////////////////////////
-bool
-NetworkObjectClass::Is_Client_Dirty (int client_id)
-{
+bool NetworkObjectClass::Is_Client_Dirty( int client_id ){
 	return ClientStatus[client_id] != 0;
 }
 
-
-////////////////////////////////////////////////////////////////
-//
-//	Set_Delete_Pending
-//
-////////////////////////////////////////////////////////////////
-void
-NetworkObjectClass::Set_Delete_Pending (void)
-{
+void NetworkObjectClass::Set_Delete_Pending(void) {
 	IsDeletePending = true;
-	NetworkObjectMgrClass::Register_Object_For_Deletion (this);
-	return;
+	NetworkObjectMgrClass::Register_Object_For_Deletion( this );
 }
 
 

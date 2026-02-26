@@ -41,16 +41,10 @@
 	#include "always.h"
 #endif
 
-/*
-**
-*/
-class	ChunkSaveClass;
-class	ChunkLoadClass;
+class ChunkSaveClass;
+class ChunkLoadClass;
 
-/*
-**
-*/
-class	HUDClass {
+class HUDClass {
 
 public:
 	static	void	Init(bool render_available = true);

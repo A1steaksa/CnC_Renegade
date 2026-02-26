@@ -1,38 +1,38 @@
-/*********************************************************************************************** 
- ***                            Confidential - Westwood Studios                              *** 
- *********************************************************************************************** 
- *                                                                                             * 
- *                 Project Name : Commando                                                     * 
- *                                                                                             * 
- *                     $Archive:: /Commando/Code/Combat/basegameobj.h                         $* 
- *                                                                                             * 
- *                      $Author:: Greg_h                                                      $* 
- *                                                                                             * 
- *                     $Modtime:: 10/15/01 7:48p                                              $* 
- *                                                                                             * 
- *                    $Revision:: 17                                                          $* 
- *                                                                                             * 
- *---------------------------------------------------------------------------------------------* 
- * Functions:                                                                                  * 
+/***********************************************************************************************
+ ***                            Confidential - Westwood Studios                              ***
+ ***********************************************************************************************
+ *                                                                                             *
+ *                 Project Name : Commando                                                     *
+ *                                                                                             *
+ *                     $Archive:: /Commando/Code/Combat/basegameobj.h                         $*
+ *                                                                                             *
+ *                      $Author:: Greg_h                                                      $*
+ *                                                                                             *
+ *                     $Modtime:: 10/15/01 7:48p                                              $*
+ *                                                                                             *
+ *                    $Revision:: 17                                                          $*
+ *                                                                                             *
+ *---------------------------------------------------------------------------------------------*
+ * Functions:                                                                                  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #ifndef	BASEGAMEOBJ_H
 #define	BASEGAMEOBJ_H
 
 #ifndef	ALWAYS_H
-	#include "always.h"
+#include "always.h"
 #endif
 
 #ifndef PERSIST_H
-	#include "persist.h"
+#include "persist.h"
 #endif
 
 #ifndef DEFINITION_H
-	#include "definition.h"
+#include "definition.h"
 #endif
 
 #ifndef __NETWORKOBJECT_H
-	#include "networkobject.h"
+#include "networkobject.h"
 #endif
 
 #include "netclassids.h"
@@ -45,104 +45,103 @@ class VehicleGameObj;
 // BaseGameObjDef - Defintion class for a BaseGameObj
 class BaseGameObjDef : public DefinitionClass {
 public:
-	virtual bool Save( ChunkSaveClass& csave );
-	virtual bool Load( ChunkLoadClass& cload );
+    virtual bool Save( ChunkSaveClass& csave );
+    virtual bool Load( ChunkLoadClass& cload );
 };
 
 
 class BaseGameObj : public PersistClass, public NetworkObjectClass {
 
 public:
-	//	Constructor and Destructor
-	BaseGameObj(void);
-	virtual	~BaseGameObj(void);
+    //	Constructor and Destructor
+    BaseGameObj( void );
+    virtual	~BaseGameObj( void );
 
 
-	// Definitions
-	virtual	void Init(void) = 0;
-	void Init( const BaseGameObjDef& definition );
-	const BaseGameObjDef & Get_Definition(void) const;
+    // Definitions
+    virtual	void Init( void ) = 0;
+    void Init( const BaseGameObjDef& definition );
+    const BaseGameObjDef& Get_Definition( void ) const;
 
 
-	// Save / Load
-	virtual	bool Save( ChunkSaveClass& csave );
-	virtual	bool Load( ChunkLoadClass& cload );
+    // Save / Load
+    virtual	bool Save( ChunkSaveClass& csave );
+    virtual	bool Load( ChunkLoadClass& cload );
 
 
-	//	Thinking
-	virtual	void Think(){
-		IsPostThinkAllowed = true;
-	}
+    // Thinking
+    virtual	void Think() {
+        IsPostThinkAllowed = true;
+    }
 
-	virtual	void Post_Think(){
-	};
-
-
-	// ID
-	void Set_ID( int id ){
-		Set_Network_ID( id );
-	}
-	
-	int	Get_ID(void) const {
-		return Get_Network_ID();
-	}
+    virtual	void Post_Think() {
+    };
 
 
-	// Hibernation
-	virtual	bool Is_Hibernating(void){
-		return false;
-	}
+    // ID
+    void Set_ID( int id ) {
+        Set_Network_ID( id );
+    }
+
+    int	Get_ID( void ) const {
+        return Get_Network_ID();
+    }
 
 
-	// Type identification
-	virtual	PhysicalGameObj *As_PhysicalGameObj(void){
-		return (PhysicalGameObj*) NULL;
-	};
-
-	virtual VehicleGameObj *As_VehicleGameObj(void){
-		return (VehicleGameObj *) NULL;
-	}
-
-	virtual	SmartGameObj *As_SmartGameObj(void){
-		return (SmartGameObj*) NULL;
-	};
-
-	virtual	ScriptableGameObj *As_ScriptableGameObj(void){
-		return (ScriptableGameObj*) NULL;
-	};
+    // Hibernation
+    virtual	bool Is_Hibernating( void ) {
+        return false;
+    }
 
 
-	// Network support
-	virtual uint32	Get_Network_Class_ID(void) const {
-		return NETCLASSID_GAMEOBJ;
-	}
+    // Type identification
+    virtual	PhysicalGameObj* As_PhysicalGameObj( void ) {
+        return (PhysicalGameObj*) NULL;
+    };
 
-	virtual void Delete(void){
-		delete this;
-	}
+    virtual VehicleGameObj* As_VehicleGameObj( void ) {
+        return (VehicleGameObj*) NULL;
+    }
 
-	bool Is_Post_Think_Allowed(void){
-		return IsPostThinkAllowed;
-	}
+    virtual	SmartGameObj* As_SmartGameObj( void ) {
+        return (SmartGameObj*) NULL;
+    };
 
-	void Enable_Cinematic_Freeze( bool enable )	{
-		EnableCinematicFreeze = enable;
-	}
+    virtual	ScriptableGameObj* As_ScriptableGameObj( void ) {
+        return (ScriptableGameObj*) NULL;
+    };
 
-	bool Is_Cinematic_Freeze_Enabled(void) {
-		return EnableCinematicFreeze;
-	}
+
+    // Network support
+    virtual uint32 Get_Network_Class_ID( void ) const {
+        return NETCLASSID_GAMEOBJ;
+    }
+
+    virtual void Delete( void ) {
+        delete this;
+    }
+
+    bool Is_Post_Think_Allowed( void ) {
+        return IsPostThinkAllowed;
+    }
+
+    void Enable_Cinematic_Freeze( bool enable ) {
+        EnableCinematicFreeze = enable;
+    }
+
+    bool Is_Cinematic_Freeze_Enabled( void ) {
+        return EnableCinematicFreeze;
+    }
 
 private:
+    // Member data
+    const BaseGameObjDef* Definition;
 
-	// Member data
-	const BaseGameObjDef *	Definition;	
+    // This is used to prevent postthinking before a think call
+    bool IsPostThinkAllowed;
 
-	// This is used to prevent postthinking before a think call
-	bool IsPostThinkAllowed;
-
-	// This keeps certain object alive during cinematic freeze
-	bool EnableCinematicFreeze;
+    // This keeps certain object alive during cinematic freeze
+    bool EnableCinematicFreeze;
 };
 
 #endif	//	BASEGAMEOBJ_H

@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -49,61 +31,28 @@
 
 ScriptCommands* EngineCommands = NULL;
 
-#if 1
 #define	SCRIPT_PROFILE_START( x )	WWProfileManager::Profile_Start( "Scripts" );
 #define	SCRIPT_PROFILE_STOP( x )	WWProfileManager::Profile_Stop( ); 
-#else
-#define	SCRIPT_PROFILE_START( x )
-#define	SCRIPT_PROFILE_STOP( x ) 
-#endif
 
-/*
-**
-*/
 HINSTANCE hDLL = NULL;
 LPFN_CREATE_SCRIPT ScriptManager::ScriptCreateFunct = NULL;
 LPFN_DESTROY_SCRIPT ScriptManager::ScriptDestroyFunct = NULL;
-SimpleDynVecClass<ScriptClass *> ScriptManager::ActiveScriptList;
-SimpleDynVecClass<ScriptClass *> ScriptManager::PendingDestroyList;
-bool	ScriptManager::EnableScriptCreation = true;
+SimpleDynVecClass<ScriptClass*> ScriptManager::ActiveScriptList;
+SimpleDynVecClass<ScriptClass*> ScriptManager::PendingDestroyList;
+bool ScriptManager::EnableScriptCreation = true;
 
 
-
-/*
-**
-*/
-void ScriptManager::Init(void)
-{
+void ScriptManager::Init(void){
 	hDLL = NULL;
 	EngineCommands = Get_Script_Commands();
 
-#ifdef	PARAM_EDITING_ON	// Editor build
-	Load_Scripts("SCRIPTS.DLL");
-#else
-	#ifdef	WWDEBUG		// DEBUG and PROFILE
-		if ( DebugManager::Load_Debug_Scripts() ) {
-			Load_Scripts("SCRIPTSD.DLL");		// DEBUG
-		} else {
-	#ifdef	NDEBUG		// PROFILE
-			Load_Scripts("SCRIPTSP.DLL");		// PROFILE
-	#else
-			Load_Scripts("SCRIPTSD.DLL");		// DEBUG
-	#endif
-		}
-	#else
-		Load_Scripts("SCRIPTS.DLL");		// RELEASE
-	#endif
-#endif
+    Load_Scripts( "SCRIPTS.DLL" );
 }
 
 
-/*
-**
-*/
-void ScriptManager::Shutdown(void)
-{
+void ScriptManager::Shutdown(void){
 	// Release scripts
-	while (ActiveScriptList.Count()) {
+	while( ActiveScriptList.Count() ){
 		ScriptClass* script = ActiveScriptList[0];
 		assert(script != NULL);
 
@@ -113,15 +62,14 @@ void ScriptManager::Shutdown(void)
 		ActiveScriptList.Delete(0);
 	}
 
-	if (hDLL != NULL) {
+	if( hDLL != NULL ){
 		FreeLibrary(hDLL);
 		hDLL = NULL;
 	}
 }
 
 
-void ScriptManager::Destroy_Pending(void)
-{
+void ScriptManager::Destroy_Pending(void){
 	// Destroy all the scripts in the pending destroy list.
 	while (PendingDestroyList.Count()) {
 		ScriptClass* script = PendingDestroyList[0];
@@ -142,14 +90,8 @@ void ScriptManager::Destroy_Pending(void)
 	}
 }
 
-
-/*
-**
-*/
-void ScriptManager::Load_Scripts(const char* dll_filename)
-{
+void ScriptManager::Load_Scripts(const char* dll_filename){
 	Debug_Say(("Script Manager Loading Script File %s\n", dll_filename));
-
 
 	// If we're in multiplay and not the server, just bail
    if (!IS_SOLOPLAY && CombatManager::I_Am_Only_Client())
@@ -258,19 +200,15 @@ void ScriptManager::Load_Scripts(const char* dll_filename)
 }
 
 
-/*
-**
-*/
-ScriptClass* ScriptManager::Create_Script(const char* script_name)
-{
+ScriptClass* ScriptManager::Create_Script( const char* script_name ){
 	ScriptClass* script = NULL;
 
-	if (EnableScriptCreation && ScriptCreateFunct != NULL) {
-		script = ScriptCreateFunct(script_name);
+	if( EnableScriptCreation && ScriptCreateFunct != NULL ){
+		script = ScriptCreateFunct( script_name );
 
-		if (script != NULL) {
+		if( script != NULL ){
 			script->Set_ID( GameObjObserverManager::Get_Next_Observer_ID() );
-			ActiveScriptList.Add(script);
+			ActiveScriptList.Add( script );
 		}
 	}
 
@@ -278,12 +216,8 @@ ScriptClass* ScriptManager::Create_Script(const char* script_name)
 }
 
 
-/*
-**
-*/
-void ScriptManager::Request_Destroy_Script(ScriptClass* script)
-{
-	ActiveScriptList.Delete(script);
+void ScriptManager::Request_Destroy_Script( ScriptClass* script ){
+	ActiveScriptList.Delete( script );
 
 	// Do not add the script to the destroy list if it is already there.
 	for (int index = 0; index < PendingDestroyList.Count(); index++) {
@@ -299,17 +233,12 @@ void ScriptManager::Request_Destroy_Script(ScriptClass* script)
 /*
 ** Script Manager Save and Load
 */
-enum	{
-	CHUNKID_SCRIPT_ENTRY					=	131001134,
+enum {
+	CHUNKID_SCRIPT_ENTRY = 131001134,
 	CHUNKID_SCRIPT_HEADER,
 	CHUNKID_SCRIPT_DATA,
 
-	MICROCHUNKID_NAME						= 1,
-
-// Denzil 3/31/00 - This information is now saved by the script.
-#if(0)
-	MICROCHUNKID_PARAM_COUNT,
-#endif
+	MICROCHUNKID_NAME = 1,
 	MICROCHUNKID_PARAM,
 	MICROCHUNKID_GAME_OBJ_OBSERVER_PTR,
 	MICROCHUNKID_OWNER_PTR,
@@ -317,55 +246,47 @@ enum	{
 };
 
 
-/*
-**
-*/
-bool ScriptManager::Save(ChunkSaveClass& csave)
-{
-	for (int index = 0; index < ActiveScriptList.Count(); index++) {
-		ScriptClass* script = ActiveScriptList[ index ];
+bool ScriptManager::Save(ChunkSaveClass& csave) {
+	for( int index = 0; index < ActiveScriptList.Count(); index++ ) {
+		ScriptClass* script = ActiveScriptList[index];
 
 		csave.Begin_Chunk( CHUNKID_SCRIPT_ENTRY );
 		csave.Begin_Chunk( CHUNKID_SCRIPT_HEADER );
 
 		StringClass name = script->Get_Name();
-//		Debug_Say(("Saving script '%s'\n", name));
 		WRITE_MICRO_CHUNK_WWSTRING( csave, MICROCHUNKID_NAME, name );
 
 		char paramString[256];
-		script->Get_Parameters_String(paramString, sizeof(paramString));
-//		Debug_Say(("\tParameters: '%s'\n", paramString));
-		WRITE_MICRO_CHUNK_STRING(csave, MICROCHUNKID_PARAM, paramString);
+		script->Get_Parameters_String( paramString, sizeof( paramString ) );
+		WRITE_MICRO_CHUNK_STRING( csave, MICROCHUNKID_PARAM, paramString );
 
-		GameObjObserverClass* game_obj_observer_ptr = (GameObjObserverClass*)script;
+		GameObjObserverClass* game_obj_observer_ptr = (GameObjObserverClass*) script;
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_GAME_OBJ_OBSERVER_PTR, game_obj_observer_ptr );
 
-		ScriptableGameObj* owner_ptr = *(script->Get_Owner_Ptr());
-//		Debug_Say(("\tObjectPtr: '%p'\n", *owner_ptr));
+		ScriptableGameObj* owner_ptr = *( script->Get_Owner_Ptr() );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_OWNER_PTR, owner_ptr );
 
 		int id = script->Get_ID();
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_ID, id );
-//		Debug_Say(( "Saved Script ID %d\n", id ));
 
 		csave.End_Chunk();
 
 		// If data is not saved, script will be re-created
-		if (CombatManager::Are_Observers_Active()) {
-			csave.Begin_Chunk(CHUNKID_SCRIPT_DATA);
-			ScriptSaver	saver(csave);
-			script->Save(saver);
+		if( CombatManager::Are_Observers_Active() ){
+			csave.Begin_Chunk( CHUNKID_SCRIPT_DATA );
+			ScriptSaver	saver( csave );
+			script->Save( saver );
 			csave.End_Chunk();
 		}
 
 		csave.End_Chunk();
 	}
+
 	return true;
 }
 
 
-bool	ScriptManager::Load( ChunkLoadClass & cload )
-{
+bool ScriptManager::Load( ChunkLoadClass & cload ) {
 	WWASSERT( ActiveScriptList.Count() == 0 );
 
 	while (cload.Open_Chunk()) {
@@ -383,7 +304,6 @@ bool	ScriptManager::Load( ChunkLoadClass & cload )
 
 		int obs_id = -1;
 
-//		int param_index = 0;
 		while (cload.Open_Micro_Chunk()) {
 			int id = cload.Cur_Micro_Chunk_ID();
 			switch( id ) {
@@ -397,8 +317,6 @@ bool	ScriptManager::Load( ChunkLoadClass & cload )
 						Debug_Say(( "Script %s not found \n", name ));
 					}
 
-					// A Missing script is not fatal
-//					WWASSERT( script != NULL );
 					break;
 				}
 
@@ -429,7 +347,6 @@ bool	ScriptManager::Load( ChunkLoadClass & cload )
 
 			if ( obs_id != -1 ) {
 				script->Set_ID( obs_id );
-//				Debug_Say(( "Loaded Script ID %d\n", obs_id ));
 			}
 
 			// If there is data, load
@@ -451,7 +368,6 @@ bool	ScriptManager::Load( ChunkLoadClass & cload )
 		} else {
 			SaveLoadSystemClass::Register_Pointer(game_obj_observer_ptr, (GameObjObserverClass *)NULL);
 		}
-
 
 		cload.Close_Chunk();
 	}
