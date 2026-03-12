@@ -92,9 +92,7 @@ bool PersistentGameObjObserverClass::Load( ChunkLoadClass& cload ) {
     return true;
 }
 
-/*
-**
-*/
+
 DynamicVectorClass<PersistentGameObjObserverClass*>	PersistentGameObjObserverManager::ObserverList;
 
 void PersistentGameObjObserverManager::Add( PersistentGameObjObserverClass* observer ) {
@@ -105,9 +103,7 @@ void PersistentGameObjObserverManager::Remove( PersistentGameObjObserverClass* o
     ObserverList.Delete( observer );
 }
 
-/*
-**
-*/
+
 typedef	enum {
     CHUNKID_OBSERVERS = 1,
 };
@@ -140,7 +136,6 @@ bool PersistentGameObjObserverManager::Load( ChunkLoadClass& cload ) {
     cload.Close_Chunk();
     return true;
 }
-
 
 void PersistentGameObjObserverManager::Reset( void ) {
     GameObjObserverManager::Delete_Pending();

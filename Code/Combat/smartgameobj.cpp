@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -91,20 +73,19 @@ SmartGameObjDef::SmartGameObjDef( void ) :
 	EDITABLE_PARAM( SmartGameObjDef, ParameterClass::TYPE_BOOL,		IsStealthUnit );
 }
 
-enum	{
-	XXX_CHUNKID_DEF_PHYSICALGAMEOBJ_PARENT				=	909991656,
+enum {
+	XXX_CHUNKID_DEF_PHYSICALGAMEOBJ_PARENT =	909991656,
 	CHUNKID_DEF_VARIABLES,
 	CHUNKID_DEF_ARMEDGAMEOBJ_PARENT,
 
-	MICROCHUNKID_DEF_SIGHT_RANGE							=	9,
+	MICROCHUNKID_DEF_SIGHT_RANGE =	9,
 	MICROCHUNKID_DEF_SIGHT_ARC,
-	MICROCHUNKID_DEF_LISTENER_SCALE						= 17,
+	MICROCHUNKID_DEF_LISTENER_SCALE = 17,
 	LEGACY_MICROCHUNKID_DEF_INFO_ICON_TEXTURE_FILENAME,
 	MICROCHUNKID_DEF_IS_STEALTH_UNIT,
 };
 
-bool	SmartGameObjDef::Save( ChunkSaveClass & csave )
-{
+bool SmartGameObjDef::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_DEF_ARMEDGAMEOBJ_PARENT );
 		ArmedGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -156,7 +137,7 @@ bool SmartGameObjDef::Load( ChunkLoadClass& cload ){
 }
 
 
-float		SmartGameObj::GlobalSightRangeScale = 1.0f;
+float SmartGameObj::GlobalSightRangeScale = 1.0f;
 
 /*
 ** SmartGameObj
@@ -189,33 +170,23 @@ SmartGameObj::~SmartGameObj( void )
 	REF_PTR_RELEASE(StealthEffect);
 }
 
-/*
-**
-*/
-void	SmartGameObj::Init( const SmartGameObjDef & definition )
-{
+
+void SmartGameObj::Init( const SmartGameObjDef& definition ){
 	ArmedGameObj::Init( definition );
 	Copy_Settings( definition );
-	return ;
 }
 
-/*
-**
-*/
-void	SmartGameObj::Copy_Settings( const SmartGameObjDef & definition )
-{
+void SmartGameObj::Copy_Settings( const SmartGameObjDef& definition ){
 	WWASSERT( Peek_Physical_Object() );
-	MoveablePhysClass * moveable = Peek_Physical_Object()->As_MoveablePhysClass();
-	if (moveable != NULL) {
+	MoveablePhysClass* moveable = Peek_Physical_Object()->As_MoveablePhysClass();
+	if( moveable != NULL ){
 		Peek_Physical_Object()->As_MoveablePhysClass()->Set_Controller( &Controller );
 	}
 	Register_Listener();
 
-	if (definition.IsStealthUnit) {
-		Enable_Stealth(true);
+	if( definition.IsStealthUnit ){
+		Enable_Stealth( true );
 	}
-
-	return ;
 }
 
 /*
@@ -259,8 +230,8 @@ const SmartGameObjDef & SmartGameObj::Get_Definition( void ) const
 ** SmartGameObj Save and Load
 */
 
-enum	{
-	OLD_CHUNKID_PHYSICALGAMEOBJ_PARENT							=	910991113,
+enum {
+	OLD_CHUNKID_PHYSICALGAMEOBJ_PARENT = 910991113,
 	CHUNKID_VARIABLES,
 	CHUNKID_CONTROL,
 	CHUNKID_CONTROLLER,
@@ -270,7 +241,7 @@ enum	{
 	XXXCHUNKID_PLAYER_DATA,
 	CHUNKID_STEALTH_EFFECT,
 
-	MICROCHUNKID_CONTROL_ENABLED		=	1,
+	MICROCHUNKID_CONTROL_ENABLED =	1,
 	XXXMICROCHUNKID_WEAPON_TILT,
 	XXXMICROCHUNKID_WEAPON_TURN,
 	MICROCHUNKID_CONTROL_OWNER,
@@ -287,7 +258,6 @@ enum	{
 	MICROCHUNKID_STEALTH_ENABLED,
 	MICROCHUNKID_STEALTH_POWERUP_TIMER,
 	MICROCHUNKID_STEALTH_FIRING_TIMER,
-
 };
 
 bool	SmartGameObj::Save( ChunkSaveClass & csave )

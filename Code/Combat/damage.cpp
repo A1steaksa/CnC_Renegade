@@ -87,6 +87,10 @@ safe_float*	ArmorWarheadManager::Absorbsion = NULL;
 #define	ENTRY_EXPLOSION "Explosion"
 
 
+/*****************************************************************************************
+** ArmorWarheadManager Implementation
+*****************************************************************************************/
+
 void ArmorWarheadManager::Init(void){
 	Shutdown();
 
@@ -327,7 +331,6 @@ const char* ArmorWarheadManager::Get_Warhead_Name( WarheadType type ){
 	return WarheadNames[type];
 }
 
-
 float	ArmorWarheadManager::Get_Damage_Multiplier( ArmorType armor, WarheadType warhead ){
 	return( Multipliers[ (unsigned int) armor * Get_Num_Warhead_Types() + (unsigned int) warhead ] );
 }
@@ -406,6 +409,10 @@ bool	ArmorWarheadManager::Is_Skin_Impervious( SpecialDamageType type, ArmorType 
 }
 
 
+/*****************************************************************************************
+** OffenseObjectClass Implementation
+*****************************************************************************************/
+
 OffenseObjectClass::OffenseObjectClass( const OffenseObjectClass& base ) :
 	Damage( base.Damage ),
 	Warhead( base.Warhead )
@@ -413,10 +420,8 @@ OffenseObjectClass::OffenseObjectClass( const OffenseObjectClass& base ) :
 	Set_Owner( base.Get_Owner() );
 }
 
-
-
 // Save and Load
-enum	{
+enum {
 	CHUNKID_VARIABLES						=	914991020,
 	CHUNKID_OWNER,
 
@@ -483,6 +488,11 @@ bool OffenseObjectClass::Load( ChunkLoadClass& cload ){
 	Warhead = ArmorWarheadManager::Find_Warhead_Save_ID( save_id );
 	return true;
 }
+
+
+/*****************************************************************************************
+** DefenseObjectClass Implementation
+*****************************************************************************************/
 
 void DefenseObjectClass::Init( const DefenseObjectDefClass& def, DamageableGameObj* owner ){
 	Health = def.Health;
@@ -620,8 +630,6 @@ float DefenseObjectClass::Apply_Damage( const OffenseObjectClass& offense, float
 	return Health;	// Don't apply the damage
 }
 
-
-
 void DefenseObjectClass::Request_Damage( const OffenseObjectClass& offense, float scale ){
 	cCsDamageEvent* event = new cCsDamageEvent();
 	if( event ){
@@ -640,8 +648,13 @@ void DefenseObjectClass::Request_Damage( const OffenseObjectClass& offense, floa
 }
 
 
+// 
+// Porting Note(s):
+// Mostly ported but the SmartGameObjectClass isn't ported yet so those parts have been left
+// partially incomplete.
+//
 float DefenseObjectClass::Do_Damage( const OffenseObjectClass& offense, float scale, int alternate_skin ){
-	SmartGameObj * smart = NULL;
+	SmartGameObj* smart = NULL;
 
 	if( offense.Get_Owner() != NULL ){
 		smart = offense.Get_Owner()->As_SmartGameObj();
@@ -694,7 +707,7 @@ float DefenseObjectClass::Do_Damage( const OffenseObjectClass& offense, float sc
 	}
 
 	// check for punish = no more damage
-	if( smart != NULL& & smart->Get_Player_Data() ){
+	if( smart != NULL && smart->Get_Player_Data() ){
 #define	PUNISH_DELAY 60
 		if( smart->Get_Player_Data()->Get_Punish_Timer() > PUNISH_DELAY ){
 			damage_scale = 0;
@@ -705,7 +718,7 @@ float DefenseObjectClass::Do_Damage( const OffenseObjectClass& offense, float sc
 	}
 
 
-	bool	is_repair = false;
+	bool is_repair = false;
 
 	// check for repair on either health of shield
 	// Note: humans don't repair health, but vehicles do.
@@ -716,12 +729,12 @@ float DefenseObjectClass::Do_Damage( const OffenseObjectClass& offense, float sc
 		Mark_Owner_Dirty();
 
 		// Apply first to health, then to shield
-		if( Health < HealthMax& & (damage_scale != 0) ){
+		if( Health < HealthMax && ( damage_scale != 0 ) ){
 			damage *= damage_scale;
 			float min_damage = (float)Health - (float)HealthMax;
 			damage = WWMath::Clamp( damage, min_damage, 0 );
 			Health = (float)Health - damage;
-   	} else {
+   	    } else {
 			damage *= shield_damage_scale;
 			shield_damage = damage;
 			damage = 0;
@@ -731,12 +744,11 @@ float DefenseObjectClass::Do_Damage( const OffenseObjectClass& offense, float sc
 		}
 
 	} else {
-		if( 
-			smart& & Get_Owner()
-& &
-			smart != Get_Owner()
-& &
-			smart->Is_Teammate( Get_Owner() ) 
+		if(
+			smart
+            && Get_Owner()
+            && smart != Get_Owner()
+            && smart->Is_Teammate( Get_Owner() ) 
 		){
 			// This is friendly fire!!
 			if( !CombatManager::Is_Friendly_Fire_Permitted() ){
@@ -750,7 +762,7 @@ float DefenseObjectClass::Do_Damage( const OffenseObjectClass& offense, float sc
 
 		// if we have a shield, redirect a fraction of our damage;
 		// If alternate skin (MCT) ignore sheild damage;
-		if( (float)ShieldStrength > 0.0f& & alternate_skin == -1 ){
+		if( (float) ShieldStrength > 0.0f && alternate_skin == -1 ){
 			shield_damage = damage * ArmorWarheadManager::Get_Shield_Absorbsion( ShieldType, offense.Get_Warhead() );
 			damage -= shield_damage;
 
@@ -791,12 +803,14 @@ float DefenseObjectClass::Do_Damage( const OffenseObjectClass& offense, float sc
 	// Clamp Health to Max
 	Health = WWMath::Clamp( (float)Health, 0, (float)HealthMax );
 
-	if(damage > 0& & 
-		 (float) Health <= 0& &
-		 smart != NULL& & 
-		 smart->As_SoldierGameObj() != NULL& & 
-		 Get_Owner() != NULL& & 
-		 Get_Owner()->As_SoldierGameObj() != NULL){
+	if(
+        damage > 0
+        && (float) Health <= 0
+        && smart != NULL
+        && smart->As_SoldierGameObj() != NULL
+        && Get_Owner() != NULL
+        && Get_Owner()->As_SoldierGameObj() != NULL
+    ){
 
 		CombatManager::On_Soldier_Kill(smart->As_SoldierGameObj(), Get_Owner()->As_SoldierGameObj());
 	}
@@ -855,16 +869,20 @@ bool DefenseObjectClass::Would_Damage( const OffenseObjectClass& offense, float 
 	if( offense.Get_Owner() != NULL ){
 		smart = offense.Get_Owner()->As_SmartGameObj();
 	}
-	if(	smart& & Get_Owner()& & 
-			smart->Is_Teammate( Get_Owner() )& & 
-			(smart != Get_Owner() ) ){
+	
+    if(
+        smart
+        && Get_Owner()
+        && smart->Is_Teammate( Get_Owner() )
+        && smart != Get_Owner()
+    ){
 		// This is friendly fire!!
 		if( !CombatManager::Is_Friendly_Fire_Permitted() ){
    			return false;
    		}
    	}
 
-	if( damage * damage_scale > 0& & (float)Health > 0 ){
+	if( damage * damage_scale > 0 && (float) Health > 0 ){
 		return true;
 	}
 
@@ -878,7 +896,7 @@ bool DefenseObjectClass::Would_Damage( const OffenseObjectClass& offense, float 
 void DefenseObjectClass::Import( BitStreamClass& packet ){
 	bool is_health_zero = packet.Get( is_health_zero );
 
-	int health				= packet.Get( health, BITPACK_HEALTH );
+	int health = packet.Get( health, BITPACK_HEALTH );
 	int shield_strength	= packet.Get( shield_strength, BITPACK_SHIELD_STRENGTH );
 	unsigned int shield_type;
 	packet.Get( shield_type, BITPACK_SHIELD_TYPE );
@@ -905,6 +923,81 @@ void DefenseObjectClass::Export( BitStreamClass& packet ){
 	packet.Add( shield_strength, BITPACK_SHIELD_STRENGTH );
 	packet.Add( (unsigned long) ShieldType,	BITPACK_SHIELD_TYPE );
 }
+
+void DefenseObjectClass::Set_Health( float health ){
+	float old_health = Health;
+	
+    Health = WWMath::Clamp( health, 0, HealthMax );
+
+	if( old_health != (float) Health ){
+		Mark_Owner_Dirty();
+	}
+}
+
+void DefenseObjectClass::Add_Health(float add_health){
+	Set_Health( WWMath::Clamp( (float) Health + add_health, 0, HealthMax ) );
+}
+
+float DefenseObjectClass::Get_Health(void) const {
+	return Health;
+}
+
+void DefenseObjectClass::Set_Health_Max(float health){
+	HealthMax = WWMath::Clamp(health, 0, MAX_MAX_HEALTH);
+	Mark_Owner_Dirty();
+}
+
+float DefenseObjectClass::Get_Health_Max(void) const {
+	return HealthMax;
+}
+
+void DefenseObjectClass::Set_Shield_Strength(float str){
+	float old = ShieldStrength;
+
+	ShieldStrength = WWMath::Clamp( str, 0, ShieldStrengthMax );
+
+	if( old != (float) ShieldStrength ){
+		Mark_Owner_Dirty();
+	}
+}
+
+void DefenseObjectClass::Add_Shield_Strength(float str){
+	Set_Shield_Strength( WWMath::Clamp((float)ShieldStrength + str, 0, ShieldStrengthMax) );
+}
+
+float DefenseObjectClass::Get_Shield_Strength(void) const {
+	return ShieldStrength;
+}
+
+void DefenseObjectClass::Set_Shield_Strength_Max(float str){
+	ShieldStrengthMax = WWMath::Clamp(str, 0, MAX_MAX_SHIELD_STRENGTH);
+	Mark_Owner_Dirty();
+}
+
+float DefenseObjectClass::Get_Shield_Strength_Max(void) const {
+	return ShieldStrengthMax;
+}
+
+void DefenseObjectClass::Set_Precision(void){
+	// This static function needs to be called after ArmorWarheadManager::Init
+	// has done its work.
+
+	cEncoderList::Set_Precision( BITPACK_HEALTH, 0, (int) MAX_MAX_HEALTH );
+	cEncoderList::Set_Precision( BITPACK_SHIELD_STRENGTH, 0, (int) MAX_MAX_SHIELD_STRENGTH );
+	cEncoderList::Set_Precision( BITPACK_SHIELD_TYPE, 0, ArmorWarheadManager::Get_Num_Armor_Types() );
+}
+
+void DefenseObjectClass::Mark_Owner_Dirty(void){
+	if( Get_Owner() != NULL ){
+		Get_Owner()->Set_Object_Dirty_Bit( NetworkObjectClass::BIT_OCCASIONAL, true );
+	}
+}
+
+void DefenseObjectClass::Set_Shield_Type( ArmorType type ){ 
+	ShieldType = type; 
+	Mark_Owner_Dirty();
+}
+
 
 /*****************************************************************************************
 ** DefenseObjectDefClass Implementation
@@ -985,73 +1078,3 @@ bool DefenseObjectDefClass::Load( ChunkLoadClass& cload ){
 	return true;
 }
 
-
-void DefenseObjectClass::Set_Health( float health ){
-	float old_health = Health;
-	Health = WWMath::Clamp( health, 0, HealthMax );
-	if( old_health != (float) Health ){
-		Mark_Owner_Dirty();
-	}
-}
-
-void DefenseObjectClass::Add_Health(float add_health){
-	Set_Health( WWMath::Clamp( (float) Health + add_health, 0, HealthMax ) );
-}
-
-float DefenseObjectClass::Get_Health(void) const {
-	return Health;
-}
-
-void DefenseObjectClass::Set_Health_Max(float health){
-	HealthMax = WWMath::Clamp(health, 0, MAX_MAX_HEALTH);
-	Mark_Owner_Dirty();
-}
-
-float DefenseObjectClass::Get_Health_Max(void) const {
-	return HealthMax;
-}
-
-void DefenseObjectClass::Set_Shield_Strength(float str){
-	float old = ShieldStrength;
-	ShieldStrength = WWMath::Clamp(str, 0, ShieldStrengthMax);
-	if( old != (float)ShieldStrength ){
-		Mark_Owner_Dirty();
-	}
-}
-
-void DefenseObjectClass::Add_Shield_Strength(float str){
-	Set_Shield_Strength( WWMath::Clamp((float)ShieldStrength + str, 0, ShieldStrengthMax) );
-}
-
-float DefenseObjectClass::Get_Shield_Strength(void) const {
-	return ShieldStrength;
-}
-
-void DefenseObjectClass::Set_Shield_Strength_Max(float str){
-	ShieldStrengthMax = WWMath::Clamp(str, 0, MAX_MAX_SHIELD_STRENGTH);
-	Mark_Owner_Dirty();
-}
-
-float DefenseObjectClass::Get_Shield_Strength_Max(void) const {
-	return ShieldStrengthMax;
-}
-
-void DefenseObjectClass::Set_Precision(void){
-	// This static function needs to be called after ArmorWarheadManager::Init
-	// has done its work.
-
-	cEncoderList::Set_Precision( BITPACK_HEALTH, 0, (int) MAX_MAX_HEALTH );
-	cEncoderList::Set_Precision( BITPACK_SHIELD_STRENGTH, 0, (int) MAX_MAX_SHIELD_STRENGTH );
-	cEncoderList::Set_Precision( BITPACK_SHIELD_TYPE, 0, ArmorWarheadManager::Get_Num_Armor_Types() );
-}
-
-void DefenseObjectClass::Mark_Owner_Dirty(void){
-	if( Get_Owner() != NULL ){
-		Get_Owner()->Set_Object_Dirty_Bit( NetworkObjectClass::BIT_OCCASIONAL, true );
-	}
-}
-
-void DefenseObjectClass::Set_Shield_Type( ArmorType type ){ 
-	ShieldType = type; 
-	Mark_Owner_Dirty();
-}

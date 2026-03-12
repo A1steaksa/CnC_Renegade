@@ -141,15 +141,17 @@ public:
 	void Set_Warhead( WarheadType warhead ){
 		Warhead = warhead;
 	}
+    
 	WarheadType	Get_Warhead(void) const {
 		return Warhead;
 	}
 
 	// Owner
-	void Set_Owner( ArmedGameObj *owner ){
+	void Set_Owner( ArmedGameObj* owner ){
 		Owner = (ScriptableGameObj*) owner;
 	}
-	ArmedGameObj *Get_Owner(void) const {
+
+	ArmedGameObj* Get_Owner(void) const {
 		return (ArmedGameObj*) Owner.Get_Ptr();
 	}
 
@@ -194,14 +196,15 @@ public:
 	~DefenseObjectClass(){};
 
 	// DefenseObjects now have a pointer to their cooresponing GameObj to report damage and scoring to the PlayerData
-	void Init( const DefenseObjectDefClass & def, DamageableGameObj * owner);
-	bool Save( ChunkSaveClass & csave );
-	bool Load( ChunkLoadClass & cload );
+	void Init( const DefenseObjectDefClass& def, DamageableGameObj* owner);
+	bool Save( ChunkSaveClass& csave );
+	bool Load( ChunkLoadClass& cload );
 
 	// Owner
 	void Set_Owner( DamageableGameObj *owner ){
 		Owner = (ScriptableGameObj*) owner;
 	}
+
 	DamageableGameObj *Get_Owner(void) const {
 		return (DamageableGameObj*) Owner.Get_Ptr();
 	}
@@ -210,12 +213,13 @@ public:
 	void Set_Skin( ArmorType skin ){
 		Skin = skin;
 	}
+
 	ArmorType Get_Skin( void ) const {
 		return Skin;
 	}
 
-	enum {MAX_MAX_HEALTH = 2000}; //500};
-	enum {MAX_MAX_SHIELD_STRENGTH = 2000}; //500};
+	enum { MAX_MAX_HEALTH = 2000 };
+	enum { MAX_MAX_SHIELD_STRENGTH = 2000 };
 
 	// Health
 	void Set_Health( float health );
@@ -230,8 +234,8 @@ public:
 	float Get_Shield_Strength(void) const;
 	void Set_Shield_Strength_Max( float str );
 	float Get_Shield_Strength_Max(void) const;
-
 	void Set_Shield_Type( ArmorType type );
+
 	unsigned long Get_Shield_Type( void ) const {
 		return ShieldType;
 	}
@@ -241,15 +245,16 @@ public:
 	float Do_Damage( const OffenseObjectClass& offense, float scale = 1.0f, int alternate_skin = -1 );
 	
 	// Request_Damage
-	void Request_Damage( const OffenseObjectClass & offense, float scale = 1.0f );
+	void Request_Damage( const OffenseObjectClass& offense, float scale = 1.0f );
 
 	// Will an apply damage call actually repair?
-	bool Is_Repair( const OffenseObjectClass	& offense, float scale = 1.0f );
+	bool Is_Repair( const OffenseObjectClass& offense, float scale = 1.0f );
 
 	// Would an apply damage call actually damage?
-	bool Would_Damage( const OffenseObjectClass	& offense, float scale = 1.0f );
+	bool Would_Damage( const OffenseObjectClass& offense, float scale = 1.0f );
 
 	bool Is_Soft(void);
+
 	void Set_Can_Object_Die( bool onoff ){
 		CanObjectDie = onoff;
 	}
@@ -263,6 +268,7 @@ public:
 	float Get_Damage_Points(void) const {
 		return DamagePoints;
 	}
+
 	float Get_Death_Points(void) const {
 		return DeathPoints;
 	}

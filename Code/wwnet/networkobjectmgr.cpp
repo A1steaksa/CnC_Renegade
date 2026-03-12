@@ -72,9 +72,7 @@ NetworkObjectClass* NetworkObjectMgrClass::Find_Object( int object_id ){
 //	Set_New_Dynamic_ID
 //
 ////////////////////////////////////////////////////////////////
-void
-NetworkObjectMgrClass::Set_New_Dynamic_ID (int id)
-{
+void NetworkObjectMgrClass::Set_New_Dynamic_ID( int id ) {
 	WWASSERT(id >= NETID_DYNAMIC_OBJECT_MIN && id <= NETID_DYNAMIC_OBJECT_MAX);
 
 	_NewDynamicID = id;
@@ -215,19 +213,13 @@ void NetworkObjectMgrClass::Think(void){
 // This is for cleanup only.
 //
 ////////////////////////////////////////////////////////////////
-void
-NetworkObjectMgrClass::Set_All_Delete_Pending (void)
-{
+void NetworkObjectMgrClass::Set_All_Delete_Pending(void) {
 	WWDEBUG_SAY(("NetworkObjectMgrClass::Set_All_Delete_Pending\n"));
 
-	//
-	//	Mark all netobjects as delete pending
-	//
-	for (int index = 0; index < _ObjectList.Count (); index ++) {
+    // Mark all netobjects as delete pending
+	for( int index = 0; index < _ObjectList.Count(); index++ ) {
 		_ObjectList[index]->Set_Delete_Pending();
 	}
-
-	return ;
 }
 
 
@@ -236,30 +228,20 @@ NetworkObjectMgrClass::Set_All_Delete_Pending (void)
 //	Delete_Pending
 //
 ////////////////////////////////////////////////////////////////
-void
-NetworkObjectMgrClass::Delete_Pending (void)
-{
-	if (_IsLevelLoading) {
-		return ;
+void NetworkObjectMgrClass::Delete_Pending( void ) {
+	if( _IsLevelLoading ) {
+		return;
 	}
 
-	//WWDEBUG_SAY(("NetworkObjectMgrClass::Delete_Pending\n"));
-
-	//
-	//	Delete each object that is pending...
-	//
+    // Delete each object that is pending...
 	for (int index = 0; index < _DeletePendingList.Count (); index ++) {
 		WWASSERT(_DeletePendingList[index] != NULL);
 		if (_DeletePendingList[index]->Is_Delete_Pending ()) {
 			_DeletePendingList[index]->Delete ();
 		}
 	}
-
-//	if (_DeletePendingList.Count()) {
-//		_DeletePendingList.Delete_All ();
-//	}
+    
 	_DeletePendingList.Reset_Active();	// No need to resize the vector back to zero...
-	return ;
 }
 
 

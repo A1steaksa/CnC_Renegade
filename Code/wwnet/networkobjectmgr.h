@@ -86,10 +86,10 @@ public:
 	//
 	//	Deletion support
 	//
-	static void Set_All_Delete_Pending (void);//TSS092301
-	static void Delete_Pending (void);
-	static void Delete_Client_Objects (int client_id);
-	static void Restore_Dirty_Bits (int client_id);
+	static void Set_All_Delete_Pending(void);//TSS092301
+	static void Delete_Pending(void);
+	static void Delete_Client_Objects( int client_id );
+	static void Restore_Dirty_Bits( int client_id );
 
 	//
 	//	Object enumeration

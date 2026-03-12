@@ -105,6 +105,7 @@ public:
 	DefenseObjectClass* Get_Defense_Object(void) {
 		return &DefenseObject;
 	}
+
 	virtual void Apply_Damage( const OffenseObjectClass& damager, float scale = 1.0f, int alternate_skin = -1 );
 	virtual void Completely_Damaged( const OffenseObjectClass& damager ) {};
 
@@ -112,6 +113,7 @@ public:
 	const StringClass& Get_Info_Icon_Texture_Filename(void) {
 		return Get_Definition().InfoIconTextureFilename;
 	}
+    
 	int Get_Translated_Name_ID(void) const {
 		return Get_Definition().TranslatedNameID;
 	}
@@ -123,6 +125,7 @@ public:
 	virtual bool Is_Health_Bar_Displayed(void) const {
 		return IsHealthBarDisplayed;
 	}
+    
 	virtual void Set_Is_Health_Bar_Displayed( bool state ) {
 		IsHealthBarDisplayed = state;
 	}
@@ -136,11 +139,12 @@ public:
 	virtual int Get_Player_Type(void) const {
 		return PlayerType;
 	}
+
 	virtual void Set_Player_Type(int type);
 	bool Is_Team_Player(void);
 	Vector3 Get_Team_Color(void);
-	bool Is_Teammate(DamageableGameObj* p_obj);
-	bool Is_Enemy(DamageableGameObj* p_obj);
+	bool Is_Teammate( DamageableGameObj* p_obj );
+	bool Is_Enemy( DamageableGameObj* p_obj );
 	
 	// Network support
 	virtual void Import_Occasional( BitStreamClass &packet );

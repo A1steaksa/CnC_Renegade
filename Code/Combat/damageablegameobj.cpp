@@ -153,7 +153,7 @@ const DamageableGameObjDef & DamageableGameObj::Get_Definition( void ) const {
 
 
 // DamageableGameObj Save and Load
-enum	{
+enum {
 	CHUNKID_PARENT							=	207011212,
 	CHUNKID_DEFENSEOBJECT,
 	CHUNKID_VARIABLES,
@@ -244,7 +244,7 @@ void DamageableGameObj::Apply_Damage( const OffenseObjectClass & damager, float 
 		// notify the observers
 		for( int index = 0; index < observer_list.Count(); index++ ) {
 			observer_list[ index ]->Killed( this, damager.Get_Owner() );
-		}			
+		}
 
 		Completely_Damaged( damager ); 
 	}
@@ -257,7 +257,6 @@ void DamageableGameObj::Export_Occasional( BitStreamClass &packet ){
 	//	Export the defense object's state
 	DefenseObject.Export (packet);
 }
-
 
 
 void DamageableGameObj::Import_Occasional( BitStreamClass &packet ){
@@ -302,22 +301,29 @@ Vector3 DamageableGameObj::Get_Team_Color(void){
 	return Get_Color_For_Team(PlayerType);
 }
 
-void DamageableGameObj::Set_Player_Type(int id){
+void DamageableGameObj::Set_Player_Type( int id ){
 	PlayerType = id;
 
 	Set_Object_Dirty_Bit( NetworkObjectClass::BIT_RARE, true );
 }
 
-bool DamageableGameObj::Is_Teammate(DamageableGameObj * p_obj){
-	WWASSERT(p_obj != NULL);
+bool DamageableGameObj::Is_Teammate( DamageableGameObj* p_obj ){
+	WWASSERT( p_obj != NULL );
 
-   return ((p_obj == this) || 
-			  (Is_Team_Player() && Get_Player_Type() == p_obj->Get_Player_Type()));
+    return (
+        p_obj == this
+        || (
+                Is_Team_Player()
+                && Get_Player_Type() == p_obj->Get_Player_Type()
+            ) 
+    );
 }
 
-bool DamageableGameObj::Is_Enemy(DamageableGameObj * p_obj){
-	WWASSERT(p_obj != NULL);
-   return ( (p_obj != this) && Player_Types_Are_Enemies( Get_Player_Type(), p_obj->Get_Player_Type() ) );
+bool DamageableGameObj::Is_Enemy( DamageableGameObj* p_obj ){
+	WWASSERT( p_obj != NULL );
+    return (
+        p_obj != this
+        && Player_Types_Are_Enemies( Get_Player_Type(), p_obj->Get_Player_Type() ) 
+    );
 }
-
 

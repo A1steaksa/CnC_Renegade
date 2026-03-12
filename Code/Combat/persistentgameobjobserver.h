@@ -41,9 +41,8 @@ public:
     PersistentGameObjObserverClass( void );
 	virtual ~PersistentGameObjObserverClass( void );
 
-	virtual bool Save( ChunkSaveClass & csave );
-	virtual bool Load( ChunkLoadClass & cload );
-
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
 };
 
 
@@ -52,8 +51,8 @@ public:
 	static void Add( PersistentGameObjObserverClass* observer );
 	static void Remove( PersistentGameObjObserverClass* observer );
 
-	static bool Save( ChunkSaveClass & csave );
-	static bool Load( ChunkLoadClass & cload );
+	static bool Save( ChunkSaveClass& csave );
+	static bool Load( ChunkLoadClass& cload );
 
 	static void Reset( void );
 
