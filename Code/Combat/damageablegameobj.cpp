@@ -125,13 +125,11 @@ DamageableGameObj::~DamageableGameObj( void ){
 void DamageableGameObj::Init( const DamageableGameObjDef & definition ){
 	ScriptableGameObj::Init( definition );
 	Copy_Settings( definition );
-	return ;
 }
 
 void DamageableGameObj::Copy_Settings( const DamageableGameObjDef & definition ){
-	Set_Player_Type(definition.DefaultPlayerType);
-	DefenseObject.Init(definition.DefenseObjectDef, this );
-	return ;
+	Set_Player_Type( definition.DefaultPlayerType );
+	DefenseObject.Init( definition.DefenseObjectDef, this );
 }
 
 void DamageableGameObj::Re_Init( const DamageableGameObjDef & definition ){
@@ -144,25 +142,24 @@ void DamageableGameObj::Re_Init( const DamageableGameObjDef & definition ){
 	Copy_Settings( definition );
 
 	Set_Player_Type( old_player_type );
-	return ;
 }
 
-const DamageableGameObjDef & DamageableGameObj::Get_Definition( void ) const {
+const DamageableGameObjDef& DamageableGameObj::Get_Definition( void ) const {
 	return (const DamageableGameObjDef &)BaseGameObj::Get_Definition();
 }
 
 
 // DamageableGameObj Save and Load
 enum {
-	CHUNKID_PARENT							=	207011212,
+	CHUNKID_PARENT         = 207011212,
 	CHUNKID_DEFENSEOBJECT,
 	CHUNKID_VARIABLES,
 
-	MICROCHUNKID_PLAYER_TYPE				=	1,
+	MICROCHUNKID_PLAYER_TYPE             = 1,
 	MICROCHUNKID_IS_HEALTH_BAR_DISPLAYED,
 };
 
-bool DamageableGameObj::Save( ChunkSaveClass & csave ){
+bool DamageableGameObj::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_PARENT );
 		ScriptableGameObj::Save( csave );
 	csave.End_Chunk();
@@ -179,7 +176,7 @@ bool DamageableGameObj::Save( ChunkSaveClass & csave ){
 	return true;
 }
 
-bool DamageableGameObj::Load( ChunkLoadClass &cload ){
+bool DamageableGameObj::Load( ChunkLoadClass& cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -216,12 +213,12 @@ bool DamageableGameObj::Load( ChunkLoadClass &cload ){
 	return true;
 }
 
-void DamageableGameObj::Apply_Damage( const OffenseObjectClass & damager, float scale, int alternate_skin ){
-	if ( DefenseObject.Get_Health() <= 0 ) {
+void DamageableGameObj::Apply_Damage( const OffenseObjectClass& damager, float scale, int alternate_skin ){
+	if( DefenseObject.Get_Health() <= 0 ){
 		return;
 	}
 
-	if (Is_Delete_Pending()) {
+	if( Is_Delete_Pending() ){
 		return;
 	}
 
@@ -250,14 +247,12 @@ void DamageableGameObj::Apply_Damage( const OffenseObjectClass & damager, float 
 	}
 }
 
-
 void DamageableGameObj::Export_Occasional( BitStreamClass &packet ){
 	ScriptableGameObj::Export_Occasional( packet );
 
 	//	Export the defense object's state
-	DefenseObject.Export (packet);
+	DefenseObject.Export( packet );
 }
-
 
 void DamageableGameObj::Import_Occasional( BitStreamClass &packet ){
 	ScriptableGameObj::Import_Occasional( packet );
@@ -291,7 +286,6 @@ void DamageableGameObj::Import_Occasional( BitStreamClass &packet ){
 		Completely_Damaged( dummy_offense_obj ); 
 	}
 }
-
 
 bool DamageableGameObj::Is_Team_Player(void){
 	return PlayerType == PLAYERTYPE_NOD || PlayerType == PLAYERTYPE_GDI;

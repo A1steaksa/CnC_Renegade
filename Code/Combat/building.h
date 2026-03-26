@@ -68,10 +68,8 @@ class RepairBayGameObj;
 ** BuildingConstants
 ** Convienent namespace declaration for the constants used with buildings
 */
-namespace BuildingConstants
-{
-	typedef enum
-	{
+namespace BuildingConstants {
+	typedef enum {
 		TYPE_NONE					= -1,
 		TYPE_POWER_PLANT,
 		TYPE_SOLDIER_FACTORY,
@@ -86,14 +84,12 @@ namespace BuildingConstants
 		TYPE_COUNT
 	} BuildingType;
 
-	typedef enum
-	{
-		LEGACY_TEAM_GDI						= 0,
+	typedef enum {
+		LEGACY_TEAM_GDI = 0,
 		LEGACY_TEAM_NOD,
 	} LegacyBuildingTeam;
 
-	typedef enum
-	{
+	typedef enum {
 		BASE_COUNT = 2,
 	};
 }
@@ -103,8 +99,7 @@ namespace BuildingConstants
 ** This class is an editable definition for a building.  It contains all constant data needed to initialize
 ** a BuildingGameObj. 
 */
-class BuildingGameObjDef : public DamageableGameObjDef
-{
+class BuildingGameObjDef : public DamageableGameObjDef {
 public:
 
 	BuildingGameObjDef( void );
@@ -197,8 +192,8 @@ public:
 	** and other components are automatically assigned to this building.  When there are two
 	** BuildingGameObj's that can accept a particular component, the closest one wins.
 	*/
-	void											Get_Position(Vector3 * pos) const		{ *pos = Position; }
-	void											Set_Position(const Vector3 & pos)		{ Position = pos; CollectionSphere.Center = pos; }
+	void Get_Position(Vector3 * pos) const { *pos = Position; }
+	void Set_Position(const Vector3 & pos) { Position = pos; CollectionSphere.Center = pos; }
 
 	/*
 	** Damage interface, designed to work similarly to a game object
@@ -259,17 +254,12 @@ public:
 	virtual	void								Import_Creation (BitStreamClass &packet);
 	static void									Set_Precision (void);
 	virtual bool								Get_World_Position (Vector3 &pos) const	{ pos = Position; return true; }
-	//virtual float								Compute_Object_Priority (int client_id, const Vector3 &client_pos);
-	//virtual	void								Get_Extended_Information( StringClass & description );
 	virtual	void								Get_Description( StringClass & description );
 	virtual bool								Is_Tagged(void)									{ return false; }
 
 
-	/*
-	**
-	*/
-	bool	Is_GDI( void )						{ return Get_Player_Type() == PLAYERTYPE_GDI; }
-	bool	Is_Nod( void )						{ return Get_Player_Type() == PLAYERTYPE_NOD; }
+	bool Is_GDI( void )						{ return Get_Player_Type() == PLAYERTYPE_GDI; }
+	bool Is_Nod( void )						{ return Get_Player_Type() == PLAYERTYPE_NOD; }
 																			
 	static void	Set_Can_Repair_Buildings(bool flag)		{CanRepairBuildings = flag;}
 	static bool	Get_Can_Repair_Buildings(void)			{return CanRepairBuildings;}
@@ -277,7 +267,7 @@ public:
 	//
 	//	Informational
 	//
-	void											Find_Closest_Poly (const Vector3 &pos, float *distance2);	
+	void Find_Closest_Poly (const Vector3 &pos, float *distance2);	
 
 protected:
 
@@ -287,8 +277,6 @@ protected:
 	BuildingMonitorClass *					BuildingMonitor;
 	BaseControllerClass *					BaseController;
 	bool											IsDestroyed;
-
-//private:
 
 	Vector3										Position;
 	bool											IsPowerOn;

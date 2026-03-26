@@ -133,6 +133,7 @@ public:
 	void Set_Damage( float damage ){
 		Damage = damage;
 	}
+
 	float Get_Damage(void) const {
 		return Damage;
 	}

@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -282,8 +264,7 @@ PhysicsSceneClass::PhysicsSceneClass(void) :
  * HISTORY:                                                                                    *
  *   7/7/2000   gth : Created.                                                                 *
  *=============================================================================================*/
-PhysicsSceneClass::~PhysicsSceneClass(void)
-{
+PhysicsSceneClass::~PhysicsSceneClass(void){
 	Remove_All();
 
 	delete StaticCullingSystem;
@@ -303,14 +284,7 @@ PhysicsSceneClass::~PhysicsSceneClass(void)
 	WidgetSystem::Release_Debug_Widgets();
 
 	WWASSERT(TheScene == this);
-	TheScene = NULL;	
-
-	/*
-	** Shutdown UMBRA
-	*/
-#if (UMBRASUPPORT)
-	UmbraSupport::Shutdown();
-#endif
+	TheScene = NULL;
 }	
 
 
@@ -375,8 +349,6 @@ void PhysicsSceneClass::Update(float dt,int frameid)
 		WWPROFILE("Post Timestep");
 		RefPhysListIterator it(&TimestepList);
 		for (it.First(); !it.Is_Done(); it.Next()) {
-//			if (it.Peek_Obj()->Is_Object_Simulating()) {
-//				if (!UpdateOnlyVisibleObjects || it.Peek_Obj()->Get_Last_Visible_Frame()==CurrentFrameNumber) {
 			PhysClass* phys_obj=it.Peek_Obj();
 			if (phys_obj->Is_Object_Simulating()) {
 				if (!UpdateOnlyVisibleObjects	||

@@ -179,12 +179,12 @@ bool PhysicalGameObjDef::Load( ChunkLoadClass &cload ){
 	return true;
 }
 
-bool PhysicalGameObjDef::Is_Valid_Config(StringClass &message){
+bool PhysicalGameObjDef::Is_Valid_Config( StringClass& message ){
 	bool retval = false;
 
-	DefinitionClass *phys_def = DefinitionMgrClass::Find_Definition(PhysDefID);
-	if(phys_def != NULL){
-		retval = phys_def->Is_Valid_Config(message);
+	DefinitionClass* phys_def = DefinitionMgrClass::Find_Definition( PhysDefID );
+	if( phys_def != NULL ){
+		retval = phys_def->Is_Valid_Config( message );
 	} else {
 		message += "Can't find physics object definition.\n";
 	}

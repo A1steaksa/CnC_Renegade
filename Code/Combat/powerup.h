@@ -57,39 +57,41 @@ class PowerUpGameObjDef : public SimpleGameObjDef
 public:
 	PowerUpGameObjDef( void );
 
-	virtual uint32								Get_Class_ID( void ) const;
-	virtual PersistClass *					Create( void ) const ;
-	virtual bool								Save( ChunkSaveClass &csave );
-	virtual bool								Load( ChunkLoadClass &cload );
-	virtual const PersistFactoryClass &	Get_Factory( void ) const;
+	virtual uint32 Get_Class_ID( void ) const;
+	virtual PersistClass* Create( void ) const;
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	virtual const PersistFactoryClass& Get_Factory( void ) const;
 
 	DECLARE_EDITABLE( PowerUpGameObjDef, SimpleGameObjDef );
 
 	// Grant returns true if anything was granted that the grantee didn't already have
-	bool											Grant( SmartGameObj * obj, PowerUpGameObj * p_powerup = NULL, bool hud_display = true ) const ;
+	bool Grant( SmartGameObj* obj, PowerUpGameObj* p_powerup = NULL, bool hud_display = true ) const;
 
-	int											Get_Grant_Weapon_ID (void) const	{ return GrantWeaponID; }
+	int Get_Grant_Weapon_ID(void) const {
+        return GrantWeaponID;
+    }
 
 protected:
-	int											GrantShieldType;
-	float											GrantShieldStrength;
-	float											GrantShieldStrengthMax;
-	float											GrantHealth;
-	float											GrantHealthMax;
-	int											GrantWeaponID;
-	bool											GrantWeapon;
-	int											GrantWeaponRounds;
-	bool											GrantWeaponClips;
-	bool											Persistent;
-	int											GrantKey;
-	bool											AlwaysAllowGrant;
+	int   GrantShieldType;
+	float GrantShieldStrength;
+	float GrantShieldStrengthMax;
+	float GrantHealth;
+	float GrantHealthMax;
+	int   GrantWeaponID;
+	bool  GrantWeapon;
+	int   GrantWeaponRounds;
+	bool  GrantWeaponClips;
+	bool  Persistent;
+	int   GrantKey;
+	bool  AlwaysAllowGrant;
 
-	int											GrantSoundID;
-	StringClass									GrantAnimationName;
-	int											IdleSoundID;
-	StringClass									IdleAnimationName;
+	int         GrantSoundID;
+	StringClass GrantAnimationName;
+	int         IdleSoundID;
+	StringClass IdleAnimationName;
 
-	friend	class								PowerUpGameObj;
+	friend class PowerUpGameObj;
 
 };
 
@@ -125,7 +127,6 @@ public:
 
 	// Network support
 	virtual	bool	Is_Always_Dirty( void )					{ return false; }
-	//virtual	void	Get_Extended_Information( StringClass & description );
 	virtual	void	Get_Description( StringClass & description );
 
 	void	Expire( void );

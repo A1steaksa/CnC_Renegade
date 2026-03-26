@@ -92,16 +92,16 @@ public:
 	** contained in (if any)
 	*/
 	WWINLINE const AABoxClass & Get_Cull_Box(void) const							{ return CullBox; }
-	void								Set_Cull_Box(const AABoxClass & box,bool just_loaded = false);
+	void Set_Cull_Box(const AABoxClass & box,bool just_loaded = false);
 
 	/*
 	** These functions are used by various culling systems to manage the linkage 
 	** pointers.  *The average user should NEVER call these*
 	*/
-	void								Set_Culling_System(CullSystemClass * sys);
-	CullSystemClass *				Get_Culling_System(void) const;
-	WWINLINE void					Set_Cull_Link(CullLinkClass * c)					{ CullLink = c; }
-	WWINLINE CullLinkClass *	Get_Cull_Link(void) const							{ return CullLink; }
+	void Set_Culling_System(CullSystemClass * sys);
+	CullSystemClass* Get_Culling_System(void) const;
+	WWINLINE void Set_Cull_Link(CullLinkClass * c)					{ CullLink = c; }
+	WWINLINE CullLinkClass* Get_Cull_Link(void) const							{ return CullLink; }
 
 private:
 
@@ -116,7 +116,7 @@ private:
 	** will point to one of the culling link objects and NULL
 	** if its not in any system.
 	*/
-	CullLinkClass *				CullLink;
+	CullLinkClass* CullLink;
 
 	/*
 	** Bounding Box
@@ -124,18 +124,18 @@ private:
 	** whenever the object moves or changes size.  In order to do this,
 	** call Set_Cull_Box...
 	*/
-	AABoxClass						CullBox;
+	AABoxClass CullBox;
 
 	/*
 	** NextCollected
 	** This pointer is used by the culling system to keep a singly linked 
 	** list of cullable object that have been "collected". 
 	*/
-	CullableClass *				NextCollected;
+	CullableClass* NextCollected;
 
 	// Not Implemented:
 	CullableClass(const CullableClass & src);
-	CullableClass & operator = (const CullableClass & src);
+	CullableClass& operator = (const CullableClass & src);
 
 	friend class CullSystemClass;
 };
@@ -148,8 +148,7 @@ private:
 ** Base class of any culling system.  This interface exists so that things can
 ** be shuffled around without having explicit knowledge of what system they are in.
 */
-class CullSystemClass
-{
+class CullSystemClass {
 public:
 
 	CullSystemClass(void);

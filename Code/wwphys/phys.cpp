@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -351,92 +333,6 @@ void PhysClass::Push_Effects(RenderInfoClass & rinfo)
 			iterator.Peek_Obj()->Render_Push(rinfo,this);
 		}
 	}
-
-#if 0
-	if (!ProjectionsOnMe.Is_Empty()) {
-
-		ShaderClass shader = ShaderClass::_PresetOpaqueShader;
-		VertexMaterialClass * vmtl = VertexMaterialClass::Get_Preset(VertexMaterialClass::PRELIT_NODIFFUSE);
-		
-		DX8Wrapper::Set_Shader(shader);
-		DX8Wrapper::Set_Material(vmtl);
-
-		Matrix4 view,proj;
-		Matrix4 identity(true);
-
-		DX8Wrapper::Get_Transform(D3DTS_VIEW,view);
-		DX8Wrapper::Get_Transform(D3DTS_PROJECTION,proj);
-
-		DX8Wrapper::Set_Transform(D3DTS_WORLD,identity);
-		DX8Wrapper::Set_Transform(D3DTS_VIEW,identity);
-		DX8Wrapper::Set_Transform(D3DTS_PROJECTION,identity);
-
-		
-		TexProjListIterator iterator(&ProjectionsOnMe);
-		for ( ; !iterator.Is_Done() ; iterator.Next()) {
-			TextureClass * tex = iterator.Peek_Obj()->Peek_Material_Pass()->Peek_Texture(0);
-			if (tex != NULL) {
-				DX8Wrapper::Set_Texture(0,tex);
-
-				DynamicVBAccessClass vbaccess(BUFFER_TYPE_DYNAMIC_DX8,4);
-				{
-					DynamicVBAccessClass::WriteLockClass lock(&vbaccess);
-					VertexFormatXYZNDUV2 * verts = lock.Get_Formatted_Vertex_Array();
-					verts[0].x = -1.0f;
-					verts[0].y = 0.8f;
-					verts[0].z = 0.0;
-					verts[0].u1 = 0.0f;
-					verts[0].v1 = 0.0f;
-					verts[0].diffuse = 0xFFFFFFFF;
-
-					verts[1].x = -1.0f;
-					verts[1].y = 0.3f;
-					verts[1].z = 0.0;
-					verts[1].u1 = 0.0f;
-					verts[1].v1 = 1.0f;
-					verts[1].diffuse = 0xFFFFFFFF;
-
-					verts[2].x = -0.5f;
-					verts[2].y = 0.3f;
-					verts[2].z = 0.0;
-					verts[2].u1 = 1.0f;
-					verts[2].v1 = 1.0f;
-					verts[2].diffuse = 0xFFFFFFFF;
-
-					verts[3].x = -0.5f;
-					verts[3].y = 0.8f;
-					verts[3].z = 0.0;
-					verts[3].u1 = 1.0f;
-					verts[3].v1 = 0.0f;
-					verts[3].diffuse = 0xFFFFFFFF;
-				}
-
-				DynamicIBAccessClass ibaccess(BUFFER_TYPE_DYNAMIC_DX8,2*3);
-				{
-					DynamicIBAccessClass::WriteLockClass lock(&ibaccess);
-					unsigned short * indices = lock.Get_Index_Array();
-
-					indices[0] = 0;
-					indices[1] = 1;
-					indices[2] = 2;
-					indices[3] = 0;
-					indices[4] = 2;
-					indices[5] = 3;
-				}
-
-				DX8Wrapper::Set_Vertex_Buffer(vbaccess);
-				DX8Wrapper::Set_Index_Buffer(ibaccess,0);
-				DX8Wrapper::Draw_Triangles(0,2,0,4);
-			}
-		}
-
-		DX8Wrapper::Set_Transform(D3DTS_VIEW,view);
-		DX8Wrapper::Set_Transform(D3DTS_PROJECTION,proj);
-
-		REF_PTR_RELEASE(vmtl);
-	}
-#endif
-
 }
 
 void PhysClass::Pop_Effects(RenderInfoClass & rinfo)
@@ -596,61 +492,9 @@ bool PhysClass::Load (ChunkLoadClass &cload)
 	*/
 	Invalidate_Static_Lighting_Cache();
 
-	/*
-	** Update our Umbra object
-	*/
-#if (UMBRASUPPORT)
-	UmbraSupport::Update_Umbra_Object(this);
-#endif
-
 	return true;
 }
 
-
-#ifdef WWDEBUG
-void PhysClass::Add_Debug_Point(const Vector3 & p,const Vector3 & color)
-{
-	if (Is_Debug_Display_Enabled()) {
-		PhysicsSceneClass::Get_Instance()->Add_Debug_Point(p,color);
-	}
-}
-#endif
-
-#ifdef WWDEBUG
-void PhysClass::Add_Debug_Vector(const Vector3 & p,const Vector3 & v,const Vector3 & color)
-{
-	if (Is_Debug_Display_Enabled() && (v.Length2() > 0.0f)) {
-		PhysicsSceneClass::Get_Instance()->Add_Debug_Vector(p,v,color);
-	}
-}
-#endif
-
-#ifdef WWDEBUG
-void PhysClass::Add_Debug_AABox(const AABoxClass & box,const Vector3 & color,float opacity)
-{
-	if (Is_Debug_Display_Enabled()) {
-		PhysicsSceneClass::Get_Instance()->Add_Debug_AABox(box,color,opacity);
-	}
-}
-#endif
-
-#ifdef WWDEBUG
-void PhysClass::Add_Debug_OBBox(const OBBoxClass & box,const Vector3 & color,float opacity)
-{
-	if (Is_Debug_Display_Enabled()) {
-		PhysicsSceneClass::Get_Instance()->Add_Debug_OBBox(box,color,opacity);
-	}
-}
-#endif
-
-#ifdef WWDEBUG
-void PhysClass::Add_Debug_Axes(const Matrix3D & transform,const Vector3 & color)
-{
-	if (Is_Debug_Display_Enabled()) {
-		PhysicsSceneClass::Get_Instance()->Add_Debug_Axes(transform,color);
-	}
-}
-#endif
 
 bool PhysClass::Is_Debug_Display_Enabled(void) const					
 { 

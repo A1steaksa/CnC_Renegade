@@ -106,15 +106,19 @@ public:
 	// Physics
 	WWINLINE PhysClass* Peek_Physical_Object(void) const { return PhysObj; }
 
-	void					Attach_To_Object_Bone( PhysicalGameObj*  host, const char*  bone_name );
-	bool					Is_Attached_To_An_Object(void){ return (HostGameObj.Get_Ptr () != NULL); }
-	void					Teleport_To_Host_Bone(void);
+	void Attach_To_Object_Bone( PhysicalGameObj*  host, const char*  bone_name );
+	
+    bool Is_Attached_To_An_Object(void){
+        return ( HostGameObj.Get_Ptr() != NULL );
+    }
+	
+    void Teleport_To_Host_Bone(void);
 
-	void					Set_Transform(const Matrix3D&  tm);
-	const Matrix3D& 	Get_Transform(void) const;
-	virtual	void		Get_Position(Vector3*  set_pos) const;
-	void					Set_Position(const Vector3&  pos);
-	float					Get_Facing(void) const;
+	void Set_Transform( const Matrix3D& tm );
+	const Matrix3D& Get_Transform(void) const;
+	virtual	void Get_Position( Vector3* set_pos ) const;
+	void Set_Position( const Vector3& pos );
+	float Get_Facing(void) const;
 
 	// Display
 	WWINLINE RenderObjClass* 	Peek_Model(void){ return Peek_Physical_Object()->Peek_Model(); }
@@ -203,17 +207,20 @@ public:
 	}
 
 	// Network diagnostics
-	BYTE		Get_Server_Skips(void ){return ServerUpdateSkips;}
-	void		Reset_Server_Skips(BYTE value);
-	void		Increment_Server_Skips(void);
+	BYTE Get_Server_Skips(void ){
+        return ServerUpdateSkips;
+    }
+
+	void Reset_Server_Skips( BYTE value );
+	void Increment_Server_Skips(void);
 
 	// Hibernation
-	virtual	bool	Is_Hibernating(void){ return HibernationTimer <= 0; }
-	void				Enable_Hibernation( bool enable ){ HibernationEnable = enable; if( Is_Hibernating() ) HibernationTimer = 1;}
-	void				Reset_Hibernating(void);
-	void				Do_Not_Hibernate(void){ if( HibernationTimer < 1 ) HibernationTimer = 1; }
-	virtual	void	Begin_Hibernation(void);
-	virtual	void	End_Hibernation(void);
+	virtual	bool Is_Hibernating(void){ return HibernationTimer <= 0; }
+	void Enable_Hibernation( bool enable ){ HibernationEnable = enable; if( Is_Hibernating() ) HibernationTimer = 1;}
+	void Reset_Hibernating(void);
+	void Do_Not_Hibernate(void){ if( HibernationTimer < 1 ) HibernationTimer = 1; }
+	virtual	void Begin_Hibernation(void);
+	virtual	void End_Hibernation(void);
 
 	// Radar Blips
 	int				Get_Radar_Blip_Shape_Type(void){ return RadarBlipShapeType; }

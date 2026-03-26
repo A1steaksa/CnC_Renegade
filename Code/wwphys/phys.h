@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -278,26 +260,25 @@ August 29, 2000
 ** PhysClass
 ** This is the base class for all objects in the physics system.
 */
-class PhysClass : public CullableClass, public PersistClass, public MultiListObjectClass
-{
+class PhysClass : public CullableClass, public PersistClass, public MultiListObjectClass {
 public:
 
 	PhysClass(void);
-//	PhysClass(const PhysDefClass & def);
 	virtual ~PhysClass(void);
-	void		Init(const PhysDefClass & def);
+	void Init( const PhysDefClass& def );
 
 	/*
 	** DEBUGGING, re-initialize this object because our definition changed
 	*/
-	virtual void					 Definition_Changed(void)					{ }
+	virtual void Definition_Changed(void){
+    }
 	
 	/*
 	** Certain physics objects expire when an internal timer runs out or they are crushed.  This function
 	** is used to handle informing any observers and putting this object into the destroy list which is 
 	** processed at the end of each frame
 	*/
-	bool								Expire(void);
+	bool Expire(void);
 
 	/*
 	** Timestep function - system informs the object to update itself for the specified
@@ -310,7 +291,7 @@ public:
 	/*
 	** Access to the Position/Orientation state of the object
 	*/
-	virtual const Matrix3D &	Get_Transform(void) const					= 0;
+	virtual const Matrix3D0& Get_Transform(void) const					= 0;
 	virtual void					Set_Transform(const Matrix3D & m)		= 0;
 	void								Get_Position(Vector3 * set_pos) const	{ Get_Transform().Get_Translation(set_pos); }
 	void								Set_Position(const Vector3 & pos)		{ Matrix3D tm = Get_Transform(); tm.Set_Translation(pos); Set_Transform(tm); }
@@ -591,18 +572,6 @@ public:
 	virtual bool						Save (ChunkSaveClass &csave);
 	virtual bool						Load (ChunkLoadClass &cload);
 
-	/*
-	** Debug rendering of vectors, points, boxes, etc etc.  These functions actually add debug
-	** widgets to the physics scene.  Use the macros defined at the top of this file in order to
-	** have these debug calls removed from the release build.
-	*/
-#ifdef WWDEBUG
-	void									Add_Debug_Point(const Vector3 & p,const Vector3 & color);
-	void									Add_Debug_Vector(const Vector3 & p,const Vector3 & v,const Vector3 & color);
-	void									Add_Debug_AABox(const AABoxClass & box,const Vector3 & color,float opacity = 0.25f);
-	void									Add_Debug_OBBox(const OBBoxClass & box,const Vector3 & color,float opacity = 0.25f);
-	void									Add_Debug_Axes(const Matrix3D & transform,const Vector3 & color);
-#endif
 
 	/*
 	** Simulation and Rendering toggles by type.  Derived classes implement these functions to test
@@ -612,12 +581,6 @@ public:
 	virtual bool						Is_Simulation_Disabled(void)				{ return false; }
 	virtual bool						Is_Rendering_Disabled(void)				{ return false; }
 
-	/*
-	** Umbra Testing
-	*/
-#if (UMBRASUPPORT)
-	Umbra::Object *					Peek_Umbra_Object(void)						{ return UmbraObject; }
-#endif
 
 	unsigned Get_Last_Visible_Frame() const { return LastVisibleFrame; }
 	void Set_Last_Visible_Frame(unsigned frame) { LastVisibleFrame=frame; }
@@ -713,12 +676,6 @@ protected:
 	*/
 	unsigned LastVisibleFrame;
 
-	/*
-	** UMBRA Testing
-	*/
-#if (UMBRASUPPORT)
-	Umbra::Object *				UmbraObject;
-#endif
 
 private:
 
@@ -788,34 +745,40 @@ inline bool PhysClass::Is_Pre_Lit(void)
 /**
 ** PhysDefClass - Initialization structure for a PhysClass
 */
-class PhysDefClass : public DefinitionClass
-{
+class PhysDefClass : public DefinitionClass {
 public:
 	
 	PhysDefClass(void);
 	
 	// From PersistClass
-	virtual bool					Save(ChunkSaveClass &csave);
-	virtual bool					Load(ChunkLoadClass &cload);
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
 	
 	// PhysDef type filtering mechanism
-	virtual const char *			Get_Type_Name(void)				{ return "PhysDef"; }
-	virtual bool					Is_Type(const char *);
+	virtual const char* Get_Type_Name(void){
+        return "PhysDef";
+    }
+
+	virtual bool Is_Type(const char *);
 
 	// Validation methods
-	virtual bool					Is_Valid_Config (StringClass &message);
+	virtual bool Is_Valid_Config( StringClass& message );
 
 	// accessors
-	const StringClass &			Get_Model_Name()					{ return ModelName; }
-	bool								Get_Is_Pre_Lit()					{ return IsPreLit; }
+	const StringClass& Get_Model_Name(){
+        return ModelName;
+    }
+
+	bool Get_Is_Pre_Lit() {
+        return IsPreLit;
+    }
 	
 	//	Editable interface requirements
 	DECLARE_EDITABLE(PhysDefClass,DefinitionClass);
 
 protected:
-	
-	StringClass						ModelName;
-	bool								IsPreLit;
+	StringClass ModelName;
+	bool IsPreLit;
 	
 	friend class PhysClass;
 };
