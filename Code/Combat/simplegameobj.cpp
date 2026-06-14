@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -53,7 +35,6 @@
 DECLARE_FORCE_LINK( Simple )
 
 SimplePersistFactoryClass<SimpleGameObjDef, CHUNKID_GAME_OBJECT_DEF_SIMPLE>	_SimpleGameObjDefPersistFactory;
-
 DECLARE_DEFINITION_FACTORY(SimpleGameObjDef, CLASSID_GAME_OBJECT_DEF_SIMPLE, "Simple") _SimpleGameObjDefDefFactory;
 
 SimpleGameObjDef::SimpleGameObjDef( void ) :
@@ -64,47 +45,28 @@ SimpleGameObjDef::SimpleGameObjDef( void ) :
 	MODEL_DEF_PARAM( SimpleGameObjDef, PhysDefID, "PhysDef" );
 	EDITABLE_PARAM( SimpleGameObjDef, ParameterClass::TYPE_BOOL, IsEditorObject );
 	EDITABLE_PARAM( SimpleGameObjDef, ParameterClass::TYPE_BOOL, IsHiddenObject );
-
-#ifdef	PARAM_EDITING_ON
-
-	//
-	//	Configure the orator types parameter
-	//
-	EnumParameterClass *pt_type_param = new EnumParameterClass( (int *)&PlayerTerminalType );
-	pt_type_param->Set_Name( "Player Terminal Type" );
-	pt_type_param->Add_Value( "<None>", PlayerTerminalClass::TYPE_NONE );
-	pt_type_param->Add_Value( "GDI",		PlayerTerminalClass::TYPE_GDI );
-	pt_type_param->Add_Value( "NOD",		PlayerTerminalClass::TYPE_NOD );
-	pt_type_param->Add_Value( "Mutant", PlayerTerminalClass::TYPE_MUTANT );
-	GENERIC_EDITABLE_PARAM( SimpleGameObjDef, pt_type_param );
-#endif
-
-	return ;
 }
 
-uint32	SimpleGameObjDef::Get_Class_ID (void) const	
-{ 
+uint32 SimpleGameObjDef::Get_Class_ID(void) const { 
 	return CLASSID_GAME_OBJECT_DEF_SIMPLE; 
 }
 
-PersistClass *	SimpleGameObjDef::Create( void ) const 
-{
-	SimpleGameObj * obj = new SimpleGameObj;
+PersistClass* SimpleGameObjDef::Create( void ) const {
+	SimpleGameObj* obj = new SimpleGameObj;
 	obj->Init( *this );
 	return obj;
 }
 
-enum	{
-	CHUNKID_DEF_PARENT							=	930991656,
+enum {
+	CHUNKID_DEF_PARENT    = 930991656,
 	CHUNKID_DEF_VARIABLES,
 
-	MICROCHUNKID_DEF_IS_EDITOR_OBJECT		=	1,
+	MICROCHUNKID_DEF_IS_EDITOR_OBJECT = 1,
 	MICROCHUNKID_DEF_IS_HIDDEN_OBJECT,
 	MICROCHUNKID_DEF_PLAYER_TERM_TYPE
 };
 
-bool	SimpleGameObjDef::Save( ChunkSaveClass & csave )
-{
+bool SimpleGameObjDef::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 		PhysicalGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -118,10 +80,9 @@ bool	SimpleGameObjDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	SimpleGameObjDef::Load( ChunkLoadClass &cload )
-{
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
+bool SimpleGameObjDef::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 
 			case CHUNKID_DEF_PARENT:
 				PhysicalGameObjDef::Load( cload );
@@ -154,8 +115,7 @@ bool	SimpleGameObjDef::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-const PersistFactoryClass & SimpleGameObjDef::Get_Factory (void) const 
-{ 
+const PersistFactoryClass & SimpleGameObjDef::Get_Factory (void) const { 
 	return _SimpleGameObjDefPersistFactory; 
 }
 
@@ -163,71 +123,44 @@ const PersistFactoryClass & SimpleGameObjDef::Get_Factory (void) const
 /*
 ** SimpleGameObj
 */
-SimplePersistFactoryClass<SimpleGameObj, CHUNKID_GAME_OBJECT_SIMPLE>	_SimpleGameObjPersistFactory;
+SimplePersistFactoryClass<SimpleGameObj, CHUNKID_GAME_OBJECT_SIMPLE> _SimpleGameObjPersistFactory;
 
-const PersistFactoryClass & SimpleGameObj::Get_Factory (void) const 
-{
+const PersistFactoryClass& SimpleGameObj::Get_Factory(void) const {
 	return _SimpleGameObjPersistFactory;
 }
 
-/*
-**
-*/
-SimpleGameObj::SimpleGameObj()
-{
-	Set_App_Packet_Type(APPPACKETTYPE_SIMPLE);
-
-	//WWDEBUG_SAY(("SimpleGameObj::SimpleGameObj\n"));
-
-	/*
-	if (Get_Definition().Get_Name() != NULL) {
-		WWDEBUG_SAY(("  for %s\n", Get_Definition().Get_Name()));
-	}
-	/**/
+SimpleGameObj::SimpleGameObj(){
+	Set_App_Packet_Type( APPPACKETTYPE_SIMPLE );
 }
 
-SimpleGameObj::~SimpleGameObj()
-{
+SimpleGameObj::~SimpleGameObj(){
 }
 
-/*
-**
-*/
-void SimpleGameObj::Init( void )
-{
+void SimpleGameObj::Init( void ){
 	Init( Get_Definition() );
-
-	/*
-	if (Get_Definition().Get_Name() != NULL) {
-		WWDEBUG_SAY(("SimpleGameObj::Init for %s\n", Get_Definition().Get_Name()));
-	}
-	/**/
 }
 
-void	SimpleGameObj::Init( const SimpleGameObjDef & definition )
-{
+void SimpleGameObj::Init( const SimpleGameObjDef& definition ){
 	PhysicalGameObj::Init( definition );
 }
 
-const SimpleGameObjDef & SimpleGameObj::Get_Definition( void ) const
-{
-	return (const SimpleGameObjDef &)BaseGameObj::Get_Definition();
+const SimpleGameObjDef& SimpleGameObj::Get_Definition( void ) const {
+	return (const SimpleGameObjDef&) BaseGameObj::Get_Definition();
 }
 
 
 /*
 ** SimpleGameObj Save and Load
 */
-enum	{
-	CHUNKID_PARENT							=	927991712,
+enum {
+	CHUNKID_PARENT          = 927991712,
 	CHUNKID_VARIABLES,
 	XXXCHUNKID_ANIM_CONTROL,
 
-	XXXMICROCHUNKID_PHYSOBJ					=	1,
+	XXXMICROCHUNKID_PHYSOBJ = 1,
 };
 
-bool	SimpleGameObj::Save( ChunkSaveClass & csave )
-{
+bool SimpleGameObj::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_PARENT );
 		PhysicalGameObj::Save( csave );
 	csave.End_Chunk();
@@ -235,8 +168,7 @@ bool	SimpleGameObj::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	SimpleGameObj::Load( ChunkLoadClass &cload )
-{
+bool SimpleGameObj::Load( ChunkLoadClass& cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -257,8 +189,7 @@ bool	SimpleGameObj::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void	SimpleGameObj::On_Post_Load( void )
-{
+void SimpleGameObj::On_Post_Load( void ){
 	PhysicalGameObj::On_Post_Load();
 
 	// NOTE: the On_Post_Load function is only run when loading a level in the game engine
@@ -274,18 +205,9 @@ void	SimpleGameObj::On_Post_Load( void )
 	}
 
 	if ( Is_Hidden_Object() ) {
-		RenderObjClass * model = Peek_Physical_Object()->Peek_Model();
-		if (model) {
-			model->Set_Hidden(true);
+		RenderObjClass* model = Peek_Physical_Object()->Peek_Model();
+		if( model ){
+			model->Set_Hidden( true );
 		}
 	}
-
-	/*
-	if (Get_Definition().Get_Name() != NULL) {
-		WWDEBUG_SAY(("SimpleGameObj::On_Post_Load for %s\n", Get_Definition().Get_Name()));
-	}
-	*/
 }
-
-
-

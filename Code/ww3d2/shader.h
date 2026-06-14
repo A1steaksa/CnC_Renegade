@@ -54,8 +54,7 @@ struct W3dMaterial3Struct;
 // Re-written shader class
 // Hector Yee 1/24/01
 
-enum ShaderShiftConstants
-{
+enum ShaderShiftConstants {
 	SHIFT_DEPTHCOMPARE			= 0,	// bit shift for depth comparison setting
 	SHIFT_DEPTHMASK				= 3,	// bit shift for depth mask setting
 	SHIFT_COLORMASK				= 4,	// bit shift for color mask setting
@@ -79,17 +78,15 @@ enum ShaderShiftConstants
 		(src_blend) << SHIFT_SRCBLEND | (texture) << SHIFT_TEXTURING | \
 		(alpha_test) << SHIFT_ALPHATEST | (cullmode) << SHIFT_CULLMODE | \
 		(post_det_color) << SHIFT_POSTDETAILCOLORFUNC | \
-		(post_det_alpha) << SHIFT_POSTDETAILALPHAFUNC)
+		(post_det_alpha) << SHIFT_POSTDETAILALPHAFUNC )
 
 
 
-class ShaderClass
-{
+class ShaderClass {
 	friend DX8Wrapper;
 
-	void	Apply();
-public:
-	
+	void Apply();
+public:	
 	enum AlphaTestType
 	{
 		ALPHATEST_DISABLE= 0,// disable alpha testing (default)
@@ -209,8 +206,7 @@ public:
 		SRCBLEND_MAX							// end of enumeration
   	};
 
-	enum TexturingType
-	{
+	enum TexturingType {
 		TEXTURING_DISABLE=0, // no texturing (treat fragment initial color as 1,1,1,1)
 		TEXTURING_ENABLE,    // enable texturing
 		TEXTURING_MAX			// end of enumeration

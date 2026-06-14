@@ -64,17 +64,15 @@ class TextureLoadTaskClass;
 ** modes.
 **
 *************************************************************************/
-class TextureClass : public RefCountClass
-{
+class TextureClass : public RefCountClass {
 	friend DX8Wrapper;
 	friend TextureLoader;
 	friend LoaderThreadClass;
 	friend DX8TextureManagerClass;
 
 	public:
-
 		enum PoolType {
-			POOL_DEFAULT=0,
+			POOL_DEFAULT = 0,
 			POOL_MANAGED,
 			POOL_SYSTEMMEM
 		};
@@ -94,12 +92,12 @@ class TextureClass : public RefCountClass
 		};
 
 		enum TxtAddrMode {
-			TEXTURE_ADDRESS_REPEAT=0,
+			TEXTURE_ADDRESS_REPEAT = 0,
 			TEXTURE_ADDRESS_CLAMP
 		};
 
 		enum MipCountType {
-			MIP_LEVELS_ALL=0,		// generate all mipmap levels down to 1x1 size
+			MIP_LEVELS_ALL = 0,		// generate all mipmap levels down to 1x1 size
 			MIP_LEVELS_1,			// no mipmapping at all (just one mip level)
 			MIP_LEVELS_2,
 			MIP_LEVELS_3,
@@ -119,34 +117,44 @@ class TextureClass : public RefCountClass
 			unsigned width, 
 			unsigned height, 
 			WW3DFormat format,
-			MipCountType mip_level_count=MIP_LEVELS_ALL,
-			PoolType pool=POOL_MANAGED,
-			bool rendertarget=false);
+			MipCountType mip_level_count = MIP_LEVELS_ALL,
+			PoolType pool = POOL_MANAGED,
+			bool rendertarget = false
+		);
 
 		// Create texture from a file. If format is specified the texture is converted to that format.
 		// Note that the format must be supported by the current device and that a texture can't exist
 		// in the system with the same name in multiple formats.
 		TextureClass(
-			const char *name,
-			const char *full_path=NULL,
-			MipCountType mip_level_count=MIP_LEVELS_ALL,
-			WW3DFormat texture_format=WW3D_FORMAT_UNKNOWN,
-			bool allow_compression=true);
+			const char* name,
+			const char* full_path = NULL,
+			MipCountType mip_level_count = MIP_LEVELS_ALL,
+			WW3DFormat texture_format = WW3D_FORMAT_UNKNOWN,
+			bool allow_compression = true
+		);
 
 		// Create texture from a surface.
 		TextureClass(
-			SurfaceClass *surface, 
-			MipCountType mip_level_count=MIP_LEVELS_ALL);		
+			SurfaceClass* surface, 
+			MipCountType mip_level_count = MIP_LEVELS_ALL
+		);	
 
-		TextureClass(IDirect3DTexture8* d3d_texture);
+		TextureClass( IDirect3DTexture8* d3d_texture );
 
 		virtual ~TextureClass(void);
 
 		// Names
-		void	Set_Texture_Name(const char * name);
-		void	Set_Full_Path(const char * path)			{ FullPath = path; }
-		const StringClass& Get_Texture_Name(void) const		{ return Name; }
-		const StringClass& Get_Full_Path(void) const			{ if (FullPath.Is_Empty ()) return Name; return FullPath; }
+		void Set_Texture_Name( const char* name );
+		
+		void Set_Full_Path(const char* path){
+			FullPath = path;
+		}
+		
+		const StringClass& Get_Texture_Name(void) const {
+			return Name;
+		}
+
+		const StringClass& Get_Full_Path(void) const { if (FullPath.Is_Empty ()) return Name; return FullPath; }
 
 		unsigned Get_ID() const { return texture_id; }	// Each textrure has a unique id
 
@@ -154,12 +162,11 @@ class TextureClass : public RefCountClass
 		unsigned int Get_Mip_Level_Count(void);
 
 		// Note! Width and Height may be zero and may change if texture uses mipmaps
-		int Get_Width() 
-		{
-				return Width;
+		int Get_Width(){
+			return Width;
 		}
-		int Get_Height()
-		{
+
+		int Get_Height(){
 			return Height; 
 		}
 
@@ -217,8 +224,7 @@ class TextureClass : public RefCountClass
 		// This utility function processes the texture reduction (used during rendering)
 		void Invalidate();
 
-		IDirect3DTexture8 *Peek_DX8_Texture()
-		{
+		IDirect3DTexture8* Peek_DX8_Texture(){
 			return D3DTexture;
 		}
 
@@ -302,12 +308,11 @@ public:
 
 		// Background texture loader will call this when texture has been loaded
 		void Apply_New_Surface(IDirect3DTexture8* tex, bool initialized);	// If the parameter is true, the texture will be flagged as initialised
-
 };
 
 
 // Utility functions for loading and saving texture descriptions from/to W3D files
-TextureClass *Load_Texture(ChunkLoadClass & cload);
+TextureClass* Load_Texture(ChunkLoadClass & cload);
 void Save_Texture(TextureClass * texture, ChunkSaveClass & csave);
 
 #endif //TEXTURE_H

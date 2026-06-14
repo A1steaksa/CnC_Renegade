@@ -109,39 +109,54 @@
 ** will own the refs for the mesh.  The load context object is destroyed once
 ** loading is complete...
 */
-class MeshLoadContextClass
-{
+class MeshLoadContextClass {
 private:
 	MeshLoadContextClass(void);
 	~MeshLoadContextClass(void);
 	
-	W3dTexCoordStruct *		Get_Texcoord_Array(void);
+	W3dTexCoordStruct* Get_Texcoord_Array(void);
 
-	int							Add_Shader(ShaderClass shader);
-	int							Add_Vertex_Material(VertexMaterialClass * vmat);
-	int							Add_Texture(TextureClass* tex);
+	int Add_Shader( ShaderClass shader );
+	int Add_Vertex_Material( VertexMaterialClass* vmat );
+	int Add_Texture( TextureClass* tex );
 
-	ShaderClass					Peek_Shader(int index)											{ return Shaders[index]; }
-	VertexMaterialClass *	Peek_Vertex_Material(int index)								{ return VertexMaterials[index]; }
-	TextureClass *				Peek_Texture(int index)											{ return Textures[index]; }
+	ShaderClass Peek_Shader( int index ){
+		return Shaders[index];
+	}
+
+	VertexMaterialClass* Peek_Vertex_Material( int index ){
+		return VertexMaterials[index];
+	}
+
+	TextureClass* Peek_Texture( int index ){
+		return Textures[index];
+	}
 	
-	int							Shader_Count(void)												{ return Shaders.Count(); }
-	int							Vertex_Material_Count(void)									{ return VertexMaterials.Count(); }
-	int							Texture_Count(void)												{ return Textures.Count(); }
+	int Shader_Count(void){
+		return Shaders.Count();
+	}
 
+	int Vertex_Material_Count(void){
+		return VertexMaterials.Count();
+	}
+
+	int Texture_Count(void){
+		return Textures.Count();
+	}
+	
 	/*
 	** Legacy material support.  
 	*/
-	void							Add_Legacy_Material(ShaderClass shader,VertexMaterialClass * vmat,TextureClass * tex);
-	ShaderClass					Peek_Legacy_Shader(int legacy_material_index);
-	VertexMaterialClass *	Peek_Legacy_Vertex_Material(int legacy_material_index);
-	TextureClass *				Peek_Legacy_Texture(int legacy_material_index);
+	void Add_Legacy_Material( ShaderClass shader, VertexMaterialClass* vmat, TextureClass* tex );
+	ShaderClass Peek_Legacy_Shader( int legacy_material_index );
+	VertexMaterialClass* Peek_Legacy_Vertex_Material( int legacy_material_index );
+	TextureClass* Peek_Legacy_Texture( int legacy_material_index );
 
 	/*
 	** Redundant UV detection support.  The context provides a temporary buffer to
 	** load the uv coordinates into.
 	*/
-	Vector2 *					Get_Temporary_UV_Array(int elementcount);
+	Vector2* Get_Temporary_UV_Array(int elementcount);
 
 
 	/*
@@ -151,38 +166,52 @@ private:
 	** "alternate material set", we have to know whether we've already encountered a DIG chunk so
 	** these flags provide that functionality. 
 	*/
-	void							Notify_Loaded_DIG_Chunk(bool onoff = true)				{ LoadedDIG = onoff; }
-	bool							Already_Loaded_DIG(void)										{ return LoadedDIG; }
+	void Notify_Loaded_DIG_Chunk( bool onoff = true ){
+		LoadedDIG = onoff;
+	}
+
+	bool Already_Loaded_DIG(void){
+		return LoadedDIG;
+	}
 
 private:
 
-	struct LegacyMaterialClass
-	{
-		LegacyMaterialClass(void) : VertexMaterialIdx(0),ShaderIdx(0),TextureIdx(0)	{ }
-		~LegacyMaterialClass(void)	{ }		
-		void		Set_Name(const char * name) { Name=name; }
-		
+	struct LegacyMaterialClass {
+		LegacyMaterialClass(void) : 
+			VertexMaterialIdx( 0 ),
+			ShaderIdx( 0 ),
+			TextureIdx( 0 )
+		{
+		}
+
+		~LegacyMaterialClass(void){			
+		}
+
+		void Set_Name( const char* name ){
+			Name = name;
+		}
+
 		StringClass Name;
-		int		VertexMaterialIdx;
-		int		ShaderIdx;
-		int		TextureIdx;
+		int VertexMaterialIdx;
+		int ShaderIdx;
+		int TextureIdx;
 	};
 	
 	
-	W3dMeshHeader3Struct		Header;
-	W3dTexCoordStruct *		TexCoords;
-	W3dMaterialInfoStruct	MatInfo;
+	W3dMeshHeader3Struct Header;
+	W3dTexCoordStruct* TexCoords;
+	W3dMaterialInfoStruct MatInfo;
 
-	uint32						PrelitChunkID;
+	uint32 PrelitChunkID;
 
-	int							CurPass;
-	int							CurTexStage;
+	int CurPass;
+	int CurTexStage;
 
-	DynamicVectorClass < LegacyMaterialClass * >		LegacyMaterials;
-	DynamicVectorClass < ShaderClass >					Shaders;
-	DynamicVectorClass < VertexMaterialClass * >		VertexMaterials;
-	DynamicVectorClass < unsigned long >				VertexMaterialCrcs;
-	DynamicVectorClass < TextureClass * >				Textures;			
+	DynamicVectorClass<LegacyMaterialClass*> LegacyMaterials;
+	DynamicVectorClass<ShaderClass> Shaders;
+	DynamicVectorClass<VertexMaterialClass*> VertexMaterials;
+	DynamicVectorClass<unsigned long> VertexMaterialCrcs;
+	DynamicVectorClass<TextureClass*> Textures;			
 
 	/*
 	** Alternate material data.  Any alternate material data will be loaded into 
@@ -191,14 +220,14 @@ private:
 	** identical to the default MeshMatDescClass and then any data contained in this
 	** MeshMatDescClass will replace the relevant arrays.
 	*/
-	MeshMatDescClass											AlternateMatDesc;
+	MeshMatDescClass AlternateMatDesc;
 
-	SimpleVecClass<Vector2>									TempUVArray;
+	SimpleVecClass<Vector2> TempUVArray;
 
 	/*
 	** Record when we load the DIG chunk
 	*/
-	bool															LoadedDIG;
+	bool LoadedDIG;
 
 	friend class MeshClass;
 	friend class MeshModelClass;
@@ -233,23 +262,22 @@ public:
  * HISTORY:                                                                                    *
  *   2/16/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
-{
-	MeshLoadContextClass * context = NULL;
+WW3DErrorType MeshModelClass::Load_W3D( ChunkLoadClass& cload ){
+	MeshLoadContextClass* context = NULL;
 
 	/*
 	**	Open the first chunk, it should be the mesh header
 	*/
 	cload.Open_Chunk();
 	
-	if (cload.Cur_Chunk_ID() != W3D_CHUNK_MESH_HEADER3) {
+	if( cload.Cur_Chunk_ID() != W3D_CHUNK_MESH_HEADER3 ){
 		WWDEBUG_SAY(("Old format mesh mesh, no longer supported.\n"));
 		goto Error;
 	}
 	
 	context = new MeshLoadContextClass;
 
-	if (cload.Read(&(context->Header),sizeof(W3dMeshHeader3Struct)) != sizeof(W3dMeshHeader3Struct)) {
+	if( cload.Read( &(context->Header), sizeof(W3dMeshHeader3Struct)) != sizeof(W3dMeshHeader3Struct) ){
 		goto Error;
 	}
 	cload.Close_Chunk();
@@ -257,13 +285,13 @@ WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	** Process the header
 	*/
-	char *	tmpname;
-	int		namelen;
+	char* tmpname;
+	int namelen;
 	
-	Reset(context->Header.NumTris,context->Header.NumVertices,1);
+	Reset( context->Header.NumTris, context->Header.NumVertices, 1 );
 	
-	namelen = strlen(context->Header.ContainerName);
-	namelen += strlen(context->Header.MeshName);
+	namelen = strlen( context->Header.ContainerName );
+	namelen += strlen( context->Header.MeshName );
 	namelen += 2;
 	W3dAttributes = context->Header.Attributes;	
 	SortLevel = context->Header.SortLevel;
@@ -296,7 +324,7 @@ WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	** Flags
 	*/
-	if (context->Header.Version >= W3D_MAKE_VERSION(4,1)) {
+	if( context->Header.Version >= W3D_MAKE_VERSION(4,1) ){
 		int geometry_type = context->Header.Attributes & W3D_MESH_FLAG_GEOMETRY_TYPE_MASK;
 		switch (geometry_type) 
 		{
@@ -328,7 +356,7 @@ WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
 	}
 
 	// Configure the load sequence for prelighting.
-	if (context->Header.Attributes & W3D_MESH_FLAG_PRELIT_MASK) {
+	if (context->Header.Attributes & W3D_MESH_FLAG_PRELIT_MASK ){
 
 		// Select from the available prelit materials based on current prelit lighting mode.
 		// If the model does not have the current prelit mode, select the next highest quality
@@ -377,7 +405,7 @@ WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
 		// Else this mesh has no prelighting.
 	}
 
-	read_chunks(cload,context);
+	read_chunks( cload, context );
 
 	/*
 	** If this is a pre-3.0 mesh and it has vertex influences,
@@ -396,8 +424,8 @@ WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	** If this mesh is collideable and no AABTree was in the file, generate one now
 	*/
-	if (	(((W3dAttributes & W3D_MESH_FLAG_COLLISION_TYPE_MASK) >> W3D_MESH_FLAG_COLLISION_TYPE_SHIFT) != 0) &&
-			(CullTree == NULL)) 
+	if ( ( ( ( W3dAttributes & W3D_MESH_FLAG_COLLISION_TYPE_MASK ) >> W3D_MESH_FLAG_COLLISION_TYPE_SHIFT ) != 0 ) &&
+			( CullTree == NULL )) 
 	{
 		Generate_Culling_Tree();
 	}
@@ -405,7 +433,7 @@ WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	** Transfer the materials into the MatInfo
 	*/
-	install_materials(context);
+	install_materials( context );
 
 	/*
 	** Delete the temporary LoadInfo object
@@ -420,7 +448,6 @@ WW3DErrorType MeshModelClass::Load_W3D(ChunkLoadClass & cload)
 	return WW3D_ERROR_OK;
 
 Error:
-
 	return WW3D_ERROR_LOAD_FAILED;
 }
 
@@ -437,35 +464,34 @@ Error:
  * HISTORY:                                                                                    *
  *   2/16/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_chunks(ChunkLoadClass & cload,MeshLoadContextClass * context) 
-{
+WW3DErrorType MeshModelClass::read_chunks( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	/*
 	**	Read in the chunk header
 	** If there are no more chunks within the mesh chunk,
 	** we are done.
 	*/
-	while (cload.Open_Chunk()) {
+	while( cload.Open_Chunk() ){
 
 		/*
 		** Process the chunk
 		*/
 		WW3DErrorType error = WW3D_ERROR_OK;
 
-		switch (cload.Cur_Chunk_ID()) {
+		switch( cload.Cur_Chunk_ID() ){
 
 			case W3D_CHUNK_VERTICES:
 					// call up to MeshGeometryClass
-					error = read_vertices(cload);		
+					error = read_vertices( cload );
 					break;
 
 			case W3D_CHUNK_SURRENDER_NORMALS:
 			case W3D_CHUNK_VERTEX_NORMALS:
 					// call up to MeshGeometryClass
-					error = read_vertex_normals(cload);
+					error = read_vertex_normals( cload );
 					break;
 
 			case W3D_CHUNK_TEXCOORDS:
-					error = read_texcoords(cload,context);
+					error = read_texcoords( cload, context );
 					break;
 
 			case O_W3D_CHUNK_MATERIALS:
@@ -485,50 +511,50 @@ WW3DErrorType MeshModelClass::read_chunks(ChunkLoadClass & cload,MeshLoadContext
 			
 			case W3D_CHUNK_TRIANGLES:
 					// call up to MeshGeometryClass
-					error = read_triangles(cload);
+					error = read_triangles( cload );
 					break;
 
 			case W3D_CHUNK_PER_TRI_MATERIALS:
-					error = read_per_tri_materials(cload,context);
+					error = read_per_tri_materials( cload, context );
 					break;
 
 			case W3D_CHUNK_MESH_USER_TEXT:
 					// call up to MeshGeometryClass
-					error = read_user_text(cload);
+					error = read_user_text( cload );
 					break;
 			
 			case W3D_CHUNK_VERTEX_COLORS:
-					error = read_vertex_colors(cload,context);
+					error = read_vertex_colors( cload, context );
 					break;
 
 			case W3D_CHUNK_VERTEX_INFLUENCES:
 					// call up to MeshGeometryClass
-					error = read_vertex_influences(cload);
+					error = read_vertex_influences( cload );
 					break;
 
 			case W3D_CHUNK_VERTEX_SHADE_INDICES:
 					// call up to MeshGeometryClass
-					error = read_vertex_shade_indices(cload);
+					error = read_vertex_shade_indices( cload );
 					break;
 
 			case W3D_CHUNK_MATERIAL_INFO:
-					error = read_material_info(cload,context);
+					error = read_material_info( cload, context );
 					break;
 
 			case W3D_CHUNK_SHADERS:
-					error = read_shaders(cload,context);
+					error = read_shaders( cload, context );
 					break;
 
 			case W3D_CHUNK_VERTEX_MATERIALS:
-					error = read_vertex_materials(cload,context);
+					error = read_vertex_materials( cload, context );
 					break;
 
 			case W3D_CHUNK_TEXTURES:
-					error = read_textures(cload,context);
+					error = read_textures( cload, context );
 					break;
 
 			case W3D_CHUNK_MATERIAL_PASS:
-					error = read_material_pass(cload,context);
+					error = read_material_pass( cload, context );
 					break;
 
 			case W3D_CHUNK_DEFORM:
@@ -543,22 +569,21 @@ WW3DErrorType MeshModelClass::read_chunks(ChunkLoadClass & cload,MeshLoadContext
 			case W3D_CHUNK_PRELIT_VERTEX:
 			case W3D_CHUNK_PRELIT_LIGHTMAP_MULTI_PASS:
 			case W3D_CHUNK_PRELIT_LIGHTMAP_MULTI_TEXTURE:
-					read_prelit_material (cload, context);
+					read_prelit_material( cload, context );
 					break;
 			
 			case W3D_CHUNK_AABTREE:
 					// call up to MeshGeometryClass
-					read_aabtree(cload);
+					read_aabtree( cload );
 					break;
 
 			default:
 					break;
-
 		}	
 		
 		cload.Close_Chunk();
 
-		if (error != WW3D_ERROR_OK) {
+		if( error != WW3D_ERROR_OK ){
 			return error;
 		}
 	}
@@ -580,8 +605,7 @@ WW3DErrorType MeshModelClass::read_chunks(ChunkLoadClass & cload,MeshLoadContext
  *   3/6/98     GTH : Created.                                                                 *
  *   2/16/99    GTH : Moved into MeshModel                                                     *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_texcoords(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
+WW3DErrorType MeshModelClass::read_texcoords( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	W3dTexCoordStruct texcoord;
 	Vector2 * uvarray = 0;
 	int elementcount = cload.Cur_Chunk_Length() / sizeof (W3dTexCoordStruct);
@@ -595,13 +619,14 @@ WW3DErrorType MeshModelClass::read_texcoords(ChunkLoadClass & cload,MeshLoadCont
 		** loaded in the pass chunks
 		*/
 		for (int i=0; i<VertexCount; i++) {
-			if (cload.Read(&(texcoord),sizeof(W3dTexCoordStruct)) != sizeof(W3dTexCoordStruct)) {
+			if( cload.Read( &(texcoord), sizeof(W3dTexCoordStruct) ) != sizeof(W3dTexCoordStruct) ){
 				return WW3D_ERROR_LOAD_FAILED;
 			}
-			uvarray[i].Set(texcoord.U,1.0f - texcoord.V);
+
+			uvarray[i].Set( texcoord.U, 1.0f - texcoord.V );
 		}
 	
-		DefMatDesc->Install_UV_Array(context->CurPass,context->CurTexStage,uvarray,elementcount);
+		DefMatDesc->Install_UV_Array( context->CurPass, context->CurTexStage, uvarray, elementcount );
 	}
 
 	return WW3D_ERROR_OK;	
@@ -918,12 +943,11 @@ WW3DErrorType MeshModelClass::read_vertex_colors(ChunkLoadClass & cload,MeshLoad
  * HISTORY:                                                                                    *
  *   2/16/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_material_info(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
-	if (cload.Read(&(context->MatInfo),sizeof(W3dMaterialInfoStruct)) != sizeof(W3dMaterialInfoStruct)) {
+WW3DErrorType MeshModelClass::read_material_info( ChunkLoadClass& cload, MeshLoadContextClass* context ){
+	if( cload.Read(&(context->MatInfo), sizeof(W3dMaterialInfoStruct)) != sizeof(W3dMaterialInfoStruct) ){
 		return WW3D_ERROR_LOAD_FAILED;
 	}
-	Set_Pass_Count(context->MatInfo.PassCount);
+	Set_Pass_Count( context->MatInfo.PassCount );
 	return WW3D_ERROR_OK;
 }
 
@@ -940,18 +964,17 @@ WW3DErrorType MeshModelClass::read_material_info(ChunkLoadClass & cload,MeshLoad
  * HISTORY:                                                                                    *
  *   2/16/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_shaders(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
+WW3DErrorType MeshModelClass::read_shaders( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	W3dShaderStruct shader;
-	for (unsigned int i=0; i<context->MatInfo.ShaderCount; i++) {
-		if (cload.Read(&shader,sizeof(shader)) != sizeof(shader)) {
+	for( unsigned int i = 0; i < context->MatInfo.ShaderCount; i++ ){
+		if( cload.Read( &shader, sizeof(shader) ) != sizeof(shader) ){
 			return WW3D_ERROR_LOAD_FAILED;
 		}
 		ShaderClass newshader;
-		W3dUtilityClass::Convert_Shader(shader,&newshader);
+		W3dUtilityClass::Convert_Shader( shader, &newshader );
 
-		int index = context->Add_Shader(newshader);
-		WWASSERT(index == (int)i);
+		int index = context->Add_Shader( newshader );
+		WWASSERT(index == (int) i);
 	}
 	return WW3D_ERROR_OK;
 }
@@ -969,16 +992,15 @@ WW3DErrorType MeshModelClass::read_shaders(ChunkLoadClass & cload,MeshLoadContex
  * HISTORY:                                                                                    *
  *   2/16/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_vertex_materials(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
-	while (cload.Open_Chunk()) {
-		WWASSERT(cload.Cur_Chunk_ID() == W3D_CHUNK_VERTEX_MATERIAL);
-		VertexMaterialClass * vmat = NEW_REF(VertexMaterialClass,());
-		WW3DErrorType error = vmat->Load_W3D(cload);
-		if (error != WW3D_ERROR_OK) {
+WW3DErrorType MeshModelClass::read_vertex_materials( ChunkLoadClass& cload, MeshLoadContextClass* context ){
+	while( cload.Open_Chunk() ){
+		WWASSERT( cload.Cur_Chunk_ID() == W3D_CHUNK_VERTEX_MATERIAL );
+		VertexMaterialClass* vmat = NEW_REF( VertexMaterialClass,() );
+		WW3DErrorType error = vmat->Load_W3D( cload );
+		if( error != WW3D_ERROR_OK ){
 			return error;
 		}
-		context->Add_Vertex_Material(vmat);
+		context->Add_Vertex_Material( vmat );
 		vmat->Release_Ref();
 
 		cload.Close_Chunk();
@@ -1000,15 +1022,11 @@ WW3DErrorType MeshModelClass::read_vertex_materials(ChunkLoadClass & cload,MeshL
  *   2/16/99    GTH : Created.                                                                 *
  *   3/05/99	 PDS : Broke the guts of this function into a util function in texture.cpp		  *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_textures(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{	
+WW3DErrorType MeshModelClass::read_textures( ChunkLoadClass& cload, MeshLoadContextClass* context ){	
 	// Keep reading textures until there are no more...
-	for (TextureClass *newtex = ::Load_Texture (cload);
-		  newtex != NULL;
-		  newtex = ::Load_Texture (cload)) {
-
+	for( TextureClass* newtex = ::Load_Texture( cload ); newtex != NULL; newtex = ::Load_Texture( cload ) ){
 		// Add this texture to our contex and release our local hold on it
-		context->Add_Texture(newtex);
+		context->Add_Texture( newtex );
 		newtex->Release_Ref();
 	}
 
@@ -1028,41 +1046,40 @@ WW3DErrorType MeshModelClass::read_textures(ChunkLoadClass & cload,MeshLoadConte
  * HISTORY:                                                                                    *
  *   2/16/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_material_pass(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
+WW3DErrorType MeshModelClass::read_material_pass( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	context->CurTexStage = 0;
 
-	while (cload.Open_Chunk()) {
+	while( cload.Open_Chunk() ){
 
 		WW3DErrorType error = WW3D_ERROR_OK;
 
-		switch (cload.Cur_Chunk_ID()) {
+		switch( cload.Cur_Chunk_ID() ){
 			case W3D_CHUNK_VERTEX_MATERIAL_IDS:
-				error = read_vertex_material_ids(cload,context);
+				error = read_vertex_material_ids( cload, context );
 				break;
 
 			case W3D_CHUNK_SHADER_IDS:
-				error = read_shader_ids(cload,context);
+				error = read_shader_ids( cload, context );
 				break;
 
 			case W3D_CHUNK_DCG:
-				error = read_dcg(cload,context);
+				error = read_dcg( cload, context );
 				break;
 
 			case W3D_CHUNK_DIG:
-				error = read_dig(cload,context);
+				error = read_dig( cload, context );
 				break;
 
 			case W3D_CHUNK_SCG:
-				error = read_scg(cload,context);
+				error = read_scg( cload, context );
 				break;
 
 			case W3D_CHUNK_TEXTURE_STAGE:
-				error = read_texture_stage(cload,context);
+				error = read_texture_stage( cload, context );
 				break;
 		};
 
-		if (error != WW3D_ERROR_OK) {
+		if( error != WW3D_ERROR_OK ){
 			return error;
 		}
 		cload.Close_Chunk();
@@ -1086,13 +1103,12 @@ WW3DErrorType MeshModelClass::read_material_pass(ChunkLoadClass & cload,MeshLoad
  *   2/16/99    GTH : Created.                                                                 *
  *   9/1/2000   gth : Added alternate material desc support                                    *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_vertex_material_ids(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
+WW3DErrorType MeshModelClass::read_vertex_material_ids( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	/*
 	** Determine whether this chunk should be read into the default or alternate material description
 	*/
-	MeshMatDescClass * matdesc = DefMatDesc;
-	if (DefMatDesc->Has_Material_Data(context->CurPass)) {
+	MeshMatDescClass* matdesc = DefMatDesc;
+	if( DefMatDesc->Has_Material_Data( context->CurPass ) ){
 		matdesc = &(context->AlternateMatDesc);
 	}
 
@@ -1101,16 +1117,16 @@ WW3DErrorType MeshModelClass::read_vertex_material_ids(ChunkLoadClass & cload,Me
 	** with the length equal to the vertex count.
 	*/
 	uint32 vmat;
-	if (cload.Cur_Chunk_Length() == 1*sizeof(uint32)) {
+	if( cload.Cur_Chunk_Length() == 1*sizeof(uint32) ){
 		
-		cload.Read(&vmat,sizeof(uint32));
-		matdesc->Set_Single_Material(context->Peek_Vertex_Material(vmat),context->CurPass);
+		cload.Read( &vmat, sizeof(uint32) );
+		matdesc->Set_Single_Material( context->Peek_Vertex_Material( vmat ), context->CurPass );
 	
 	} else {
 
-		for (int i=0; i<Get_Vertex_Count(); i++) {
-			cload.Read(&vmat,sizeof(uint32));
-			matdesc->Set_Material(i,context->Peek_Vertex_Material(vmat),context->CurPass);
+		for (int i = 0; i < Get_Vertex_Count(); i++) {
+			cload.Read( &vmat, sizeof(uint32) );
+			matdesc->Set_Material( i, context->Peek_Vertex_Material( vmat ), context->CurPass );
 		}
 	}
 
@@ -1131,13 +1147,12 @@ WW3DErrorType MeshModelClass::read_vertex_material_ids(ChunkLoadClass & cload,Me
  *   2/16/99    GTH : Created.                                                                 *
  *   9/1/2000   gth : Added alternate material desc support                                    *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_shader_ids(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
+WW3DErrorType MeshModelClass::read_shader_ids( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	/*
 	** Determine whether this chunk should be read into the default or alternate material description
 	*/
-	MeshMatDescClass * matdesc = DefMatDesc;
-	if (DefMatDesc->Has_Shader_Data(context->CurPass)) {
+	MeshMatDescClass* matdesc = DefMatDesc;
+	if( DefMatDesc->Has_Shader_Data( context->CurPass ) ){
 		matdesc = &(context->AlternateMatDesc);
 	}
 
@@ -1145,35 +1160,32 @@ WW3DErrorType MeshModelClass::read_shader_ids(ChunkLoadClass & cload,MeshLoadCon
 	** Read in the shader id's and plug in the appropriate shader
 	*/
 	uint32 shaderid;
-	if (cload.Cur_Chunk_Length() == 1*sizeof(uint32)) {
-		
-		cload.Read(&shaderid,sizeof(shaderid));
-		ShaderClass shader = context->Peek_Shader(shaderid);
-		matdesc->Set_Single_Shader(shader,context->CurPass);
+	if( cload.Cur_Chunk_Length() == 1 * sizeof(uint32) ){
+		cload.Read( &shaderid, sizeof(shaderid) );
+		ShaderClass shader = context->Peek_Shader( shaderid );
+		matdesc->Set_Single_Shader( shader, context->CurPass );
 
 		// turn on sorting of pass 0 has non-zero dest blend (unless alpha testing on)
-		if (	(context->CurPass == 0) && 
-				(shader.Get_Dst_Blend_Func() != ShaderClass::DSTBLEND_ZERO) &&
-				(shader.Get_Alpha_Test() == ShaderClass::ALPHATEST_DISABLE) &&
-				(SortLevel == SORT_LEVEL_NONE) )
-		{
-			Set_Flag(SORT,true);
+		if( ( context->CurPass == 0 ) && 
+			( shader.Get_Dst_Blend_Func() != ShaderClass::DSTBLEND_ZERO ) &&
+			( shader.Get_Alpha_Test() == ShaderClass::ALPHATEST_DISABLE ) &&
+			( SortLevel == SORT_LEVEL_NONE )
+		){
+			Set_Flag( SORT, true );
 		}
-		
-	} else {
-		
-		for (int i=0; i<Get_Polygon_Count(); i++) {
-			cload.Read(&shaderid,sizeof(uint32));
-			ShaderClass shader = context->Peek_Shader(shaderid);
-			matdesc->Set_Shader(i,shader,context->CurPass);
+	}else{
+		for( int i = 0; i < Get_Polygon_Count(); i++ ){
+			cload.Read( &shaderid, sizeof(uint32) );
+			ShaderClass shader = context->Peek_Shader( shaderid );
+			matdesc->Set_Shader( i, shader, context->CurPass );
 
 			// turn on sorting of pass 0 has non-zero dest blend (unless alpha testing on)
-			if (	(context->CurPass == 0) && 
-				(shader.Get_Dst_Blend_Func() != ShaderClass::DSTBLEND_ZERO) &&
-				(shader.Get_Alpha_Test() == ShaderClass::ALPHATEST_DISABLE) &&
-				(SortLevel == SORT_LEVEL_NONE) )
-			{
-				Set_Flag(SORT,true);
+			if( ( context->CurPass == 0 ) && 
+				( shader.Get_Dst_Blend_Func() != ShaderClass::DSTBLEND_ZERO ) &&
+				( shader.Get_Alpha_Test() == ShaderClass::ALPHATEST_DISABLE ) &&
+				( SortLevel == SORT_LEVEL_NONE )
+			){
+				Set_Flag( SORT, true );
 			}
 		}
 	}
@@ -1195,13 +1207,12 @@ WW3DErrorType MeshModelClass::read_shader_ids(ChunkLoadClass & cload,MeshLoadCon
  *   9/1/2000   gth : Added alternate material desc support                                    *
  *   2/9/2001   gth : converted to handle dx8 limitations                                      *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_dcg(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
+WW3DErrorType MeshModelClass::read_dcg( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	/*
 	** Determine whether this chunk should be read into the default or alternate material description
 	*/
 	MeshMatDescClass * matdesc = DefMatDesc;
-	if (DefMatDesc->Get_DCG_Source(context->CurPass) != VertexMaterialClass::MATERIAL) {
+	if( DefMatDesc->Get_DCG_Source( context->CurPass ) != VertexMaterialClass::MATERIAL ){
 		matdesc = &(context->AlternateMatDesc);
 	}
 
@@ -1219,9 +1230,9 @@ WW3DErrorType MeshModelClass::read_dcg(ChunkLoadClass & cload,MeshLoadContextCla
 	** break if our tools change.  The file format isn't restricting you from defining something
 	** we can't render right now...
 	*/
-	if (matdesc->Has_Color_Array(0) == false) {
+	if( matdesc->Has_Color_Array(0) == false ){
 		W3dRGBAStruct color;
-		unsigned * dcg = matdesc->Get_Color_Array(0);
+		unsigned* dcg = matdesc->Get_Color_Array(0);
 
 		for (int i=0; i<Get_Vertex_Count(); i++) {
 			cload.Read(&color,sizeof(color));
@@ -1343,29 +1354,27 @@ WW3DErrorType MeshModelClass::read_scg(ChunkLoadClass & cload,MeshLoadContextCla
  * HISTORY:                                                                                    *
  *   2/16/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_texture_stage(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
-	while (cload.Open_Chunk()) {
-
+WW3DErrorType MeshModelClass::read_texture_stage( ChunkLoadClass& cload, MeshLoadContextClass* context ){
+	while( cload.Open_Chunk() ){
 		WW3DErrorType error = WW3D_ERROR_OK;
 		
-		switch(cload.Cur_Chunk_ID()) {
+		switch( cload.Cur_Chunk_ID() ){
 			case W3D_CHUNK_TEXTURE_IDS:
-				error = read_texture_ids(cload,context);
+				error = read_texture_ids( cload, context );
 				break;
 
 			case W3D_CHUNK_STAGE_TEXCOORDS:
 			case W3D_CHUNK_TEXCOORDS:
-				error = read_stage_texcoords(cload,context);
+				error = read_stage_texcoords( cload, context );
 				break;
 
 			case W3D_CHUNK_PER_FACE_TEXCOORD_IDS:
-				error = read_per_face_texcoord_ids (cload, context);
+				error = read_per_face_texcoord_ids( cload, context );
 				break;
 
 		}
 
-		if (error != WW3D_ERROR_OK) {
+		if( error != WW3D_ERROR_OK ){
 			return error;
 		}
 
@@ -1390,8 +1399,7 @@ WW3DErrorType MeshModelClass::read_texture_stage(ChunkLoadClass & cload,MeshLoad
  *   2/16/99    GTH : Created.                                                                 *
  *   9/1/2000   gth : Added alternate material desc support                                    *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_texture_ids(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
+WW3DErrorType MeshModelClass::read_texture_ids( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	uint32 texid;
 	int pass = context->CurPass;
 	int stage = context->CurTexStage;
@@ -1399,27 +1407,27 @@ WW3DErrorType MeshModelClass::read_texture_ids(ChunkLoadClass & cload,MeshLoadCo
 	/*
 	** Determine whether this chunk should be read into the default or alternate material description
 	*/
-	MeshMatDescClass * matdesc = DefMatDesc;
-	if (DefMatDesc->Has_Texture_Data(pass,stage)) {
+	MeshMatDescClass* matdesc = DefMatDesc;
+	if( DefMatDesc->Has_Texture_Data( pass, stage ) ){
 		matdesc = &(context->AlternateMatDesc);
 	}
 
 	/*
 	** Read in the texture(s) array
 	*/
-	if (cload.Cur_Chunk_Length() == 1*sizeof(uint32)) {
-		cload.Read(&texid,sizeof(texid));
-		matdesc->Set_Single_Texture(context->Peek_Texture(texid),pass,stage);
+	if( cload.Cur_Chunk_Length() == 1 * sizeof(uint32) ){
+		cload.Read( &texid, sizeof(texid) );
+		matdesc->Set_Single_Texture( context->Peek_Texture( texid ), pass, stage );
 
-	} else {
-
-		for (int i=0; i<Get_Polygon_Count(); i++) {
-			cload.Read(&texid,sizeof(uint32));
-			if (texid != 0xffffffff) {
-				matdesc->Set_Texture(i,context->Peek_Texture(texid),pass,stage);
+	}else{
+		for( int i = 0; i < Get_Polygon_Count(); i++ ){
+			cload.Read( &texid, sizeof(uint32) );
+			if( texid != 0xffffffff ){
+				matdesc->Set_Texture( i, context->Peek_Texture( texid ), pass, stage );
 			} 
 		}
 	}
+
 	return WW3D_ERROR_OK;
 }
 
@@ -1438,29 +1446,28 @@ WW3DErrorType MeshModelClass::read_texture_ids(ChunkLoadClass & cload,MeshLoadCo
  *   7/14/99    IML : Lightmap support: calculate vertex count directly from chunk size.		  *
  *   9/1/2000   gth : Added alternate material desc support                                    *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_stage_texcoords(ChunkLoadClass & cload,MeshLoadContextClass * context)
-{
-	unsigned				elementcount;
-	Vector2			  *uvs;
+WW3DErrorType MeshModelClass::read_stage_texcoords( ChunkLoadClass& cload, MeshLoadContextClass* context ){
+	unsigned elementcount;
+	Vector2* uvs;
 	W3dTexCoordStruct texcoord;
 	
 	/*
 	** Determine whether this chunk should be read into the default or alternate material description
 	*/
-	MeshMatDescClass * matdesc = DefMatDesc;
-	if (DefMatDesc->Has_UV(context->CurPass,context->CurTexStage)) {
+	MeshMatDescClass* matdesc = DefMatDesc;
+	if( DefMatDesc->Has_UV( context->CurPass, context->CurTexStage ) ){
 		matdesc = &(context->AlternateMatDesc);
 	}
 
 	/*
 	** Read in the texture coordiantes
 	*/
-	elementcount = cload.Cur_Chunk_Length() / sizeof (W3dTexCoordStruct);
-	uvs = context->Get_Temporary_UV_Array(elementcount);
+	elementcount = cload.Cur_Chunk_Length() / sizeof(W3dTexCoordStruct);
+	uvs = context->Get_Temporary_UV_Array( elementcount );
 	
-	if (uvs != NULL) {
-		for (unsigned i = 0; i < elementcount; i++) {
-			cload.Read (&texcoord, sizeof (texcoord));
+	if( uvs != NULL ){
+		for( unsigned i = 0; i < elementcount; i++ ){
+			cload.Read( &texcoord, sizeof(texcoord) );
 			uvs[i].X = texcoord.U;
 			uvs[i].Y = 1.0f - texcoord.V;
 		}
@@ -1485,37 +1492,18 @@ WW3DErrorType MeshModelClass::read_stage_texcoords(ChunkLoadClass & cload,MeshLo
  *   02/02/99    IML : Created.                                                                *
  *   9/1/2000   gth : Added alternate material desc support                                    *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_per_face_texcoord_ids (ChunkLoadClass &cload, MeshLoadContextClass *context)
-{
+WW3DErrorType MeshModelClass::read_per_face_texcoord_ids( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	unsigned size;
-	
-	/*
-	** Determine whether this chunk should be read into the default or alternate material description
-	*/
-//	MeshMatDescClass * matdesc = DefMatDesc;
-//	if (DefMatDesc->Has_UVIndex(context->CurPass)) {
-//		matdesc = &(context->AlternateMatDesc);
-//	}
 
 	/*
 	** Read in the texture coordiante indices
 	** There must be polygon count vectors in this chunk.
 	*/
-	size = sizeof (Vector3i) * Get_Polygon_Count();
-	if (cload.Cur_Chunk_Length() == size) {
-			
-//		Vector3i *uvindices;
-//	
-//		uvindices = matdesc->Get_UVIndex_Array (context->CurPass, true);
-//		WWASSERT (uvindices != NULL);
-
-//uvindices=new Vector3i[Get_Polygon_Count()];
-//		cload.Read (uvindices, size);
-//delete[] uvindices;
-		cload.Seek(size);
+	size = sizeof(Vector3i) * Get_Polygon_Count();
+	if( cload.Cur_Chunk_Length() == size ){
+		cload.Seek( size );
 		return (WW3D_ERROR_OK);
-		
-	} else {
+	}else{
 		return (WW3D_ERROR_LOAD_FAILED);
 	}
 }
@@ -1533,49 +1521,49 @@ WW3DErrorType MeshModelClass::read_per_face_texcoord_ids (ChunkLoadClass &cload,
  * HISTORY:                                                                                    *
  *   02/02/99    IML : Created.                                                                *
  *=============================================================================================*/
-WW3DErrorType MeshModelClass::read_prelit_material (ChunkLoadClass &cload, MeshLoadContextClass *context)
-{
+WW3DErrorType MeshModelClass::read_prelit_material( ChunkLoadClass& cload, MeshLoadContextClass* context ){
 	// If this chunk ID matches the selected prelit chunk ID then load it, otherwise skip it.
-	if (cload.Cur_Chunk_ID() == context->PrelitChunkID) {
+	if( cload.Cur_Chunk_ID() == context->PrelitChunkID ){
 	
 		// While there are chunks in the prelit material chunk wrapper...
-		while (cload.Open_Chunk()) {
+		while( cload.Open_Chunk() ){
 
 			WW3DErrorType error = WW3D_ERROR_OK;
 
-			switch (cload.Cur_Chunk_ID()) {
-
+			switch( cload.Cur_Chunk_ID() ){
 				case W3D_CHUNK_MATERIAL_INFO:
-					error = read_material_info (cload,context);
+					error = read_material_info( cload, context );
 					break;
 
 				case W3D_CHUNK_VERTEX_MATERIALS:
-					error = read_vertex_materials (cload,context);
+					error = read_vertex_materials( cload, context );
 					break;
 
 				case W3D_CHUNK_SHADERS:
-					error = read_shaders (cload,context);
+					error = read_shaders( cload, context );
 					break;
 
 				case W3D_CHUNK_TEXTURES:
-					error = read_textures (cload,context);
+					error = read_textures( cload, context );
 					break;
 
 				case W3D_CHUNK_MATERIAL_PASS:
-					error = read_material_pass (cload,context);
+					error = read_material_pass( cload, context );
 					break;
 
 				default:
-					
 					// Unknown chunk.
 					break;
 			}	
 			cload.Close_Chunk();
-			if (error != WW3D_ERROR_OK) return (error);
+
+			if( error != WW3D_ERROR_OK ){
+				return error;
+			}
 		}
 	}
 	
-	return (WW3D_ERROR_OK);
+	return WW3D_ERROR_OK;
 }
 
 
@@ -1592,47 +1580,33 @@ WW3DErrorType MeshModelClass::read_prelit_material (ChunkLoadClass &cload, MeshL
  *   05/02/00   IML : Created.                                                                 *
  *   7/13/2001  hy : Added static sort postprocessing                                          *
  *=============================================================================================*/
-void MeshModelClass::post_process()
-{
-#if 0
-	// we want to allow this now due to usage of the static sort 
-	// Ensure no sorting, multipass meshes (for they are abomination...)
-	if (DefMatDesc->Get_Pass_Count() > 1 && Get_Flag(SORT)) {
-		WWDEBUG_SAY(( "Turning SORT off for multipass mesh %s\n",Get_Name() ));
-		Set_Flag(SORT, false);
-	}
-#endif
-
+void MeshModelClass::post_process(){
 	// turn off backface culling if the mesh is supposed to be two-sided
-	if (Get_Flag(MeshGeometryClass::TWO_SIDED)) {
-
+	if( Get_Flag( MeshGeometryClass::TWO_SIDED ) ){
 		DefMatDesc->Disable_Backface_Culling();
-		if (AlternateMatDesc != NULL) {
+		if( AlternateMatDesc != NULL ){
 			AlternateMatDesc->Disable_Backface_Culling();
 		}
-
 	}
 
 	// fog activation.
-	if (WW3DAssetManager::Get_Instance()->Get_Activate_Fog_On_Load()) { 
+	if( WW3DAssetManager::Get_Instance()->Get_Activate_Fog_On_Load() ){
 		post_process_fog();
 	}
 
 	// if the mesh is sorting, pick an appropriate static sort level
 	// if default isn't set
-	if (Get_Flag(SORT) && SortLevel==SORT_LEVEL_NONE && WW3D::Is_Munge_Sort_On_Load_Enabled()) {
+	if( Get_Flag(SORT) && SortLevel == SORT_LEVEL_NONE && WW3D::Is_Munge_Sort_On_Load_Enabled() ){
 		compute_static_sort_levels();
 	}
 }
 
-void MeshModelClass::post_process_fog(void)
-{
+void MeshModelClass::post_process_fog(void){
 	// If two pass...
-	if (DefMatDesc->Get_Pass_Count() == 2) {
+	if( DefMatDesc->Get_Pass_Count() == 2 ){
 
 		// If single shader on both passes...
-		if (!DefMatDesc->ShaderArray[0] && !DefMatDesc->ShaderArray[1]) {
-
+		if( !DefMatDesc->ShaderArray[0] && !DefMatDesc->ShaderArray[1] ){
 			ShaderClass &shader0 = DefMatDesc->Shader [0];
 			ShaderClass &shader1 = DefMatDesc->Shader [1];
 
@@ -1647,7 +1621,7 @@ void MeshModelClass::post_process_fog(void)
 												shader1.Get_Src_Blend_Func() == ShaderClass::SRCBLEND_SRC_ALPHA &&
 												shader1.Get_Dst_Blend_Func() == ShaderClass::DSTBLEND_SRC_COLOR;
 
-			if (emissive_map_effect) {
+			if( emissive_map_effect ){
 
 				// Change the shader/texture setting into an equivalent one which will enable setting fog
 				// correctly: Note that we are setting up pass 0 to have a texture now.
@@ -1774,8 +1748,7 @@ void MeshModelClass::compute_static_sort_levels(void)
 }
 
 
-void MeshModelClass::install_materials(MeshLoadContextClass * context)
-{
+void MeshModelClass::install_materials( MeshLoadContextClass* context ){
 	int i;
 
 	/*
@@ -1786,28 +1759,29 @@ void MeshModelClass::install_materials(MeshLoadContextClass * context)
 	/*
 	** Finish configuring the vertex materials and color arrays.
 	*/
-	bool lighting_enabled=true;
+	bool lighting_enabled = true;
+
 	// vertex-lit models need the lighting turned off!
-	if (Get_Flag(MeshGeometryClass::PRELIT_VERTEX)) {
-		lighting_enabled=false;
+	if( Get_Flag( MeshGeometryClass::PRELIT_VERTEX ) ){
+		lighting_enabled = false;
 	}
-	DefMatDesc->Post_Load_Process (lighting_enabled,this);
-	if (AlternateMatDesc != NULL) {
-		AlternateMatDesc->Post_Load_Process (lighting_enabled,this);
+	DefMatDesc->Post_Load_Process( lighting_enabled, this );
+	if( AlternateMatDesc != NULL ){
+		AlternateMatDesc->Post_Load_Process( lighting_enabled, this );
 	}
 
 	/*
 	** transfer the refs to our textures into the MatInfo
 	*/
-	for (i=0; i<context->Texture_Count(); i++) {
-		MatInfo->Add_Texture(context->Peek_Texture(i));
+	for( i = 0; i < context->Texture_Count(); i++ ){
+		MatInfo->Add_Texture( context->Peek_Texture( i ) );
 	}
 
 	/*
 	** transfer the refs to our vertex materials into the MatInfo
 	*/
-	for (i=0; i<context->Vertex_Material_Count(); i++) {
-		MatInfo->Add_Vertex_Material(context->Peek_Vertex_Material(i));
+	for( i = 0; i < context->Vertex_Material_Count(); i++ ){
+		MatInfo->Add_Vertex_Material( context->Peek_Vertex_Material( i ) );
 	}
 }
 
@@ -1825,15 +1799,14 @@ void MeshModelClass::clone_materials(const MeshModelClass & srcmesh)
 	*/
 	MaterialRemapperClass remapper(srcmesh.MatInfo, MatInfo);
 	remapper.Remap_Mesh(srcmesh.CurMatDesc, CurMatDesc);
-}
+}o
 
 
-void MeshModelClass::install_alternate_material_desc(MeshLoadContextClass * context)
-{
-	if (context->AlternateMatDesc.Is_Empty() == false) {
+void MeshModelClass::install_alternate_material_desc( MeshLoadContextClass* context ){
+	if( context->AlternateMatDesc.Is_Empty() == false ){
 		WWASSERT(AlternateMatDesc == NULL);
 		AlternateMatDesc = new MeshMatDescClass;
-		AlternateMatDesc->Init_Alternate(*DefMatDesc,context->AlternateMatDesc);
+		AlternateMatDesc->Init_Alternate( *DefMatDesc, context->AlternateMatDesc );
 	}
 }
 
@@ -1849,8 +1822,7 @@ void MeshModelClass::install_alternate_material_desc(MeshLoadContextClass * cont
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-MeshLoadContextClass::MeshLoadContextClass(void)
-{
+MeshLoadContextClass::MeshLoadContextClass(void){
 	memset(&Header,0,sizeof(Header));
 	memset(&MatInfo,0,sizeof(MatInfo));
 	PrelitChunkID = 0xffffffff;
@@ -1928,10 +1900,9 @@ W3dTexCoordStruct * MeshLoadContextClass::Get_Texcoord_Array(void)
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-int MeshLoadContextClass::Add_Shader(ShaderClass shader)								
-{ 
+int MeshLoadContextClass::Add_Shader( ShaderClass shader ){
 	int index = Shaders.Count();
-	Shaders.Add(shader); 
+	Shaders.Add( shader ); 
 	return index;
 }
 
@@ -1948,8 +1919,7 @@ int MeshLoadContextClass::Add_Shader(ShaderClass shader)
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-int MeshLoadContextClass::Add_Vertex_Material(VertexMaterialClass * vmat)			
-{ 
+int MeshLoadContextClass::Add_Vertex_Material( VertexMaterialClass* vmat ){
 	WWASSERT(vmat != NULL);
 	vmat->Add_Ref();
 	int index = VertexMaterials.Count();
@@ -1970,12 +1940,11 @@ int MeshLoadContextClass::Add_Vertex_Material(VertexMaterialClass * vmat)
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-int MeshLoadContextClass::Add_Texture(TextureClass * tex)							
-{ 
+int MeshLoadContextClass::Add_Texture( TextureClass* tex ){
 	WWASSERT(tex != NULL);
 	tex->Add_Ref();
 	int index = Textures.Count();
-	Textures.Add(tex); 
+	Textures.Add( tex );
 	return index;
 }
 
@@ -2120,8 +2089,7 @@ TextureClass * MeshLoadContextClass::Peek_Legacy_Texture(int legacy_material_ind
 }
 
 
-Vector2 * MeshLoadContextClass::Get_Temporary_UV_Array(int elementcount)
-{
+Vector2 * MeshLoadContextClass::Get_Temporary_UV_Array( int elementcount ){
 	TempUVArray.Uninitialised_Grow(elementcount);
 	return &(TempUVArray[0]);
 }
@@ -2160,537 +2128,3 @@ MeshSaveContextClass::MeshSaveContextClass(void) :
 MeshSaveContextClass::~MeshSaveContextClass(void)
 {
 }
-
-
-
-
-
-#if 0 // MESH SAVING CODE HAS NOT BEEN MAINTAINED... Leaving here for future reference if we ever need it :-)
-
-/***********************************************************************************************
- * MeshModelClass::Save -- Save this mesh model!                                               *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   2/16/99    GTH : Created.                                                                 *
- *=============================================================================================*/
-WW3DErrorType MeshModelClass::Save_W3D(ChunkSaveClass & csave)
-{
-	MeshSaveContextClass * context = new MeshSaveContextClass;
-	context->Materials.Collect_Materials(this);
-
-	write_chunks(csave,context);
-
-	delete context;
-	return WW3D_ERROR_OK;
-}
-
-
-WW3DErrorType MeshModelClass::write_chunks(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	
-	// write the header
-	write_header(csave,context);
-	write_user_text(csave,context);
-
-	// write the geometry
-	write_triangles(csave,context);	
-	write_vertices(csave,context);
-	write_vertex_normals(csave,context);
-	write_vertex_shade_indices(csave,context);
-	write_vertex_influences(csave,context);
-	//write_cull_tree(csave);
-
-	// material stuff
-	write_material_info(csave,context);
-	write_vertex_materials(csave,context);
-	write_shaders(csave,context);
-	write_textures(csave,context);
-
-	// passes
-	for (int i=0; i<Get_Pass_Count(); i++) {
-		context->CurPass = i;
-		write_material_pass(csave,context);
-	}
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_header(ChunkSaveClass & csave,MeshSaveContextClass * /*context*/)
-{
-	W3dMeshHeader3Struct header;
-	memset(&header,0,sizeof(header));
-	
-	// Set names
-	if (MeshName) {
-
-		char * name = MeshName->Get_Array();
-		char * mesh_name = strchr(name,'.');
-		
-		int hierarchy_name_len = 0;
-		if (mesh_name == NULL) {
-			mesh_name = name;
-		} else {
-			hierarchy_name_len = (int)mesh_name - (int)name;
-			mesh_name++;
-		}
-		assert( hierarchy_name_len <= W3D_NAME_LEN);
-		strncpy( header.MeshName, mesh_name, W3D_NAME_LEN);
-		strncpy( header.ContainerName, name, hierarchy_name_len);
-	} else {
-		sprintf(header.MeshName,"UnNamed");
-	}
-
-	header.Version = W3D_CURRENT_MESH_VERSION;
-	header.Attributes = W3dAttributes;
-	header.NumTris = Get_Polygon_Count();
-	header.NumVertices = Get_Vertex_Count();
-	header.NumMaterials = 0;
-	header.NumDamageStages = 0;
-
-	header.VertexChannels = W3D_VERTEX_CHANNEL_LOCATION;
-	if (Get_Flag(SKIN)) {
-		header.VertexChannels |= W3D_VERTEX_CHANNEL_BONEID;
-	}
-
-	header.FaceChannels = W3D_FACE_CHANNEL_FACE;
-
-	W3dUtilityClass::Convert_Vector(BoundBoxMin,&(header.Min));
-	W3dUtilityClass::Convert_Vector(BoundBoxMax,&(header.Max));
-	W3dUtilityClass::Convert_Vector(BoundSphereCenter,&header.SphCenter);
-	header.SphRadius = BoundSphereRadius;
-
-	csave.Begin_Chunk(W3D_CHUNK_MESH_HEADER3);
-	if (csave.Write(&header,sizeof(header)) != sizeof(header)) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-	csave.End_Chunk();
-
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_user_text(ChunkSaveClass & csave,MeshSaveContextClass * /*context*/)
-{
-	if (UserText == NULL) return WW3D_ERROR_OK;
-	if (strlen(UserText->Get_Array()) < 1) return WW3D_ERROR_OK;
-
-	csave.Begin_Chunk(W3D_CHUNK_MESH_USER_TEXT);
-	csave.Write(UserText->Get_Array(),strlen(UserText->Get_Array()) + 1);
-	csave.End_Chunk();
-
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_triangles(ChunkSaveClass & csave,MeshSaveContextClass * /*context*/)
-{
-	if (!csave.Begin_Chunk(W3D_CHUNK_TRIANGLES)) {
-		return WW3D_ERROR_LOAD_FAILED;
-	}
-
-	TriIndex	* poly_verts = Poly->Get_Array();
-	Vector4 * poly_eq = (PlaneEq ? PlaneEq->Get_Array() : NULL);
-
-	for (int i=0; i<Get_Polygon_Count(); i++) {
-
-		W3dTriStruct tri;
-		memset(&tri,0,sizeof(W3dTriStruct));
-
-		// convert each triangle into surrender format
-		tri.Vindex[0] =			poly_verts[i].I;
-		tri.Vindex[1] = 			poly_verts[i].J;
-		tri.Vindex[2] = 			poly_verts[i].K;
-
-		if (poly_eq)  {
-			tri.Attributes =		0;
-			tri.Normal.X = 		poly_eq[i].X;
-			tri.Normal.Y = 		poly_eq[i].Y;
-			tri.Normal.Z = 		poly_eq[i].Z;
-			tri.Dist =				poly_eq[i].W;
-		} else {
-			
-			Vector3 a,b,normal;
-			Vector3 * verts = Vertex->Get_Array();
-			const Vector3 & p0= verts[poly_verts[i][0]];
-
-			Vector3::Subtract(verts[poly_verts[i][1]],p0,&a);
-			Vector3::Subtract(verts[poly_verts[i][2]],p0,&b);
-			Vector3::Cross_Product(a,b,&normal);
-			normal.Normalize();
-
-			tri.Attributes =		0;
-			tri.Normal.X =			normal.X;
-			tri.Normal.Y =			normal.Y;
-			tri.Normal.Z =			normal.Z;
-			tri.Dist =				Vector3::Dot_Product(p0,normal);
-		}
-
-		if (csave.Write(&tri,sizeof(W3dTriStruct)) != sizeof(W3dTriStruct)) {
-			return WW3D_ERROR_SAVE_FAILED;
-		} 
-	}
-
-	if (!csave.End_Chunk()) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_vertices(ChunkSaveClass & csave,MeshSaveContextClass * /*context*/)
-{
-	if (!csave.Begin_Chunk(W3D_CHUNK_VERTICES)) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-	
-	WWASSERT(Get_Vertex_Count() > 0);
-	Vector3 * verts = Vertex->Get_Array();
-
-	for (int i=0; i<Get_Vertex_Count(); i++) {
-
-		W3dVectorStruct vert;
-   	vert.X = verts[i].X;
-		vert.Y = verts[i].Y;
-		vert.Z = verts[i].Z;
-		
-		if (csave.Write(&(vert),sizeof(W3dVectorStruct)) != sizeof(W3dVectorStruct)) {
-			return WW3D_ERROR_SAVE_FAILED;
-		}
-	}
-	
-	if (!csave.End_Chunk()) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_vertex_normals(ChunkSaveClass & csave,MeshSaveContextClass * /*context*/)
-{
-	WWASSERT( Get_Vertex_Count() > 0);
-	if (!csave.Begin_Chunk(W3D_CHUNK_VERTEX_NORMALS)) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-	
-	const Vector3 * verts = Get_Vertex_Normal_Array();
-	
-	for (int i=0; i<Get_Vertex_Count(); i++) {
-
-		W3dVectorStruct vert;
-   	vert.X = verts[i].X;
-		vert.Y = verts[i].Y;
-		vert.Z = verts[i].Z;
-		
-		if (csave.Write(&(vert),sizeof(W3dVectorStruct)) != sizeof(W3dVectorStruct)) {
-			return WW3D_ERROR_SAVE_FAILED;
-		}
-	}
-	
-	if (!csave.End_Chunk()) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_vertex_shade_indices(ChunkSaveClass & csave,MeshSaveContextClass * /*context*/)
-{
-	WWASSERT(Get_Vertex_Count() > 0);
-	if (VertexShadeIdx == NULL) return WW3D_ERROR_OK;
-
-	if (!csave.Begin_Chunk(W3D_CHUNK_VERTEX_SHADE_INDICES)) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-
-	for (int i=0; i<Get_Vertex_Count(); i++) {
-		uint32 idx = VertexShadeIdx->Get_Array()[i];
-		if (csave.Write(&idx,sizeof(idx)) != sizeof(idx)) {
-			return WW3D_ERROR_SAVE_FAILED;
-		}
-	}
-
-	if (!csave.End_Chunk()) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_vertex_influences(ChunkSaveClass & csave,MeshSaveContextClass * /*context*/)
-{
-	WWASSERT(Get_Vertex_Count() > 0);
-	if (VertexBoneLink == NULL) return WW3D_ERROR_OK;
-
-	if (!csave.Begin_Chunk(W3D_CHUNK_VERTEX_INFLUENCES)) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-
-	W3dVertInfStruct vinf;
-	memset(&vinf,0,sizeof(vinf));
-
-	for (int i=0; i<Get_Vertex_Count(); i++) {
-		vinf.BoneIdx = VertexBoneLink->Get_Array()[i];
-		if (csave.Write(&vinf,sizeof(vinf)) != sizeof(vinf)) {
-			return WW3D_ERROR_SAVE_FAILED;
-		}
-	}
-
-	if (!csave.End_Chunk()) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_material_info(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (!csave.Begin_Chunk(W3D_CHUNK_MATERIAL_INFO)) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-
-	W3dMaterialInfoStruct info;
-	memset(&info,0,sizeof(info));
-
-	info.PassCount = DefMatDesc->PassCount;
-	info.VertexMaterialCount = context->Materials.Get_Vertex_Material_Count();
-	info.TextureCount = context->Materials.Get_Texture_Count();
-	info.ShaderCount = context->Materials.Get_Shader_Count();
-
-	if (csave.Write(&info,sizeof(info)) != sizeof(info)) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-
-	if (!csave.End_Chunk()) {
-		return WW3D_ERROR_SAVE_FAILED;
-	}
-
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_shaders(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (context->Materials.Get_Shader_Count() <= 0) {
-		return WW3D_ERROR_OK;
-	}
-
-	if (!csave.Begin_Chunk(W3D_CHUNK_SHADERS)) return WW3D_ERROR_SAVE_FAILED;
-
-	for (int si=0; si<context->Materials.Get_Shader_Count(); si++) {
-		W3dShaderStruct file_shader;
-		ShaderClass	shader = context->Materials.Peek_Shader(si);
-		W3dUtilityClass::Convert_Shader(shader,&file_shader);
-
-		if (csave.Write(&file_shader,sizeof(file_shader)) != sizeof(file_shader)) {
-			return WW3D_ERROR_SAVE_FAILED;
-		}
-	}
-
-	if (!csave.End_Chunk()) return WW3D_ERROR_SAVE_FAILED;
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_vertex_materials(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (context->Materials.Get_Vertex_Material_Count() <= 0) return WW3D_ERROR_OK;
-	if (!csave.Begin_Chunk(W3D_CHUNK_VERTEX_MATERIALS)) return WW3D_ERROR_SAVE_FAILED;
-	
-	for (int vi=0; vi<context->Materials.Get_Vertex_Material_Count(); vi++) {
-		
-		csave.Begin_Chunk(W3D_CHUNK_VERTEX_MATERIAL);
-		VertexMaterialClass * vmat = context->Materials.Peek_Vertex_Material(vi);
-		vmat->Save_W3D(csave);
-		csave.End_Chunk();
-	}
-
-	if (!csave.End_Chunk()) return WW3D_ERROR_SAVE_FAILED;
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_textures(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (context->Materials.Get_Texture_Count() <= 0) return WW3D_ERROR_OK;
-	if (!csave.Begin_Chunk(W3D_CHUNK_TEXTURES)) return WW3D_ERROR_SAVE_FAILED;
-	
-	for (int ti=0; ti<context->Materials.Get_Texture_Count(); ti++) {
-		TextureClass * tex = context->Materials.Peek_Texture(ti);
-		Save_Texture(tex,csave);
-	}
-
-	if (!csave.End_Chunk()) return WW3D_ERROR_SAVE_FAILED;
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_material_pass(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	context->CurStage = 0;
-	csave.Begin_Chunk(W3D_CHUNK_MATERIAL_PASS);
-
-	write_vertex_material_ids(csave,context);
-	write_shader_ids(csave,context);
-	write_dcg(csave,context);
-	write_dig(csave,context);
-	write_scg(csave,context);
-	write_texture_stage(csave,context);
-	write_texture_stage(csave,context);
-
-	csave.End_Chunk();
-	context->CurPass++;
-
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_vertex_material_ids(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	// first check if all vertex material pointers are Null (is this legal?)
-	if (	(DefMatDesc->Material[context->CurPass] == NULL) && 
-			(DefMatDesc->MaterialArray[context->CurPass] == NULL)) return WW3D_ERROR_OK;
-
-	csave.Begin_Chunk(W3D_CHUNK_VERTEX_MATERIAL_IDS);
-
-	uint32 id = 0;
-	if (DefMatDesc->MaterialArray[context->CurPass] == NULL) {
-		
-		id = context->Materials.Find_Vertex_Material(DefMatDesc->Material[context->CurPass]);
-		csave.Write(&id,sizeof(id));
-
-	} else {
-
-		VertexMaterialClass ** array = DefMatDesc->MaterialArray[context->CurPass]->Get_Array();
-		for (int vi=0; vi<Get_Vertex_Count(); vi++) {
-			id = context->Materials.Find_Vertex_Material(array[vi]);
-			csave.Write(&id,sizeof(id));
-		}
-
-	}
-
-	csave.End_Chunk();
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_shader_ids(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	csave.Begin_Chunk(W3D_CHUNK_SHADER_IDS);
-
-	uint32 id = 0;
-	if (DefMatDesc->ShaderArray[context->CurPass] == NULL) {
-		
-		id = context->Materials.Find_Shader(DefMatDesc->Shader[context->CurPass]);
-		csave.Write(&id,sizeof(id));
-
-	} else {
-		
-		ShaderClass * array = DefMatDesc->ShaderArray[context->CurPass]->Get_Array();
-		for (int pi=0; pi<Get_Polygon_Count(); pi++) {
-			id = context->Materials.Find_Shader(array[pi]);
-			csave.Write(&id,sizeof(id));
-		}
-	}
-
-	csave.End_Chunk();
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_scg(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (DefMatDesc->SCG[context->CurPass] == NULL) return WW3D_ERROR_OK;
-	csave.Begin_Chunk(W3D_CHUNK_SCG);
-	
-	W3dRGBAStruct color;
-	Vector4 * color_array = DefMatDesc->SCG[context->CurPass]->Get_Array();
-	for (int vi=0; vi<Get_Vertex_Count(); vi++) {
-		W3dUtilityClass::Convert_Color(color_array[vi],&color);
-		csave.Write(&color,sizeof(color));
-	}
-
-	csave.End_Chunk();
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_dig(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (DefMatDesc->DIG[context->CurPass] == NULL) return WW3D_ERROR_OK;
-	csave.Begin_Chunk(W3D_CHUNK_DIG);
-
-	W3dRGBStruct color;
-	Vector3 * color_array = DefMatDesc->DIG[context->CurPass]->Get_Array();
-	for (int vi=0; vi<Get_Vertex_Count(); vi++) {
-		W3dUtilityClass::Convert_Color(color_array[vi],&color);
-		csave.Write(&color,sizeof(color));
-	}
-	csave.End_Chunk();
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_dcg(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (DefMatDesc->DCG[context->CurPass] == NULL) return WW3D_ERROR_OK;
-	csave.Begin_Chunk(W3D_CHUNK_DCG);
-
-	W3dRGBAStruct color;
-	Vector4 * color_array = DefMatDesc->DCG[context->CurPass]->Get_Array();
-	for (int vi=0; vi<Get_Vertex_Count(); vi++) {
-		W3dUtilityClass::Convert_Color(color_array[vi],&color);
-		csave.Write(&color,sizeof(color));
-	}
-	csave.End_Chunk();
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_texture_stage(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (	(DefMatDesc->Texture[context->CurPass][context->CurStage] == NULL) &&
-			(DefMatDesc->TextureArray[context->CurPass][context->CurStage] == NULL)) return WW3D_ERROR_OK;
-	
-	csave.Begin_Chunk(W3D_CHUNK_TEXTURE_STAGE);
-	write_texture_ids(csave,context);
-	write_stage_texcoords(csave,context);
-	csave.End_Chunk();
-
-	context->CurStage++;
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_texture_ids(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	csave.Begin_Chunk(W3D_CHUNK_TEXTURE_IDS);
-	
-	uint32 id = 0;
-	if (DefMatDesc->TextureArray[context->CurPass][context->CurStage] == NULL) {
-		
-		id = context->Materials.Find_Texture(DefMatDesc->Texture[context->CurPass][context->CurStage]);
-		csave.Write(&id,sizeof(id));
-
-	} else {
-		
-		srTextureIFace ** array = DefMatDesc->TextureArray[context->CurPass][context->CurStage]->Get_Array();
-		for (int pi=0; pi<Get_Polygon_Count(); pi++) {
-			id = context->Materials.Find_Texture(array[pi]);
-			csave.Write(&id,sizeof(id));
-		}
-	}
-
-	csave.End_Chunk();
-	return WW3D_ERROR_OK;
-}
-
-WW3DErrorType MeshModelClass::write_stage_texcoords(ChunkSaveClass & csave,MeshSaveContextClass * context)
-{
-	if (DefMatDesc->UV[context->CurPass][context->CurStage] == NULL) return WW3D_ERROR_OK;
-	csave.Begin_Chunk(W3D_CHUNK_STAGE_TEXCOORDS);
-
-	W3dTexCoordStruct tex;
-	Vector2 * array = DefMatDesc->UV[context->CurPass][context->CurStage]->Get_Array();
-
-	for (int vi=0; vi<Get_Vertex_Count(); vi++) {
-
-		tex.U = array[vi].X;
-		tex.V = 1.0f - array[vi].Y;
-		
-		csave.Write(&tex,sizeof(tex));
-	}
-
-	csave.End_Chunk();
-	return WW3D_ERROR_OK;
-}
-
-#endif // 0 (disabled mesh saving code)

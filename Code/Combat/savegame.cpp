@@ -161,8 +161,6 @@ void SaveGameManager::Pre_Load_Game( const char* filename, StringClass& filename
 			ThumbnailManagerClass::Add_Thumbnail_Manager( thumb_filename, mix_filename );
 		}
 	}
-
-	return;
 }
 
 void SaveGameManager::Load_Game( const char* filename ){
@@ -172,10 +170,10 @@ void SaveGameManager::Load_Game( const char* filename ){
 	Debug_Say(( "Load Game %s\n", filename ));
 	CurrentGameFilename = filename;
 
-	FileClass * file = _TheFileFactory->Get_File( filename );
+	FileClass* file = _TheFileFactory->Get_File( filename );
 	WWASSERT( file );
 	file->Open( FileClass::READ );
-	ChunkLoadClass cload(file);
+	ChunkLoadClass cload = new ChunkLoadClass( file );
 
 	WWLOG_INTERMEDIATE("Open file");
 	while( cload.Open_Chunk() ){
@@ -193,7 +191,6 @@ void SaveGameManager::Load_Game( const char* filename ){
 					}
 					cload.Close_Micro_Chunk();
 				}
-
 
 				{
 					// Load level specific Defs
@@ -234,7 +231,7 @@ void SaveGameManager::Load_Game( const char* filename ){
 	WWLOG_INTERMEDIATE("Rest of the stuff");
 }
 
-bool	SaveGameManager::Smart_Peek_Description( const char* filename, WideStringClass&	description, WideStringClass& mission_name ){
+bool SaveGameManager::Smart_Peek_Description( const char* filename, WideStringClass&	description, WideStringClass& mission_name ){
 	//	Get the root name and extension from the filename
 	char root_name[_MAX_FNAME] = { 0 };
 	char extension[_MAX_EXT] = { 0 };
@@ -329,8 +326,8 @@ bool SaveGameManager::Peek_Description( const char* filename, WideStringClass& d
 }
 
 bool SaveGameManager::Peek_Map_Name( const char* filename, StringClass& map_name ){
-	//	Open the file as a chunk
-	FileClass * file = _TheFileFactory->Get_File(filename);
+	// Open the file as a chunk
+	FileClass* file = _TheFileFactory->Get_File(filename);
 	WWASSERT(file != NULL);
 	file->Open(FileClass::READ);
 	ChunkLoadClass cload(file);
@@ -340,9 +337,9 @@ bool SaveGameManager::Peek_Map_Name( const char* filename, StringClass& map_name
 	// Loop until we've found the header chunk
 	while( retval == false && cload.Open_Chunk() ){
 		switch( cload.Cur_Chunk_ID() ){
-			case CHUNKID_LEVEL_INFO:
+			case CHUNKID_LEVEL_INFO: {
 				while( retval == false && cload.Open_Micro_Chunk() ){
-					switch(cload.Cur_Micro_Chunk_ID()) {
+					switch( cload.Cur_Micro_Chunk_ID() ){
 						// Read the map name string from chunk	
 						case MICROCHUNKID_MAP_FILENAME: {
 							LOAD_MICRO_CHUNK_WWSTRING( cload, map_name );
@@ -353,6 +350,7 @@ bool SaveGameManager::Peek_Map_Name( const char* filename, StringClass& map_name
 					cload.Close_Micro_Chunk();
 				}
 				break;
+			}
 		}
 		cload.Close_Chunk();
 	}
@@ -364,17 +362,18 @@ bool SaveGameManager::Peek_Map_Name( const char* filename, StringClass& map_name
 	return retval;
 }
 
-void	SaveGameManager::Save_Level( void )
-{
+void SaveGameManager::Save_Level( void ){
 	Debug_Say(( "Save Level %s\n", MapFilename ));
-	Save_Save_Load_System(	MapFilename,	
-									&_PhysStaticDataSaveSystem, 
-									&_PhysStaticObjectsSaveSystem,
-									&_StaticAudioSaveLoadSubsystem,
-									&_TheBackgroundMgr,
-									&_TheWeatherMgr,
-									&_TheMapMgrSaveLoadSubsystem,
-									NULL );
+	Save_Save_Load_System(
+		MapFilename,	
+		&_PhysStaticDataSaveSystem, 
+		&_PhysStaticObjectsSaveSystem,
+		&_StaticAudioSaveLoadSubsystem,
+		&_TheBackgroundMgr,
+		&_TheWeatherMgr,
+		&_TheMapMgrSaveLoadSubsystem,
+		NULL
+	);
 }
 
 void SaveGameManager::Load_Level(void){
@@ -393,8 +392,7 @@ void SaveGameManager::Load_Definitions( const char* filename ){
 	Load_Save_Load_System( filename, true );	// true = automatic post load processing
 }
 
-void _cdecl SaveGameManager::Save_Save_Load_System( const char * filename, ... )
-{
+void _cdecl SaveGameManager::Save_Save_Load_System( const char* filename, ... ){
 	FileClass * file = _TheWritingFileFactory->Get_File( filename );
 	WWASSERT(file);
 	file->Open(FileClass::WRITE);

@@ -60,8 +60,7 @@ class ChunkLoadClass;
 //	TDBCategoryClass
 //
 //////////////////////////////////////////////////////////////////////////
-class TDBCategoryClass : public PersistClass
-{
+class TDBCategoryClass : public PersistClass {
 public:
 	
 	//////////////////////////////////////////////////////////////
@@ -83,9 +82,9 @@ public:
 	//
 	// From PersistClass
 	//
-	const PersistFactoryClass &Get_Factory (void) const;
-	bool								Save (ChunkSaveClass &csave);
-	bool								Load (ChunkLoadClass &cload);
+	const PersistFactoryClass& Get_Factory(void) const;
+	bool Save( ChunkSaveClass& csave );
+	bool Load( ChunkLoadClass& cload );
 
 	//
 	// Copy methods

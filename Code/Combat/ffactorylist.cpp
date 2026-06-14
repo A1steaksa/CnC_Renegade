@@ -126,8 +126,7 @@ FileFactoryClass * FileFactoryListClass::Remove_Temp_FileFactory( void )
 }
 
 
-FileClass * FileFactoryListClass::Get_File( char const *filename )
-{
+FileClass* FileFactoryListClass::Get_File( char* const filename ){
 	// Very kludgly...
 
 	// Then the temp factory
@@ -181,8 +180,7 @@ FileClass * FileFactoryListClass::Get_File( char const *filename )
 	return NULL;
 }
 
-void FileFactoryListClass::Return_File( FileClass *file )
-{
+void FileFactoryListClass::Return_File( FileClass* file ){
 	// This is kinda bad. Just return it to the first one.  (Since they all do the same thing)
 	FactoryList[0]->Return_File( file );
 }

@@ -231,7 +231,6 @@ int	GameObjManager::Think() {
                 if( objnode->Data()->As_SmartGameObj()->Get_Weapon() != NULL ) {
                     objnode->Data()->As_SmartGameObj()->Get_Weapon()->Deselect();
                 }
-
             }
             continue;
         }
@@ -261,7 +260,6 @@ int	GameObjManager::Post_Think() {
     // Allow each object in the master list to think
     SLNode<BaseGameObj>* objnode;
     for( objnode = GameObjList.Head(); objnode; objnode = objnode->Next() ) {
-
         // Don't post_think when cinematic frozen
         if( Is_Cinematic_Freeze_Active() && objnode->Data()->Is_Cinematic_Freeze_Enabled() ) {
             continue;

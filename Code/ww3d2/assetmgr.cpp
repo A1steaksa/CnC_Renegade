@@ -115,7 +115,7 @@
 /*
 ** Static member variable which keeps track of the single instanced asset manager
 */
-WW3DAssetManager *		WW3DAssetManager::TheInstance = NULL;
+WW3DAssetManager* WW3DAssetManager::TheInstance = NULL;
 
 /*
 ** Static instance of the Null prototype.  This render object is special cased
@@ -126,12 +126,11 @@ static NullPrototypeClass _NullPrototype;
 /*
 ** Iterator for the Render Objects in the asset manager
 */
-class RObjIterator : public RenderObjIterator
-{
+class RObjIterator : public RenderObjIterator {
 public:
-	virtual bool					Is_Done(void);
-	virtual const char *			Current_Item_Name(void);
-	virtual int						Current_Item_Class_ID(void);
+	virtual bool Is_Done(void);
+	virtual const char* Current_Item_Name(void);
+	virtual int Current_Item_Class_ID(void);
 protected:
 	friend class WW3DAssetManager;
 };
@@ -195,23 +194,19 @@ protected:
  *   05/10/1999 SKB : Add TextureCache                                                         * 
  *=============================================================================================*/
 WW3DAssetManager::WW3DAssetManager(void) :
-	PrototypeLoaders		(PROTOLOADERS_VECTOR_SIZE),
-	Prototypes				(PROTOTYPES_VECTOR_SIZE),
+	PrototypeLoaders( PROTOLOADERS_VECTOR_SIZE ),
+	Prototypes( PROTOTYPES_VECTOR_SIZE ),
 
-#ifdef WW3D_DX8
-	TextureCache				(NULL),
-#endif //WW3D_DX8
-
-	WW3D_Load_On_Demand		(false),
-	Activate_Fog_On_Load		(false),
-	MetalManager(0)
+	WW3D_Load_On_Demand( false ),
+	Activate_Fog_On_Load( false ),
+	MetalManager( 0 )
 {
-	assert(TheInstance == NULL);
+	assert( TheInstance == NULL );
 	TheInstance = this;
 
 	// set the growth rates
-	PrototypeLoaders.Set_Growth_Step(PROTOLOADERS_GROWTH_RATE);
-	Prototypes.Set_Growth_Step(PROTOTYPES_GROWTH_RATE);
+	PrototypeLoaders.Set_Growth_Step( PROTOLOADERS_GROWTH_RATE );
+	Prototypes.Set_Growth_Step( PROTOTYPES_GROWTH_RATE );
 
 	// install the default loaders
 	Register_Prototype_Loader(&_MeshLoader);
@@ -242,21 +237,21 @@ WW3DAssetManager::WW3DAssetManager(void) :
  * HISTORY:                                                                                    *
  *   12/21/97   GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DAssetManager::~WW3DAssetManager(void)
-{
-	if (MetalManager) delete MetalManager;
+WW3DAssetManager::~WW3DAssetManager(void){
+	if( MetalManager ){
+		delete MetalManager;
+	}
 	Free();
 	TheInstance = NULL;
 
 	// If we need to, free the hash table
-	if (PrototypeHashTable != NULL) {
+	if( PrototypeHashTable != NULL ){
 		delete [] PrototypeHashTable;
 		PrototypeHashTable = NULL;
 	}
 }
 
-static void Create_Number_String(StringClass& number, unsigned value)
-{
+static void Create_Number_String( StringClass& number, unsigned value ){
 	unsigned miljoonat=value/(1024*1028);
 	unsigned tuhannet=(value/1024)%1024;
 	unsigned ykkoset=value%1024;
@@ -271,19 +266,16 @@ static void Create_Number_String(StringClass& number, unsigned value)
 	}
 }
 
-void	WW3DAssetManager::Load_Procedural_Textures()
-{
-	int i,count;
-	if (!MetalManager)
-	{
+void WW3DAssetManager::Load_Procedural_Textures(){
+	int i, count;
+	if( !MetalManager ){
 		INIClass ini;
-		ini.Load("metals.ini");
-		MetalManager=new MetalMapManagerClass(ini);
+		ini.Load( "metals.ini" );
+		MetalManager = new MetalMapManagerClass( ini );
 	}
 	
-	count=MetalManager->Metal_Map_Count();		
-	for (i=0; i<count; i++)
-	{
+	count = MetalManager->Metal_Map_Count();		
+	for( i=0; i<count; i++ ){
 		TextureClass *tex=MetalManager->Get_Metal_Map(i);
 		TextureHash.Insert(tex->Get_Texture_Name(),tex);
 	}	
@@ -397,8 +389,7 @@ void WW3DAssetManager::Log_Texture_Statistics()
  * HISTORY:                                                                                    *
  *   12/21/97   GTH : Created.                                                                 *
  *=============================================================================================*/
-void WW3DAssetManager::Free(void)
-{
+void WW3DAssetManager::Free(void){
 	Free_Assets();
 }
 
@@ -443,10 +434,6 @@ void WW3DAssetManager::Free_Assets(void)
 	Release_All_Textures();
 	Release_All_Font3DDatas();
 	Release_All_FontChars();
-
-	// Close down cache if it is open.
-	// NONONONOO.... Don't close it as we might want to free the assets and still be able to load textures.
-//	Close_Texture_File_Cache();
 }
 
 
@@ -462,8 +449,7 @@ void WW3DAssetManager::Free_Assets(void)
  * HISTORY:                                                                                    *
  *   02/18/99   EHC : Created.                                                                 *
  *=============================================================================================*/
-void WW3DAssetManager::Release_Unused_Assets(void)
-{
+void WW3DAssetManager::Release_Unused_Assets(void){
 	// release all references to objects that have only one reference on them
 	// and remove them from our lists.
 	Release_Unused_Textures();
@@ -483,8 +469,7 @@ void WW3DAssetManager::Release_Unused_Assets(void)
  * HISTORY:                                                                                    *
  *   10/22/98   BMG : Created.                                                                 *
  *=============================================================================================*/
-bool WW3DAssetManager::Load_3D_Assets( const char * filename )
-{
+bool WW3DAssetManager::Load_3D_Assets( const char * filename ){
 	bool result = false;
 
 	FileClass * file = _TheFileFactory->Get_File( filename );
@@ -511,31 +496,30 @@ bool WW3DAssetManager::Load_3D_Assets( const char * filename )
  * HISTORY:                                                                                    *
  *   12/21/97   GTH : Created.                                                                 *
  *=============================================================================================*/
-bool WW3DAssetManager::Load_3D_Assets(FileClass & w3dfile)
-{
+bool WW3DAssetManager::Load_3D_Assets( FileClass& w3dfile ){
 	WWPROFILE( "WW3DAssetManager::Load_3D_Assets" );
-	if (!w3dfile.Open()) {
+	if( !w3dfile.Open() ){
 		return false;
 	}
 
 	ChunkLoadClass cload(&w3dfile);
 
-	while (cload.Open_Chunk()) {
+	while( cload.Open_Chunk() ){
 
-		switch (cload.Cur_Chunk_ID()) {
+		switch( cload.Cur_Chunk_ID() ){
 
 			case W3D_CHUNK_HIERARCHY:
-				HTreeManager.Load_Tree(cload);
+				HTreeManager.Load_Tree( cload );
 				break;
 
 			case W3D_CHUNK_ANIMATION:
 			case W3D_CHUNK_COMPRESSED_ANIMATION:
 			case W3D_CHUNK_MORPH_ANIMATION:
-				HAnimManager.Load_Anim(cload);
+				HAnimManager.Load_Anim( cload );
 				break;
         
 			default:
-				Load_Prototype(cload);
+				Load_Prototype( cload );
 				break;
 		}
 
@@ -562,8 +546,7 @@ bool WW3DAssetManager::Load_3D_Assets(FileClass & w3dfile)
  *   2/19/99    EHC : Now has the Add_Prototype call responsible for adding the prototype to   *
  *                    the Prototypes list object.                                              *
  *=============================================================================================*/
-bool WW3DAssetManager::Load_Prototype(ChunkLoadClass & cload)
-{
+bool WW3DAssetManager::Load_Prototype( ChunkLoadClass& cload ){
 	WWPROFILE( "WW3DAssetManager::Load_Prototype" );
 	WWMEMLOG(MEM_GEOMETRY);
 
@@ -575,19 +558,16 @@ bool WW3DAssetManager::Load_Prototype(ChunkLoadClass & cload)
 	/*
 	** Find a loader that handles that type of chunk
 	*/
-	PrototypeLoaderClass * loader = Find_Prototype_Loader(chunk_id);
-	PrototypeClass * newproto = NULL;
+	PrototypeLoaderClass* loader = Find_Prototype_Loader( chunk_id );
+	PrototypeClass* newproto = NULL;
 
-	if (loader != NULL) {
-
+	if( loader != NULL ){
 		/*
 		** Ask it to create a prototype from the contents of the
 		** chunk.
 		*/
-		newproto = loader->Load_W3D(cload);
-
-	} else {
-
+		newproto = loader->Load_W3D( cload );
+	}else{
 		/*
 		** Warn user about an unknown chunk type
 		*/
@@ -599,17 +579,13 @@ bool WW3DAssetManager::Load_Prototype(ChunkLoadClass & cload)
 	** Now, see if the prototype that we loaded has a duplicate
 	** name with any of our currently loaded prototypes (can't have that!)
 	*/
-	if (newproto != NULL) {
-
-		if (!Render_Obj_Exists(newproto->Get_Name())) {
-				
+	if( newproto != NULL ){
+		if( !Render_Obj_Exists( newproto->Get_Name() ) ){	
 			/*
 			** Add the new, unique prototype to our list
 			*/
 			Add_Prototype(newproto);
-
-		} else {
-
+		}else{
 			/*
 			** Warn the user about a name collision with this prototype 
 			** and dump it
@@ -619,9 +595,7 @@ bool WW3DAssetManager::Load_Prototype(ChunkLoadClass & cload)
 			newproto = NULL;
 			return false;
 		}
-	
 	} else {
-
 		/*
 		** Warn user that a prototype was not generated from this 
 		** chunk type
@@ -649,19 +623,18 @@ bool WW3DAssetManager::Load_Prototype(ChunkLoadClass & cload)
  * HISTORY:                                                                                    *
  *   12/21/97   GTH : Created.                                                                 *
  *=============================================================================================*/
-RenderObjClass * WW3DAssetManager::Create_Render_Obj(const char * name)
-{
+RenderObjClass* WW3DAssetManager::Create_Render_Obj( const char* name ){
 	WWPROFILE( "WW3DAssetManager::Create_Render_Obj" );
 	WWMEMLOG(MEM_GEOMETRY);
 
 	// Try to find a prototype
-	PrototypeClass * proto = Find_Prototype(name);
+	PrototypeClass* proto = Find_Prototype( name );
 
-	if (WW3D_Load_On_Demand && proto == NULL) {	// If we didn't find one, try to load on demand
+	if( WW3D_Load_On_Demand && proto == NULL ){ // If we didn't find one, try to load on demand
 		AssetStatusClass::Peek_Instance()->Report_Load_On_Demand_RObj(name);
 
 		char filename [MAX_PATH];
-		char *mesh_name = ::strchr (name, '.');
+		char* mesh_name = ::strchr (name, '.');
 		if (mesh_name != NULL) {
 			::lstrcpyn (filename, name, ((int)mesh_name) - ((int)name) + 1);
 			::lstrcat (filename, ".w3d");
@@ -679,9 +652,9 @@ RenderObjClass * WW3DAssetManager::Create_Render_Obj(const char * name)
 		proto = Find_Prototype(name);		// try again
 	}
 
-	if (proto == NULL) {
+	if( proto == NULL ){
 		AssetStatusClass::Peek_Instance()->Report_Missing_RObj(name);
-		return NULL;		// Failed to find a prototype
+		return NULL; // Failed to find a prototype
 	}
 
 	return proto->Create();
@@ -700,10 +673,12 @@ RenderObjClass * WW3DAssetManager::Create_Render_Obj(const char * name)
  * HISTORY:                                                                                    *
  *   12/21/97   GTH : Created.                                                                 *
  *=============================================================================================*/
-bool WW3DAssetManager::Render_Obj_Exists(const char * name)
-{
-	if (Find_Prototype(name) == NULL) return false;
-	else return true;
+bool WW3DAssetManager::Render_Obj_Exists( const char* name ){
+	if( Find_Prototype( name ) == NULL ){
+		return false;
+	}else{
+		return true
+	};
 }
 
 
@@ -918,25 +893,25 @@ HTreeClass *	WW3DAssetManager::Get_HTree(const char * name)
  * HISTORY:                                                                                    *
  *   1/31/2001  NH : Created.                                                                  *
  *=============================================================================================*/
-TextureClass * WW3DAssetManager::Get_Texture(
+TextureClass* WW3DAssetManager::Get_Texture(
 	const char * filename, 
 	TextureClass::MipCountType mip_level_count,
 	WW3DFormat texture_format,
-	bool allow_compression)
-{
+	bool allow_compression
+){
 	WWPROFILE( "WW3DAssetManager::Get_Texture 1" );
 
 	/*
 	** We cannot currently mip-map bumpmaps
 	*/
-	if (texture_format==WW3D_FORMAT_U8V8) {
-		mip_level_count=TextureClass::MIP_LEVELS_1;
+	if( texture_format == WW3D_FORMAT_U8V8 ){
+		mip_level_count = TextureClass::MIP_LEVELS_1;
 	}
 
 	/*
 	** Bail if the user isn't really asking for anything
 	*/
-	if ((filename == NULL) || (strlen(filename) == 0)) {
+	if( (filename == NULL) || (strlen(filename) == 0) ){
 		return NULL;
 	}
 
@@ -1281,8 +1256,7 @@ void	WW3DAssetManager::Release_Unused_Font3DDatas( void )
  * HISTORY:                                                                                    *
  *   6/1/01     BMG : Created.                                                                 *
  *=============================================================================================*/
-FontCharsClass *	WW3DAssetManager::Get_FontChars( const char * name, int point_size, bool is_bold )
-{
+FontCharsClass* WW3DAssetManager::Get_FontChars( const char * name, int point_size, bool is_bold ){
 	WWPROFILE( "WW3DAssetManager::Get_FontChars" );
 
 	// loop through and see if we already have the font chars and we can just return it.
@@ -1314,10 +1288,9 @@ FontCharsClass *	WW3DAssetManager::Get_FontChars( const char * name, int point_s
  * HISTORY:                                                                                    *
  *   6/1/01     BMG : Created.                                                                 *
  *=============================================================================================*/
-void	WW3DAssetManager::Release_All_FontChars( void )
-{
+void WW3DAssetManager::Release_All_FontChars(void){
 	// for each fontchars in the list, get it and release ref it
-	while ( FontCharsList.Count() ) {
+	while( FontCharsList.Count() ){
 		FontCharsList[0]->Release_Ref();
 		FontCharsList.Delete( 0 );
 	}
@@ -1341,12 +1314,10 @@ void	WW3DAssetManager::Release_All_FontChars( void )
  * HISTORY:                                                                                    *
  *   7/28/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void WW3DAssetManager::Register_Prototype_Loader(PrototypeLoaderClass * loader)
-{
-	WWASSERT(loader != NULL);
-	PrototypeLoaders.Add(loader);
+void WW3DAssetManager::Register_Prototype_Loader( PrototypeLoaderClass* loader ){
+	WWASSERT( loader != NULL );
+	PrototypeLoaders.Add( loader );
 }
-
 
 /***********************************************************************************************
  * WW3DAssetManager::Find_Prototype_Loader -- find the loader that handles this chunk type     *
@@ -1362,8 +1333,7 @@ void WW3DAssetManager::Register_Prototype_Loader(PrototypeLoaderClass * loader)
  * HISTORY:                                                                                    *
  *   7/28/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-PrototypeLoaderClass * WW3DAssetManager::Find_Prototype_Loader(int chunk_id)
-{
+PrototypeLoaderClass* WW3DAssetManager::Find_Prototype_Loader( int chunk_id ){
 	for (int i=0; i<PrototypeLoaders.Count(); i++) {
 		PrototypeLoaderClass * loader = PrototypeLoaders[i];
 		if (loader && loader->Chunk_Type() == chunk_id) {
@@ -1372,7 +1342,6 @@ PrototypeLoaderClass * WW3DAssetManager::Find_Prototype_Loader(int chunk_id)
 	}
 	return NULL;
 }
-
 
 /***********************************************************************************************
  * WW3DAssetManager::Add_Prototype -- adds the prototype to the hash table                     *
@@ -1388,8 +1357,7 @@ PrototypeLoaderClass * WW3DAssetManager::Find_Prototype_Loader(int chunk_id)
  *   12/8/98    GTH : Renamed to simply Add_Prototype                                          *
  *   2/19/99    EHC : Now adds the prototype to the prototype list                             *
  *=============================================================================================*/
-void WW3DAssetManager::Add_Prototype(PrototypeClass * newproto)
-{
+void WW3DAssetManager::Add_Prototype( PrototypeClass* newproto ){
 	WWASSERT(newproto != NULL);
 	int hash = CRC_Stringi(newproto->Get_Name()) & PROTOTYPE_HASH_MASK;
 	newproto->NextHash = PrototypeHashTable[hash];
@@ -1397,7 +1365,6 @@ void WW3DAssetManager::Add_Prototype(PrototypeClass * newproto)
 	Prototypes.Add(newproto);
 }
 
-
 /***********************************************************************************************
  * WW3DAssetManager::Remove_Prototype -- Removes all references to the protype.					  *
  *                                                                                             *
@@ -1410,47 +1377,39 @@ void WW3DAssetManager::Add_Prototype(PrototypeClass * newproto)
  * HISTORY:                                                                                    *
  *   02/4/99	 PDS : Created.                                                                 *
  *=============================================================================================*/
-void WW3DAssetManager::Remove_Prototype(PrototypeClass *proto)
-{
+void WW3DAssetManager::Remove_Prototype( PrototypeClass* proto ){
 	WWASSERT(proto != NULL);
-	if (proto != NULL) {
-
-		//
-		// Find the prototype in the hash table.
-		//
-		const char *pname = proto->Get_Name ();
-		bool bfound = false;
-		PrototypeClass *prev = NULL;
-		int hash = CRC_Stringi(pname) & PROTOTYPE_HASH_MASK;				
-		for (PrototypeClass *test = PrototypeHashTable[hash];
-			  (test != NULL) && (bfound == false);
-			  test = test->NextHash) {
+	
+	// Find the prototype in the hash table.
+	const char* pname = proto->Get_Name();
+	bool bfound = false;
+	PrototypeClass *prev = NULL;
+	int hash = CRC_Stringi(pname) & PROTOTYPE_HASH_MASK;				
+	for( PrototypeClass *test = PrototypeHashTable[hash];
+			(test != NULL) && (bfound == false);
+			test = test->NextHash) {
+		
+		// Is this the prototype?
+		if (::stricmp (test->Get_Name(), pname) == 0) {
 			
-			// Is this the prototype?
-			if (::stricmp (test->Get_Name(), pname) == 0) {
-				
-				// Remove this prototype from the linked list for this hash index.
-				if (prev == NULL) {
-					PrototypeHashTable[hash] = test->NextHash;
-				} else {
-					prev->NextHash = test->NextHash;
-				}
-
-				// Success!
-				bfound = true;
+			// Remove this prototype from the linked list for this hash index.
+			if (prev == NULL) {
+				PrototypeHashTable[hash] = test->NextHash;
+			} else {
+				prev->NextHash = test->NextHash;
 			}
 
-			// Remember who our previous entry is
-			prev = test;
+			// Success!
+			bfound = true;
 		}
 
-		// Now remove this from our vector-array of prototypes
-		Prototypes.Delete (proto);
+		// Remember who our previous entry is
+		prev = test;
 	}
 
-	return;
+	// Now remove this from our vector-array of prototypes
+	Prototypes.Delete( proto );
 }
-
 
 /***********************************************************************************************
  * WW3DAssetManager::Remove_Prototype -- Removes all references to the protype.					  *
@@ -1464,24 +1423,18 @@ void WW3DAssetManager::Remove_Prototype(PrototypeClass *proto)
  * HISTORY:                                                                                    *
  *   02/4/99	 PDS : Created.                                                                 *
  *=============================================================================================*/
-void WW3DAssetManager::Remove_Prototype(const char *name)
-{
+void WW3DAssetManager::Remove_Prototype( const char *name ){
 	WWASSERT(name != NULL);
-	if (name != NULL) {
+	
+	// Lookup the prototype by name
+	PrototypeClass *proto = Find_Prototype (name);
+	if (proto != NULL) {
 
-		// Lookup the prototype by name
-		PrototypeClass *proto = Find_Prototype (name);
-		if (proto != NULL) {
-
-			// Remove the prototype from our lists, and free its memory
-			Remove_Prototype (proto);
-			delete proto;
-		}
+		// Remove the prototype from our lists, and free its memory
+		Remove_Prototype (proto);
+		delete proto;
 	}
-
-	return;
 }
-
 
 /***********************************************************************************************
  * WW3DAssetManager::Find_Prototype -- searches the hash table for the prototype               *
@@ -1496,11 +1449,10 @@ void WW3DAssetManager::Remove_Prototype(const char *name)
  *   7/29/98    GTH : Created.                                                                 *
  *   12/8/98    GTH : Renamed to simply Find_Prototype                                         *
  *=============================================================================================*/
-PrototypeClass * WW3DAssetManager::Find_Prototype(const char * name)
-{
+PrototypeClass* WW3DAssetManager::Find_Prototype( const char* name ){
 	// Special case Null render object.  So we always have it...
-	if (stricmp(name,"NULL") == 0) {
-		return &(_NullPrototype);
+	if( stricmp( name, "NULL" ) == 0 ){
+		return &( _NullPrototype );
 	}
 	
 	// Find the prototype

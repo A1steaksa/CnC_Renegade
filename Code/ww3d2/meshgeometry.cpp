@@ -98,15 +98,7 @@
 #include "vp.h"
 
 
-#if (OPTIMIZE_PLANEEQ_RAM)
 static SimpleVecClass<Vector4> _PlaneEQArray(1024);
-#endif
-
-
-#if (OPTIMIZE_VNORM_RAM)
-static SimpleVecClass<Vector3> _VNormArray(1024);
-#endif
-
 
 /***********************************************************************************************
  * MeshGeometryClass::MeshGeometryClass -- Constructor                                         *
@@ -156,7 +148,7 @@ MeshGeometryClass::MeshGeometryClass(void) :
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-MeshGeometryClass::MeshGeometryClass(const MeshGeometryClass & that) :
+MeshGeometryClass::MeshGeometryClass( const MeshGeometryClass& that ) :
 	MeshName(NULL),
 	UserText(NULL),
 	Flags(0),
@@ -252,8 +244,7 @@ MeshGeometryClass::~MeshGeometryClass(void)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshGeometryClass::Reset_Geometry(int polycount,int vertcount)
-{
+void MeshGeometryClass::Reset_Geometry( int polycount, int vertcount ){
 	// Release everything we have and reset to initial state
 	Flags = 0;
 	PolyCount = 0;
@@ -284,13 +275,9 @@ void MeshGeometryClass::Reset_Geometry(int polycount,int vertcount)
 		PolySurfaceType->Clear();
 		Vertex->Clear();
 
-#if (!OPTIMIZE_VNORM_RAM)
 		VertexNorm = NEW_REF(ShareBufferClass<Vector3>,(VertexCount));
 		VertexNorm->Clear();
-#endif
 	}
-
-	return ;
 }
 
 
@@ -306,9 +293,8 @@ void MeshGeometryClass::Reset_Geometry(int polycount,int vertcount)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-const char * MeshGeometryClass::Get_Name(void) const
-{
-	if (MeshName) {
+const char* MeshGeometryClass::Get_Name(void) const {
+	if( MeshName ){
 		return MeshName->Get_Array();
 	} 
 	return NULL;
@@ -327,14 +313,13 @@ const char * MeshGeometryClass::Get_Name(void) const
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshGeometryClass::Set_Name(const char * newname)
-{
-	if (MeshName) {
+void MeshGeometryClass::Set_Name( const char* newname ){
+	if( MeshName ){
 		MeshName->Release_Ref();
 	}
-	if (newname) {
-		MeshName = NEW_REF(ShareBufferClass<char>,(strlen(newname)+1));
-		strcpy(MeshName->Get_Array(),newname);
+	if( newname ){
+		MeshName = NEW_REF( ShareBufferClass<char>, (strlen( newname ) + 1 ) );
+		strcpy( MeshName->Get_Array(), newname );
 	}
 }
 
@@ -416,8 +401,7 @@ void MeshGeometryClass::Get_Bounding_Box(AABoxClass * set_box)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshGeometryClass::Get_Bounding_Sphere(SphereClass * set_sphere)
-{
+void MeshGeometryClass::Get_Bounding_Sphere( SphereClass* set_sphere ){
 	WWASSERT(set_sphere != NULL);
 	set_sphere->Center = BoundSphereCenter;
 	set_sphere->Radius = BoundSphereRadius;
@@ -917,14 +901,14 @@ bool MeshGeometryClass::cast_aabox_z90(AABoxCollisionTestClass & boxtest, const 
 
 	// cast the box against the mesh, using culling if possible
 	bool hit;
-	if (CullTree) {
+	if( CullTree ){
 		hit = CullTree->Cast_AABox(newbox);
-	} else {
+	}else{
 		hit = cast_aabox_brute_force(newbox);
 	}
 
 	// if we hit something, we need to rotate the normal back out of the mesh coordinate system
-	if (hit) {
+	if( hit ){
 		// rotating the normal by 90 degrees about Z
 		float tmp = boxtest.Result->Normal.X;
 		boxtest.Result->Normal.X = -boxtest.Result->Normal.Y;
@@ -1402,15 +1386,9 @@ void MeshGeometryClass::Compute_Bounds(Vector3 * verts)
  * HISTORY:                                                                                    *
  *   6/14/2001  gth : Created.                                                                 *
  *=============================================================================================*/
-Vector3 * MeshGeometryClass::get_vert_normals(void)
-{
-#if (OPTIMIZE_VNORM_RAM)
-	_VNormArray.Uninitialised_Grow(VertexCount);
-	return &(_VNormArray[0]);
-#else
+Vector3* MeshGeometryClass::get_vert_normals(void){
 	WWASSERT(VertexNorm);
 	return VertexNorm->Get_Array();
-#endif
 }
 
 
@@ -1453,20 +1431,9 @@ const Vector3 * MeshGeometryClass::Get_Vertex_Normal_Array(void)
  * HISTORY:                                                                                    *
  *   6/14/2001  gth : Created.                                                                 *
  *=============================================================================================*/
-Vector4 * MeshGeometryClass::get_planes(bool create)
-{
-#if (OPTIMIZE_PLANEEQ_RAM)
-	_PlaneEQArray.Uninitialised_Grow(PolyCount);
-	return &(_PlaneEQArray[0]);
-#else
-	if (create && !PlaneEq) {
-		PlaneEq = NEW_REF(ShareBufferClass<Vector4>,(PolyCount));
-	}
-	if (PlaneEq) {
-		return PlaneEq->Get_Array();
-	}
-	return NULL;
-#endif
+Vector4* MeshGeometryClass::get_planes( bool create ){
+	_PlaneEQArray.Uninitialised_Grow( PolyCount );
+	return &( _PlaneEQArray[0] );
 }
 
 
@@ -1561,8 +1528,7 @@ void MeshGeometryClass::Generate_Culling_Tree(void)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshGeometryClass::Load_W3D(ChunkLoadClass & cload)
-{
+WW3DErrorType MeshGeometryClass::Load_W3D( ChunkLoadClass& cload ){
 	/*
 	** This function will initialize this MeshGeometryClass from the contents of a W3D file.
 	** Note that derived classes need to completely replace this function; only re-using the individual
@@ -1574,13 +1540,13 @@ WW3DErrorType MeshGeometryClass::Load_W3D(ChunkLoadClass & cload)
 	*/
 	cload.Open_Chunk();
 	
-	if (cload.Cur_Chunk_ID() != W3D_CHUNK_MESH_HEADER3) {
+	if( cload.Cur_Chunk_ID() != W3D_CHUNK_MESH_HEADER3 ){
 		WWDEBUG_SAY(("Old format mesh mesh, no longer supported.\n"));
 		goto Error;
 	}
 	
 	W3dMeshHeader3Struct header;
-	if (cload.Read(&header,sizeof(W3dMeshHeader3Struct)) != sizeof(W3dMeshHeader3Struct)) {
+	if( cload.Read(&header,sizeof(W3dMeshHeader3Struct)) != sizeof(W3dMeshHeader3Struct) ){
 		goto Error;
 	}
 	cload.Close_Chunk();
@@ -1669,9 +1635,7 @@ WW3DErrorType MeshGeometryClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	** If this mesh is collideable and no AABTree was in the file, generate one now
 	*/
-	if (	(((W3dAttributes & W3D_MESH_FLAG_COLLISION_TYPE_MASK) >> W3D_MESH_FLAG_COLLISION_TYPE_SHIFT) != 0) &&
-			(CullTree == NULL)) 
-	{
+	if ( ( ( ( W3dAttributes & W3D_MESH_FLAG_COLLISION_TYPE_MASK ) >> W3D_MESH_FLAG_COLLISION_TYPE_SHIFT ) != 0 ) && ( CullTree == NULL ) ){
 		Generate_Culling_Tree();
 	}
 
@@ -1712,35 +1676,35 @@ WW3DErrorType MeshGeometryClass::read_chunks(ChunkLoadClass & cload)
 		*/
 		WW3DErrorType error = WW3D_ERROR_OK;
 
-		switch (cload.Cur_Chunk_ID()) {
+		switch( cload.Cur_Chunk_ID() ){
 
 			case W3D_CHUNK_VERTICES:
-					error = read_vertices(cload);
+					error = read_vertices( cload );
 					break;
 
 			case W3D_CHUNK_SURRENDER_NORMALS:
 			case W3D_CHUNK_VERTEX_NORMALS:
-					error = read_vertex_normals(cload);
+					error = read_vertex_normals( cload );
 					break;
 
 			case W3D_CHUNK_TRIANGLES:
-					error = read_triangles(cload);
+					error = read_triangles( cload );
 					break;
 
 			case W3D_CHUNK_MESH_USER_TEXT:
-					error = read_user_text(cload);
+					error = read_user_text( cload );
 					break;
 			
 			case W3D_CHUNK_VERTEX_INFLUENCES:
-					error = read_vertex_influences(cload);
+					error = read_vertex_influences( cload );
 					break;
 
 			case W3D_CHUNK_VERTEX_SHADE_INDICES:
-					error = read_vertex_shade_indices(cload);
+					error = read_vertex_shade_indices( cload );
 					break;
 
 			case W3D_CHUNK_AABTREE:
-					read_aabtree(cload);
+					read_aabtree( cload );
 					break;
 
 			default:
@@ -1771,8 +1735,7 @@ WW3DErrorType MeshGeometryClass::read_chunks(ChunkLoadClass & cload)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshGeometryClass::read_vertices(ChunkLoadClass & cload)
-{
+WW3DErrorType MeshGeometryClass::read_vertices( ChunkLoadClass& cload ){
 	W3dVectorStruct vert;
 	Vector3 * loc = Vertex->Get_Array();
 	assert(loc);
@@ -1804,10 +1767,9 @@ WW3DErrorType MeshGeometryClass::read_vertices(ChunkLoadClass & cload)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshGeometryClass::read_vertex_normals(ChunkLoadClass & cload)
-{
+WW3DErrorType MeshGeometryClass::read_vertex_normals( ChunkLoadClass& cload ){
 	W3dVectorStruct norm;
-	Vector3 * mdlnorms = get_vert_normals();
+	Vector3* mdlnorms = get_vert_normals();
 	WWASSERT(mdlnorms);
 
 	for (int i=0; i<VertexCount; i++) {
@@ -1834,8 +1796,7 @@ WW3DErrorType MeshGeometryClass::read_vertex_normals(ChunkLoadClass & cload)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshGeometryClass::read_triangles(ChunkLoadClass & cload)
-{
+WW3DErrorType MeshGeometryClass::read_triangles( ChunkLoadClass& cload ){
 	W3dTriStruct tri;
 
 	// cache pointers to various arrays in the surrender mesh
@@ -1953,9 +1914,8 @@ WW3DErrorType MeshGeometryClass::read_vertex_influences(ChunkLoadClass & cload)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshGeometryClass::read_vertex_shade_indices(ChunkLoadClass & cload)
-{
-	uint32 * shade_index = get_shade_indices(true);
+WW3DErrorType MeshGeometryClass::read_vertex_shade_indices( ChunkLoadClass& cload ){
+	uint32* shade_index = get_shade_indices( true );
 	uint32 si;
 
 	for (int i=0; i<Get_Vertex_Count(); i++) {
@@ -1980,8 +1940,7 @@ WW3DErrorType MeshGeometryClass::read_vertex_shade_indices(ChunkLoadClass & cloa
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshGeometryClass::read_aabtree(ChunkLoadClass &cload)
-{
+WW3DErrorType MeshGeometryClass::read_aabtree( ChunkLoadClass& cload ){
 	REF_PTR_RELEASE(CullTree);
 	CullTree = NEW_REF(AABTreeClass,());
 	CullTree->Load_W3D(cload);

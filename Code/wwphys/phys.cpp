@@ -48,18 +48,18 @@ const float SUN_CHECK_DISTANCE = 50.0f;	//If a ray this long doesn't intersect, 
 /*
 ** create_render_obj_from_filename
 */
-RenderObjClass * create_render_obj_from_filename( const char * filename )
-{
-	StringClass	render_obj_name(filename,true);
-	if ( ::strchr( filename, '\\' ) != 0 ) {
+RenderObjClass* create_render_obj_from_filename( const char* filename ){
+	StringClass	render_obj_name( filename, true );
+	if( ::strchr( filename, '\\' ) != 0 ){
 		render_obj_name = ::strrchr( filename, '\\' ) + 1;
 	}
 	render_obj_name.Erase( render_obj_name.Get_Length() - 4, 4 );
 
-	RenderObjClass *model = WW3DAssetManager::Get_Instance()->Create_Render_Obj( render_obj_name );
-	if ( model == NULL ) {
-		WWDEBUG_SAY(("Failed to create %s from %s\n", (const char *)render_obj_name, filename));
+	RenderObjClass* model = WW3DAssetManager::Get_Instance()->Create_Render_Obj( render_obj_name );
+	if( model == NULL ){
+		WWDEBUG_SAY(( "Failed to create %s from %s\n", (const char*) render_obj_name, filename ));
 	}
+
 	return model;
 }
 
@@ -101,42 +101,25 @@ PhysClass::PhysClass(void) :
 	LastVisibleFrame(0),	// JANI TEMP TEST
 	SunStatusLastUpdated(0),
 	StaticLightingCache(NULL)
-#if (UMBRASUPPORT)
-	,UmbraObject(NULL)
-#endif
 {
-#if (UMBRASUPPORT)
-	UmbraObject = new Umbra::Object(UmbraSupport::Peek_Dummy_Sphere());
-	UmbraObject->setUserPointer(this);
-	UmbraSupport::Install_Umbra_Object(this);
-#endif
 }
 
-PhysClass::~PhysClass(void)
-{
-	if (Model) {
+PhysClass::~PhysClass(void){
+	if( Model ){
 		Model->Release_Ref();
 		Model = NULL;
 	}
-	if (StaticLightingCache) {
+
+	if( StaticLightingCache ){
 		delete StaticLightingCache;
 	}
-#if (UMBRASUPPORT)
-	if (UmbraObject) {
-		UmbraSupport::Remove_Umbra_Object(this);
-		UmbraObject->release();
-		UmbraObject = NULL;
-	}
-#endif
 }
 
-void PhysClass::Init(const PhysDefClass & def)
-{
+void PhysClass::Init( const PhysDefClass& def ){
 	Definition = &def;
 	Flags = DEFAULT_FLAGS; 
 	if (!def.ModelName.Is_Empty()) {
-
-		RenderObjClass * model = NULL;
+		RenderObjClass* model = NULL;
 	
 		if (::strchr(def.ModelName, '.') != NULL) {
 			model = ::create_render_obj_from_filename(def.ModelName);
@@ -153,29 +136,35 @@ void PhysClass::Init(const PhysDefClass & def)
 	}
 }
 
-void PhysClass::Set_Model(RenderObjClass * model)		
-{ 
-	PhysicsSceneClass * the_scene = PhysicsSceneClass::Get_Instance();
-	bool in_scene = the_scene->Contains(this);
+void PhysClass::Set_Model( RenderObjClass* model ){ 
+	PhysicsSceneClass* the_scene = PhysicsSceneClass::Get_Instance();
+	bool in_scene = the_scene->Contains( this );
 
-	if (Model) {
+	if( Model ){
 		// If we had an old model, copy the transform
 		if ( model ) {		
 			model->Set_Transform( Model->Get_Transform() );
 		}
-		if (in_scene) Model->Notify_Removed(the_scene);
+		if( in_scene ){
+			Model->Notify_Removed(the_scene);
+		}
 		Model->Release_Ref();
 	}
-	Model = model; 
-	if (Model) {
+	
+	Model = model;
+
+	if( Model ){
 		Model->Add_Ref(); 
-		if (in_scene) Model->Notify_Added(the_scene);
+		if( in_scene ){
+			Model->Notify_Added( the_scene );
+		}
 	}
 
-	if ((Definition != NULL) && (Definition->IsPreLit)) {
-		Enable_Is_Pre_Lit(true);
+	if( ( Definition != NULL ) && ( Definition->IsPreLit ) ){
+		Enable_Is_Pre_Lit( true );
 	}
-	Invalidate_Static_Lighting_Cache ();
+
+	Invalidate_Static_Lighting_Cache();
 }
 	
 void PhysClass::Set_Model_By_Name(const char * model_type_name)
@@ -217,15 +206,14 @@ void PhysClass::Get_Shadow_Blob_Box(AABoxClass * set_obj_space_box)
 	}
 }
 
-void PhysClass::Render(RenderInfoClass & rinfo)
-{ 
-	Push_Effects(rinfo);
+void PhysClass::Render( RenderInfoClass& rinfo ){ 
+	Push_Effects( rinfo );
 
-	if (Model) { 
-		Model->Render(rinfo); 
+	if( Model ){
+		Model->Render( rinfo ); 
 	} 
 
-	Pop_Effects(rinfo);
+	Pop_Effects( rinfo );
 }
 
 void PhysClass::Vis_Render(SpecialRenderInfoClass & rinfo)
@@ -235,9 +223,8 @@ void PhysClass::Vis_Render(SpecialRenderInfoClass & rinfo)
 	}
 }
 
-void PhysClass::Invalidate_Static_Lighting_Cache(void)
-{
-	Set_Flag(STATIC_LIGHTING_DIRTY,true);
+void PhysClass::Invalidate_Static_Lighting_Cache(void){
+	Set_Flag( STATIC_LIGHTING_DIRTY, true );
 }
 
 LightEnvironmentClass * PhysClass::Get_Static_Lighting_Environment(void)
@@ -325,8 +312,7 @@ void PhysClass::Update_Sun_Status(void)
 	Enable_Is_In_The_Sun(sunresult.Fraction == 1.0f);
 }
 
-void PhysClass::Push_Effects(RenderInfoClass & rinfo)
-{
+void PhysClass::Push_Effects( RenderInfoClass& rinfo ){
 	if (!MaterialEffectsOnMe.Is_Empty()) {
 		RefMaterialEffectListIterator iterator(&MaterialEffectsOnMe);
 		for ( ; !iterator.Is_Done() ; iterator.Next()) {
@@ -564,15 +550,13 @@ bool PhysClass::Do_Any_Effects_Suppress_Shadows(void)
 **
 ***********************************************************************************************/
 
-enum 
-{
+enum {
 	PHYSDEF_CHUNK_DEFINITION		= 0x055ffe07,			// parent class data.
 	PHYSDEF_CHUNK_VARIABLES,									// simple variables
 
 	PHYSDEF_VARIABLE_FLAGS			= 0x00,
 	PHYSDEF_VARIABLE_MODELNAME,
 	PHYSDEF_VARIABLE_ISPRELIT,
-
 };
 
 
@@ -583,8 +567,7 @@ PhysDefClass::PhysDefClass(void) :
 	FILENAME_PARAM(PhysDefClass,ModelName, "Westwood 3D Files", ".w3d");
 }
 
-bool PhysDefClass::Is_Valid_Config (StringClass &message)
-{
+bool PhysDefClass::Is_Valid_Config( StringClass& message ){
 	bool retval = true;
 
 	if (ModelName.Is_Empty ()) {
@@ -595,8 +578,7 @@ bool PhysDefClass::Is_Valid_Config (StringClass &message)
 	return retval;
 }
 
-bool PhysDefClass::Save(ChunkSaveClass &csave)
-{
+bool PhysDefClass::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk(PHYSDEF_CHUNK_DEFINITION);
 	DefinitionClass::Save(csave);
 	csave.End_Chunk();
@@ -609,24 +591,22 @@ bool PhysDefClass::Save(ChunkSaveClass &csave)
 
 }
 
-bool PhysDefClass::Load(ChunkLoadClass &cload)
-{
-	while (cload.Open_Chunk()) {
-
-		switch(cload.Cur_Chunk_ID()) {			
-
+bool PhysDefClass::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){			
 			case PHYSDEF_CHUNK_DEFINITION:
 				DefinitionClass::Load(cload);
 				break;
 
 			case PHYSDEF_CHUNK_VARIABLES:
-				WWASSERT(cload.Cur_Chunk_ID() == PHYSDEF_CHUNK_VARIABLES);
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
-						OBSOLETE_MICRO_CHUNK(PHYSDEF_VARIABLE_FLAGS);
-						READ_MICRO_CHUNK_WWSTRING(cload,PHYSDEF_VARIABLE_MODELNAME,ModelName);
-						READ_MICRO_CHUNK(cload,PHYSDEF_VARIABLE_ISPRELIT,IsPreLit);	
+				WWASSERT( cload.Cur_Chunk_ID() == PHYSDEF_CHUNK_VARIABLES );
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
+						OBSOLETE_MICRO_CHUNK( PHYSDEF_VARIABLE_FLAGS );
+						READ_MICRO_CHUNK_WWSTRING( cload, PHYSDEF_VARIABLE_MODELNAME, ModelName );
+						READ_MICRO_CHUNK( cload, PHYSDEF_VARIABLE_ISPRELIT, IsPreLit );
 					}
+
 					cload.Close_Micro_Chunk();
 				}
 				break;
@@ -634,14 +614,14 @@ bool PhysDefClass::Load(ChunkLoadClass &cload)
 
 		cload.Close_Chunk();
 	}
+
 	return true;
 }
 
-bool PhysDefClass::Is_Type(const char * type_name)
-{
-	if (stricmp(type_name,PhysDefClass::Get_Type_Name()) == 0) {
+bool PhysDefClass::Is_Type( const char* type_name ){
+	if( stricmp( type_name, PhysDefClass::Get_Type_Name() ) == 0 ){
 		return true;
-	} else {
+	}else{
 		return false;
 	}
 }

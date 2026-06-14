@@ -58,12 +58,9 @@ class MeshModelClass;
 ** MeshMatDescClass - This class encapsulates all of the material description data for a mesh.
 ** WARNING: The vertex count and polygon count *MUST* be kept in sync with the mesh
 */
-class MeshMatDescClass
-{
+class MeshMatDescClass {
 public:
-
-	enum 
-	{
+	enum {
 		MAX_PASSES = 4,
 		MAX_TEX_STAGES = 2,
 		MAX_COLOR_ARRAYS = 2,
@@ -71,33 +68,50 @@ public:
 	};
 
 	MeshMatDescClass(void);
-	MeshMatDescClass(const MeshMatDescClass & that);
+	MeshMatDescClass( const MeshMatDescClass& that );
 	~MeshMatDescClass(void);
-	void							Reset(int polycount,int vertcount,int passcount);
+	void Reset(int polycount,int vertcount,int passcount);
 	MeshMatDescClass &		operator = (const MeshMatDescClass & that);
 
 	/*
 	** Initialize the alternate material description by copying the default materials
 	** and overriding the entries that exist in the alternate_desc
 	*/
-	void							Init_Alternate(MeshMatDescClass & def_mat_desc,MeshMatDescClass & alternate_desc);
-	bool							Is_Empty(void);
+	void Init_Alternate(MeshMatDescClass & def_mat_desc,MeshMatDescClass & alternate_desc);
+	bool Is_Empty(void);
 
 	/*
 	** Counts, make sure the vertex and polygon counts match the parent mesh.
 	*/
-	void							Set_Pass_Count(int passes)			{ PassCount = passes; }
-	int							Get_Pass_Count(void) const			{ return PassCount; }
-	void							Set_Vertex_Count(int vertcount)	{ VertexCount = vertcount; }
-	int							Get_Vertex_Count(void) const		{ return VertexCount; }
-	void							Set_Polygon_Count(int polycount)	{ PolyCount = polycount; }
-	int							Get_Polygon_Count(void) const		{ return PolyCount; }
+	void Set_Pass_Count( int passes ){
+		PassCount = passes;
+	}
+
+	int Get_Pass_Count(void) const {
+		return PassCount;
+	}
+
+	void Set_Vertex_Count( int vertcount ){
+		VertexCount = vertcount;
+	}
+
+	int Get_Vertex_Count(void) const {
+		return VertexCount;
+	}
+
+	void Set_Polygon_Count( int polycount ){
+		PolyCount = polycount;
+	}
+
+	int Get_Polygon_Count(void) const {
+		return PolyCount;
+	}
 
 	/*
 	** Material Interface
 	*/
 	Vector2 *					Get_UV_Array(int pass,int stage);
-	void							Install_UV_Array(int pass,int stage,Vector2 * uvs,int count);
+	void Install_UV_Array( int pass, int stage, Vector2* uvs, int count );
 	void							Set_UV_Source(int pass,int stage,int sourceindex);
 	int							Get_UV_Source(int pass,int stage);
 
@@ -137,19 +151,32 @@ public:
 	/*
 	** Queries for determining whether this model has per-polygon arrays of Materials, Shaders, or Textures
 	*/
-	bool							Has_Material_Array(int pass) const;
-	bool							Has_Shader_Array(int pass) const;
-	bool							Has_Texture_Array(int pass,int stage) const;
+	bool Has_Material_Array( int pass ) const;
+	bool Has_Shader_Array( int pass ) const;
+	bool Has_Texture_Array( int pass, int stage ) const;
 
 	/*
 	** Determine whether this material description contains data for the specified category
 	*/
-	bool							Has_UV(int pass,int stage)					{ return UVSource[pass][stage] != -1; }
-	bool							Has_Color_Array(int array)					{ return ColorArray[array] != NULL; }
+	bool Has_UV(int pass,int stage){
+		return UVSource[pass][stage] != -1;
+	}
+
+	bool Has_Color_Array( int array ){
+		return ColorArray[array] != NULL;
+	}
 	
-	bool							Has_Texture_Data(int pass,int stage)	{ return (Texture[pass][stage] != NULL) || (TextureArray[pass][stage] != NULL); }
-	bool							Has_Shader_Data(int pass)					{ return (Shader[pass] != NullShader) || (ShaderArray[pass] != NULL); }					
-	bool							Has_Material_Data(int pass)				{ return (Material[pass] != NULL) || (MaterialArray[pass] != NULL); }				
+	bool Has_Texture_Data( int pass, int stage ){
+		return ( Texture[pass][stage] != NULL ) || ( TextureArray[pass][stage] != NULL );
+	}
+
+	bool Has_Shader_Data( int pass ){
+		return ( Shader[pass] != NullShader ) || ( ShaderArray[pass] != NULL );
+	}
+	
+	bool Has_Material_Data( int pass ){
+		return ( Material[pass] != NULL ) || ( MaterialArray[pass] != NULL );
+	}
 
 	/*
 	** "Get" functions for Materials, Textures, and Shaders when there are more than one (per-polygon or per-vertex)
@@ -194,29 +221,29 @@ protected:
 	void							Disable_Backface_Culling(void);
 	void							Delete_Pass(int pass);
 
-	int													PassCount;
-	int													VertexCount;
-	int													PolyCount;	
+	int PassCount;
+	int VertexCount;
+	int PolyCount;	
 
 	// u-v coordinates
-	UVBufferClass *									UV[MAX_UV_ARRAYS];
-	int													UVSource[MAX_PASSES][MAX_TEX_STAGES];
+	UVBufferClass* UV[MAX_UV_ARRAYS];
+	int UVSource[MAX_PASSES][MAX_TEX_STAGES];
 
 	// vertex color arrays, we support two arrays: each can only be used on the 
 	// first pass.
-	ShareBufferClass<unsigned> *					ColorArray[2];	
-	VertexMaterialClass::ColorSourceType		DCGSource[MAX_PASSES];
-	VertexMaterialClass::ColorSourceType		DIGSource[MAX_PASSES];
+	ShareBufferClass<unsigned>* ColorArray[2];	
+	VertexMaterialClass::ColorSourceType DCGSource[MAX_PASSES];
+	VertexMaterialClass::ColorSourceType DIGSource[MAX_PASSES];
 
 	// default textures, shader, vmat
-	TextureClass *										Texture[MAX_PASSES][MAX_TEX_STAGES];
-	ShaderClass											Shader[MAX_PASSES];
-	VertexMaterialClass *							Material[MAX_PASSES];
+	TextureClass* Texture[MAX_PASSES][MAX_TEX_STAGES];
+	ShaderClass Shader[MAX_PASSES];
+	VertexMaterialClass* Material[MAX_PASSES];
 
 	// array textures, shaders, vmats
-	TexBufferClass *									TextureArray[MAX_PASSES][MAX_TEX_STAGES];
-	MatBufferClass *									MaterialArray[MAX_PASSES];
-	ShareBufferClass<ShaderClass> *				ShaderArray[MAX_PASSES];
+	TexBufferClass* TextureArray[MAX_PASSES][MAX_TEX_STAGES];
+	MatBufferClass* MaterialArray[MAX_PASSES];
+	ShareBufferClass<ShaderClass>* ShaderArray[MAX_PASSES];
 
 	friend class MeshModelClass;
 };
@@ -249,8 +276,7 @@ private:
 ** This is a ShareBufferClass of pointers to textures.  Works just like MatBufferClass but with 
 ** TextureClass's...
 */
-class TexBufferClass : public ShareBufferClass < TextureClass * >
-{
+class TexBufferClass : public ShareBufferClass<TextureClass*>{
 public:
 	TexBufferClass(int count) : ShareBufferClass<TextureClass *>(count) { Clear(); }
 	TexBufferClass(const TexBufferClass & that);
@@ -308,8 +334,7 @@ inline Vector2 * MeshMatDescClass::Get_UV_Array(int pass,int stage)
 	return NULL;
 }
 
-inline void MeshMatDescClass::Set_UV_Source(int pass,int stage,int sourceindex)
-{
+inline void MeshMatDescClass::Set_UV_Source( int pass, int stage, int sourceindex ){
 	WWASSERT(pass >= 0);
 	WWASSERT(pass < MAX_PASSES);
 	WWASSERT(stage >= 0);
@@ -335,16 +360,17 @@ inline int MeshMatDescClass::Get_UV_Array_Count(void)
 	return count;
 }
 
-inline Vector2 * MeshMatDescClass::Get_UV_Array_By_Index(int index, bool create)
-{
-	WWASSERT((index >= 0)&&(index < MAX_UV_ARRAYS));
+inline Vector2* MeshMatDescClass::Get_UV_Array_By_Index( int index, bool create ){
+	WWASSERT( (index >= 0) && (index < MAX_UV_ARRAYS) );
 
-	if (create && !UV[index]) {
-		UV[index] = NEW_REF(UVBufferClass,(VertexCount));
+	if( create && !UV[index] ){
+		UV[index] = NEW_REF( UVBufferClass, (VertexCount) );
 	}
-	if (UV[index] != NULL) {
+
+	if( UV[index] != NULL ){
 		return UV[index]->Get_Array();
 	}
+
 	return NULL;
 }
 
@@ -406,34 +432,31 @@ inline unsigned * MeshMatDescClass::Get_DIG_Array(int pass)
 	};
 }
 
-inline void MeshMatDescClass::Set_DCG_Source(int pass,VertexMaterialClass::ColorSourceType source)
-{
+inline void MeshMatDescClass::Set_DCG_Source( int pass, VertexMaterialClass::ColorSourceType source ){
 	DCGSource[pass] = source;
 }
 
-inline void MeshMatDescClass::Set_DIG_Source(int pass,VertexMaterialClass::ColorSourceType source)
-{
+inline void MeshMatDescClass::Set_DIG_Source( int pass, VertexMaterialClass::ColorSourceType source ){
 	DIGSource[pass] = source;
 }
 
-inline VertexMaterialClass::ColorSourceType MeshMatDescClass::Get_DCG_Source(int pass)
-{
+inline VertexMaterialClass::ColorSourceType MeshMatDescClass::Get_DCG_Source( int pass ){
 	return DCGSource[pass];
 }
 
-inline VertexMaterialClass::ColorSourceType MeshMatDescClass::Get_DIG_Source(int pass)
-{
+inline VertexMaterialClass::ColorSourceType MeshMatDescClass::Get_DIG_Source( int pass ){
 	return DIGSource[pass];
 }
 
-inline unsigned * MeshMatDescClass::Get_Color_Array(int index,bool create)
-{
-	if (create && !ColorArray[index]) {
+inline unsigned* MeshMatDescClass::Get_Color_Array( int index, bool create ){
+	if( create && !ColorArray[index] ){
 		ColorArray[index] = NEW_REF(ShareBufferClass<unsigned>,(VertexCount));
 	}
-	if (ColorArray[index]) {
+
+	if( ColorArray[index] ){
 		return ColorArray[index]->Get_Array();
 	}
+
 	return NULL;
 }
 
@@ -475,13 +498,12 @@ inline bool MeshMatDescClass::Has_Texture_Array(int pass,int stage) const
 	return (TextureArray[pass][stage] != NULL);
 }
 
-inline void MeshMatDescClass::Disable_Backface_Culling(void) 
-{
-	for (int pass = 0; pass < PassCount; pass++) {
-		Shader[pass].Set_Cull_Mode(ShaderClass::CULL_MODE_DISABLE);
-		if (ShaderArray[pass]) {
-			for (int tri = 0; tri < ShaderArray[pass]->Get_Count(); tri++) {
-				ShaderArray[pass]->Get_Element(tri).Set_Cull_Mode(ShaderClass::CULL_MODE_DISABLE);
+inline void MeshMatDescClass::Disable_Backface_Culling(void){
+	for( int pass = 0; pass < PassCount; pass++ ){
+		Shader[pass].Set_Cull_Mode( ShaderClass::CULL_MODE_DISABLE );
+		if( ShaderArray[pass] ){
+			for( int tri = 0; tri < ShaderArray[pass]->Get_Count(); tri++ ){
+				ShaderArray[pass]->Get_Element( tri ).Set_Cull_Mode( ShaderClass::CULL_MODE_DISABLE );
 			}
 		}
 	}

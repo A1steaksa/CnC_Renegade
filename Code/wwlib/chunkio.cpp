@@ -49,7 +49,6 @@
 #include <string.h>
 #include <assert.h>
 
-
 /*********************************************************************************************** 
  * ChunkSaveClass::ChunkSaveClass -- Constructor                                               * 
  *                                                                                             * 
@@ -73,7 +72,6 @@ ChunkSaveClass::ChunkSaveClass(FileClass * file) :
 	memset( HeaderStack, 0, sizeof( HeaderStack ) );
 	memset( &MCHeader, 0, sizeof( MCHeader ) );
 }
-
 
 /*********************************************************************************************** 
  * ChunkSaveClass::Begin_Chunk -- Begin a new chunk in the file                                * 
@@ -114,7 +112,6 @@ bool ChunkSaveClass::Begin_Chunk( uint32 id ){
 
 	return true;
 }
-
 
 /*********************************************************************************************** 
  * ChunkSaveClass::End_Chunk -- Close a chunk, computes the size and adds to the header        * 
@@ -158,7 +155,6 @@ bool ChunkSaveClass::End_Chunk(void)
 	return true;
 }
 
-
 /***********************************************************************************************
  * ChunkSaveClass::Begin_Micro_Chunk -- begins a new "micro-chunk"                             *
  *                                                                                             *
@@ -199,7 +195,6 @@ bool ChunkSaveClass::Begin_Micro_Chunk(uint32 id)
 	InMicroChunk = true;
 	return true;
 }
-
 
 /***********************************************************************************************
  * ChunkSaveClass::End_Micro_Chunk -- close a micro-chunk                                      *
@@ -267,7 +262,6 @@ uint32 ChunkSaveClass::Write(const void * buf, uint32 nbytes)
 	return nbytes;
 }
 
-
 /***********************************************************************************************
  * ChunkSaveClass::Write -- write an IOVector2Struct                                           *
  *                                                                                             *
@@ -285,7 +279,6 @@ uint32 ChunkSaveClass::Write(const IOVector2Struct & v)
 	return Write(&v,sizeof(v));
 }
 
-
 /***********************************************************************************************
  * ChunkSaveClass::Write -- write an IOVector3Struct                                           *
  *                                                                                             *
@@ -302,7 +295,6 @@ uint32 ChunkSaveClass::Write(const IOVector3Struct & v)
 {	
 	return Write(&v,sizeof(v));
 }
-
 
 /***********************************************************************************************
  * ChunkSaveClass::Write -- write an IOVector4Struct                                           *
@@ -390,12 +382,12 @@ ChunkLoadClass::ChunkLoadClass( FileClass* file ) :
  * HISTORY:                                                                                    * 
  *   07/17/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-bool ChunkLoadClass::Open_Chunk() {
+bool ChunkLoadClass::Open_Chunk(){
 	// if user didn't close any micro chunks that he opened, bad things could happen
-	assert(InMicroChunk == false);							
+	assert( InMicroChunk == false );
 	
 	// check for stack overflow
-	assert(StackIndex < MAX_STACK_DEPTH-1);
+	assert( StackIndex < MAX_STACK_DEPTH - 1 );
 
 	// if the parent chunk has been completely eaten, return false
 	if( ( StackIndex > 0 ) && ( PositionStack[StackIndex - 1] == HeaderStack[StackIndex - 1].Get_Size() ) ){
@@ -609,12 +601,11 @@ bool ChunkLoadClass::Close_Micro_Chunk(){
 	
 	// seek the file past this micro chunk 
 	if( pos < csize ){
-
-		File->Seek(csize - pos,SEEK_CUR);
+		File->Seek( csize - pos, SEEK_CUR );
 		
 		// update the tracking variables for where we are in the normal chunk.
 		if( StackIndex > 0 ){
-			PositionStack[StackIndex-1] += csize - pos;
+			PositionStack[StackIndex - 1] += csize - pos;
 		}
 	}
 

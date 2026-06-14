@@ -356,7 +356,6 @@ public:
 	static long UserStat2;
 
 private:
-
 	enum {
 		DEFAULT_RESOLUTION_WIDTH = 640,
 		DEFAULT_RESOLUTION_HEIGHT = 480,

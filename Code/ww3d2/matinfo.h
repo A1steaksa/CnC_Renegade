@@ -69,50 +69,51 @@ class MeshMatDescClass;
 ** that the mesh is using.
 **
 ***********************************************************************************************/
-class MaterialInfoClass : public RefCountClass
-{
+class MaterialInfoClass : public RefCountClass {
 public:
-
 	MaterialInfoClass();
-	MaterialInfoClass(const MaterialInfoClass & src);
+	MaterialInfoClass( const MaterialInfoClass& src );
 	~MaterialInfoClass();
-	MaterialInfoClass * Clone(void) const;
+	MaterialInfoClass* Clone(void) const;
 
-	void							Reset(void)									{ Free(); }
-	int							Vertex_Material_Count(void) const	{ return VertexMaterials.Count(); }
-	int							Texture_Count(void) const				{ return Textures.Count(); }
+	void Reset(void){
+		Free();
+	}
 
-	int							Add_Vertex_Material(VertexMaterialClass * vmat);
-	int							Add_Texture(TextureClass * tex);
+	int Vertex_Material_Count(void) const {
+		return VertexMaterials.Count();
+	}
+
+	int Texture_Count(void) const {
+		return Textures.Count();
+	}
+
+	int Add_Vertex_Material( VertexMaterialClass* vmat );
+	int Add_Texture( TextureClass* tex );
 	
-	int							Get_Vertex_Material_Index(const char * name);
-	int							Get_Texture_Index(const char * name);
+	int Get_Vertex_Material_Index( const char* name );
+	int Get_Texture_Index( const char* name );
 
-	VertexMaterialClass *	Get_Vertex_Material(int index);
-	VertexMaterialClass *	Get_Vertex_Material(const char * name);
-	VertexMaterialClass *	Peek_Vertex_Material(int index);
-	VertexMaterialClass *	Peek_Vertex_Material(const char * name);
-	void							Replace_Material(int index, VertexMaterialClass *newMaterial);
-	void							Reset_Texture_Mappers(void);
-	void							Make_Vertex_Materials_Unique(void);
-	bool							Has_Time_Variant_Texture_Mappers(void);
+	VertexMaterialClass* Get_Vertex_Material( int index );
+	VertexMaterialClass* Get_Vertex_Material( const char* name );
+	VertexMaterialClass* Peek_Vertex_Material( int index );
+	VertexMaterialClass* Peek_Vertex_Material( const char* name );
+	void Replace_Material( int index, VertexMaterialClass* newMaterial );
+	void Reset_Texture_Mappers(void);
+	void Make_Vertex_Materials_Unique(void);
+	bool Has_Time_Variant_Texture_Mappers(void);
 
-	TextureClass *				Get_Texture(int index);
-	TextureClass *				Get_Texture(const char * name);
-	TextureClass *				Peek_Texture(int index);
-	TextureClass *				Peek_Texture(const char * name);
-	void							Replace_Texture(int index, TextureClass *newTexture);
-
-//	void							Set_Texture_Reduction_Factor(float trf);
-//	void							Process_Texture_Reduction(void);
+	TextureClass* Get_Texture( int index );
+	TextureClass* Get_Texture( const char* name );
+	TextureClass* Peek_Texture( int index );
+	TextureClass* Peek_Texture( const char* name );
+	void Replace_Texture( int index, TextureClass* newTexture) ;
 
 private:
-
 	void Free(void);
 	
-	DynamicVectorClass<VertexMaterialClass *>		VertexMaterials;
-	DynamicVectorClass<TextureClass *>			Textures;			
-	
+	DynamicVectorClass<VertexMaterialClass*> VertexMaterials;
+	DynamicVectorClass<TextureClass*> Textures;
 };
 
 
@@ -215,16 +216,15 @@ protected:
 	DynamicVectorClass<VertexMaterialClass *> 	VertexMaterials;
 	DynamicVectorClass<TextureClass *> 				Textures;
 
-	ShaderClass												LastShader;
-	VertexMaterialClass *								LastMaterial;
-	TextureClass *											LastTexture;
+	ShaderClass LastShader;
+	VertexMaterialClass* LastMaterial;
+	TextureClass* LastTexture;
 };
 
 
 
-inline int MaterialInfoClass::Add_Vertex_Material(VertexMaterialClass * vmat)
-{
-	if (vmat != NULL) {
+inline int MaterialInfoClass::Add_Vertex_Material( VertexMaterialClass* vmat ){
+	if( vmat != NULL ){
 		vmat->Add_Ref();
 	}
 	int index = VertexMaterials.Count();
@@ -232,8 +232,7 @@ inline int MaterialInfoClass::Add_Vertex_Material(VertexMaterialClass * vmat)
 	return index;
 }
 
-inline int MaterialInfoClass::Get_Vertex_Material_Index(const char * name)
-{
+inline int MaterialInfoClass::Get_Vertex_Material_Index( const char* name ){
 	for (int i=0; i<VertexMaterials.Count(); i++) {
 		if (stricmp(name,VertexMaterials[i]->Get_Name()) == 0) {
 			return i;

@@ -40,12 +40,10 @@
 #include "meshmdl.h"
 #include "texture.h"
 
-MaterialInfoClass::MaterialInfoClass(void)
-{
+MaterialInfoClass::MaterialInfoClass(void){
 }
 
-MaterialInfoClass::MaterialInfoClass(const MaterialInfoClass & src)
-{
+MaterialInfoClass::MaterialInfoClass(const MaterialInfoClass & src){
 	for (int mi=0; mi<src.VertexMaterials.Count(); mi++) {
 		VertexMaterialClass * vmat;
 		vmat = src.VertexMaterials[mi]->Clone();
@@ -60,19 +58,16 @@ MaterialInfoClass::MaterialInfoClass(const MaterialInfoClass & src)
 }
 
 
-MaterialInfoClass::~MaterialInfoClass(void)
-{
+MaterialInfoClass::~MaterialInfoClass(void){
 	Free();
 }
 
 
-MaterialInfoClass * MaterialInfoClass::Clone(void) const
-{ 
+MaterialInfoClass * MaterialInfoClass::Clone(void) const {
 	return new MaterialInfoClass(*this); 
 }
 
-int MaterialInfoClass::Add_Texture(TextureClass * tex)
-{
+int MaterialInfoClass::Add_Texture( TextureClass* tex ){
 	WWASSERT(tex != NULL);
 	tex->Add_Ref();
 	int index = Textures.Count();
@@ -98,25 +93,7 @@ TextureClass * MaterialInfoClass::Get_Texture(int index)
 	return Textures[index];
 }
 
-/*
-
-void MaterialInfoClass::Set_Texture_Reduction_Factor(float trf)
-{
-	for (int i = 0; i < Textures.Count(); i++) {
-		Textures[i]->Set_Reduction_Factor(trf);
-	}
-}
-
-
-void MaterialInfoClass::Process_Texture_Reduction(void)
-{
-	for (int i = 0; i < Textures.Count(); i++) {
-		Textures[i]->Process_Reduction();
-	}
-}
-*/
-void MaterialInfoClass::Free(void) 
-{
+void MaterialInfoClass::Free(void){
 	int i;
 	
 	for (i=0; i<VertexMaterials.Count(); i++) {

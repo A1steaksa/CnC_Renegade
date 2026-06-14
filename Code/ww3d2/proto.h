@@ -82,39 +82,39 @@ class ChunkLoadClass;
 ** Basically this class simply associates a name with a render object 
 ** creation function.
 */
-class PrototypeClass 
-{
-
+class PrototypeClass {
 public:
+	PrototypeClass(void) : NextHash( NULL ){
+	}
 
-	PrototypeClass(void) : NextHash(NULL) {}
-	virtual ~PrototypeClass(void) {};
+	virtual ~PrototypeClass(void){
+	};
 	
-	virtual const char *			Get_Name(void)	const = 0;
-	virtual int						Get_Class_ID(void) const = 0;
-	virtual RenderObjClass *	Create(void) = 0;
+	virtual const char* Get_Name(void) const = 0;
+	virtual int Get_Class_ID(void) const = 0;
+	virtual RenderObjClass* Create(void) = 0;
 
 private:
 
-	PrototypeClass *				NextHash;
+	PrototypeClass* NextHash;
 
 	// Not Implemented
-	PrototypeClass(const PrototypeClass & that);
-	PrototypeClass & operator = (const PrototypeClass & that);
+	PrototypeClass( const PrototypeClass& that );
+	PrototypeClass & operator =( const PrototypeClass& that );
 
 	friend class WW3DAssetManager;
 };
 
-class PrimitivePrototypeClass : public PrototypeClass
-{
+class PrimitivePrototypeClass : public PrototypeClass {
 public:
-	PrimitivePrototypeClass(RenderObjClass * proto);
+	PrimitivePrototypeClass( RenderObjClass* proto );
 	virtual ~PrimitivePrototypeClass(void);
 
-	virtual const char *			Get_Name(void) const;
-	virtual int						Get_Class_ID(void) const;
-	virtual RenderObjClass *	Create(void);
-	RenderObjClass *				Proto;
+	virtual const char* Get_Name(void) const;
+	virtual int Get_Class_ID(void) const;
+	virtual RenderObjClass* Create(void);
+
+	RenderObjClass* Proto;
 };
 
 /*
@@ -123,43 +123,43 @@ public:
 ** chunk type in a W3D file and can load it and create a PrototypeClass
 ** for it.  
 */
-class PrototypeLoaderClass 
-{
-
+class PrototypeLoaderClass {
 public:
+	PrototypeLoaderClass(void){
+	}
 
-	PrototypeLoaderClass(void) {}
-	~PrototypeLoaderClass(void) {}
+	~PrototypeLoaderClass(void){
+	}
 
-	virtual int						Chunk_Type(void) = 0;
-	virtual PrototypeClass *	Load_W3D(ChunkLoadClass & cload) = 0;
+	virtual int Chunk_Type(void) = 0;
+	virtual PrototypeClass* Load_W3D( ChunkLoadClass& cload ) = 0;
 
 private:
-
 	// Not Implemented:
-	PrototypeLoaderClass(const PrototypeLoaderClass & that);
-	PrototypeLoaderClass & operator = (const PrototypeLoaderClass & that);
-
+	PrototypeLoaderClass( const PrototypeLoaderClass& that );
+	PrototypeLoaderClass & operator =( const PrototypeLoaderClass& that );
 };
 
 
 /*
 ** Default Prototype Loaders for Meshes and HModels
 */
-class MeshLoaderClass : public PrototypeLoaderClass
-{
+class MeshLoaderClass : public PrototypeLoaderClass {
 public:
+	virtual int Chunk_Type(void){
+		return W3D_CHUNK_MESH;
+	}
 
-	virtual int						Chunk_Type(void) { return W3D_CHUNK_MESH; }
-	virtual PrototypeClass *	Load_W3D(ChunkLoadClass & cload);
+	virtual PrototypeClass* Load_W3D( ChunkLoadClass& cload );
 };
 
-class HModelLoaderClass : public PrototypeLoaderClass
-{
+class HModelLoaderClass : public PrototypeLoaderClass {
 public:
+	virtual int Chunk_Type(void){
+		return W3D_CHUNK_HMODEL;
+	}
 
-	virtual int						Chunk_Type(void) { return W3D_CHUNK_HMODEL; }
-	virtual PrototypeClass *	Load_W3D(ChunkLoadClass & cload);
+	virtual PrototypeClass* Load_W3D( ChunkLoadClass& cload );
 };
 
 
@@ -169,7 +169,5 @@ public:
 */
 extern MeshLoaderClass			_MeshLoader;
 extern HModelLoaderClass		_HModelLoader;
-
-
 
 #endif

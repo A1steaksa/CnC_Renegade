@@ -82,14 +82,13 @@ class ProxyArrayClass;
 	This is an hierarchical, animatable level-of-detail model.
 
 */
-class HLodClass : public Animatable3DObjClass
-{
+class HLodClass : public Animatable3DObjClass {
 public:
 
-	HLodClass(const HLodClass & src);
-	HLodClass(const char * name,RenderObjClass ** lods,int count);
-	HLodClass(const HLodDefClass & def);
-	HLodClass(const HModelDefClass & def);
+	HLodClass( const HLodClass& src );
+	HLodClass( const char * name, RenderObjClass** lods, int count );
+	HLodClass( const HLodDefClass& def );
+	HLodClass( const HModelDefClass& def );
 
 	HLodClass & operator = (const HLodClass &);
 	virtual ~HLodClass(void);
@@ -97,9 +96,13 @@ public:
 	/////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface - Cloning and Identification
 	/////////////////////////////////////////////////////////////////////////////
-	virtual RenderObjClass *	Clone(void) const;
-	virtual int						Class_ID(void) const										{ return CLASSID_HLOD; }
-	virtual int						Get_Num_Polys(void) const;
+	virtual RenderObjClass* Clone(void) const;
+	
+	virtual int Class_ID(void) const {
+		return CLASSID_HLOD;
+	}
+
+	virtual int Get_Num_Polys(void) const;
 
 	/////////////////////////////////////////////////////////////////////////////
 	// HLod Interface - Editing and information
@@ -207,7 +210,6 @@ public:
 	/////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface - Attributes, Options, Properties, etc
 	/////////////////////////////////////////////////////////////////////////////
-//   virtual void					Set_Texture_Reduction_Factor(float trf);
 	virtual void					Scale(float scale);
 	virtual void					Scale(float scalex, float scaley, float scalez)	{ }
 	virtual int						Get_Num_Snap_Points(void);
@@ -229,67 +231,79 @@ protected:
 protected:
 	
 	
-	class ModelNodeClass 
-	{
+	class ModelNodeClass {
 	public:
-		RenderObjClass *			Model;
-		int							BoneIndex;
-		bool operator == (const ModelNodeClass & that) { return (Model == that.Model) && (BoneIndex == that.BoneIndex); }
-		bool operator != (const ModelNodeClass & that) { return !operator == (that); }
+		RenderObjClass* Model;
+		int BoneIndex;
+		
+		bool operator ==( const ModelNodeClass& that ){
+			return (Model == that.Model) && (BoneIndex == that.BoneIndex);
+		}
+
+		bool operator !=( const ModelNodeClass& that ){
+			return !operator == (that);
+		}
 	};
 
-	class ModelArrayClass : public DynamicVectorClass<ModelNodeClass> 
-	{
+	class ModelArrayClass : public DynamicVectorClass<ModelNodeClass> {
 	public:
-		ModelArrayClass(void) : MaxScreenSize(NO_MAX_SCREEN_SIZE), NonPixelCost(0.0f),
-			PixelCostPerArea(0.0f), BenefitFactor(0.0f) {}
-		float							MaxScreenSize;		// Maximum screen size for this LOD
-		float							NonPixelCost;		// Cost heuristics of LODS (w/o per-pixel cost)
-		float							PixelCostPerArea;	// PixelCostPerArea * area(normalized) + NonPixelCost = total Cost
-		float							BenefitFactor;		// BenefitFactor * area(normalized) = Benefit
+		ModelArrayClass(void) : 
+			MaxScreenSize( NO_MAX_SCREEN_SIZE ),
+			NonPixelCost( 0.0f ),
+			PixelCostPerArea( 0.0f ),
+			BenefitFactor( 0.0f )
+		{
+		}
+
+		float MaxScreenSize;	// Maximum screen size for this LOD
+		float NonPixelCost;		// Cost heuristics of LODS (w/o per-pixel cost)
+		float PixelCostPerArea;	// PixelCostPerArea * area(normalized) + NonPixelCost = total Cost
+		float BenefitFactor;	// BenefitFactor * area(normalized) = Benefit
 	};
 	
 	// Lod Render Objects, basically one of the LOD Models will be rendered. Typically
 	// each model in an HLodModel will be a mesh or a "simple" HLod (one with a single LOD)
-	int								LodCount;
-	int								CurLod;
-	ModelArrayClass *				Lod;
+	int LodCount;
+	int CurLod; 
+	ModelArrayClass* Lod;
 
 	//
 	//	An animating heirarchy can use a hidden CLASSID_OBBOX mesh to represent its bounding
 	// box as it animates.  This is the sub object index of that mesh (if it exists).
 	//
-	int								BoundingBoxIndex;
+	int BoundingBoxIndex;
 
-	float *							Cost;					// Cost array (recalculated every frame) 
-	float *							Value;				// Value array (recalculated every frame)
+	float* Cost;  // Cost array (recalculated every frame) 
+	float* Value; // Value array (recalculated every frame)
 
 	// Additional Models, these models have been linked to one of the bones in this
 	// model.  They are all always rendered.  They can be HLODs themselves in order
 	// to implement switching on sub models.
 	// NOTE: This uses ModelArrayClass for convenience, but MaxScreenSize,
 	// NonPixelCost, PixelCostPerArea, BenefitFactor are not used here.
-	ModelArrayClass				AdditionalModels;
+	ModelArrayClass AdditionalModels;
 
 	// possible array of snap points.
-	SnapPointsClass *				SnapPoints;
+	SnapPointsClass* SnapPoints;
 
 	// possible array of proxy objects (names and bone indexes for application defined usage)
-	ProxyArrayClass *				ProxyArray; 
+	ProxyArrayClass* ProxyArray; 
 
 	// Current LOD Bias (affects recalculation of the Value array)
-	float								LODBias;
+	float LODBias;
 };
 
 
 /*
 ** Loaders for HLodClass
 */
-class HLodLoaderClass : public PrototypeLoaderClass
-{
+class HLodLoaderClass : public PrototypeLoaderClass {
 public:
-	virtual int						Chunk_Type (void)  { return W3D_CHUNK_HLOD; }
-	virtual PrototypeClass *	Load_W3D(ChunkLoadClass & cload);
+	virtual int Chunk_Type(void){
+		return W3D_CHUNK_HLOD;
+	}
+
+	virtual PrototypeClass* Load_W3D( ChunkLoadClass& cload );
 };
 
 
@@ -298,27 +312,30 @@ public:
 ** This description object is generated when reading a W3D_CHUNK_HLOD.  It 
 ** directly describes the contents of an HLod model.
 */
-class HLodDefClass
-{
+class HLodDefClass {
 public:
 
 	HLodDefClass(void);
 	HLodDefClass(HLodClass &src_lod);
 	~HLodDefClass(void);
 
-	WW3DErrorType				Load_W3D(ChunkLoadClass & cload);
-	WW3DErrorType				Save(ChunkSaveClass & csave);
-	const char *				Get_Name(void) const { return Name; }
-	void							Initialize(HLodClass &src_lod);
+	WW3DErrorType Load_W3D( ChunkLoadClass& cload );
+	WW3DErrorType Save( ChunkSaveClass& csave );
+	
+	const char* Get_Name(void) const {
+		return Name;
+	}
+
+	void Initialize( HLodClass& src_lod );
 
 protected:
 
 	/*
 	** Serializtion methods
 	*/
-	WW3DErrorType				Save_Header (ChunkSaveClass &csave);
-	WW3DErrorType				Save_Lod_Array (ChunkSaveClass &csave);
-	WW3DErrorType				Save_Aggregate_Array(ChunkSaveClass & csave);
+	WW3DErrorType Save_Header( ChunkSaveClass& csave );
+	WW3DErrorType Save_Lod_Array( ChunkSaveClass& csave );
+	WW3DErrorType Save_Aggregate_Array( ChunkSaveClass& csave );
 
 private:
 
@@ -328,61 +345,73 @@ private:
 	** a render object which will be exploded when the HLod is constructed (its
 	** sub-objects, if any, will be placed into the HLod).
 	*/
-	class SubObjectArrayClass
-	{
+	class SubObjectArrayClass {
 	public:
 		SubObjectArrayClass(void);
 		~SubObjectArrayClass(void);		
-		void		Reset(void);
-		void		operator = (const SubObjectArrayClass & that);
+		void Reset(void);
+		void operator =( const SubObjectArrayClass& that );
 
-		bool		Load_W3D(ChunkLoadClass & cload);
-		bool		Save_W3D(ChunkSaveClass & csave);
+		bool Load_W3D( ChunkLoadClass& cload );
+		bool Save_W3D( ChunkSaveClass& csave );
 
-		float		MaxScreenSize;
-		int		ModelCount;
-		char **	ModelName;				// array of model names
-		int *		BoneIndex;				// array of bone indices
+		float MaxScreenSize;
+		int ModelCount;
+		char** ModelName; // array of model names
+		int* BoneIndex; // array of bone indices
 	};
 
-	char * 						Name;
-	char *						HierarchyTreeName;
-	int							LodCount;
-	SubObjectArrayClass *	Lod;
-	SubObjectArrayClass		Aggregates;
-	ProxyArrayClass *			ProxyArray;
+	char* Name;
+	char* HierarchyTreeName;
+	int LodCount;
+	SubObjectArrayClass* Lod;
+	SubObjectArrayClass Aggregates;
+	ProxyArrayClass* ProxyArray;
 
-	void							Free(void);
-	bool							read_header(ChunkLoadClass & cload);
-	bool							read_proxy_array(ChunkLoadClass & cload);
+	void Free(void);
+	bool read_header( ChunkLoadClass& cload );
+	bool read_proxy_array( ChunkLoadClass& cload );
 
 	friend class HLodClass;
 };
 
 
+
 /*
 ** Prototype for HLod objects
 */
-class HLodPrototypeClass : public PrototypeClass
-{
+class HLodPrototypeClass : public PrototypeClass {
 public:
-	HLodPrototypeClass( HLodDefClass *def )					{ Definition = def; }
-	virtual ~HLodPrototypeClass(void)							{ delete Definition; }
+	HLodPrototypeClass( HLodDefClass* def ){
+		Definition = def;
+	}
+
+	virtual ~HLodPrototypeClass(void){
+		delete Definition;
+	}
 	
-	virtual const char *			Get_Name(void) const			{ return Definition->Get_Name(); }
-	virtual int						Get_Class_ID(void) const	{ return RenderObjClass::CLASSID_HLOD; }
-	virtual RenderObjClass *	Create(void);
+	virtual const char* Get_Name(void) const {
+		return Definition->Get_Name();
+	}
+
+	virtual int Get_Class_ID(void) const {
+		return RenderObjClass::CLASSID_HLOD;
+	}
+
+	virtual RenderObjClass* Create(void);
 	
-	HLodDefClass *					Get_Definition(void) const	{ return Definition; }
+	HLodDefClass* Get_Definition(void) const {
+		return Definition;
+	}
 
 private:
-	HLodDefClass *					Definition;
+	HLodDefClass* Definition;
 };
 
 /*
 ** Instance of the loaders which the asset manager install
 */
-extern HLodLoaderClass			_HLodLoader;
+extern HLodLoaderClass _HLodLoader;
 
 
 #endif

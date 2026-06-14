@@ -62,8 +62,7 @@ class StringTwiddlerClass;
 //	TDBObjClass
 //
 //////////////////////////////////////////////////////////////////////////
-class TDBObjClass : public PersistClass
-{
+class TDBObjClass : public PersistClass {
 public:
 	
 	//////////////////////////////////////////////////////////////
@@ -90,34 +89,34 @@ public:
 	//
 	// From PersistClass
 	//
-	const PersistFactoryClass &	Get_Factory (void) const;
-	bool									Save (ChunkSaveClass &csave);
-	bool									Load (ChunkLoadClass &cload);
+	const PersistFactoryClass& Get_Factory (void) const;
+	bool Save( ChunkSaveClass& csave );
+	bool Load( ChunkLoadClass& cload );
 
 	//
 	// Copy methods
 	//
-	virtual TDBObjClass *				Clone (void) const					{ return new TDBObjClass (*this); }
+	virtual TDBObjClass* Clone (void) const { return new TDBObjClass (*this); }
 
 	//
 	// TranslateObj specific
 	//
 	virtual const WideStringClass &	Get_String (uint32 lang_id);
 	virtual const WideStringClass &	Get_String (void);
-	virtual const StringClass &		Get_English_String (void)			{ return EnglishString; }
-	virtual uint32							Get_ID (void)							{ return ID; }
-	virtual const StringClass &		Get_ID_Desc (void)					{ return IDDesc; }
-	virtual uint32							Get_Sound_ID (void)					{ return SoundID; }
-	virtual const StringClass &		Get_Animation_Name (void)			{ return AnimationName; }
-	virtual uint32							Get_Category_ID (void)				{ return CategoryID; }
+	virtual const StringClass &		Get_English_String (void){ return EnglishString; }
+	virtual uint32							Get_ID (void){ return ID; }
+	virtual const StringClass &		Get_ID_Desc (void){ return IDDesc; }
+	virtual uint32							Get_Sound_ID (void){ return SoundID; }
+	virtual const StringClass &		Get_Animation_Name (void){ return AnimationName; }
+	virtual uint32							Get_Category_ID (void){ return CategoryID; }
 	
-	virtual void							Set_String (uint32 lang_id, const WCHAR *string);
-	virtual void							Set_English_String (const TCHAR *string);
-	virtual void							Set_ID (uint32 id);
-	virtual void							Set_ID_Desc (const TCHAR *desc);
-	virtual void							Set_Animation_Name (const TCHAR *name)	{ AnimationName = name; }
-	virtual void							Set_Sound_ID (uint32 id)					{ SoundID = id; }
-	virtual void							Set_Category_ID (uint32 id)				{ CategoryID = id; }
+	virtual void Set_String (uint32 lang_id, const WCHAR *string);
+	virtual void Set_English_String (const TCHAR *string);
+	virtual void Set_ID (uint32 id);
+	virtual void Set_ID_Desc (const TCHAR *desc);
+	virtual void Set_Animation_Name (const TCHAR *name){ AnimationName = name; }
+	virtual void Set_Sound_ID (uint32 id){ SoundID = id; }
+	virtual void Set_Category_ID (uint32 id){ CategoryID = id; }
 
 	//
 	//	Informational

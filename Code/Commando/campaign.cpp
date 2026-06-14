@@ -214,7 +214,7 @@ void CampaignManager::Continue( bool success ){
 
 	const char * state_description = CampaignFlowDescriptions[State];
 
-#define	StringMatch(a,b)	(!::strncmp( a,b,strlen(b) ))
+#define	StringMatch( a, b )( !::strncmp( a, b, strlen( b ) ) )
 
 	if ( StringMatch( state_description, "Message " ) ) {
 
@@ -249,9 +249,9 @@ void CampaignManager::Continue( bool success ){
 	} else if ( StringMatch( state_description, "Level " ) ) {
 
 
-		GameModeManager::Find ("Combat")->Suspend();
-		GameModeManager::Find ("Movie")->Deactivate();
-	    GameModeManager::Find ("ScoreScreen")->Deactivate ();
+		GameModeManager::Find( "Combat" )->Suspend();
+		GameModeManager::Find( "Movie" )->Deactivate();
+	    GameModeManager::Find( "ScoreScreen" )->Deactivate ();
 
 		GameInitMgrClass::End_Game();
 

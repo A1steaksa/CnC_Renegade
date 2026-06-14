@@ -78,8 +78,6 @@ MeshModelClass::MeshModelClass(void) :
 	CurMatDesc = DefMatDesc;
 	
 	MatInfo = NEW_REF( MaterialInfoClass, () );
-	
-	return ;
 }
 
 MeshModelClass::MeshModelClass(const MeshModelClass & that) :
@@ -146,8 +144,7 @@ MeshModelClass & MeshModelClass::operator = (const MeshModelClass & that)
 	return * this;
 }
 
-void MeshModelClass::Reset(int polycount,int vertcount,int passcount)
-{
+void MeshModelClass::Reset( int polycount, int vertcount, int passcount ){
 	Reset_Geometry(polycount,vertcount);
 
 	// Release everything we have and reset to initial state
@@ -161,8 +158,6 @@ void MeshModelClass::Reset(int polycount,int vertcount,int passcount)
 
 	delete GapFiller;
 	GapFiller=NULL;
-
-	return ;
 }
 
 void MeshModelClass::Register_For_Rendering()

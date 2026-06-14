@@ -49,8 +49,7 @@
 ** Persist Factory ID's for WWPHYS
 ** NOTE: It is important that *NONE* of these ID's are ever changed!
 */
-enum 
-{
+enum {
 	// Sub-System chunk id's
 	PHYSICS_CHUNKID_STATIC_DATA_SUBSYSTEM		= CHUNKID_WWPHYS_BEGIN,
 	PHYSICS_CHUNKID_STATIC_OBJECTS_SUBSYSTEM,
@@ -117,8 +116,7 @@ enum
 /*
 ** DefinitionClass ClassID's for WWPHYS
 */
-enum
-{
+enum {
 	CLASSID_DECOPHYSDEF								= CLASSID_PHYSICS,
 	CLASSID_HUMANPHYSDEF,
 	CLASSID_MOTORCYCLEDEF,

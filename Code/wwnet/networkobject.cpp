@@ -52,19 +52,15 @@ NetworkObjectClass::NetworkObjectClass(void) :
 	LastObjectIdIGotDamagedBy = -1
 {
 	if( IsServer ) {
-		//
 		//	Assign the object a unique ID. This will happen on the client too during object
 		// imports, but will be corrected immediately with an explicit Set_Network_ID call.
-		//
 		int new_id = NetworkObjectMgrClass::Get_New_Dynamic_ID();
 		Set_Network_ID( new_id );
 	}
 
-	//
 	//	By default, objects have the modifiction dirty bit set.
 	// Static objects therefore don't need to remember to set this in their constructor.
 	// Game objects will set BIT_CREATION.
-	//
 	Clear_Object_Dirty_Bits();
 
 	memset( CachedPriority_2, 0, sizeof( CachedPriority_2 ) );
@@ -117,9 +113,7 @@ NetworkObjectClass::Set_Object_Dirty_Bits (int client_id, BYTE bits)
 //	Get_Object_Dirty_Bit
 //
 ////////////////////////////////////////////////////////////////
-bool
-NetworkObjectClass::Get_Object_Dirty_Bit (int client_id, DIRTY_BIT dirty_bit)
-{
+bool NetworkObjectClass::Get_Object_Dirty_Bit( int client_id, DIRTY_BIT dirty_bit ){
 	return ((ClientStatus[client_id] & dirty_bit) == dirty_bit);
 }
 
@@ -129,20 +123,14 @@ NetworkObjectClass::Get_Object_Dirty_Bit (int client_id, DIRTY_BIT dirty_bit)
 //	Clear_Object_Dirty_Bits
 //
 ////////////////////////////////////////////////////////////////
-void
-NetworkObjectClass::Clear_Object_Dirty_Bits (void)
-{
-	//
-	//	Reset the status for each client
-	//
-	for (int index = 0; index < MAX_CLIENT_COUNT; index ++) {
+void NetworkObjectClass::Clear_Object_Dirty_Bits(void){
+	// Reset the status for each client
+	for( int index = 0; index < MAX_CLIENT_COUNT; index++ ){
 		ClientStatus[index] = 0;
 		UpdateInfo[index].LastUpdateTime = 0;
 		UpdateInfo[index].UpdateRate = 50;
 		UpdateInfo[index].ClientHintCount = 0;
 	}
-
-	return ;
 }
 
 
@@ -151,16 +139,12 @@ NetworkObjectClass::Clear_Object_Dirty_Bits (void)
 //	Set_Object_Dirty_Bit
 //
 ////////////////////////////////////////////////////////////////
-void
-NetworkObjectClass::Set_Object_Dirty_Bit (int client_id, DIRTY_BIT dirty_bit, bool onoff)
-{
-	if (onoff) {
+void NetworkObjectClass::Set_Object_Dirty_Bit( int client_id, DIRTY_BIT dirty_bit, bool onoff ){
+	if( onoff ){
 		ClientStatus[client_id] |= dirty_bit;
 	} else {
 		ClientStatus[client_id] &= (~dirty_bit);
 	}
-
-	return ;
 }
 
 
@@ -169,28 +153,20 @@ NetworkObjectClass::Set_Object_Dirty_Bit (int client_id, DIRTY_BIT dirty_bit, bo
 //	Set_Object_Dirty_Bit
 //
 ////////////////////////////////////////////////////////////////
-void
-NetworkObjectClass::Set_Object_Dirty_Bit (DIRTY_BIT dirty_bit, bool onoff)
-{
-	if (!IsServer)
-	{
+void NetworkObjectClass::Set_Object_Dirty_Bit( DIRTY_BIT dirty_bit, bool onoff ){
+	if( !IsServer ){
 		return;
 	}
 
-	//
-	//	Change the status for each client
+	// Change the status for each client
 	// N.B. Client 0 is actually the server.
-	//
-	for (int index = 1; index < MAX_CLIENT_COUNT; index ++) {//TSS2001
-
-		if (onoff) {
+	for( int index = 1; index < MAX_CLIENT_COUNT; index++ ){ //TSS2001
+		if( onoff ){
 			ClientStatus[index] |= dirty_bit;
 		} else {
 			ClientStatus[index] &= (~dirty_bit);
 		}
 	}
-
-	return ;
 }
 
 bool NetworkObjectClass::Is_Client_Dirty( int client_id ){
@@ -353,130 +329,6 @@ NetworkObjectClass::Set_Update_Rate(int client_id, unsigned short rate)
 	UpdateInfo[client_id].UpdateRate = rate;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-////////////////////////////////////////////////////////////////
-//
-//	Clear_Object_Dirty_Bits
-//
-////////////////////////////////////////////////////////////////
-void
-NetworkObjectClass::Clear_Object_Dirty_Bits (int client_id)
-{
-	ClientStatus[client_id] = 0;
-	return ;
-}
-*/
-
-
-//float		NetworkObjectClass::RandomFloat	= 0.0F;
-		//TSS2001d float perturbation = RandomFloat * 2 * distance - distance;
-/*
-////////////////////////////////////////////////////////////////
-//
-//	Set_Random_Float
-//
-////////////////////////////////////////////////////////////////
-void
-NetworkObjectClass::Set_Random_Float (float random_float)
-{
-	WWASSERT(random_float >= 0 && random_float <= 1);
-
-	RandomFloat = random_float;
-}
-*/
-
-	//Set_Object_Dirty_Bit (BIT_RARE, true);
-
-//float		NetworkObjectClass::MaxDistance	= 300.0F;
-
-////////////////////////////////////////////////////////////////
-//
-//	Compute_Object_Priority
-//
-////////////////////////////////////////////////////////////////
-/*
-float
-NetworkObjectClass::Compute_Object_Priority (int client_id, const Vector3 &client_pos)
-{
-	//
-	// Priority depends on physical distance. Objects with no physical location will
-	// have a priority of 1.
-	//
-	CachedPriority = 0;
-
-	if (Is_Client_Dirty(client_id)) {
-
-		float distance = Get_Object_Distance (client_pos);
-
-		if (distance < MaxDistance)
-		{
-			//
-			// This object is visible to this client.
-			// Add a random perturbation in the range [-distance, distance].
-			//
-			float rand_float = ::rand() / (float) RAND_MAX;
-			float perturbation = rand_float * 2 * distance - distance;
-
-			distance += perturbation;
-		}
-
-		//
-		// Priority simply decreases linearly with distance and is zero at MaxDistance.
-		//
-		CachedPriority = 1 - distance / MaxDistance;
-		CachedPriority	= WWMath::Clamp (CachedPriority, 0.0F, 1.0F);
-	}
-
-	return CachedPriority;
-}
-*/
-
-/*
-float
-NetworkObjectClass::Compute_Object_Priority (int client_id, const Vector3 &client_pos)
-{
-	//
-	// Compute the priority of this object to the given client at his given position.
-	// Priority depends on physical distance. Objects with no physical location will
-	// have a priority of 1.
-	//
-	CachedPriority = 0;
-
-	if (Is_Client_Dirty(client_id)) {
-
-		float distance = Get_Object_Distance (client_pos);
-
-		//
-		// Priority simply decreases linearly with distance and is zero at MaxDistance.
-		//
-		CachedPriority = 1 - distance / MaxDistance;
-		CachedPriority	= WWMath::Clamp (CachedPriority, 0.0F, 1.0F);
-	}
-
-	return CachedPriority;
-}
-*/
 ////////////////////////////////////////////////////////////////
 //
 //	Set_Cached_Priority
@@ -489,42 +341,6 @@ NetworkObjectClass::Set_Cached_Priority (float priority)
 
 	CachedPriority = priority;
 }
-
-
-
-
-/*
-////////////////////////////////////////////////////////////////
-//
-//	Get_Object_Distance
-//
-////////////////////////////////////////////////////////////////
-float
-NetworkObjectClass::Get_Object_Distance (const Vector3 &client_pos)
-{
-	//
-	// Objects without a physical location will return a distance of zero.
-	//
-	float distance = 0;
-
-	//
-	//	Get the object's world position (if it has one)
-	//
-	Vector3 position;
-	if (Get_World_Position (position)) {
-
-		//
-		//	Simple distance calculation based on the distance
-		// between points.
-		//
-		distance = (position - client_pos).Length ();
-	}
-
-	return distance;
-}
-*/
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -588,11 +404,3 @@ int NetworkObjectClass::Get_Clientside_Update_Frequency(void)
 
 	return(ClientsideUpdateRate);
 }
-
-
-#ifdef WWDEBUG
-void NetworkObjectClass::Set_Created_By_Packet_ID (int id)
-{
-	CreatedByPacketID = id;
-}
-#endif //WWDEBUG

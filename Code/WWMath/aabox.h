@@ -182,11 +182,10 @@ public:
  * HISTORY:                                                                                    *
  *   2/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void	AABoxClass::Transform(const Matrix3D & tm)
-{
+WWINLINE void AABoxClass::Transform( const Matrix3D& tm ){
 	Vector3 oldcenter = Center;
 	Vector3 oldextent = Extent;
-	tm.Transform_Center_Extent_AABox(oldcenter,oldextent,&Center,&Extent);
+	tm.Transform_Center_Extent_AABox( oldcenter, oldextent, &Center, &Extent);
 }
 
 

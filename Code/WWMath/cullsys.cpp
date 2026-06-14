@@ -59,8 +59,7 @@ CullableClass::~CullableClass(void)
 	WWASSERT(CullLink == NULL);
 }
 
-void CullableClass::Set_Cull_Box(const AABoxClass & box,bool just_loaded)
-{
+void CullableClass::Set_Cull_Box( const AABoxClass& box,bool just_loaded ){
 	CullBox = box;
 	
 	WWPROFILE("Cullable::Set_Cull_Box");
@@ -69,7 +68,7 @@ void CullableClass::Set_Cull_Box(const AABoxClass & box,bool just_loaded)
 	// culling system.  Use this when you've saved and loaded the linkage 
 	// so you know you're in the right node of the culling system...
 	if (!just_loaded) {
-		CullSystemClass * sys = Get_Culling_System();
+		CullSystemClass* sys = Get_Culling_System();
 		if (sys != NULL) {
 			sys->Update_Culling(this);
 		}

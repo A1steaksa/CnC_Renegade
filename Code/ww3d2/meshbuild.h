@@ -54,15 +54,20 @@
 ** This class provides the mesh builder with information about the world
 ** outside of its mesh.
 */
-class WorldInfoClass
-{
+class WorldInfoClass {
 	public:
-		WorldInfoClass(void)				{ }
-		virtual ~WorldInfoClass(void)	{ }
+		WorldInfoClass(void){
+		}
+
+		virtual ~WorldInfoClass(void){			
+		}
 
 		// Public methods		
-		virtual Vector3	Get_Shared_Vertex_Normal (Vector3 pos, int smgroup) = 0;
-		virtual bool		Are_Meshes_Smoothed (void) const { return true; }
+		virtual Vector3	Get_Shared_Vertex_Normal( Vector3 pos, int smgroup ) = 0;
+		
+		virtual bool Are_Meshes_Smoothed(void) const {
+			return true;
+		}
 };
 
 /*
@@ -86,11 +91,8 @@ class WorldInfoClass
 ** variety of different applications which are built on completely different
 ** code-bases.  Do not introduce dependencies into this module lightly! :-)
 */
-class MeshBuilderClass
-{
-
+class MeshBuilderClass {
 public:
-
 	enum {
 		STATE_ACCEPTING_INPUT = 0,		// mesh builder is accepting input triangles
 		STATE_MESH_PROCESSED,			// mesh builder has processed the mesh
@@ -102,32 +104,32 @@ public:
 	/*
 	** Constructor, Destructor
 	*/
-	MeshBuilderClass(int pass_count=1,int face_count_guess=255,int face_count_growth_rate=64);
+	MeshBuilderClass( int pass_count = 1, int face_count_guess = 255, int face_count_growth_rate = 64 );
 	~MeshBuilderClass(void);
 
 	/*
 	** VertClass.  The MeshBuilder deals with vertices in this format.  
 	*/
-	class VertClass
-	{
+	class VertClass {
 	public:
-		VertClass(void)		{ Reset(); } 
-		void						Reset(void);
+		VertClass(void){
+			Reset();
+		}
+		void Reset(void);
 
 	public:
+		Vector3 Position;	// Position of the vertex
+		Vector3 Normal;		// Vertex normal (can be calculated by mesh builder)
+		int SmGroup;		// Smoothing group of the face this vertex was submitted with
+		int Id; 			// Id of the vertex, must match for vert to be welded, ok at zero if you don't care
+		int BoneIndex;		// Bone influence if the mesh is a skin
 
-		Vector3					Position;			// position of the vertex
-		Vector3					Normal;				// vertex normal (can be calculated by mesh builder)
-		int						SmGroup;				// smoothing group of the face this vertex was submitted with
-		int						Id;					// id of the vertex, must match for vert to be welded, ok at zero if you don't care
-		int						BoneIndex;			// bone influence if the mesh is a skin
-
-		int						MaxVertColIndex;	// Index into the Max mesh.vertCol array of this vertex.
+		int MaxVertColIndex;	// Index into the Max mesh.vertCol array of this vertex.
 		
-		Vector2					TexCoord[MAX_PASSES][MAX_STAGES];				
-		Vector3					DiffuseColor[MAX_PASSES];			// diffuse color
-		Vector3					SpecularColor[MAX_PASSES];			// specular color
-		Vector3					DiffuseIllumination[MAX_PASSES];	// pre-calced diffuse illum
+		Vector2 TexCoord[MAX_PASSES][MAX_STAGES];				
+		Vector3 DiffuseColor[MAX_PASSES];			// diffuse color
+		Vector3 SpecularColor[MAX_PASSES];			// specular color
+		Vector3 DiffuseIllumination[MAX_PASSES];	// pre-calced diffuse illum
 		float						Alpha[MAX_PASSES];					// alpha
 		int						VertexMaterialIndex[MAX_PASSES];	// vertex material index
 
@@ -136,11 +138,10 @@ public:
 
 		// These values are set up by the mesh builder:
 
-		int						SharedSmGroup;		// smooth bits that were on in all faces that contributed to this final vertex
-		int						UniqueIndex;		// used internally!
-		int						ShadeIndex;			// used internally!
-		VertClass *				NextHash;			// used internally!
-	
+		int SharedSmGroup;	// smooth bits that were on in all faces that contributed to this final vertex
+		int UniqueIndex;	// used internally!
+		int ShadeIndex;		// used internally!
+		VertClass * NextHash;	// used internally!
 	};
 
 	/*
@@ -148,30 +149,39 @@ public:
 	** top half of the struct and the builder will fill in the bottom (vertex indices, normal,
 	** and distance).
 	*/
-	class FaceClass
-	{
+	class FaceClass {
 	public:
-		FaceClass(void)		{ Reset(); }
-		void						Reset(void);									// reset this face
+		FaceClass(void){
+			Reset();
+		}
+
+		void Reset(void); // reset this face
 		
 	public:
-		VertClass				Verts[3];										// array of 3 verts
-		int						SmGroup;											// smoothing group
-		int						Index;											// user-set index of the face
-		int						Attributes;										// user-set attributes
-		int						TextureIndex[MAX_PASSES][MAX_STAGES];	// texture to use for each pass
-		int						ShaderIndex[MAX_PASSES];					// shader for each pass
-		uint32					SurfaceType;									// surface type identifier
+		VertClass Verts[3];	 // array of 3 verts
+		int SmGroup;	 	 // smoothing group
+		int Index;		 	 // user-set index of the face
+		int Attributes;	 	 // user-set attributes
+		int TextureIndex[MAX_PASSES][MAX_STAGES];	// texture to use for each pass
+		int ShaderIndex[MAX_PASSES];				// shader for each pass
+		uint32 SurfaceType;  // surface type identifier
 
-		int						AddIndex;			// set by builder: index of addition
-		int						VertIdx[3];			// set by builder: "optimized" vertex indices
-		Vector3					Normal;		 		// set by builder: Face normal
-		float32					Dist;			 		// set by builder: Plane distance
+		int AddIndex;	 // set by builder: index of addition
+		int VertIdx[3];	 // set by builder: "optimized" vertex indices
+		Vector3 Normal;	 // set by builder: Face normal
+		float32 Dist;	 // set by builder: Plane distance
 	
-		void						Compute_Plane(void);
-		bool						operator != (const FaceClass & that)		{ return !(*this == that); }
-		bool						operator == (const FaceClass & /*that*/)	{ return false; }
-		bool						Is_Degenerate(void);
+		void Compute_Plane(void);
+		
+		bool operator != (const FaceClass & that){
+			return !(*this == that);
+		}
+
+		bool operator ==( const FaceClass& /*that*/ ){
+			return false;
+		}
+
+		bool Is_Degenerate(void);
 
 		friend class MeshBuilderClass;
 	};
@@ -182,9 +192,9 @@ public:
 	** 3. Submit each face in the form of a FaceClass, set only the fields you need (leave others at default)
 	** 4. Call Build_Mesh
 	*/ 
-	void							Reset(int pass_count,int face_count_guess,int face_count_growth_rate);
-	int							Add_Face(const FaceClass & face);
-	void							Build_Mesh(bool compute_normals);
+	void Reset( int pass_count, int face_count_guess, int face_count_growth_rate );
+	int Add_Face( const FaceClass& face );
+	void Build_Mesh( bool compute_normals );
 
 	/*
 	** Optional controls: 
@@ -194,7 +204,7 @@ public:
 	** Sort_Vertices can be used to order the vertices arbitrarily.  I use it to
 	** sort them according to the bone they are attached for skin meshes.
 	*/
-	void							Set_Polygon_Ordering_Channel(int pass,int texstage);
+	void Set_Polygon_Ordering_Channel( int pass, int texstage );
 	
 	/*
 	** To use the results:
@@ -235,8 +245,7 @@ public:
 	** Mesh Stats, mainly lots of flags for whether this mesh has various 
 	** channels of information.
 	*/
-	struct MeshStatsStruct
-	{
+	struct MeshStatsStruct {
 		void		Reset(void);
 
 		bool		HasTexture[MAX_PASSES][MAX_STAGES];				// has at least one texture in given pass/stage

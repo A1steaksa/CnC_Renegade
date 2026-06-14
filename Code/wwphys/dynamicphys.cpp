@@ -86,35 +86,15 @@ DynamicPhysClass::~DynamicPhysClass(void)
 {
 }
 
-void DynamicPhysClass::Init(const DynamicPhysDefClass & definition)
-{
+void DynamicPhysClass::Init( const DynamicPhysDefClass& definition ){
 	PhysClass::Init(definition);	
 }
 
-void DynamicPhysClass::Set_Model(RenderObjClass * model)
-{
+void DynamicPhysClass::Set_Model( RenderObjClass* model ){
 	PhysClass::Set_Model(model);
-
-#if (UMBRASUPPORT)
-	if (model != NULL) {
-		/*
-		** Create a new test-model for the bounding box of this object
-		*/
-		AABoxClass obj_box;
-		model->Get_Obj_Space_Bounding_Box(obj_box);
-		
-		/*
-		** Insert it into our Umbra object
-		*/
-		WWASSERT(UmbraObject);
-		UmbraObject->setTestModel(UmbraSupport::Create_Box_Model(obj_box));
-		UmbraObject->setCost(100000,100000,5);
-	}
-#endif
 }
 
-void DynamicPhysClass::Update_Visibility_Status(void)
-{
+void DynamicPhysClass::Update_Visibility_Status(void){
 	/*
 	** Invalidate our cached vis object ID
 	*/
@@ -126,9 +106,8 @@ void DynamicPhysClass::Update_Visibility_Status(void)
 	Invalidate_Static_Lighting_Cache();
 }
 
-int DynamicPhysClass::Get_Vis_Object_ID(void)
-{
-	if (DirtyVisObjectID) {
+int DynamicPhysClass::Get_Vis_Object_ID(void){
+	if( DirtyVisObjectID ){
 		Internal_Update_Visibility_Status();
 	}
 	return VisObjectID;
@@ -221,51 +200,44 @@ void DynamicPhysClass::On_Post_Load(void)
 **
 ***********************************************************************************************/
 
-enum 
-{
-	DYNAMICPHYSDEF_CHUNK_PHYSDEF	= 813001104,			// parent class data.
+enum {
+	DYNAMICPHYSDEF_CHUNK_PHYSDEF = 813001104, // parent class data.
 };
 
 
-DynamicPhysDefClass::DynamicPhysDefClass(void)
-{
+DynamicPhysDefClass::DynamicPhysDefClass(void){
 }
 
-bool DynamicPhysDefClass::Is_Valid_Config(StringClass &message)
-{
-	return PhysDefClass::Is_Valid_Config(message);
+bool DynamicPhysDefClass::Is_Valid_Config( StringClass& message ){
+	return PhysDefClass::Is_Valid_Config( message );
 }
 
-bool DynamicPhysDefClass::Is_Type(const char * type_name)
-{
-	if (stricmp(type_name,DynamicPhysDefClass::Get_Type_Name()) == 0) {
+bool DynamicPhysDefClass::Is_Type( const char* type_name ){
+	if( stricmp( type_name, DynamicPhysDefClass::Get_Type_Name() ) == 0 ){
 		return true;
-	} else {
-		return PhysDefClass::Is_Type(type_name);
+	}else{
+		return PhysDefClass::Is_Type( type_name );
 	}
 }
 
-bool DynamicPhysDefClass::Save(ChunkSaveClass &csave)
-{
-	csave.Begin_Chunk(DYNAMICPHYSDEF_CHUNK_PHYSDEF);
-	PhysDefClass::Save(csave);
+bool DynamicPhysDefClass::Save( ChunkSaveClass& csave ){
+	csave.Begin_Chunk( DYNAMICPHYSDEF_CHUNK_PHYSDEF );
+	PhysDefClass::Save( csave );
 	csave.End_Chunk();
 	return true;
 }
 
-bool DynamicPhysDefClass::Load(ChunkLoadClass &cload)
-{
-	while (cload.Open_Chunk()) {
-
-		switch(cload.Cur_Chunk_ID()) {			
-
+bool DynamicPhysDefClass::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){			
 			case DYNAMICPHYSDEF_CHUNK_PHYSDEF:
-				PhysDefClass::Load(cload);
+				PhysDefClass::Load( cload );
 				break;
 		}
 
 		cload.Close_Chunk();
 	}
+
 	return true;
 }
 

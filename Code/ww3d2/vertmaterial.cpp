@@ -69,21 +69,20 @@ VertexMaterialClass::VertexMaterialClass(void):
 {
 	int i;
 
-	for (i=0; i<MeshBuilderClass::MAX_STAGES; i++)
-	{
-		Mapper[i]=NULL;		
+	for( i = 0; i < MeshBuilderClass::MAX_STAGES; i++ ){
+		Mapper[i]=NULL;
 		UVSource[i] = i;
 	}	
 
-	Material=new D3DMATERIAL8;
-	memset(Material,0,sizeof(D3DMATERIAL8));
-	Set_Ambient(1.0f,1.0f,1.0f);
-	Set_Diffuse(1.0f,1.0f,1.0f);
+	Material = new D3DMATERIAL8;
+	memset( Material, 0, sizeof(D3DMATERIAL8) );
+	Set_Ambient( 1.0f, 1.0f, 1.0f );
+	Set_Diffuse( 1.0f, 1.0f, 1.0f );
 
-	Set_Opacity(1.0f);
+	Set_Opacity( 1.0f );
 }
 
-VertexMaterialClass::VertexMaterialClass(const VertexMaterialClass & src) :
+VertexMaterialClass::VertexMaterialClass( const VertexMaterialClass& src ) :
 	Material(NULL),
 	Flags(src.Flags),
 	AmbientColorSource(src.AmbientColorSource),
@@ -95,32 +94,28 @@ VertexMaterialClass::VertexMaterialClass(const VertexMaterialClass & src) :
 	CRCDirty(true)
 {
 	int i;
-	for (i=0; i<MeshBuilderClass::MAX_STAGES; i++)
-	{
-		Mapper[i]=NULL;
-		if (src.Mapper[i])
-		{
-			TextureMapperClass *mapper=src.Mapper[i]->Clone();
-			Set_Mapper(mapper,i);
+	for( i = 0; i < MeshBuilderClass::MAX_STAGES; i++ ){
+		Mapper[i] = NULL;
+		if( src.Mapper[i] ){
+			TextureMapperClass* mapper = src.Mapper[i]->Clone();
+			Set_Mapper( mapper, i );
 			mapper->Release_Ref();
 		}
 
 		UVSource[i] = src.UVSource[i];
 	}	
 
-	Material=new D3DMATERIAL8;
+	Material = new D3DMATERIAL8;
 	memcpy(Material,src.Material,sizeof(D3DMATERIAL8));
 }
 
-void VertexMaterialClass::Make_Unique()
-{
-	CRCDirty=true;
-	UniqueID=unique;
+void VertexMaterialClass::Make_Unique(){
+	CRCDirty = true;
+	UniqueID = unique;
 	unique++;
 }
 
-VertexMaterialClass::~VertexMaterialClass(void)
-{
+VertexMaterialClass::~VertexMaterialClass(void){
 	int i;
 
 	for (i=0; i<MeshBuilderClass::MAX_STAGES; i++)
@@ -135,10 +130,8 @@ VertexMaterialClass::~VertexMaterialClass(void)
 	delete Material;
 }
 
-VertexMaterialClass & VertexMaterialClass::operator = (const VertexMaterialClass &src)
-{	
-
-	if (this != &src) {
+VertexMaterialClass & VertexMaterialClass::operator =( const VertexMaterialClass& src ){
+	if( this != &src ){
 		Name=src.Name;
 		Flags = src.Flags;
 		AmbientColorSource = src.AmbientColorSource;
@@ -168,12 +161,8 @@ VertexMaterialClass & VertexMaterialClass::operator = (const VertexMaterialClass
 	return *this;
 }
 
-unsigned long VertexMaterialClass::Compute_CRC(void) const
-{
+unsigned long VertexMaterialClass::Compute_CRC(void) const {
 	unsigned long crc = 0;
-	
-// don't include the name when determining whether two vertex materials match
-//	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(Name.Peek_Buffer()),sizeof(char)*strlen(Name),crc);
 
 	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(Material),sizeof(D3DMATERIAL8),crc);
 	crc = CRC_Memory(reinterpret_cast<const unsigned char *>(&Flags),sizeof(Flags),crc);
@@ -195,10 +184,9 @@ unsigned long VertexMaterialClass::Compute_CRC(void) const
 
 // Ambient Get and Sets
 
-void VertexMaterialClass::Get_Ambient(Vector3 * set) const
-{
+void VertexMaterialClass::Get_Ambient( Vector3* set ) const {
 	assert(set); 
-	*set=Vector3(Material->Ambient.r,Material->Ambient.g,Material->Ambient.b);
+	*set = Vector3( Material->Ambient.r, Material->Ambient.g, Material->Ambient.b );
 }
 
 void VertexMaterialClass::Set_Ambient(const Vector3 & color)
@@ -209,12 +197,11 @@ void VertexMaterialClass::Set_Ambient(const Vector3 & color)
 	Material->Ambient.b=color.Z;	
 }
 
-void VertexMaterialClass::Set_Ambient(float r,float g,float b)
-{
+void VertexMaterialClass::Set_Ambient( float r, float g, float b ){
 	CRCDirty=true;
-	Material->Ambient.r=r;
-	Material->Ambient.g=g;
-	Material->Ambient.b=b;	
+	Material->Ambient.r = r;
+	Material->Ambient.g = g;
+	Material->Ambient.b = b;	
 }
 
 // Diffuse Get and Sets
@@ -312,74 +299,58 @@ void	VertexMaterialClass::Set_Opacity(float o)
 	Material->Diffuse.a=o;
 }
 
-void	VertexMaterialClass::Set_Ambient_Color_Source(ColorSourceType src)
-{
-	CRCDirty=true;
-	switch (src) 
-	{
-	case	COLOR1:		AmbientColorSource = D3DMCS_COLOR1; break;
-	case	COLOR2:		AmbientColorSource = D3DMCS_COLOR2; break;
-	default:				AmbientColorSource = D3DMCS_MATERIAL; break;
+void VertexMaterialClass::Set_Ambient_Color_Source( ColorSourceType src ){
+	CRCDirty = true;
+	switch( src ){
+		case COLOR1: AmbientColorSource = D3DMCS_COLOR1; break;
+		case COLOR2: AmbientColorSource = D3DMCS_COLOR2; break;
+		default: AmbientColorSource = D3DMCS_MATERIAL; break;
 	}
 }
 
-void	VertexMaterialClass::Set_Emissive_Color_Source(ColorSourceType src)
-{
-	CRCDirty=true;
-	switch (src) 
-	{
-	case	COLOR1:		EmissiveColorSource = D3DMCS_COLOR1; break;
-	case	COLOR2:		EmissiveColorSource = D3DMCS_COLOR2; break;
-	default:				EmissiveColorSource = D3DMCS_MATERIAL; break;
+void VertexMaterialClass::Set_Emissive_Color_Source( ColorSourceType src ){
+	CRCDirty = true;
+	switch( src ){
+		case COLOR1: EmissiveColorSource = D3DMCS_COLOR1; break;
+		case COLOR2: EmissiveColorSource = D3DMCS_COLOR2; break;
+		default: EmissiveColorSource = D3DMCS_MATERIAL; break;
 	}
 }
 
-void	VertexMaterialClass::Set_Diffuse_Color_Source(ColorSourceType src)
-{
-	CRCDirty=true;
-	switch (src) 
-	{
-	case	COLOR1:		DiffuseColorSource = D3DMCS_COLOR1; break;
-	case	COLOR2:		DiffuseColorSource = D3DMCS_COLOR2; break;
-	default:				DiffuseColorSource = D3DMCS_MATERIAL; break;
+void VertexMaterialClass::Set_Diffuse_Color_Source( ColorSourceType src ){
+	CRCDirty = true;
+	switch( src ){
+		case COLOR1: DiffuseColorSource = D3DMCS_COLOR1; break;
+		case COLOR2: DiffuseColorSource = D3DMCS_COLOR2; break;
+		default: DiffuseColorSource = D3DMCS_MATERIAL; break;
 	}
 }
 
-VertexMaterialClass::ColorSourceType 
-VertexMaterialClass::Get_Ambient_Color_Source(void)
-{
-	switch(AmbientColorSource) 
-	{
-	case D3DMCS_COLOR1:	return COLOR1;
-	case D3DMCS_COLOR2:	return COLOR2;
-	default:					return MATERIAL;
+VertexMaterialClass::ColorSourceType VertexMaterialClass::Get_Ambient_Color_Source(void){
+	switch( AmbientColorSource ){
+		case D3DMCS_COLOR1:	return COLOR1;
+		case D3DMCS_COLOR2:	return COLOR2;
+		default: return MATERIAL;
 	}
 }	
 
-VertexMaterialClass::ColorSourceType 
-VertexMaterialClass::Get_Emissive_Color_Source(void)
-{
-	switch(EmissiveColorSource) 
-	{
-	case D3DMCS_COLOR1:	return COLOR1;
-	case D3DMCS_COLOR2:	return COLOR2;
-	default:					return MATERIAL;
+VertexMaterialClass::ColorSourceType VertexMaterialClass::Get_Emissive_Color_Source(void){
+	switch( EmissiveColorSource ){
+		case D3DMCS_COLOR1:	return COLOR1;
+		case D3DMCS_COLOR2:	return COLOR2;
+		default: return MATERIAL;
 	}
 }	
 
-VertexMaterialClass::ColorSourceType	
-VertexMaterialClass::Get_Diffuse_Color_Source(void)
-{
-	switch(DiffuseColorSource) 
-	{
-	case D3DMCS_COLOR1:	return COLOR1;
-	case D3DMCS_COLOR2:	return COLOR2;
-	default:					return MATERIAL;
+VertexMaterialClass::ColorSourceType VertexMaterialClass::Get_Diffuse_Color_Source(void){
+	switch( DiffuseColorSource ){
+		case D3DMCS_COLOR1:	return COLOR1;
+		case D3DMCS_COLOR2:	return COLOR2;
+		default: return MATERIAL;
 	}
 }
 
-void VertexMaterialClass::Set_UV_Source(int stage,int array_index)
-{
+void VertexMaterialClass::Set_UV_Source( int stage, int array_index ){
 	WWASSERT(stage >= 0);
 	WWASSERT(stage < MeshBuilderClass::MAX_STAGES);
 	WWASSERT(array_index >= 0);
@@ -388,8 +359,7 @@ void VertexMaterialClass::Set_UV_Source(int stage,int array_index)
 	UVSource[stage] = array_index;
 }
 
-int VertexMaterialClass::Get_UV_Source(int stage)
-{
+int VertexMaterialClass::Get_UV_Source( int stage ){
 	WWASSERT(stage >= 0);
 	WWASSERT(stage < MeshBuilderClass::MAX_STAGES);
 	return UVSource[stage];
@@ -424,8 +394,7 @@ void VertexMaterialClass::Init_From_Material3(const W3dMaterial3Struct & mat3)
 	Set_Opacity(mat3.Opacity);
 }
 
-WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
-{
+WW3DErrorType VertexMaterialClass::Load_W3D( ChunkLoadClass& cload ){
 	char name[256];
 
 	W3dVertexMaterialStruct vmat;
@@ -436,15 +405,15 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 	unsigned int mapping0_arg_len = 0U;
 	unsigned int mapping1_arg_len = 0U;
 
-	while (cload.Open_Chunk()) {
-		switch (cload.Cur_Chunk_ID()) {
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case W3D_CHUNK_VERTEX_MATERIAL_NAME:
-				cload.Read(&name,cload.Cur_Chunk_Length());
+				cload.Read( &name, cload.Cur_Chunk_Length() );
 				hasname = true;
 				break;
 
 			case W3D_CHUNK_VERTEX_MATERIAL_INFO:
-				if (cload.Read(&vmat,sizeof(vmat)) != sizeof(vmat)) {
+				if( cload.Read( &vmat, sizeof(vmat) ) != sizeof(vmat) ){
 					return WW3D_ERROR_LOAD_FAILED;
 				}
 				break;
@@ -452,7 +421,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			case W3D_CHUNK_VERTEX_MAPPER_ARGS0:
 				mapping0_arg_len = cload.Cur_Chunk_Length();
 				mapping0_arg_buffer = new char[mapping0_arg_len];
-				if (cload.Read(mapping0_arg_buffer, mapping0_arg_len) != mapping0_arg_len) {
+				if( cload.Read( mapping0_arg_buffer, mapping0_arg_len ) != mapping0_arg_len ){
 					return WW3D_ERROR_LOAD_FAILED;
 				}
 				break;
@@ -460,7 +429,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			case W3D_CHUNK_VERTEX_MAPPER_ARGS1:
 				mapping1_arg_len = cload.Cur_Chunk_Length();
 				mapping1_arg_buffer = new char[mapping1_arg_len];
-				if (cload.Read(mapping1_arg_buffer, mapping1_arg_len) != mapping1_arg_len) {
+				if( cload.Read( mapping1_arg_buffer, mapping1_arg_len ) != mapping1_arg_len ){
 					return WW3D_ERROR_LOAD_FAILED;
 				}
 				break;
@@ -468,15 +437,14 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 		cload.Close_Chunk();
 	}
 
-	if (hasname) {
-		Set_Name(name);
+	if( hasname ){
+		Set_Name( name );
 	}
 
 	// Read an INIClass from the mapping argument buffer - this will be used
 	// to initialize any special mappers used.
 	INIClass mapping0_arg_ini;
-	if (mapping0_arg_buffer) {
-
+	if( mapping0_arg_buffer ){
 		char *extended_arg_buffer = new char[mapping0_arg_len + 10];
 		sprintf(extended_arg_buffer, "[Args]\n%s", mapping0_arg_buffer);
 		mapping0_arg_len = strlen(extended_arg_buffer) + 1;
@@ -491,9 +459,9 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 		delete [] extended_arg_buffer;
 		extended_arg_buffer = NULL;
 	}
-	INIClass mapping1_arg_ini;
-	if (mapping1_arg_buffer) {
 
+	INIClass mapping1_arg_ini;
+	if( mapping1_arg_buffer ){
 		char *extended_arg_buffer = new char[mapping1_arg_len + 20];
 		sprintf(extended_arg_buffer, "[Args]\n%s", mapping1_arg_buffer);
 		mapping1_arg_len = strlen(extended_arg_buffer) + 1;
@@ -509,39 +477,34 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 		extended_arg_buffer = NULL;
 	}
 
-	if (vmat.Attributes & W3DVERTMAT_USE_DEPTH_CUE) {
-		Set_Flag(VertexMaterialClass::DEPTH_CUE,true);
+	if( vmat.Attributes & W3DVERTMAT_USE_DEPTH_CUE ){
+		Set_Flag( VertexMaterialClass::DEPTH_CUE, true );
 	}
 
-	if (vmat.Attributes & W3DVERTMAT_COPY_SPECULAR_TO_DIFFUSE) {
-		Set_Flag(VertexMaterialClass::COPY_SPECULAR_TO_DIFFUSE,true);
+	if( vmat.Attributes & W3DVERTMAT_COPY_SPECULAR_TO_DIFFUSE ){
+		Set_Flag( VertexMaterialClass::COPY_SPECULAR_TO_DIFFUSE, true );
 	}
 
 	// Set up the vertex mapper.  If it is one of the simple
 	// ones, set the pointer to one of the global instances. 
 	int mapping = vmat.Attributes & W3DVERTMAT_STAGE0_MAPPING_MASK;
-
-	switch(mapping) {
-		
+	switch( mapping ){
 		case W3DVERTMAT_STAGE0_MAPPING_UV:
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_ENVIRONMENT:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_ENVIRONMENT: {
 				EnvironmentMapperClass *mapper = NEW_REF(EnvironmentMapperClass,(0));
 				Set_Mapper(mapper);
 				mapper->Release_Ref();
 			}
 			break;
-		case W3DVERTMAT_STAGE0_MAPPING_CHEAP_ENVIRONMENT:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_CHEAP_ENVIRONMENT: {
 				ClassicEnvironmentMapperClass *mapper = NEW_REF(ClassicEnvironmentMapperClass,(0));
 				Set_Mapper(mapper);
 				mapper->Release_Ref();
 			}
 			break;		
-		case W3DVERTMAT_STAGE0_MAPPING_LINEAR_OFFSET:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_LINEAR_OFFSET: {
 				LinearOffsetTextureMapperClass *mapper =
 					NEW_REF(LinearOffsetTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper);
@@ -549,8 +512,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_SCREEN:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_SCREEN: {
 				ScreenMapperClass *mapper =
 					NEW_REF(ScreenMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper);
@@ -558,8 +520,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_SCALE:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_SCALE: {
 				ScaleTextureMapperClass *mapper =
 					NEW_REF(ScaleTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper);
@@ -567,8 +528,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_GRID:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_GRID: {
 				GridTextureMapperClass *mapper =
 					NEW_REF(GridTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -576,8 +536,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_ROTATE:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_ROTATE: {
 				RotateTextureMapperClass *mapper =
 					NEW_REF(RotateTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -585,8 +544,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_SINE_LINEAR_OFFSET:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_SINE_LINEAR_OFFSET: {
 				SineLinearOffsetTextureMapperClass *mapper =
 					NEW_REF(SineLinearOffsetTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -594,8 +552,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_STEP_LINEAR_OFFSET:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_STEP_LINEAR_OFFSET: {
 				StepLinearOffsetTextureMapperClass *mapper =
 					NEW_REF(StepLinearOffsetTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -603,8 +560,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_ZIGZAG_LINEAR_OFFSET:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_ZIGZAG_LINEAR_OFFSET: {
 				ZigZagLinearOffsetTextureMapperClass *mapper =
 					NEW_REF(ZigZagLinearOffsetTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -612,24 +568,21 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_WS_CLASSIC_ENV:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_WS_CLASSIC_ENV: {
 				WSClassicEnvironmentMapperClass *mapper = NEW_REF(WSClassicEnvironmentMapperClass,(0));
 				Set_Mapper(mapper,0);
 				mapper->Release_Ref();
 			}
 			break;		
 
-		case W3DVERTMAT_STAGE0_MAPPING_WS_ENVIRONMENT:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_WS_ENVIRONMENT: {
 				WSEnvironmentMapperClass *mapper = NEW_REF(WSEnvironmentMapperClass,(0));
 				Set_Mapper(mapper,0);
 				mapper->Release_Ref();
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_GRID_CLASSIC_ENV:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_GRID_CLASSIC_ENV: {
 				GridClassicEnvironmentMapperClass *mapper =
 					NEW_REF(GridClassicEnvironmentMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -637,8 +590,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_GRID_ENVIRONMENT:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_GRID_ENVIRONMENT: {
 				GridEnvironmentMapperClass *mapper =
 					NEW_REF(GridEnvironmentMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -646,8 +598,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_RANDOM:
-			{
+		case W3DVERTMAT_STAGE0_MAPPING_RANDOM: {
 				RandomTextureMapperClass *mapper =
 					NEW_REF(RandomTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 				Set_Mapper(mapper,0);
@@ -655,8 +606,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_EDGE:
-		{
+		case W3DVERTMAT_STAGE0_MAPPING_EDGE: {
 			EdgeMapperClass *mapper =
 				NEW_REF(EdgeMapperClass,(mapping0_arg_ini, "Args", 0));
 			Set_Mapper(mapper,0);
@@ -664,8 +614,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 		}
 		break;
 
-		case W3DVERTMAT_STAGE0_MAPPING_BUMPENV:
-		{
+		case W3DVERTMAT_STAGE0_MAPPING_BUMPENV: {
 			BumpEnvTextureMapperClass *mapper =
 				NEW_REF(BumpEnvTextureMapperClass,(mapping0_arg_ini, "Args", 0));
 			Set_Mapper(mapper,0);
@@ -680,46 +629,41 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 
 	// Same setup for stage 1's mapper.
 	mapping = vmat.Attributes & W3DVERTMAT_STAGE1_MAPPING_MASK;
-	switch(mapping) {
-
+	switch( mapping) {
 		case W3DVERTMAT_STAGE1_MAPPING_UV:
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_ENVIRONMENT:
-		{
-			EnvironmentMapperClass *mapper = new EnvironmentMapperClass(1);
-			Set_Mapper(mapper, 1);
-			mapper->Release_Ref();
-		}
-		break;
-		case W3DVERTMAT_STAGE1_MAPPING_CHEAP_ENVIRONMENT:
-		{
-			ClassicEnvironmentMapperClass *mapper = new ClassicEnvironmentMapperClass(1);
-			Set_Mapper(mapper, 1);
-			mapper->Release_Ref();
-		}
-		break;
+		case W3DVERTMAT_STAGE1_MAPPING_ENVIRONMENT: {
+				EnvironmentMapperClass *mapper = new EnvironmentMapperClass(1);
+				Set_Mapper(mapper, 1);
+				mapper->Release_Ref();
+			}
+			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_LINEAR_OFFSET:
-		{
-			LinearOffsetTextureMapperClass *mapper =
-				new LinearOffsetTextureMapperClass(mapping1_arg_ini, "Args", 1);
-			Set_Mapper(mapper, 1);
-			mapper->Release_Ref();
-		}
-		break;
+		case W3DVERTMAT_STAGE1_MAPPING_CHEAP_ENVIRONMENT: {
+				ClassicEnvironmentMapperClass *mapper = new ClassicEnvironmentMapperClass(1);
+				Set_Mapper(mapper, 1);
+				mapper->Release_Ref();
+			}
+			break;
+
+		case W3DVERTMAT_STAGE1_MAPPING_LINEAR_OFFSET: {
+				LinearOffsetTextureMapperClass *mapper =
+					new LinearOffsetTextureMapperClass(mapping1_arg_ini, "Args", 1);
+				Set_Mapper(mapper, 1);
+				mapper->Release_Ref();
+			}
+			break;
 		
-		case W3DVERTMAT_STAGE1_MAPPING_SCREEN:
-		{
-			ScreenMapperClass *mapper =
-				new ScreenMapperClass(mapping1_arg_ini, "Args", 1);
-			Set_Mapper(mapper, 1);
-			mapper->Release_Ref();
-		}
-		break;
+		case W3DVERTMAT_STAGE1_MAPPING_SCREEN: {
+				ScreenMapperClass *mapper =
+					new ScreenMapperClass(mapping1_arg_ini, "Args", 1);
+				Set_Mapper(mapper, 1);
+				mapper->Release_Ref();
+			}
+			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_SCALE:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_SCALE: {
 				ScaleTextureMapperClass *mapper =
 					NEW_REF(ScaleTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -727,8 +671,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_GRID:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_GRID: {
 				GridTextureMapperClass *mapper =
 					NEW_REF(GridTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -736,8 +679,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_ROTATE:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_ROTATE: {
 				RotateTextureMapperClass *mapper =
 					NEW_REF(RotateTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -745,8 +687,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_SINE_LINEAR_OFFSET:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_SINE_LINEAR_OFFSET: {
 				SineLinearOffsetTextureMapperClass *mapper =
 					NEW_REF(SineLinearOffsetTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -754,8 +695,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_STEP_LINEAR_OFFSET:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_STEP_LINEAR_OFFSET: {
 				StepLinearOffsetTextureMapperClass *mapper =
 					NEW_REF(StepLinearOffsetTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -763,8 +703,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_ZIGZAG_LINEAR_OFFSET:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_ZIGZAG_LINEAR_OFFSET: {
 				ZigZagLinearOffsetTextureMapperClass *mapper =
 					NEW_REF(ZigZagLinearOffsetTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -772,24 +711,21 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_WS_CLASSIC_ENV:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_WS_CLASSIC_ENV: {
 				WSClassicEnvironmentMapperClass *mapper = NEW_REF(WSClassicEnvironmentMapperClass,(1));
 				Set_Mapper(mapper,1);
 				mapper->Release_Ref();
 			}
 			break;		
 
-		case W3DVERTMAT_STAGE1_MAPPING_WS_ENVIRONMENT:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_WS_ENVIRONMENT: {
 				WSEnvironmentMapperClass *mapper = NEW_REF(WSEnvironmentMapperClass,(1));
 				Set_Mapper(mapper,1);
 				mapper->Release_Ref();
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_GRID_CLASSIC_ENV:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_GRID_CLASSIC_ENV: {
 				GridClassicEnvironmentMapperClass *mapper =
 					NEW_REF(GridClassicEnvironmentMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -797,8 +733,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_GRID_ENVIRONMENT:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_GRID_ENVIRONMENT: {
 				GridEnvironmentMapperClass *mapper =
 					NEW_REF(GridEnvironmentMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -806,8 +741,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_RANDOM:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_RANDOM: {
 				RandomTextureMapperClass *mapper =
 					NEW_REF(RandomTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -815,8 +749,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_EDGE:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_EDGE: {
 				EdgeMapperClass *mapper =
 					NEW_REF(EdgeMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -824,8 +757,7 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 			}
 			break;
 
-		case W3DVERTMAT_STAGE1_MAPPING_BUMPENV:
-			{
+		case W3DVERTMAT_STAGE1_MAPPING_BUMPENV: {
 				BumpEnvTextureMapperClass *mapper =
 					NEW_REF(BumpEnvTextureMapperClass,(mapping1_arg_ini, "Args", 1));
 				Set_Mapper(mapper,1);
@@ -839,20 +771,20 @@ WW3DErrorType VertexMaterialClass::Load_W3D(ChunkLoadClass & cload)
 	}
 
 	Vector3 tmp;
-	W3dUtilityClass::Convert_Color(vmat.Ambient,&tmp);
-	Set_Ambient(tmp);
+	W3dUtilityClass::Convert_Color( vmat.Ambient, &tmp );
+	Set_Ambient( tmp );
 	
-	W3dUtilityClass::Convert_Color(vmat.Diffuse,&tmp);
-	Set_Diffuse(tmp);
+	W3dUtilityClass::Convert_Color( vmat.Diffuse, &tmp );
+	Set_Diffuse( tmp );
 	
-	W3dUtilityClass::Convert_Color(vmat.Specular,&tmp);
-	Set_Specular(tmp);
+	W3dUtilityClass::Convert_Color( vmat.Specular, &tmp );
+	Set_Specular( tmp );
 
-	W3dUtilityClass::Convert_Color(vmat.Emissive,&tmp);
-	Set_Emissive(tmp);
+	W3dUtilityClass::Convert_Color( vmat.Emissive, &tmp );
+	Set_Emissive( tmp );
 
-	Set_Shininess(vmat.Shininess);
-	Set_Opacity(vmat.Opacity);
+	Set_Shininess( vmat.Shininess );
+	Set_Opacity( vmat.Opacity );
 
 	return WW3D_ERROR_OK;
 }

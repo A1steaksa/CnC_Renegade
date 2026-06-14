@@ -93,7 +93,10 @@ protected:
 	friend class								SoldierObserverClass;
 };
 
-class SoldierGameObj : public SmartGameObj {
+class SoldierGameObj 
+
+
+: public SmartGameObj {
 
 public:
 	SoldierGameObj();

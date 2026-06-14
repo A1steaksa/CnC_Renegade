@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***                            Confidential - Westwood Studios                              *** 
  *********************************************************************************************** 
@@ -45,15 +27,14 @@
 	#include "simplegameobj.h"
 #endif
 
-class		PowerUpGameObj;
-class		AudibleSoundClass;
-class		WeaponBagClass;
+class PowerUpGameObj;
+class AudibleSoundClass;
+class WeaponBagClass;
 
 /*
 ** PowerUpGameObjDef - Defintion class for a PowerUpGameObj
 */
-class PowerUpGameObjDef : public SimpleGameObjDef
-{
+class PowerUpGameObjDef : public SimpleGameObjDef {
 public:
 	PowerUpGameObjDef( void );
 
@@ -96,63 +77,63 @@ protected:
 };
 
 
-/*
-**
-*/
 class PowerUpGameObj : public SimpleGameObj {
-
 public:
-				PowerUpGameObj( void );
+    PowerUpGameObj( void );
 	virtual ~PowerUpGameObj( void );
 
 	// Definitions
-	virtual	void	Init( void );
-	void	Init( const PowerUpGameObjDef & definition );
-	const PowerUpGameObjDef & Get_Definition( void ) const ;
+	virtual	void Init( void );
+	void Init( const PowerUpGameObjDef & definition );
+	const PowerUpGameObjDef& Get_Definition( void ) const;
 
 	// Save / Load / Construction Factory
-	virtual	bool	Save( ChunkSaveClass & csave );
-	virtual	bool	Load( ChunkLoadClass & cload );
-	virtual	void	On_Post_Load( void );		// MOVED
-	virtual	const	PersistFactoryClass & Get_Factory( void ) const;
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	virtual void On_Post_Load( void ); // MOVED
+	virtual const PersistFactoryClass& Get_Factory( void ) const;
 
 	// Think
-	virtual	void	Think( void );
-	void	Grant( SmartGameObj * obj );
+	virtual	void Think( void );
+	void Grant( SmartGameObj* obj );
 
 	// Type identification
-	virtual PowerUpGameObj		*As_PowerUpGameObj()		{ return this; }
+	virtual PowerUpGameObj* As_PowerUpGameObj(){
+        return this;
+    }
 
-	static	PowerUpGameObj *	Create_Backpack( ArmedGameObj * provider );
+	static PowerUpGameObj* Create_Backpack( ArmedGameObj* provider );
 
 	// Network support
-	virtual	bool	Is_Always_Dirty( void )					{ return false; }
-	virtual	void	Get_Description( StringClass & description );
+	virtual	bool Is_Always_Dirty( void ){
+        return false;
+    }
 
-	void	Expire( void );
+	virtual	void Get_Description( StringClass & description );
+
+	void Expire( void );
 
 protected:
 
 	// State types
-	enum
-	{
-		STATE_BECOMING_IDLE			= 0,
+	enum {
+		STATE_BECOMING_IDLE = 0,
 		STATE_IDLING,
 		STATE_GRANTING,
 		STATE_EXPIRING,
 	};
 
-	void						Set_State( int state );
-	void						Update_State( void );
+	void Set_State( int state );
+	void Update_State( void );
 
-	AudibleSoundClass *	IdleSoundObj;
-	int						State;
-	float						StateEndTimer;
+	AudibleSoundClass* IdleSoundObj;
+	int State;
+	float StateEndTimer;
 
 	// For backpacks, which can hold multiple weapons and ammo
-	WeaponBagClass *		WeaponBag;				
+	WeaponBagClass* WeaponBag;				
 
-	friend	class			PowerUpGameObjDef;
+	friend class PowerUpGameObjDef;
 };
 
 #endif	// POWERUP_H

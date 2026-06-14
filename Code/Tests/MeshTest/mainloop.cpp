@@ -178,15 +178,8 @@ void Create_Scene(void)
 /*
 ** Load initial game data
 */
-void Load_Data(void)
-{
-//	WW3DAssetManager::Get_Instance()->Load_3D_Assets(RawFileClass("crap.W3D"));
-//	WW3DAssetManager::Get_Instance()->Load_3D_Assets(RawFileClass("HUMAN.W3D"));
-//	WW3DAssetManager::Get_Instance()->Load_3D_Assets(RawFileClass("COMMANDO.W3D"));
-//	WW3DAssetManager::Get_Instance()->Load_3D_Assets(RawFileClass("Mtankl1.W3D"));
+void Load_Data(void){
 	WW3DAssetManager::Get_Instance()->Load_3D_Assets(RawFileClass("Triangle.W3D"));
-//	WW3DAssetManager::Get_Instance()->Load_3D_Assets(RawFileClass("Sphere.W3D"));
-//	WW3DAssetManager::Get_Instance()->Load_3D_Assets(RawFileClass("new_mtl_test.W3D"));
 }
 
 
@@ -200,10 +193,7 @@ void Create_Objects(void)
 	Camera->Set_Clip_Planes(1.0f, 200.0f);
 	Camera->Set_Environment_Range(1.0f, 200.0f);
 
-//	TestModel = WW3DAssetManager::Get_Instance()->Create_Render_Obj("Mtankl1");
-//	TestModel = WW3DAssetManager::Get_Instance()->Create_Render_Obj("Crap");
 	TestModel = WW3DAssetManager::Get_Instance()->Create_Render_Obj("triangle");
-//	TestModel = WW3DAssetManager::Get_Instance()->Create_Render_Obj("new_mtl_test");
 	assert(TestModel);
 	TestModel->Add(TheScene);
 

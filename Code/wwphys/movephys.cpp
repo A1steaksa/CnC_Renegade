@@ -78,8 +78,7 @@ DECLARE_FORCE_LINK(movephys);
 /*
 ** Chunk ID's used by MoveablePhysClass
 */
-enum
-{
+enum {
 	MOVEABLE_CHUNK_PHYS				= 0x00803000,		// obsolete parent class
 	MOVEABLE_CHUNK_VARIABLES,
 	MOVEABLE_CHUNK_DYNAMICPHYS,							// current parent class
@@ -127,8 +126,7 @@ MoveablePhysClass::MoveablePhysClass(void) :
  * HISTORY:                                                                                    *
  *   12/21/99   gth : Created.                                                                 *
  *=============================================================================================*/
-MoveablePhysClass::~MoveablePhysClass(void)
-{
+MoveablePhysClass::~MoveablePhysClass(void){
 	Link_To_Carrier(NULL);
 }
 
@@ -143,14 +141,13 @@ MoveablePhysClass::~MoveablePhysClass(void)
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-void MoveablePhysClass::Init(const MoveablePhysDefClass & def) 
-{
+void MoveablePhysClass::Init( const MoveablePhysDefClass& def ){
 	Mass = def.Mass;
 	MassInv = 1.0f / Mass;
 	GravScale = def.GravScale;
 	Elasticity = def.Elasticity;
 
-	DynamicPhysClass::Init(def);
+	DynamicPhysClass::Init( def );
 }
 
 /***********************************************************************************************
@@ -239,7 +236,7 @@ void MoveablePhysClass::Get_Shadow_Blob_Box(AABoxClass * set_obj_space_box)
  * HISTORY:                                                                                    *
  *   2/11/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void MoveablePhysClass::Link_To_Carrier(PhysClass * carrier,RenderObjClass * carrier_sub_obj)
+void MoveablePhysClass::Link_To_Carrier( PhysClass* carrier, RenderObjClass* carrier_sub_obj )
 {
 	// If this is the same carrier we already have, just return
 	if ((Carrier == carrier) && (CarrierSubObject == carrier_sub_obj)) return;
@@ -529,8 +526,7 @@ void MoveablePhysClass::On_Post_Load(void)
 /*
 ** Chunk ID's used by MoveablePhysDefClass
 */
-enum 
-{
+enum {
 	MOVEABLEPHYSDEF_CHUNK_PHYSDEF				= 0x04486000,			// obsolete parent class
 	MOVEABLEPHYSDEF_CHUNK_VARIABLES,
 	MOVEABLEPHYSDEF_CHUNK_DYNAMICPHYSDEF,								// current parent class
@@ -543,29 +539,18 @@ enum
 
 
 MoveablePhysDefClass::MoveablePhysDefClass(void) :
-	Mass(1.0f),
-	GravScale(1.0f),
-	Elasticity(0.1f),
-	CinematicCollisionMode(CINEMATIC_COLLISION_PUSH)
+	Mass( 1.0f ),
+	GravScale( 1.0f ),
+	Elasticity( 0.1f ),
+	CinematicCollisionMode( CINEMATIC_COLLISION_PUSH )
 {
 	// make our parameters editable!
-	FLOAT_EDITABLE_PARAM(MoveablePhysDefClass, Mass, 0.01f, 100000.0f);
-	FLOAT_EDITABLE_PARAM(MoveablePhysDefClass, GravScale, 0.0f, 10.0f);
-	FLOAT_EDITABLE_PARAM(MoveablePhysDefClass, Elasticity, 0.0f, 1.0f);	
-
-#ifdef PARAM_EDITING_ON
-	EnumParameterClass *cinematic_param = new EnumParameterClass(&CinematicCollisionMode);
-	cinematic_param->Set_Name ("CinematicCollisionMode");
-	cinematic_param->Add_Value("NONE",CINEMATIC_COLLISION_NONE);
-	cinematic_param->Add_Value("STOP",CINEMATIC_COLLISION_STOP);
-	cinematic_param->Add_Value("PUSH",CINEMATIC_COLLISION_PUSH);
-	cinematic_param->Add_Value("KILL",CINEMATIC_COLLISION_KILL);
-	GENERIC_EDITABLE_PARAM( MoveablePhysDefClass, cinematic_param);
-#endif
+	FLOAT_EDITABLE_PARAM( MoveablePhysDefClass, Mass, 0.01f, 100000.0f );
+	FLOAT_EDITABLE_PARAM( MoveablePhysDefClass, GravScale, 0.0f, 10.0f );
+	FLOAT_EDITABLE_PARAM( MoveablePhysDefClass, Elasticity, 0.0f, 1.0f );	
 }
 
-bool MoveablePhysDefClass::Save(ChunkSaveClass &csave)
-{
+bool MoveablePhysDefClass::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk(MOVEABLEPHYSDEF_CHUNK_DYNAMICPHYSDEF);
 	DynamicPhysDefClass::Save(csave);
 	csave.End_Chunk();
@@ -580,28 +565,26 @@ bool MoveablePhysDefClass::Save(ChunkSaveClass &csave)
 }
 
 
-bool MoveablePhysDefClass::Load(ChunkLoadClass &cload)
-{
-	while (cload.Open_Chunk()) {
-
-		switch(cload.Cur_Chunk_ID()) {
-
+bool MoveablePhysDefClass::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case MOVEABLEPHYSDEF_CHUNK_PHYSDEF:
-				PhysDefClass::Load(cload);
+				PhysDefClass::Load( cload );
 				break;
 
 			case MOVEABLEPHYSDEF_CHUNK_DYNAMICPHYSDEF:
-				DynamicPhysDefClass::Load(cload);
+				DynamicPhysDefClass::Load( cload );
 				break;
 
 			case MOVEABLEPHYSDEF_CHUNK_VARIABLES:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
-						READ_MICRO_CHUNK(cload,MOVEABLEPHYSDEF_VARIABLE_MASS,Mass);
-						READ_MICRO_CHUNK(cload,MOVEABLEPHYSDEF_VARIABLE_GRAVSCALE,GravScale);
-						READ_MICRO_CHUNK(cload,MOVEABLEPHYSDEF_VARIABLE_ELASTICITY,Elasticity);
-						READ_MICRO_CHUNK(cload,MOVEABLEPHYSDEF_VARIABLE_CINEMATICCOLLISIONMODE,CinematicCollisionMode);
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
+						READ_MICRO_CHUNK( cload, MOVEABLEPHYSDEF_VARIABLE_MASS, Mass );
+						READ_MICRO_CHUNK( cload, MOVEABLEPHYSDEF_VARIABLE_GRAVSCALE, GravScale );
+						READ_MICRO_CHUNK( cload, MOVEABLEPHYSDEF_VARIABLE_ELASTICITY, Elasticity );
+						READ_MICRO_CHUNK( cload, MOVEABLEPHYSDEF_VARIABLE_CINEMATICCOLLISIONMODE, CinematicCollisionMode );
 					}
+
 					cload.Close_Micro_Chunk();
 				}
 				break;
@@ -617,12 +600,11 @@ bool MoveablePhysDefClass::Load(ChunkLoadClass &cload)
 	return true;
 }
 
-bool MoveablePhysDefClass::Is_Type(const char * type_name)
-{
-	if (stricmp(type_name,MoveablePhysDefClass::Get_Type_Name()) == 0) {
+bool MoveablePhysDefClass::Is_Type( const char* type_name ){
+	if( stricmp( type_name, MoveablePhysDefClass::Get_Type_Name() ) == 0 ){
 		return true;
-	} else {
-		return DynamicPhysDefClass::Is_Type(type_name);
+	}else{
+		return DynamicPhysDefClass::Is_Type( type_name );
 	}
 }
 

@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***                            Confidential - Westwood Studios                              ***
  ***********************************************************************************************
@@ -92,14 +74,13 @@ PowerUpGameObjDef::PowerUpGameObjDef( void ) :
 	GrantWeaponClips( false ),
 	GrantWeaponRounds( 0 ),
 	Persistent( false ),
-	//IsCaptureTheFlag( false ),
 	GrantKey( 0 ),
 	GrantSoundID( 0 ),
 	IdleSoundID( 0 ),
 	AlwaysAllowGrant( false )
 {}
 
-uint32 PowerUpGameObjDef::Get_Class_ID (void) const {
+uint32 PowerUpGameObjDef::Get_Class_ID(void) const {
 	return CLASSID_GAME_OBJECT_DEF_POWERUP;
 }
 
@@ -136,7 +117,6 @@ enum {
 
 	MICROCHUNKID_DEF_GRANT_SHIELD_STRENGTH_MAX,
 	MICROCHUNKID_DEF_GRANT_HEALTH_MAX,
-
 };
 
 bool PowerUpGameObjDef::Save( ChunkSaveClass& csave ){
@@ -155,7 +135,6 @@ bool PowerUpGameObjDef::Save( ChunkSaveClass& csave ){
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DEF_GRANT_WEAPON_CLIPS,			GrantWeaponClips );		
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DEF_GRANT_WEAPON_ROUNDS,		GrantWeaponRounds );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DEF_PERSISTENT,					Persistent );
-		//WRITE_MICRO_CHUNK( csave, XXXMICROCHUNKID_DEF_IS_CAPTURE_THE_FLAG,		IsCaptureTheFlag );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DEF_GRANT_KEY,						GrantKey );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DEF_GRANT_SOUNDID,				GrantSoundID );
 		WRITE_MICRO_CHUNK( csave, MICROCHUNKID_DEF_IDLE_SOUNDID,					IdleSoundID );
@@ -216,20 +195,18 @@ bool PowerUpGameObjDef::Load( ChunkLoadClass& cload ){
 	return true;
 }
 
-const PersistFactoryClass & PowerUpGameObjDef::Get_Factory (void) const
-{
+const PersistFactoryClass& PowerUpGameObjDef::Get_Factory(void) const {
 	return _PowerUpGameObjDefPersistFactory;
 }
 
-bool	PowerUpGameObjDef::Grant( SmartGameObj * obj, PowerUpGameObj * p_powerup, bool hud_display ) const
-{
+bool PowerUpGameObjDef::Grant( SmartGameObj* obj, PowerUpGameObj* p_powerup, bool hud_display ) const {
 	int no_grant_message = 0;
 
 	bool granted = false;
 
 	WWASSERT(CombatManager::I_Am_Server());
 
-	DefenseObjectClass * defense = obj->Get_Defense_Object();
+	DefenseObjectClass* defense = obj->Get_Defense_Object();
 	// Grant the shield
 	if ( GrantShieldType != 0 ) {
 		if ( GrantShieldType > (int)defense->Get_Shield_Type() ) {
@@ -257,7 +234,6 @@ bool	PowerUpGameObjDef::Grant( SmartGameObj * obj, PowerUpGameObj * p_powerup, b
 		if ( hud_display && obj == COMBAT_STAR ) {
 			HUDClass::Add_Shield_Upgrade_Grant( add );
 		}
-
 	}
 
 	if ( GrantShieldStrength != 0 ) {
@@ -288,8 +264,8 @@ bool	PowerUpGameObjDef::Grant( SmartGameObj * obj, PowerUpGameObj * p_powerup, b
 		float add = GrantHealthMax * (float)obj->Get_Definition().Get_DefenseObjectDef().HealthMax;
 
 		switch ( CombatManager::Get_Difficulty_Level() ) {
-			case 0:	add *= 2.0f;	break;
-			case 2:	add *= 0.75f;	break;
+			case 0:	add *= 2.0f;  break;
+			case 2:	add *= 0.75f; break;
 		};
 
 		// Round up to next int
@@ -411,13 +387,12 @@ bool	PowerUpGameObjDef::Grant( SmartGameObj * obj, PowerUpGameObj * p_powerup, b
 	}
 
 	// Stats
-	if ( granted && obj->Get_Player_Data() ) {
+	if( granted && obj->Get_Player_Data() ){
 		obj->Get_Player_Data()->Stats_Add_Powerup();
 	}
 
-	if ( !granted && ( COMBAT_STAR == obj ) && no_grant_message != 0 ) {
+	if( !granted && ( COMBAT_STAR == obj ) && no_grant_message != 0 ){
 		HUDInfo::Set_HUD_Help_Text( TRANSLATE( no_grant_message ), Vector3( 0,1,0 ) );
-
 	}
 
 	return granted;
@@ -445,8 +420,6 @@ PowerUpGameObj::~PowerUpGameObj(void){
 		delete WeaponBag;
 		WeaponBag = NULL;
 	}
-
-	return ;
 }
 
 const PersistFactoryClass& PowerUpGameObj::Get_Factory(void) const {
@@ -502,8 +475,7 @@ bool PowerUpGameObj::Save( ChunkSaveClass& csave ){
 	return true;
 }
 
-bool	PowerUpGameObj::Load( ChunkLoadClass &cload )
-{
+bool PowerUpGameObj::Load( ChunkLoadClass& cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -545,8 +517,7 @@ bool	PowerUpGameObj::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void	PowerUpGameObj::On_Post_Load( void )
-{
+void PowerUpGameObj::On_Post_Load( void ){
 	SimpleGameObj::On_Post_Load();
 	Peek_Physical_Object()->Set_Collision_Group( UNCOLLIDEABLE_GROUP );	// MOVED
 	if ( Peek_Physical_Object()->As_MoveablePhysClass() != NULL ) {
@@ -557,62 +528,46 @@ void	PowerUpGameObj::On_Post_Load( void )
 	if ( State == STATE_IDLING ) {
 		State = STATE_BECOMING_IDLE;
 	}
-
 }
 
-void	PowerUpGameObj::Set_State( int state )
-{
-	if (state != State) {
-		State				= state;
-		StateEndTimer	= 0;
+void PowerUpGameObj::Set_State( int state ){
+	if( state != State ){
+		State = state;
+		StateEndTimer = 0;
 
 		if ( State == STATE_GRANTING ) {
-
-			//
-			//	Stop the idling sound (if necessary)
-			//
-			if ( IdleSoundObj != NULL ) {
+			// Stop the idling sound (if necessary)
+			if( IdleSoundObj != NULL ){
 				IdleSoundObj->Remove_From_Scene();
 				IdleSoundObj->Stop();
 			}
 
-			//
 			// Play the grant sound (if exists)
-			//
-			if ( Get_Definition ().GrantSoundID != 0 ) {
-				WWAudioClass::Get_Instance()->Create_Instant_Sound( Get_Definition ().GrantSoundID, Get_Transform () );
+			if( Get_Definition ().GrantSoundID != 0 ){
+				WWAudioClass::Get_Instance()->Create_Instant_Sound( Get_Definition().GrantSoundID, Get_Transform() );
 			}
 
-			//
 			// Play the grant animation (if exists)
-			//
-			if ( Get_Definition ().GrantAnimationName.Get_Length () > 0 ) {
+			if( Get_Definition().GrantAnimationName.Get_Length() > 0 ){
 				Set_Animation( Get_Definition ().GrantAnimationName, false );
-				HAnimClass *animation =  WW3DAssetManager::Get_Instance ()->Get_HAnim( Get_Anim_Control ()->Get_Animation_Name () );
-				if ( animation != NULL ) {
+				HAnimClass* animation =  WW3DAssetManager::Get_Instance ()->Get_HAnim( Get_Anim_Control ()->Get_Animation_Name () );
+				if( animation != NULL ){
 					StateEndTimer = animation->Get_Total_Time();
 					REF_PTR_RELEASE( animation );
 				}
 			}
 		}
 	}
-
-	return ;
 }
 
-void	PowerUpGameObj::Update_State( void )
-{
-	switch ( State )
-	{
+void PowerUpGameObj::Update_State( void ){
+	switch( State ){
 		case STATE_IDLING:
 			break;
 
 		case STATE_BECOMING_IDLE:
-
-			//
-			//	Start playing the idle sound
-			//
-			if ( Get_Definition ().IdleSoundID != 0 ) {
+			// Start playing the idle sound
+			if( Get_Definition ().IdleSoundID != 0 ){
 				if ( IdleSoundObj == NULL ) {
 					IdleSoundObj = WWAudioClass::Get_Instance ()->Create_Continuous_Sound( Get_Definition().IdleSoundID );
 				}
@@ -624,7 +579,7 @@ void	PowerUpGameObj::Update_State( void )
 
 			//	Start playing the idle animation
 			if ( Get_Definition ().IdleAnimationName.Get_Length () > 0 ) {
-				Set_Animation( Get_Definition ().IdleAnimationName, true );
+				Set_Animation( Get_Definition().IdleAnimationName, true );
 			}
 
 			State = STATE_IDLING;
@@ -636,7 +591,6 @@ void	PowerUpGameObj::Update_State( void )
 			// the powerup from the world).
 			StateEndTimer -= TimeManager::Get_Frame_Seconds();
 			if ( StateEndTimer <= 0 ) {
-				//if ( Get_Definition().IsCaptureTheFlag || Get_Definition().Persistent ) {
 				if ( Get_Definition().Persistent ) {
 					Set_State ( STATE_BECOMING_IDLE );
 				} else {
@@ -654,14 +608,10 @@ void	PowerUpGameObj::Update_State( void )
 			}
 			break;
 	}
-
-	return ;
 }
 
-void	PowerUpGameObj::Grant( SmartGameObj * obj )
-{
+void PowerUpGameObj::Grant( SmartGameObj* obj ){
 	WWASSERT ( State != STATE_GRANTING );
-
 	WWASSERT( obj );
 
 	// Grant Def
@@ -684,8 +634,7 @@ void	PowerUpGameObj::Grant( SmartGameObj * obj )
 }
 
 
-void	PowerUpGameObj::Think( void )
-{
+void PowerUpGameObj::Think( void ){
 	SimpleGameObj::Think();
 
 	WWPROFILE( "PowerUp Think" );
@@ -699,7 +648,7 @@ void	PowerUpGameObj::Think( void )
 	// The server grants the prize, but allow the client to destroy
 	// the powerup before being instructed to do so,
 	// so that this doesn't lag
-	if ( CombatManager::I_Am_Server() && State != STATE_GRANTING ) {
+	if( CombatManager::I_Am_Server() && State != STATE_GRANTING ){
 
 		// Check my bounding box for collisions with Soldiers
 		AABoxClass box = Peek_Model()->Get_Bounding_Box();
@@ -711,34 +660,29 @@ void	PowerUpGameObj::Think( void )
 
 			SoldierGameObj * soldier = obj->As_SoldierGameObj();
 
-			if ( obj->As_VehicleGameObj() ) {
+			if( obj->As_VehicleGameObj() ) {
 				soldier = obj->As_VehicleGameObj()->Get_Driver();
 			}
 
-			if ( soldier && soldier->Wants_Powerups() ) {
+			if( soldier && soldier->Wants_Powerups() ){
 
 				PhysAABoxIntersectionTestClass test( box, DEFAULT_COLLISION_GROUP, COLLISION_TYPE_PHYSICAL );
 				bool result = obj->Peek_Physical_Object()->Intersection_Test(test);
 				if ( result ) {
-					Grant( soldier );		// Don't grant any more
+					Grant( soldier ); // Don't grant any more
 					break;
 				}
 			}
   		}
 	}
-
-	return ;
 }
 
-PowerUpGameObj *	PowerUpGameObj::Create_Backpack( ArmedGameObj * provider )
-{
+PowerUpGameObj* PowerUpGameObj::Create_Backpack( ArmedGameObj* provider ){
 	WWASSERT( provider );
-
-//	Debug_Say(( "Creating a Backpack\n" ));
 
 	PowerUpGameObj * backpack = (PowerUpGameObj *)ObjectLibraryManager::Create_Object( "Backpack" );
 
-	if ( backpack != NULL ) {
+	if( backpack != NULL ){
 		Matrix3D tm(1);
 		tm.Set_Translation( provider->Get_Bullseye_Position() );
 		backpack->Set_Transform(tm);
@@ -780,7 +724,7 @@ void PowerUpGameObj::Get_Description( StringClass& description ){
 }
 
 void PowerUpGameObj::Expire(void){
-#define		EXPIRE_TIME		2
+#define EXPIRE_TIME 2
 
 	if ( State != STATE_EXPIRING ) {
 		/*

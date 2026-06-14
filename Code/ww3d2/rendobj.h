@@ -265,11 +265,17 @@ public:
 	virtual void					Notify_Added(SceneClass * scene);
 	virtual void					Notify_Removed(SceneClass * scene);
 
-	virtual int						Get_Num_Sub_Objects(void) const											{ return 0; } 					
-	virtual RenderObjClass *	Get_Sub_Object(int index) const											{ return NULL; }
+	virtual int Get_Num_Sub_Objects(void) const {
+		return 0;
+	}
+	
+	virtual RenderObjClass* Get_Sub_Object( int index ) const {
+		return NULL;
+	}
+
 	virtual int						Add_Sub_Object(RenderObjClass * subobj)								{ return 0; }
 	virtual int						Remove_Sub_Object(RenderObjClass * robj)								{ return 0; }
-	virtual RenderObjClass *	Get_Sub_Object_By_Name(const char * name) const;
+	virtual RenderObjClass* Get_Sub_Object_By_Name( const char* name ) const;
 
 	virtual int						Get_Num_Sub_Objects_On_Bone(int boneindex) const					{ return 0; }
 	virtual RenderObjClass *	Get_Sub_Object_On_Bone(int index,int boneindex)	const				{ return NULL; }
@@ -536,8 +542,7 @@ WWINLINE const SphereClass& RenderObjClass::Get_Bounding_Sphere(void) const {
 	return CachedBoundingSphere;
 }
 
-WWINLINE const AABoxClass & RenderObjClass::Get_Bounding_Box(void) const
-{
+WWINLINE const AABoxClass& RenderObjClass::Get_Bounding_Box(void) const {
 	if (!(Bits & BOUNDING_VOLUMES_VALID)) {
 		Update_Cached_Bounding_Volumes();
 	}
@@ -556,10 +561,15 @@ WWINLINE const AABoxClass & RenderObjClass::Get_Bounding_Box(void) const
  * HISTORY:                                                               * 
  *   09/22/1997 PWG : Created.                                            * 
  *========================================================================*/
-WWINLINE float Bound_Degrees(float angle)
-{
-	while (angle > 359) angle -= 360;
-	while (angle < 0) angle += 360;
+WWINLINE float Bound_Degrees( float angle ){
+	while( angle > 359 ){
+		angle -= 360
+	};
+
+	while( angle < 0 ){
+		angle += 360
+	};
+
 	return angle;
 }
 

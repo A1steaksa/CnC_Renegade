@@ -396,8 +396,7 @@ DECLARE_DEFINITION_FACTORY(Phys3DefClass, CLASSID_PHYS3DEF, "Phys3") _Phys3DefDe
 /*
 ** Chunk ID's for Phys3Class
 */
-enum
-{
+enum {
 	PHYS3_CHUNK_MOVEABLEPHYS			= 0x00483200,
 	PHYS3_CHUNK_VARIABLES,
 
@@ -455,10 +454,9 @@ static inline void Clip_Move(const Vector3 * contacts,int contact_count,Vector3 
  * HISTORY:                                                                                    *
  *   9/15/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-Phys3Class::Phys3Class(void) 
-{
-	CollisionBox.Center.Set(0,0,1);
-	CollisionBox.Extent.Set(1,1,1);
+Phys3Class::Phys3Class(void){
+	CollisionBox.Center.Set( 0, 0, 1 );
+	CollisionBox.Extent.Set( 1, 1, 1 );
 	OnGround = false;
 	InCollision = false;
 	HeadingChanged = false;
@@ -466,16 +464,16 @@ Phys3Class::Phys3Class(void)
 	Heading = 0.0f;
 	NormSpeed = DEFAULT_NORMALIZED_SPEED;
 	SlideAngle = DEFAULT_SLIDE_ANGLE;
-	SlideNormalZ = WWMath::Cos(SlideAngle);
+	SlideNormalZ = WWMath::Cos( SlideAngle );
 	SlideAngleTan = tan(SlideAngle);
 	StepHeight = DEFAULT_STEP_HEIGHT;
 	MoveMode = NORMAL_MOVE;
 	GroundObject = NULL;
-	AnimationMove.Set(0,0,0);
+	AnimationMove.Set( 0, 0, 0 );
 	History = NULL;
-	LatencyError.Set(0,0,0);
-	LastKnownPosition.Set(0,0,0);
-	LastKnownVelocity.Set(0,0,0);
+	LatencyError.Set( 0, 0, 0 );
+	LastKnownPosition.Set( 0, 0, 0 );
+	LastKnownVelocity.Set( 0, 0, 0 );
 	Invalidate_Ground_State();
 }	
 
@@ -492,27 +490,26 @@ Phys3Class::Phys3Class(void)
  * HISTORY:                                                                                    *
  *   9/15/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Init(const Phys3DefClass & def)
-{
-	MoveablePhysClass::Init(def);
+void Phys3Class::Init( const Phys3DefClass& def ){
+	MoveablePhysClass::Init( def );
 
-	CollisionBox.Center.Set(0,0,1);
-	CollisionBox.Extent.Set(1,1,1);
+	CollisionBox.Center.Set( 0, 0, 1 );
+	CollisionBox.Extent.Set( 1, 1, 1 );
 	OnGround = false;
 	InCollision = false;
 	GroundSurface = 0;
 	Heading = 0.0f;
 	NormSpeed = def.NormSpeed;
 	SlideAngle = def.SlideAngle;
-	SlideNormalZ = WWMath::Cos(SlideAngle);
-	SlideAngleTan = tan(SlideAngle);
+	SlideNormalZ = WWMath::Cos( SlideAngle );
+	SlideAngleTan = tan( SlideAngle );
 	StepHeight = def.StepHeight;
 	MoveMode = NORMAL_MOVE;
 	GroundObject = NULL;
-	AnimationMove.Set(0,0,0);
-	LatencyError.Set(0,0,0);
-	LastKnownPosition.Set(0,0,0);
-	LastKnownVelocity.Set(0,0,0);
+	AnimationMove.Set( 0, 0, 0 );
+	LatencyError.Set( 0, 0, 0 );
+	LastKnownPosition.Set( 0, 0, 0 );
+	LastKnownVelocity.Set( 0, 0, 0);
 
 	Update_Cached_Model_Parameters();	
 	Invalidate_Ground_State();
@@ -653,8 +650,7 @@ void Phys3Class::Set_Position(const Vector3 & position)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-const Vector3 & Phys3Class::Get_Position(void) const
-{
+const Vector3 & Phys3Class::Get_Position(void) const {
 	return State.Position;
 }
 
@@ -671,8 +667,7 @@ const Vector3 & Phys3Class::Get_Position(void) const
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Set_Heading(float heading)
-{
+void Phys3Class::Set_Heading( float heading ){
 	WWASSERT(WWMath::Is_Valid_Float(heading));
 	if (heading != Heading) {
 		Heading = heading;
@@ -800,10 +795,9 @@ void Phys3Class::Update_Transform(bool position_only)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Set_Model(RenderObjClass * model)
-{
+void Phys3Class::Set_Model( RenderObjClass* model ){
 	// Let the base class have the model
-	MoveablePhysClass::Set_Model(model);
+	MoveablePhysClass::Set_Model( model );
 
 	// update any members that depend on the model
 	Update_Cached_Model_Parameters();
@@ -825,27 +819,23 @@ void Phys3Class::Set_Model(RenderObjClass * model)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Update_Cached_Model_Parameters(void)
-{
+void Phys3Class::Update_Cached_Model_Parameters(void){
 	// if we don't have a model yet, just return
-	if (Model == NULL) {
-	
+	if( Model == NULL ){
 		return;
-
-	} else {
-
+	}else{
 		// Construct our collision box from the model
-		RenderObjClass * box = NULL;
+		RenderObjClass* box = NULL;
 
-		if (Model->Class_ID() == RenderObjClass::CLASSID_DISTLOD) {
-			RenderObjClass * lod0 = Model->Get_Sub_Object(0);
-			box = lod0->Get_Sub_Object_By_Name("WORLDBOX");
+		if( Model->Class_ID() == RenderObjClass::CLASSID_DISTLOD ){
+			RenderObjClass* lod0 = Model->Get_Sub_Object( 0 );
+			box = lod0->Get_Sub_Object_By_Name( "WORLDBOX" );
 			lod0->Release_Ref();
 		} else {
 			box = Model->Get_Sub_Object_By_Name("WORLDBOX");
 		}
 		
-		if (box) {
+		if( box ){
 
 			Matrix3D old_transform = Model->Get_Transform();
 			Model->Set_Transform(Matrix3D(1));
@@ -1284,8 +1274,7 @@ Phys3Class::GroundStateStruct & Phys3Class::Get_Ground_State(void)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Invalidate_Ground_State(void)
-{
+void Phys3Class::Invalidate_Ground_State(void){
 	GroundState.IsDirty = true;
 }
 
@@ -2554,8 +2543,7 @@ Phys3Class::GroundStateStruct::GroundStateStruct(void) :
 	Reset();
 }
 
-void Phys3Class::GroundStateStruct::Reset(void)
-{
+void Phys3Class::GroundStateStruct::Reset(void){
 	IsDirty = true;
 	OnGround = false;
 	OnDynamicObj = false;
@@ -2567,12 +2555,11 @@ void Phys3Class::GroundStateStruct::Reset(void)
 	GroundRenderObject = NULL;
 }
 
-void Phys3Class::GroundStateStruct::Init_From_Collision_Result(PhysAABoxCollisionTestClass & test,float height)
-{
+void Phys3Class::GroundStateStruct::Init_From_Collision_Result( PhysAABoxCollisionTestClass& test, float height ){
 	Reset();
 	IsDirty = false;
 
-	if (test.Result->Fraction < 1.0f) {
+	if( test.Result->Fraction < 1.0f ){
 		OnGround = true;
 		SurfaceType = test.Result->SurfaceType;
 		Normal = test.Result->Normal;
@@ -2580,37 +2567,28 @@ void Phys3Class::GroundStateStruct::Init_From_Collision_Result(PhysAABoxCollisio
 		GroundRenderObject = test.CollidedRenderObj;
 		Height = height;
 
-		if (GroundObject != NULL) {
-			if (	(GroundObject->As_HumanPhysClass() != NULL) ||
-					(GroundObject->As_RigidBodyClass() != NULL))
-			{
+		if( GroundObject != NULL ){
+			if( ( GroundObject->As_HumanPhysClass() != NULL ) || ( GroundObject->As_RigidBodyClass() != NULL ) ){
 				OnDynamicObj = true;
 			}
 		}
 
-		if (test.Result->StartBad) {
-			
+		if( test.Result->StartBad ){
 			IsDirty = true;
-			Normal.Set(0,0,1);
-//			VERBOSE_LOG(("ERROR - intersecting object: %s!\r\n",GroundRenderObject->Get_Name()));
-
-		} else {
-
-			if (Normal.Length2() <= 0.0f) {
+			Normal.Set( 0, 0, 1 );
+		}else{
+			if( Normal.Length2() <= 0.0f ){
 				WWDEBUG_SAY(("ERROR - detected non-unit normal!\r\n"));
 			}
 			
 			// compute the down vector for this plane
 			// down = N x -Z x N
 			Vector3 tmp;
-			Vector3::Cross_Product(Normal,Vector3(0,0,-1),&tmp);
-			Vector3::Cross_Product(tmp,Normal,&(Down));	
+			Vector3::Cross_Product( Normal, Vector3( 0, 0, -1 ), &tmp );
+			Vector3::Cross_Product( tmp, Normal, &(Down) );	
 			Down.Normalize();
-			
-//			VERBOSE_LOG(("  on ground, normal=(%f,%f,%f)sliding=%d\r\n",gs->Normal.X,gs->Normal.Y,gs->Normal.Z,(gs->Normal.Z>SlideNormalZ ? 0 : 1)));
 		}
-
-	} else {
+	}else{
 		OnGround = false;
 		OnDynamicObj = false;
 		GroundObject = NULL;
@@ -2629,14 +2607,13 @@ void Phys3Class::GroundStateStruct::Init_From_Collision_Result(PhysAABoxCollisio
 /*
 ** Declare a PersistFactory for Phys3DefClasses 
 */
-SimplePersistFactoryClass<Phys3DefClass,PHYSICS_CHUNKID_PHYS3DEF>	_Phys3DefFactory;
+SimplePersistFactoryClass< Phys3DefClass, PHYSICS_CHUNKID_PHYS3DEF> _Phys3DefFactory;
 
 
 /*
 ** Chunk ID's used by MoveablePhysDefClass
 */
-enum 
-{
+enum {
 	PHYS3DEF_CHUNK_MOVEABLEPHYSDEF				= 0x04486000,			// (parent class)
 	PHYS3DEF_CHUNK_VARIABLES,
 
@@ -2658,25 +2635,21 @@ Phys3DefClass::Phys3DefClass(void) :
 }
 
 
-const PersistFactoryClass & Phys3DefClass::Get_Factory (void) const
-{
+const PersistFactoryClass& Phys3DefClass::Get_Factory(void) const {
 	return _Phys3DefFactory;
 }
 
-uint32 Phys3DefClass::Get_Class_ID (void) const	
-{ 
-	return CLASSID_PHYS3DEF; 
+uint32 Phys3DefClass::Get_Class_ID(void) const {
+	return CLASSID_PHYS3DEF;
 }
 
-PersistClass * Phys3DefClass::Create(void) const
-{
-	Phys3Class * obj = NEW_REF(Phys3Class,());
-	obj->Init(*this);
+PersistClass* Phys3DefClass::Create(void) const {
+	Phys3Class* obj = NEW_REF( Phys3Class, () );
+	obj->Init( *this );
 	return obj;
 }
 
-bool Phys3DefClass::Save(ChunkSaveClass &csave)
-{
+bool Phys3DefClass::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk(PHYS3DEF_CHUNK_MOVEABLEPHYSDEF);
 	MoveablePhysDefClass::Save(csave);
 	csave.End_Chunk();
@@ -2690,23 +2663,20 @@ bool Phys3DefClass::Save(ChunkSaveClass &csave)
 }
 
 
-bool Phys3DefClass::Load(ChunkLoadClass &cload)
-{
-	while (cload.Open_Chunk()) {
-
-		switch(cload.Cur_Chunk_ID()) {
-
+bool Phys3DefClass::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case PHYS3DEF_CHUNK_MOVEABLEPHYSDEF:
-				MoveablePhysDefClass::Load(cload);
+				MoveablePhysDefClass::Load( cload );
 				break;
-
 			case PHYS3DEF_CHUNK_VARIABLES:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
-						READ_MICRO_CHUNK(cload,PHYS3DEF_VARIABLE_NORMSPEED,NormSpeed);
-						READ_MICRO_CHUNK(cload,PHYS3DEF_VARIABLE_SLIDEANGLE,SlideAngle);
-						READ_MICRO_CHUNK(cload,PHYS3DEF_VARIABLE_STEPHEIGHT,StepHeight);
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
+						READ_MICRO_CHUNK( cload, PHYS3DEF_VARIABLE_NORMSPEED, NormSpeed );
+						READ_MICRO_CHUNK( cload, PHYS3DEF_VARIABLE_SLIDEANGLE, SlideAngle );
+						READ_MICRO_CHUNK( cload, PHYS3DEF_VARIABLE_STEPHEIGHT, StepHeight );
 					}
+
 					cload.Close_Micro_Chunk();
 				}
 				break;
@@ -2718,14 +2688,14 @@ bool Phys3DefClass::Load(ChunkLoadClass &cload)
 
 		cload.Close_Chunk();
 	}
+
 	return true;
 }
 
-bool Phys3DefClass::Is_Type(const char * type_name)
-{
-	if (stricmp(type_name,Phys3DefClass::Get_Type_Name()) == 0) {
+bool Phys3DefClass::Is_Type( const char* type_name ){
+	if( stricmp( type_name, Phys3DefClass::Get_Type_Name() ) == 0 ){
 		return true;
-	} else {
-		return MoveablePhysDefClass::Is_Type(type_name);
+	}else{
+		return MoveablePhysDefClass::Is_Type( type_name );
 	}
 }

@@ -47,8 +47,7 @@
 /*
 ** These are the error codes which should be returned by all WW3D functions that can fail
 */
-enum WW3DErrorType
-{
+enum WW3DErrorType {
 	WW3D_ERROR_OK				= 0,
 	WW3D_ERROR_GENERIC,
 	WW3D_ERROR_LOAD_FAILED,

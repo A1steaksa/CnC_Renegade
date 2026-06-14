@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -161,65 +143,65 @@ const char* DAZZLE_INI_FILENAME="DAZZLE.INI";
 **
 ***********************************************************************************/
 
-unsigned int											WW3D::SyncTime = 0;
-unsigned int											WW3D::PreviousSyncTime = 0;
-bool														WW3D::IsSortingEnabled = true;
+unsigned int WW3D::SyncTime = 0;
+unsigned int WW3D::PreviousSyncTime = 0;
+bool WW3D::IsSortingEnabled = true;
 
-float														WW3D::PixelCenterX = 0.0f;
-float														WW3D::PixelCenterY = 0.0f;
+float WW3D::PixelCenterX = 0.0f;
+float WW3D::PixelCenterY = 0.0f;
 
 
-bool														WW3D::IsInitted = false;
-bool														WW3D::IsRendering = false;
-bool														WW3D::IsCapturing = false;
-bool														WW3D::IsScreenUVBiased = false;
+bool WW3D::IsInitted = false;
+bool WW3D::IsRendering = false;
+bool WW3D::IsCapturing = false;
+bool WW3D::IsScreenUVBiased = false;
 
-bool														WW3D::AreDecalsEnabled = true;
-float														WW3D::DecalRejectionDistance = 1000000.0f;
+bool WW3D::AreDecalsEnabled = true;
+float WW3D::DecalRejectionDistance = 1000000.0f;
 
-bool														WW3D::AreStaticSortListsEnabled = false;
-bool														WW3D::MungeSortOnLoad = false;
+bool WW3D::AreStaticSortListsEnabled = false;
+bool WW3D::MungeSortOnLoad = false;
 
-FrameGrabClass *										WW3D::Movie = NULL;
-bool														WW3D::PauseRecord;
-bool														WW3D::RecordNextFrame;
+FrameGrabClass* WW3D::Movie = NULL;
+bool WW3D::PauseRecord;
+bool WW3D::RecordNextFrame;
 
-int														WW3D::FrameCount = 0;
-long														WW3D::UserStat0 = 0;
-long														WW3D::UserStat1 = 0;
-long														WW3D::UserStat2 = 0;
+int WW3D::FrameCount = 0;
+long WW3D::UserStat0 = 0;
+long WW3D::UserStat1 = 0;
+long WW3D::UserStat2 = 0;
 
 float WW3D::DefaultNativeScreenSize = 1.0f;
 
-RefRenderObjListClass *								WW3D::DefaultStaticSortLists = NULL;
-RefRenderObjListClass *								WW3D::CurrentStaticSortLists = NULL;
-unsigned int											WW3D::MinStaticSortLevel = 1;	// The 0 list is not used
-unsigned int											WW3D::MaxStaticSortLevel = MAX_SORT_LEVEL;
+RefRenderObjListClass* WW3D::DefaultStaticSortLists = NULL;
+RefRenderObjListClass* WW3D::CurrentStaticSortLists = NULL;
+unsigned int WW3D::MinStaticSortLevel = 1;	// The 0 list is not used
+unsigned int WW3D::MaxStaticSortLevel = MAX_SORT_LEVEL;
 
 
-VertexMaterialClass *								WW3D::DefaultDebugMaterial  = NULL;
-ShaderClass												WW3D::DefaultDebugShader(DEFAULT_DEBUG_SHADER_BITS);
-ShaderClass												WW3D::LightmapDebugShader(LIGHTMAP_DEBUG_SHADER_BITS);
+VertexMaterialClass* WW3D::DefaultDebugMaterial  = NULL;
+ShaderClass WW3D::DefaultDebugShader(DEFAULT_DEBUG_SHADER_BITS);
+ShaderClass WW3D::LightmapDebugShader(LIGHTMAP_DEBUG_SHADER_BITS);
 
-WW3D::PrelitModeEnum									WW3D::PrelitMode = PRELIT_MODE_LIGHTMAP_MULTI_PASS;
-bool														WW3D::ExposePrelit = false;
+WW3D::PrelitModeEnum WW3D::PrelitMode = PRELIT_MODE_LIGHTMAP_MULTI_PASS;
+bool WW3D::ExposePrelit = false;
 
-bool														WW3D::SnapshotActivated=false;
-bool														WW3D::ThumbnailEnabled=true;
+bool WW3D::SnapshotActivated = false;
+bool WW3D::ThumbnailEnabled = true;
 
-WW3D::MeshDrawModeEnum								WW3D::MeshDrawMode = MESH_DRAW_MODE_OLD;
-WW3D::NPatchesGapFillingModeEnum					WW3D::NPatchesGapFillingMode = NPATCHES_GAP_FILLING_ENABLED;
-unsigned													WW3D::NPatchesLevel=1;
-bool														WW3D::IsTexturingEnabled=true;
+WW3D::MeshDrawModeEnum WW3D::MeshDrawMode = MESH_DRAW_MODE_OLD;
+WW3D::NPatchesGapFillingModeEnum WW3D::NPatchesGapFillingMode = NPATCHES_GAP_FILLING_ENABLED;
+unsigned WW3D::NPatchesLevel = 1;
+bool WW3D::IsTexturingEnabled = true;
 
-static HWND												_Hwnd = NULL;		// Not a member to hide windows from WW3D users
-static int												_TextureReduction = 0;
-int														WW3D::LastFrameMemoryAllocations;
-int														WW3D::LastFrameMemoryFrees;
+static HWND _Hwnd = NULL;		// Not a member to hide windows from WW3D users
+static int _TextureReduction = 0;
+int WW3D::LastFrameMemoryAllocations;
+int WW3D::LastFrameMemoryFrees;
 
-int														WW3D::TextureFilter;
+int WW3D::TextureFilter;
 
-bool														WW3D::Lite = false;
+bool WW3D::Lite = false;
 
 /**********************************************************************************
 **
@@ -256,8 +238,7 @@ void WW3D::Set_NPatches_Level(unsigned level)
  * HISTORY:                                                                                    *
  *   3/24/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType WW3D::Init(void *hwnd, char *defaultpal, bool lite)
-{
+WW3DErrorType WW3D::Init( void *hwnd, char* defaultpal, bool lite ){
 	assert(IsInitted == false);
 	WWDEBUG_SAY(("WW3D::Init hwnd = %p\n",hwnd));
 	_Hwnd = (HWND)hwnd;
@@ -274,7 +255,7 @@ WW3DErrorType WW3D::Init(void *hwnd, char *defaultpal, bool lite)
 	WWDEBUG_SAY(("Allocate Debug Resources\n"));
 	Allocate_Debug_Resources();
 
- 	MMRESULT r=timeBeginPeriod(1);
+ 	MMRESULT r = timeBeginPeriod(1);
 	WWASSERT(r==TIMERR_NOERROR);
 
 	/*
@@ -282,8 +263,8 @@ WW3DErrorType WW3D::Init(void *hwnd, char *defaultpal, bool lite)
 	*/
 	if (!lite) {
 		WWDEBUG_SAY(("Init Dazzles\n"));
-		FileClass * dazzle_ini_file = _TheFileFactory->Get_File(DAZZLE_INI_FILENAME);
-		if (dazzle_ini_file) {
+		FileClass* dazzle_ini_file = _TheFileFactory->Get_File( DAZZLE_INI_FILENAME );
+		if( dazzle_ini_file ){
 			INIClass dazzle_ini(*dazzle_ini_file);
 			DazzleRenderObjClass::Init_From_INI(&dazzle_ini);
 			_TheFileFactory->Return_File(dazzle_ini_file);
@@ -791,12 +772,9 @@ WW3DErrorType WW3D::Begin_Render(bool clear,bool clearz,const Vector3 & color, v
 	WWMemoryLogClass::Reset_Counters();
 
 	TextureLoader::Update(network_callback);
-//	TextureClass::_Reset_Time_Stamp();
 	DynamicVBAccessClass::_Reset(true);
 	DynamicIBAccessClass::_Reset(true);
-#ifdef WW3D_DX8
-	TextureFileClass::Update_Texture_Flash();
-#endif //WW3D_DX8
+	
 	Debug_Statistics::Begin_Statistics();
 
 	if (IsCapturing && (!PauseRecord || RecordNextFrame)) {
@@ -1634,20 +1612,20 @@ float	WW3D::Get_Movie_Capture_Frame_Rate( void )
  * HISTORY:                                                                                    *
  *   5/19/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void	WW3D::Set_Texture_Reduction( int value )
-{
-	if (_TextureReduction != value) {
+void WW3D::Set_Texture_Reduction( int value ){
+	if( _TextureReduction != value ){
 		_TextureReduction=value;
 		_Invalidate_Textures();
 	}
 }
 
 
-void WW3D::Enable_Texturing(bool b)
-{
-	if (b==IsTexturingEnabled) return;
-	IsTexturingEnabled=b;
-//	_Invalidate_Textures();
+void WW3D::Enable_Texturing( bool b ){
+	if( b == IsTexturingEnabled ){
+		return;
+	}
+
+	IsTexturingEnabled = b;
 }
 
 
@@ -1663,8 +1641,7 @@ void WW3D::Enable_Texturing(bool b)
  * HISTORY:                                                                                    *
  *   11/25/99    TSS : Created.                                                                 *
  *=============================================================================================*/
-int	WW3D::Get_Texture_Reduction( void )
-{
+int	WW3D::Get_Texture_Reduction(void){
 	return _TextureReduction;
 }
 
@@ -1736,18 +1713,7 @@ ShaderClass	WW3D::Peek_Lightmap_Debug_Shader(void)
  * HISTORY:                                                                                    *
  *   7/21/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void WW3D::Allocate_Debug_Resources(void)
-{
-#ifdef WWDEBUG
-	WWASSERT(DefaultDebugMaterial == NULL);
-	DefaultDebugMaterial = new VertexMaterialClass;
-	DefaultDebugMaterial->Set_Shininess(0.0f);
-	DefaultDebugMaterial->Set_Opacity(1.0f);
-	DefaultDebugMaterial->Set_Ambient(0,0,0);
-	DefaultDebugMaterial->Set_Diffuse(0,0,0);
-	DefaultDebugMaterial->Set_Specular(0,0,0);
-	DefaultDebugMaterial->Set_Emissive(0,0,0);
-#endif
+void WW3D::Allocate_Debug_Resources(void){
 }
 
 /***********************************************************************************************
@@ -1762,31 +1728,11 @@ void WW3D::Allocate_Debug_Resources(void)
  * HISTORY:                                                                                    *
  *   7/21/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void WW3D::Release_Debug_Resources(void)
-{
-#ifdef WWDEBUG
-	WWASSERT(DefaultDebugMaterial);
-	REF_PTR_RELEASE(DefaultDebugMaterial);
-#endif
+void WW3D::Release_Debug_Resources(void){
 }
 
 
-WW3DErrorType WW3D::On_Deactivate_App(void)
-{
-#ifdef WW3D_DX8
-	assert(!IsRendering);
-
-	if ( Gerd == NULL )
-		return WW3D_ERROR_OK;
-
-	if ( IsWindowed )
-		return WW3D_ERROR_OK;
-
-	if ( !Gerd->isWindowOpen() )
-		return WW3D_ERROR_OK;
-
-	Gerd->closeWindow();
-#endif //WW3D_DX8
+WW3DErrorType WW3D::On_Deactivate_App(void){
 	return WW3D_ERROR_OK;
 }
 
@@ -1905,8 +1851,7 @@ void WW3D::Override_Current_Static_Sort_Lists(RefRenderObjListClass *sort_list, 
 	}
 }
 
-void WW3D::Reset_Current_Static_Sort_Lists_To_Default(void)
-{
+void WW3D::Reset_Current_Static_Sort_Lists_To_Default(void){
 	CurrentStaticSortLists = DefaultStaticSortLists;
 	MinStaticSortLevel = 1;	// The 0 list is not used
 	MaxStaticSortLevel = MAX_SORT_LEVEL;

@@ -145,8 +145,7 @@ void INIClass::Shutdown(void){
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-INIClass::INIClass(void)
-:	Filename(0 ){
+INIClass::INIClass(void) : Filename( 0 ){
 	Initialize();
 }
 
@@ -162,10 +161,9 @@ INIClass::INIClass(void)
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-INIClass::INIClass( FileClass&  file )
-:	Filename(0 ){
+INIClass::INIClass( FileClass& file ) : Filename( 0 ){
 	Initialize();
-	Load(file);
+	Load( file );
 }
 
 /***********************************************************************************************
@@ -180,13 +178,12 @@ INIClass::INIClass( FileClass&  file )
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-INIClass::INIClass(const char* filename)
-:	Filename(0 ){
+INIClass::INIClass( const char* filename) : Filename( 0 ){
 	Initialize();
-	FileClass* file=_TheFileFactory->Get_File(filename);
+	FileClass* file=_TheFileFactory->Get_File( filename );
 	if( file ){
-		Load(*file);
-		_TheFileFactory->Return_File(file);
+		Load( *file );
+		_TheFileFactory->Return_File( file );
 	}
 }
 
@@ -275,8 +272,7 @@ bool INIClass::Clear(char const*  section, char const*  entry ){
  * HISTORY:                                                                                    *
  *   9/7/2001   AJA:  Created.                                                                 *
  *=============================================================================================*/
-const char*  INIClass::Get_Filename (void) const
-{
+const char* INIClass::Get_Filename(void) const {
 	return Filename;
 }
 
@@ -294,11 +290,11 @@ const char*  INIClass::Get_Filename (void) const
  * HISTORY:                                                                                    *
  *   07/02/1996 JLB : Created.                                                                 *
  *=============================================================================================*/
-int INIClass::Load(FileClass&  file ){
-	FileStraw fs(file);
+int INIClass::Load( FileClass& file ){
+	FileStraw fs = new FileStraw( file );
 	delete[] Filename;
-	Filename = nstrdup(file.File_Name());
-	return(Load(fs));
+	Filename = nstrdup( file.File_Name() );
+	return Load( fs );
 }
 
 /***********************************************************************************************
@@ -315,13 +311,13 @@ int INIClass::Load(FileClass&  file ){
  * HISTORY:                                                                                    *
  *   08/01/2000 NAK : Created.                                                                 *
  *=============================================================================================*/
-int INIClass::Load(const char* filename ){
-	file_auto_ptr file(_TheFileFactory, filename);
-	int retval=Load(*file);
+int INIClass::Load( const char* filename ){
+	file_auto_ptr file = new file_auto_ptr( _TheFileFactory, filename );
+	int retval = Load( *file );
 	delete[] Filename;
-	Filename = nstrdup(filename);
+	Filename = nstrdup( filename );
 
-	return(retval);
+	return retval;
 }
 
 /***********************************************************************************************
@@ -342,7 +338,7 @@ int INIClass::Load(const char* filename ){
  *   03/22/2001 AJA : Treat "foobar=" as a valid entry with value " ".                         *
  *   08/23/2001 AJA : Make the loading of "foobar=" dependant on the KeepBlankEntries flag.    *
  *=============================================================================================*/
-int INIClass::Load(Straw&  ffile ){
+int INIClass::Load( Straw&  ffile ){
 	bool end_of_file = false;
 	char buffer[MAX_LINE_LENGTH];
 
@@ -355,10 +351,10 @@ int INIClass::Load(Straw&  ffile ){
 		merge = true;
 	}
 
-	CacheStraw file;
-	file.Get_From(ffile);
+	CacheStraw file = new CacheStraw();
+	file.Get_From( ffile );
 
-// Prescan until the first section is found.
+	// Prescan until the first section is found.
 	while( !end_of_file ){
 		Read_Line( file, buffer, sizeof(buffer), end_of_file );
 		if( end_of_file ) return(false);
@@ -366,7 +362,7 @@ int INIClass::Load(Straw&  ffile ){
 	}
 
 	if( merge ){
-// Process a section. The buffer is prefilled with the section name line.
+        // Process a section. The buffer is prefilled with the section name line.
 		while( !end_of_file ){
 			/*
 			**	Fetch the section name. Preserve it while the section's entries are
@@ -379,7 +375,7 @@ int INIClass::Load(Straw&  ffile ){
 			char section[64];
 			strcpy(section, buffer);
 
-// Read in the entries of this section.
+            // Read in the entries of this section.
 			while( !end_of_file ){
 				/*
 				**	If this line is the start of another section, then bail out
@@ -387,18 +383,24 @@ int INIClass::Load(Straw&  ffile ){
 				**	care of it.
 				*/
 				int len = Read_Line(file, buffer, sizeof(buffer), end_of_file);
-				if( buffer[0] == '[' && strchr(buffer, ']') != NULL) break;
+				if( buffer[0] == '[' && strchr(buffer, ']') != NULL ){
+                    break;
+                }
 
-// Determine if this line is a comment or blank line. Throw it out if it is.
+                // Determine if this line is a comment or blank line. Throw it out if it is.
 				Strip_Comments(buffer);
-				if( len == 0 || buffer[0] == ';' || buffer[0] == '=') continue;
+				if( len == 0 || buffer[0] == ';' || buffer[0] == '='){
+                    continue;
+                }
 
 				/*
 				**	The line isn't an obvious comment. Make sure that there is the "=" character
 				**	at an appropriate spot.
 				*/
-				char*  divider = strchr(buffer, '=');
-				if( !divider) continue;
+				char* divider = strchr( buffer, '=' );
+				if( !divider ){
+                    continue;
+                }
 
 				/*
 				**	Split the line into entry and value sections. Be sure to catch the
@@ -425,19 +427,19 @@ int INIClass::Load(Straw&  ffile ){
 		}
 
 	} else {
-// Process a section. The buffer is prefilled with the section name line.
+        // Process a section. The buffer is prefilled with the section name line.
 		while( !end_of_file ){
 			buffer[0] = ' ';
 			char*  ptr = strchr(buffer, ']');
 			if( ptr != NULL) *ptr = '\0';
 			strtrim(buffer);
-			INISection*  secptr = new INISection(strdup(buffer));
+			INISection* secptr = new INISection(strdup(buffer));
 			if( secptr == NULL ){
 				Clear();
-				return(false);
+				return false;
 			}
 
-// Read in the entries of this section.
+            // Read in the entries of this section.
 			while( !end_of_file ){
 				/*
 				**	If this line is the start of another section, then bail out
@@ -445,18 +447,24 @@ int INIClass::Load(Straw&  ffile ){
 				**	care of it.
 				*/
 				int len = Read_Line(file, buffer, sizeof(buffer), end_of_file);
-				if( buffer[0] == '[' && strchr(buffer, ']') != NULL) break;
+				if( buffer[0] == '[' && strchr(buffer, ']') != NULL){
+                    break;
+                }
 
-// Determine if this line is a comment or blank line. Throw it out if it is.
-				Strip_Comments(buffer);
-				if( len == 0 || buffer[0] == ';' || buffer[0] == '=') continue;
+                // Determine if this line is a comment or blank line. Throw it out if it is.
+				Strip_Comments( buffer );
+				if( len == 0 || buffer[0] == ';' || buffer[0] == '=' ){
+                    continue;
+                }
 
 				/*
 				**	The line isn't an obvious comment. Make sure that there is the "=" character
 				**	at an appropriate spot.
 				*/
-				char*  divider = strchr(buffer, '=');
-				if( !divider) continue;
+				char* divider = strchr( buffer, '=' );
+				if( !divider ){
+                    continue;
+                }
 
 				/*
 				**	Split the line into entry and value sections. Be sure to catch the
@@ -465,23 +473,26 @@ int INIClass::Load(Straw&  ffile ){
 				** depending on the value of KeepBlankEntries.
 				*/
 				*divider++ = '\0';
-				strtrim(buffer);
-				if( !strlen(buffer)) continue;
+				strtrim( buffer );
+				if( !strlen(buffer) ){
+                    continue;
+                }
 
-				strtrim(divider);
-				if( !strlen(divider) ){
-					if( KeepBlankEntries)
+				strtrim( divider );
+				if( !strlen( divider ) ){
+					if( KeepBlankEntries){
 						divider = " ";
-					else
+                    }else{
 						continue;
+                    }
 				}
 
 
-				INIEntry*  entryptr = new INIEntry(strdup(buffer), strdup(divider));
+				INIEntry* entryptr = new INIEntry( strdup( buffer ), strdup( divider ) );
 				if( entryptr == NULL ){
 					delete secptr;
 					Clear();
-					return(false);
+					return false;
 				}
 
 				// 12/09/97 EHC - check to see if an entry with this ID already exists
@@ -491,8 +502,8 @@ int INIClass::Load(Straw&  ffile ){
 					continue;
 				}
 
-				secptr->EntryIndex.Add_Index(entryptr->Index_ID(), entryptr);
-				secptr->EntryList.Add_Tail(entryptr);
+				secptr->EntryIndex.Add_Index( entryptr->Index_ID(), entryptr );
+				secptr->EntryList.Add_Tail( entryptr );
 			}
 
 			/*
@@ -502,12 +513,12 @@ int INIClass::Load(Straw&  ffile ){
 			if( secptr->EntryList.Is_Empty() ){
 				delete secptr;
 			} else {
-				SectionIndex->Add_Index(secptr->Index_ID(), secptr);
-				SectionList->Add_Tail(secptr);
+				SectionIndex->Add_Index( secptr->Index_ID(), secptr );
+				SectionList->Add_Tail( secptr );
 			}
 		}
 	}
-	return(true);
+	return true;
 }
 
 /***********************************************************************************************

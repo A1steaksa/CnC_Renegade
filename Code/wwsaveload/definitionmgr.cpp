@@ -655,7 +655,6 @@ bool DefinitionMgrClass::Load_Objects( ChunkLoadClass& cload ){
 		// Load this definition from the chunk (if possible)
 		PersistFactoryClass* factory = SaveLoadSystemClass::Find_Persist_Factory( cload.Cur_Chunk_ID() );
 		if( factory != NULL ){
-			
 			DefinitionClass* definition = (DefinitionClass*) factory->Load( cload );
 			if( definition != NULL ){
 				// Add this definition to our array
@@ -669,11 +668,11 @@ bool DefinitionMgrClass::Load_Objects( ChunkLoadClass& cload ){
 
 	// Sort the definitions
 	if( _DefinitionCount > 0 ){
-		::qsort (_SortedDefinitionArray, _DefinitionCount, sizeof(DefinitionClass*), fnCompareDefinitionsCallback);
+		::qsort( _SortedDefinitionArray, _DefinitionCount, sizeof(DefinitionClass*), fnCompareDefinitionsCallback );
 	}
 
 	// Assign a mgr link to each definition
-	for (int index = 0; index < _DefinitionCount; index ++) {
+	for( int index = 0; index < _DefinitionCount; index++ ){
 		_SortedDefinitionArray[index]->m_DefinitionMgrLink = index;
 	}
 

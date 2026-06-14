@@ -54,8 +54,8 @@
 
 
 // Hibernate after 30 seconds
-#define	HIBERNATION_DELAY		30
-bool _DisplayHibernating	= false;
+#define	HIBERNATION_DELAY 30
+bool _DisplayHibernating = false;
 
 /*
 ** PhysicalGameObjDef
@@ -104,7 +104,6 @@ enum {
 	MICROCHUNKID_DEF_ORATOR_TYPE,
 	MICROCHUNKID_DEF_USE_CREATION_EFFECT, 
 };
-
 
 bool PhysicalGameObjDef::Save( ChunkSaveClass & csave ){
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
@@ -209,8 +208,7 @@ PhysicalGameObj::PhysicalGameObj( void ) :
 	PendingHostObjID( 0 ),
 	HUDPokableIndicatorEnabled( false ),
 	IsInnateConversationsEnabled( true ){
-   Reset_Server_Skips(255);
-	return;
+    Reset_Server_Skips(255);
 }
 
 PhysicalGameObj::~PhysicalGameObj( void ){
@@ -228,8 +226,7 @@ PhysicalGameObj::~PhysicalGameObj( void ){
 	REF_PTR_RELEASE( ActiveConversation );
 }
 
-
-void PhysicalGameObj::Init( const PhysicalGameObjDef & definition ){
+void PhysicalGameObj::Init( const PhysicalGameObjDef& definition ){
 	DamageableGameObj::Init( definition );
 	Copy_Settings( definition );
 
@@ -239,24 +236,17 @@ void PhysicalGameObj::Init( const PhysicalGameObjDef & definition ){
 	** If the definition calls for it, add a material effect to the object
 	*/
 	if( definition.UseCreationEffect ){
-		PhysClass * physobj = Peek_Physical_Object();
-		if(physobj != NULL){
-			TransitionEffectClass * effect = CombatMaterialEffectManager::Get_Spawn_Effect();
-			physobj->Add_Effect_To_Me(effect);
-			REF_PTR_RELEASE(effect);
+		PhysClass* physobj = Peek_Physical_Object();
+		if( physobj != NULL ){
+			TransitionEffectClass* effect = CombatMaterialEffectManager::Get_Spawn_Effect();
+			physobj->Add_Effect_To_Me( effect );
+			REF_PTR_RELEASE( effect );
 		}
 	}
-
-
-	return;
 }
 
-
 void PhysicalGameObj::Copy_Settings( const PhysicalGameObjDef & definition ){
-
-	// 
 	// Release our hold on the physics object
-	// 
 	if( PhysObj != NULL ){
 		COMBAT_SCENE->Remove_Object( PhysObj );
 		PhysObj->Release_Ref();
@@ -267,7 +257,7 @@ void PhysicalGameObj::Copy_Settings( const PhysicalGameObjDef & definition ){
 	WWASSERT( PhysObj == NULL );
 	DefinitionClass * podef = DefinitionMgrClass::Find_Definition( definition.PhysDefID );
 	WWASSERT( SuperClassID_From_ClassID( podef->Get_Class_ID() ) == CLASSID_PHYSICS );
-	PhysObj = (PhysClass *)podef->Create();
+	PhysObj = (PhysClass*) podef->Create();
 	WWASSERT( PhysObj != NULL );
 
 	PhysObj->Set_Collision_Group( DEFAULT_COLLISION_GROUP );
@@ -282,12 +272,10 @@ void PhysicalGameObj::Copy_Settings( const PhysicalGameObjDef & definition ){
 	Enable_Hibernation( definition.DefaultHibernationEnable );
 
 	Reset_Radar_Blip_Shape_Type();
-	return;
 }
 
-
 void PhysicalGameObj::Re_Init( const PhysicalGameObjDef & definition ){
-	Matrix3D tm				= Get_Transform();
+	Matrix3D tm = Get_Transform();
 
 	// Re-initialize the base class
 	DamageableGameObj::Re_Init( definition );
@@ -297,9 +285,7 @@ void PhysicalGameObj::Re_Init( const PhysicalGameObjDef & definition ){
 
 	// Restore the necessary settings
 	Set_Transform( tm );
-	return;
 }
-
 
 const PhysicalGameObjDef & PhysicalGameObj::Get_Definition( void ) const {
 	return(const PhysicalGameObjDef &)BaseGameObj::Get_Definition();
@@ -471,8 +457,7 @@ void PhysicalGameObj::On_Post_Load(void){
 	DamageableGameObj::On_Post_Load();
 }
 
-
-AnimControlClass*	PhysicalGameObj::Get_Anim_Control( void ){
+AnimControlClass* PhysicalGameObj::Get_Anim_Control( void ){
 	return AnimControl;
 }
 
@@ -501,13 +486,9 @@ void PhysicalGameObj::Apply_Damage( const OffenseObjectClass & damager, float sc
 	DamageableGameObj::Apply_Damage( damager, scale );
 }
 
-
-void PhysicalGameObj::Apply_Damage_Extended( const OffenseObjectClass & damager, float scale,
-			const	Vector3 & direction, const char * collision_box_name ){
-		Apply_Damage( damager, scale );
-	}
+void PhysicalGameObj::Apply_Damage_Extended( const OffenseObjectClass& damager, float scale, const Vector3& direction, const char* collision_box_name ){
+    Apply_Damage( damager, scale );
 }
-
 
 void PhysicalGameObj::Completely_Damaged( const OffenseObjectClass & damager ){
 	if( Get_Definition().KilledExplosion != 0 ){
@@ -628,7 +609,7 @@ void PhysicalGameObj::Post_Think( void ){
 	}
 
 	if( AnimControl != NULL ){
-		bool	anim_complete = AnimControl->Is_Complete();
+		bool anim_complete = AnimControl->Is_Complete();
 
 		AnimControl->Update( TimeManager::Get_Frame_Seconds() );	// update the animation control
 
@@ -664,7 +645,7 @@ void PhysicalGameObj::Set_Collision_Group( int group ){
 	Peek_Physical_Object()->Set_Collision_Group( group ); 
 }
 
-void PhysicalGameObj::Attach_To_Object_Bone( PhysicalGameObj * host, const char * bone_name ){
+void PhysicalGameObj::Attach_To_Object_Bone( PhysicalGameObj* host, const char * bone_name ){
 	// Make sure we get teleported immeadiately!
 	Teleport_To_Host_Bone();
 
@@ -716,7 +697,6 @@ void PhysicalGameObj::Increment_Server_Skips(void){
 	}
 }
 
-
 void PhysicalGameObj::Reset_Radar_Blip_Color_Type( void ){
 	switch( Get_Player_Type() ){
 		case PLAYERTYPE_NOD:	RadarBlipColorType = RadarManager::BLIP_COLOR_TYPE_NOD; break;
@@ -726,7 +706,6 @@ void PhysicalGameObj::Reset_Radar_Blip_Color_Type( void ){
 		default:				RadarBlipColorType = RadarManager::BLIP_COLOR_TYPE_NEUTRAL; break;
 	}
 }
-
 
 void PhysicalGameObj::Set_Animation( const char *animation_name, bool looping, float frame_offset ){
 	if( AnimControl == NULL ){
@@ -786,14 +765,14 @@ const Matrix3D& PhysicalGameObj::Get_Transform(void) const {
 	return Peek_Physical_Object()->Get_Transform();
 }
 
-void PhysicalGameObj::Get_Position(Vector3 * set_pos) const { 
-	WWASSERT(Peek_Physical_Object() != NULL);
-	Peek_Physical_Object()->Get_Position(set_pos); 
+void PhysicalGameObj::Get_Position( Vector3* set_pos ) const { 
+	WWASSERT( Peek_Physical_Object() != NULL );
+	Peek_Physical_Object()->Get_Position( set_pos ); 
 }
 
-void PhysicalGameObj::Set_Position(const Vector3 & pos){ 
-	WWASSERT(Peek_Physical_Object() != NULL);
-	Peek_Physical_Object()->Set_Position(pos); 
+void PhysicalGameObj::Set_Position( const Vector3& pos ){ 
+	WWASSERT( Peek_Physical_Object() != NULL );
+	Peek_Physical_Object()->Set_Position( pos ); 
 }
 
 float PhysicalGameObj::Get_Facing(void) const{ 
@@ -822,7 +801,6 @@ void PhysicalGameObj::End_Hibernation( void ){
 	}
 }
 
-
 void PhysicalGameObj::Get_Information( StringClass & string ){
 	StringClass temp;
 
@@ -841,7 +819,6 @@ void PhysicalGameObj::Get_Information( StringClass & string ){
 
 	DamageableGameObj::Get_Information( string );
 }
-
 
 void PhysicalGameObj::Export_Creation( BitStreamClass &packet ){
 	DamageableGameObj::Export_Creation( packet );
@@ -862,7 +839,6 @@ void PhysicalGameObj::Export_Creation( BitStreamClass &packet ){
 
 	return;
 }
-
 
 void PhysicalGameObj::Import_Creation( BitStreamClass &packet ){
 	DamageableGameObj::Import_Creation( packet );
@@ -885,7 +861,6 @@ void PhysicalGameObj::Import_Creation( BitStreamClass &packet ){
 
 	return;
 }
-
 
 void PhysicalGameObj::Export_Rare( BitStreamClass &packet ){
 	DamageableGameObj::Export_Rare( packet );
@@ -947,7 +922,6 @@ void PhysicalGameObj::Export_Rare( BitStreamClass &packet ){
 
 	return;
 }
-
 
 void PhysicalGameObj::Import_Rare( BitStreamClass &packet ){
 	DamageableGameObj::Import_Rare( packet );
@@ -1038,12 +1012,9 @@ void PhysicalGameObj::Import_Frequent( BitStreamClass &packet ){
 	}
 }
 
-
-void PhysicalGameObj::Set_Conversation( ActiveConversationClass *conversation ){
+void PhysicalGameObj::Set_Conversation( ActiveConversationClass* conversation ){
 	REF_PTR_SET(ActiveConversation, conversation);
-	return;
 }
-
 
 void PhysicalGameObj::Hide_Muzzle_Flashes( bool hide ){
 	RenderObjClass * model = Peek_Model();
@@ -1058,7 +1029,6 @@ void PhysicalGameObj::Hide_Muzzle_Flashes( bool hide ){
 	}
 }
 
-
 int PhysicalGameObj::Get_Vis_ID(){
 	PhysClass *phys_obj	= Peek_Physical_Object();
 
@@ -1072,35 +1042,28 @@ int PhysicalGameObj::Get_Vis_ID(){
 	return -1;
 }
 
-
 void PhysicalGameObj::Set_Player_Type(int id){
 	DamageableGameObj::Set_Player_Type(id);
 
 	Reset_Radar_Blip_Color_Type();
 }
 
-
 void PhysicalGameObj::Enable_HUD_Pokable_Indicator( bool enable ){ 
 	HUDPokableIndicatorEnabled = enable; 
 	Set_Object_Dirty_Bit( NetworkObjectClass::BIT_RARE, true );
 }
 
+void PhysicalGameObj::Object_Shattered_Something( PhysClass* observed_obj, PhysClass* shattered_obj, int surface_type ){
+	const Matrix3D& tm = observed_obj->Get_Transform();
 
-void PhysicalGameObj::Object_Shattered_Something
-(
-	PhysClass * observed_obj, 
-	PhysClass * shattered_obj, 
-	int surface_type
-){
-	const Matrix3D & tm = observed_obj->Get_Transform();
-
-	SurfaceEffectsManager::Apply_Effect(	surface_type, 
-														SurfaceEffectsManager::HITTER_TYPE_BULLET, 
-														tm, 
-														NULL,		
-														NULL,
-														false,	// no decals
-														false		// no emitter
-														);
+	SurfaceEffectsManager::Apply_Effect(
+        surface_type, 
+        SurfaceEffectsManager::HITTER_TYPE_BULLET, 
+        tm, 
+        NULL,		
+        NULL,
+        false, // no decals
+        false  // no emitter
+    );
 }
 

@@ -211,72 +211,6 @@ RenderObjClass & RenderObjClass::operator = (const RenderObjClass & that)
 	}
 	return *this;
 }
-	
-
-/***********************************************************************************************
- * RenderObjClass::Calculate_Texture_Reduction_Factor -- calculate texture reduction factor.   *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *  04/08/99    NH : Created.                                                                  *
- *=============================================================================================*/
-/*
-float RenderObjClass::Calculate_Texture_Reduction_Factor(float norm_screensize)
-{
-	// NOTE: The texture reduction factor represents the number of powers of two that the texture
-	// must be reduced by in both dimensions. The reason that such an inherently integral quantity
-	// is represented as a float is for the texture reduction algorithms to incorporate hysteresis
-	// properly.
-	float reduction = sqrt(Get_Native_Screen_Size() / norm_screensize);
-	reduction = MAX(1.0f, reduction);
-
-	// We want to calculate the log base 2. Since the standard libraries have no log-base-2
-	// function, we use the following: log-base-2(x) = log(x)/log(2) where log is the natural
-	// logarithm (which does exist in the stadard libraries).
-	// We precalculare 1/log(2) as 1.442695f.
-	return  log(reduction) * 1.442695f;
-}
-*/
-
-/***********************************************************************************************
- * RenderObjClass::Set_Texture_Reduction_Factor -- set texture reduction factor.               *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *  04/08/99    NH : Created.                                                                  *
- *=============================================================================================*/
-/*
-void RenderObjClass::Set_Texture_Reduction_Factor(float trf)
-{
-	WWASSERT(0);	// Texture reduction system is broken! Don't call!
-	MaterialInfoClass *minfo = Get_Material_Info();
-	if (minfo) {
-		minfo->Set_Texture_Reduction_Factor(trf);
-		minfo->Release_Ref();
-	} else {
-		int num_obj = Get_Num_Sub_Objects();
-		RenderObjClass *sub_obj;
-
-		for (int i = 0; i < num_obj; i++) {
-			sub_obj = Get_Sub_Object(i);
-			if (sub_obj) {
-				sub_obj->Set_Texture_Reduction_Factor(trf);
-				sub_obj->Release_Ref();
-			}
-		}
-	}
-}
-*/
 
 /***********************************************************************************************
  * RenderObjClass::Get_Screen_Size -- get normalized area of object.                           *
@@ -586,18 +520,6 @@ int RenderObjClass::Remove_Sub_Objects_From_Bone(const char * bname)
  *=============================================================================================*/
 void RenderObjClass::Prepare_LOD(CameraClass &camera)
 {
-	// Since most RenderObjClass derivatives are not LOD-capable, the default
-	// implementation just sets the texture reduction factor and doesn't do any
-	// predictive LOD preparation (except for adding the objects' cost to the
-	// total static (nonoptimizeable) cost).
-
-	// Find the maximum screen dimension of the object in pixels
-//	float norm_area = Get_Screen_Size(camera);
-
-	// Find and set texture reduction factor
-	// Jani: Don't set tex reduction, it's broken!
-//   Set_Texture_Reduction_Factor(Calculate_Texture_Reduction_Factor(norm_area));
-
 	// Since we are not adding this object to the predictive LOD optimizer,
 	// at least add its cost in.
 	PredictiveLODOptimizerClass::Add_Cost(Get_Cost());
@@ -753,7 +675,6 @@ void RenderObjClass::Remove(void)
 {
 	// All render objects have their scene pointers set.  To check if this is a "top level"
 	// object, (i.e. directly in the scene) you see if its Container pointer is NULL.
-#if 1
 	if (Container == NULL) {
 		if (Scene != NULL) {
 			Scene->Remove_Render_Object(this);
@@ -763,11 +684,6 @@ void RenderObjClass::Remove(void)
 		Container->Remove_Sub_Object(this);
 		return;
 	}
-#else
-	if (!Scene) return;
-	Scene->Remove_Render_Object(this);
-	Scene = NULL;
-#endif
 }
 
 
@@ -817,11 +733,9 @@ void RenderObjClass::Notify_Added(SceneClass * scene)
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void RenderObjClass::Notify_Removed(SceneClass * scene)
-{
+void RenderObjClass::Notify_Removed( SceneClass* scene ){
 	Scene = NULL;
 }
-
 
 /***********************************************************************************************
  * RenderObjClass::Update_Cached_Bounding_Volumes -- default collision sphere.                 *
@@ -835,17 +749,15 @@ void RenderObjClass::Notify_Removed(SceneClass * scene)
  * HISTORY:                                                                                    *
  *   11/7/97    GTH : Created.                                                                 *
  *=============================================================================================*/
-void RenderObjClass::Update_Cached_Bounding_Volumes(void) const
-{
-	Get_Obj_Space_Bounding_Box(CachedBoundingBox);
-	Get_Obj_Space_Bounding_Sphere(CachedBoundingSphere);
+void RenderObjClass::Update_Cached_Bounding_Volumes(void) const {
+	Get_Obj_Space_Bounding_Box( CachedBoundingBox );
+	Get_Obj_Space_Bounding_Sphere( CachedBoundingSphere );
 
 	CachedBoundingSphere.Center = Get_Transform() * CachedBoundingSphere.Center;
 	CachedBoundingBox.Transform(Get_Transform());
 
 	Validate_Cached_Bounding_Volumes();
 }
-
 
 /***********************************************************************************************
  * RenderObjClass::Get_Obj_Space_Bounding_Sphere -- default collision sphere.                  *
@@ -860,12 +772,10 @@ void RenderObjClass::Update_Cached_Bounding_Volumes(void) const
  *   28/8/97    NH : Created.                                                                  *
  *   2/25/99    GTH : Moved into RenderObjClass                                                *
  *=============================================================================================*/
-void RenderObjClass::Get_Obj_Space_Bounding_Sphere(SphereClass & sphere) const
-{
+void RenderObjClass::Get_Obj_Space_Bounding_Sphere( SphereClass& sphere ) const {
 	sphere.Center.Set(0,0,0);
 	sphere.Radius = 1.0f;
 }
-
 
 /***********************************************************************************************
  * RenderObjClass::Get_Obj_Space_Bounding_Box -- default collision box.                        *
@@ -880,10 +790,9 @@ void RenderObjClass::Get_Obj_Space_Bounding_Sphere(SphereClass & sphere) const
  *   28/8/97    NH : Created.                                                                  *
  *   2/25/99    GTH : Moved into RenderObjClass                                                *
  *=============================================================================================*/
-void RenderObjClass::Get_Obj_Space_Bounding_Box(AABoxClass & box) const
-{
-	box.Center.Set(0,0,0);
-	box.Extent.Set(0,0,0);
+void RenderObjClass::Get_Obj_Space_Bounding_Box( AABoxClass& box ) const {
+	box.Center.Set( 0, 0, 0 );
+	box.Extent.Set( 0, 0, 0 );
 }
 
 /***********************************************************************************************
@@ -900,8 +809,7 @@ void RenderObjClass::Get_Obj_Space_Bounding_Box(AABoxClass & box) const
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Moved into RenderObjClass                                                *
  *=============================================================================================*/
-bool RenderObjClass::Intersect(IntersectionClass *Intersection, IntersectionResultClass *Final_Result) 
-{
+bool RenderObjClass::Intersect( IntersectionClass* Intersection, IntersectionResultClass* Final_Result ){
 
 	// do the quick sphere test just to make sure it is worth the more expensive intersection test
 	if (Intersect_Sphere_Quick(Intersection, Final_Result)) {

@@ -97,117 +97,138 @@ public:
 	void				Set_Game_Title( const WCHAR* title ) {
 		GameTitle = title;
 	}
-	void				Set_Motd( const WCHAR* motd );
-	void				Set_Password( const WCHAR* password ) {
+	void Set_Motd( const WCHAR* motd );
+
+	void Set_Password( const WCHAR* password ) {
 		Password = password;
 	}
-	void				Set_Map_Name( const StringClass& map_name );
-	void				Set_Mod_Name( const StringClass& mod_name );
-	void				Set_Map_Cycle( int map, const StringClass& map_name );
-	void				Set_Owner( WideStringClass& owner );
-	bool				Set_Max_Players( int max_players );
-	bool				Set_Time_Limit_Minutes( int time_limit_minutes );
-	void				Set_Radar_Mode( RadarModeEnum mode );
-	void				Set_Intermission_Time_Seconds( int time );
-	void				Set_Version_Number( int version_number ) {
+	
+	void Set_Map_Name( const StringClass& map_name );
+	void Set_Mod_Name( const StringClass& mod_name );
+	void Set_Map_Cycle( int map, const StringClass& map_name );
+	void Set_Owner( WideStringClass& owner );
+	bool Set_Max_Players( int max_players );
+	bool Set_Time_Limit_Minutes( int time_limit_minutes );
+	void Set_Radar_Mode( RadarModeEnum mode );
+	void Set_Intermission_Time_Seconds( int time );
+	
+	void Set_Version_Number( int version_number ) {
 		VersionNumber = version_number;
 	}
-	bool				Set_Current_Players( int current_players );
-	void				Set_Ip_Address( ULONG ip_address );
-	void				Set_Port( int port );
 
-	void				Set_QuickMatch_Server( bool isServer ) {
+	bool Set_Current_Players( int current_players );
+	void Set_Ip_Address( ULONG ip_address );
+	void Set_Port( int port );
+
+	void Set_QuickMatch_Server( bool isServer ) {
 		IsQuickMatchServer.Set( isServer );
 	}
-	bool				Is_QuickMatch_Server( void ) const {
+
+	bool Is_QuickMatch_Server(void) const {
 		return IsQuickMatchServer.Get();
 	}
 
 	void Set_Clan( int slot, unsigned long clanID );
 	unsigned long Get_Clan( int slot ) const;
 
-	void Clear_Clans( void );
-	int Find_Free_Clan_Slot( void ) const;
+	void Clear_Clans(void);
+	int Find_Free_Clan_Slot(void) const;
 
 	bool Is_Clan_Competing( unsigned long clanID ) const;
-	bool Is_Clan_Game_Open( void ) const;
+	bool Is_Clan_Game_Open(void) const;
 
-	const WCHAR* Get_Game_Title( void ) const {		
-return GameTitle;
+	const WCHAR* Get_Game_Title(void) const {		
+		return GameTitle;
 	}
-	const WCHAR* Get_Motd( void ) const {
+
+	const WCHAR* Get_Motd(void) const {
 		return Motd;
 	}
-	const WCHAR* Get_Password( void ) const {
+
+	const WCHAR* Get_Password(void) const {
 		return Password;
 	}
+
 	const StringClass& Get_Mod_Name() const {
 		return ModName;
 	}
+
 	const StringClass& Get_Map_Name() const {
 		return MapName;
 	}
+
 	const StringClass& Get_Map_Cycle( int map );
-	bool				Does_Map_Exist( void );
-	const WideStringClass& Get_Owner( void )			const {		
-return Owner;
+	bool Does_Map_Exist(void);
+	
+	const WideStringClass& Get_Owner(void) const {		
+		return Owner;
 	}
-	int				Get_Max_Players( void )				const {
+
+	int Get_Max_Players(void) const {
 		return MaxPlayers;	
-}
-	int				Get_Time_Limit_Minutes( void )		const {
+	}
+	
+	int Get_Time_Limit_Minutes(void) const {
 		return TimeLimitMinutes;
 	}
-	int				Get_Intermission_Time_Seconds( void ) const {		
-return IntermissionTimeSeconds;	
-}
-	int				Get_Version_Number( void )			const {
+
+	int Get_Intermission_Time_Seconds(void) const {
+		return IntermissionTimeSeconds;	
+	}
+
+	int Get_Version_Number(void) const {
 		return VersionNumber;
 	}
-	int				Get_Current_Players( void )			const {
+
+	int Get_Current_Players(void) const {
 		return CurrentPlayers;
 	}
-	ULONG				Get_Ip_Address( void )					const {
+
+	ULONG Get_Ip_Address(void) const {
 		return IpAddress;
 	}
-	int				Get_Port( void )							const {
+
+	int Get_Port(void) const {
 		return Port;
 	}
 
-	RadarModeEnum Get_Radar_Mode( void ) const {
+	RadarModeEnum Get_Radar_Mode(void) const {
 		return RadarMode;
 	}
 
-	virtual const WCHAR* Get_Game_Name( void )			const = 0;
-	virtual GameTypeEnum	Get_Game_Type( void )			const = 0;
-	const char* Get_Game_Type_Name( void ) const;
-	virtual int		Choose_Player_Type( cPlayer* player, int team_choice, bool is_grunt );
+	virtual const WCHAR* Get_Game_Name(void) const = 0;
+	virtual GameTypeEnum Get_Game_Type(void) const = 0;
+	const char* Get_Game_Type_Name(void) const;
+	virtual int Choose_Player_Type( cPlayer* player, int team_choice, bool is_grunt );
 
-	bool				Is_Time_Limit( void )					const {		
-return TimeLimitMinutes > 0;
+	bool Is_Time_Limit(void) const {		
+		return TimeLimitMinutes > 0;
 	}
 
-	void				Rotate_Map( void );
-	void				Clear_Map_Cycle( void );
+	void Rotate_Map(void);
+	void Clear_Map_Cycle(void);
 
-	void				Set_Ip_And_Port( void );
-	virtual void	Load_From_Server_Config( void ) {
-	}
-	virtual void	Save_To_Server_Config( void ) {
+	void Set_Ip_And_Port(void);
+	virtual void Load_From_Server_Config(void){
 	}
 
-	virtual bool	Is_Editable_Teaming( void )			const {
-		return false;	
-}
-	virtual bool	Is_Editable_Clan_Game( void )		const {
-		return false;
+	virtual void Save_To_Server_Config(void){
 	}
-	virtual bool	Is_Editable_Friendly_Fire( void )	const {
+
+	virtual bool Is_Editable_Teaming(void) const {
 		return false;
 	}
 
-	virtual void	Soldier_Added( SoldierGameObj* p_soldier );
-	virtual void	Show_Game_Settings_Limits( void );
+	virtual bool Is_Editable_Clan_Game(void) const {
+		return false;
+	}
+
+	virtual bool Is_Editable_Friendly_Fire(void) const {
+		return false;
+	}
+
+	virtual void Soldier_Added( SoldierGameObj* p_soldier );
+	virtual void Show_Game_Settings_Limits(void);
 
 	//
 	//	Version information

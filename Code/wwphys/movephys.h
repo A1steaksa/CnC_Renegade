@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -58,9 +40,7 @@ class DynTexProjectClass;
 ** This interface defines basic mass and gravity settings and gives access to the object's 
 ** velocities.
 */
-class MoveablePhysClass : public DynamicPhysClass
-{
-
+class MoveablePhysClass : public DynamicPhysClass {
 public:
 
 	MoveablePhysClass(void);
@@ -154,48 +134,58 @@ protected:
 	MoveablePhysClass & operator = (const MoveablePhysClass &);
 };
 
-
-inline void MoveablePhysClass::Get_Inertia_Inv(Matrix3 * set_I_inv)					
-{ 
+inline void MoveablePhysClass::Get_Inertia_Inv( Matrix3* set_I_inv ){ 
 	set_I_inv->Make_Identity();
 	(*set_I_inv)[0][0] = MassInv;
 	(*set_I_inv)[1][1] = MassInv;
 	(*set_I_inv)[2][2] = MassInv;
 }
 
-
 /*
 ** MoveablePhysDefClass
 ** Initialization Structure/Factory/Editor Integration for a MoveablePhysClass
 */
-class MoveablePhysDefClass : public DynamicPhysDefClass
-{
+class MoveablePhysDefClass : public DynamicPhysDefClass {
 public:
 	
 	MoveablePhysDefClass(void);
 	
 	// From PhysDefClass
-	virtual const char *						Get_Type_Name(void)			{ return "MoveablePhysDef"; }
-	virtual bool								Is_Type(const char *);
+	virtual const char* Get_Type_Name(void){
+		return "MoveablePhysDef";
+	}
+
+	virtual bool Is_Type( const char* );
 
 	// From PersistClass
-	virtual bool								Save(ChunkSaveClass &csave);
-	virtual bool								Load(ChunkLoadClass &cload);
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
 
 	// In-Game Editing (DEBUGGING/TESTING ONLY)
-	float											Get_Mass(void)					{ return Mass; }
-	float											Get_Grav_Scale(void)			{ return GravScale; }
-	void											Set_Mass(float new_mass)	{ Mass = new_mass; }
-	void											Set_Grav_Scale(float new_g){ GravScale = new_g; }
+	float Get_Mass(void){
+		return Mass;
+	}
 
-	//	Editable interface requirements
-	DECLARE_EDITABLE(MoveablePhysDefClass,DynamicPhysDefClass);
+	float Get_Grav_Scale(void){
+		return GravScale;
+	}
+
+	void Set_Mass( float new_mass ){
+		Mass = new_mass;
+	}
+
+	void Set_Grav_Scale( float new_g ){
+		GravScale = new_g;
+	}
+
+	// Editable interface requirements
+	DECLARE_EDITABLE( MoveablePhysDefClass, DynamicPhysDefClass );
 
 protected:
 
-	float				Mass;
-	float				GravScale;
-	float				Elasticity;
+	float Mass;
+	float GravScale;
+	float Elasticity;
 
 	enum { 
 		CINEMATIC_COLLISION_NONE = 0, 
@@ -204,7 +194,7 @@ protected:
 		CINEMATIC_COLLISION_KILL 
 	};
 	
-	int				CinematicCollisionMode;
+	int CinematicCollisionMode;
 	
 	friend class MoveablePhysClass;
 };

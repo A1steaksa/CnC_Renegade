@@ -58,8 +58,8 @@ extern class TranslateDBClass _TheTranslateDB;
 //////////////////////////////////////////////////////////////////////////
 // Typedefs
 //////////////////////////////////////////////////////////////////////////
-typedef DynamicVectorClass<TDBObjClass *>			TDB_OBJ_LIST;
-typedef DynamicVectorClass<TDBCategoryClass *>	TDB_CATEGORY_LIST;
+typedef DynamicVectorClass<TDBObjClass*> TDB_OBJ_LIST;
+typedef DynamicVectorClass<TDBCategoryClass*> TDB_CATEGORY_LIST;
 
 extern const WCHAR *	STRING_NOT_FOUND;
 extern const char *	ENGLISH_STRING_NOT_FOUND;
@@ -67,8 +67,8 @@ extern const char *	ENGLISH_STRING_NOT_FOUND;
 //////////////////////////////////////////////////////////////////////////
 // Useful macros
 //////////////////////////////////////////////////////////////////////////
-#define TRANSLATION					TranslateDBClass::Get_String
-#define TRANSLATE						TranslateDBClass::Get_String
+#define TRANSLATION TranslateDBClass::Get_String
+#define TRANSLATE TranslateDBClass::Get_String
 #define TRANSLATE_BY_DESC(desc)	TranslateDBClass::Get_String (desc);
 
 
@@ -77,15 +77,12 @@ extern const char *	ENGLISH_STRING_NOT_FOUND;
 //	TranslateDBClass
 //
 //////////////////////////////////////////////////////////////////////////
-class TranslateDBClass : public SaveLoadSubSystemClass
-{
+class TranslateDBClass : public SaveLoadSubSystemClass {
 public:
-
 	//////////////////////////////////////////////////////////////
 	//	Public constants
 	//////////////////////////////////////////////////////////////
-	enum
-	{
+	enum {
 		LANGID_ENGLISH		= 0,
 		LANGID_FRENCH,
 		LANGID_GERMAN,
@@ -95,8 +92,7 @@ public:
 		LANGID_KOREAN
 	};
 
-	typedef enum
-	{
+	typedef enum {
 		FILTER_DISABLED		= 0,
 		FILTER_IF_EQUAL,
 		FILTER_IF_NOT_EQUAL,
@@ -105,120 +101,113 @@ public:
 	//////////////////////////////////////////////////////////////
 	//	Public constructors/destructors
 	//////////////////////////////////////////////////////////////
-	TranslateDBClass (void)				{ }
-	virtual ~TranslateDBClass (void)	{ }
+	TranslateDBClass(void){
+	}
+
+	virtual ~TranslateDBClass(void){
+	}
 
 	//////////////////////////////////////////////////////////////
 	//	Public methods
 	//////////////////////////////////////////////////////////////
 
-	//
-	//	Initialization
-	//
-	static void						Initialize (void);
-	static void						Shutdown (void);
-	static uint32					Get_Version_Number (void);
-	static void						Update_Version (void);
-	static bool						Is_Loaded()									{return (m_ObjectList.Count () > 0);}
+	// Initialization
+	static void Initialize(void);
+	static void Shutdown(void);
+	static uint32 Get_Version_Number(void);
+	static void Update_Version(void);
 
-	
-	//
+	static bool Is_Loaded(){
+		return m_ObjectList.Count () > 0;
+	}
+
 	// From SaveLoadSubSystemClass
-	//
-	virtual uint32					Chunk_ID (void) const;
-	virtual const char *			Name (void) const							{ return "TranslateDBClass"; }
-
-	//
-	//	C style header file support
-	//
-	static void						Import_Strings (const char *filename);
-	static void						Import_C_Header (const char *filename);
-	static void						Export_C_Header (const char *filename);
-	static void						Export_Table (const char *filename);
-
-	//
-	//	Data access
-	//
-	static const WCHAR *			Get_String (uint32 id);
-	static const WCHAR *			Get_String (const char *id_desc);
-	static const char *			Get_English_String (uint32 id);
-	WWINLINE static TDBObjClass *	Find_Object (uint32 id);
-	WWINLINE static TDBObjClass * Find_Object (const char *id_desc);
-
-
-	//
-	//	Content management
-	//
-	static bool						Add_Object (TDBObjClass *new_obj);
-	static bool						Remove_Object (int index);
-	static void						Remove_All (void);
+	virtual uint32 Chunk_ID(void) const;
 	
-	//
-	//	Enumeration
-	//
-	static int						Get_Object_Count (void);
-	static TDBObjClass *			Get_Object (int index);
-	static TDBObjClass *			Get_First_Object (uint32 category_id);
-	static TDBObjClass *			Get_Next_Object (uint32 category_id, TDBObjClass *curr_obj);
+	virtual const char* Name(void) const {
+		return "TranslateDBClass";
+	}
 
-	//
-	//	Category support
-	//
-	static int						Get_Category_Count (void);
-	static TDBCategoryClass *	Get_Category (int index);
-	static TDBCategoryClass *	Find_Category (uint32 id);
-	static TDBCategoryClass *	Find_Category (const char *name);
-	static TDBCategoryClass *	Add_Category (const char *name);
-	static bool						Add_Category (TDBCategoryClass *new_category, bool assign_id = true);
-	static bool						Remove_Category (int index);
+	// C style header file support
+	static void Import_Strings( const char* filename );
+	static void Import_C_Header( const char* filename );
+	static void Export_C_Header( const char* filename );
+	static void Export_Table( const char* filename );
 
-	//
-	//	Language support
-	//
-	static void						Set_Current_Language (int lang_id)	{ m_LanguageID = lang_id; }
-	static uint32					Get_Current_Language (void)			{ return m_LanguageID; }
+	// Data access
+	static const WCHAR* Get_String( uint32 id );
+	static const WCHAR* Get_String( const char* id_desc );
+	static const char* Get_English_String( uint32 id );
+	WWINLINE static TDBObjClass* Find_Object( uint32 id );
+	WWINLINE static TDBObjClass* Find_Object( const char* id_desc );
+
+	// Content management
+	static bool Add_Object( TDBObjClass* new_obj );
+	static bool Remove_Object( int index );
+	static void Remove_All(void);
 	
-	//
-	//	Save/load options
-	//
-	static bool						Is_Single_Language_Export_Enabled (void)		{ return IsSingleLanguageExport; }
-	static void						Enable_Single_Language_Export (bool onoff)	{ IsSingleLanguageExport = onoff; }
+	// Enumeration
+	static int Get_Object_Count(void);
+	static TDBObjClass* Get_Object( int index );
+	static TDBObjClass* Get_First_Object( uint32 category_id );
+	static TDBObjClass* Get_Next_Object( uint32 category_id, TDBObjClass* curr_obj );
+
+	// Category support
+	static int Get_Category_Count(void);
+	static TDBCategoryClass* Get_Category( int index );
+	static TDBCategoryClass* Find_Category( uint32 id );
+	static TDBCategoryClass* Find_Category( const char* name );
+	static TDBCategoryClass* Add_Category( const char* name );
+	static bool Add_Category( TDBCategoryClass* new_category, bool assign_id = true );
+	static bool Remove_Category( int index );
+
+	// Language support
+	static void Set_Current_Language( int lang_id ){
+		m_LanguageID = lang_id;
+	}
+
+	static uint32 Get_Current_Language(void){
+		return m_LanguageID;
+	}
 	
-	static void						Set_Export_Filter (FILTER_OPT filter, uint32 category_id);
+	// Save/load options
+	static bool Is_Single_Language_Export_Enabled(void){
+		return IsSingleLanguageExport;
+	}
+
+	static void Enable_Single_Language_Export( bool onoff ){
+		IsSingleLanguageExport = onoff;
+	}
+	
+	static void Set_Export_Filter( FILTER_OPT filter, uint32 category_id );
 
 protected:
-
 	//////////////////////////////////////////////////////////////
 	//	Protected methods
 	//////////////////////////////////////////////////////////////
 
-	//
-	//	Save/load stuff
-	//
-	virtual bool				Contains_Data(void) const;
-	virtual bool				Save (ChunkSaveClass &csave);
-	virtual bool				Load (ChunkLoadClass &cload);
+	// Save/load stuff
+	virtual bool Contains_Data(void) const;
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
 
-	bool							Load_Variables (ChunkLoadClass &cload);
-	bool							Load_Objects (ChunkLoadClass &cload);
-	bool							Load_Categories (ChunkLoadClass &cload);
+	bool Load_Variables( ChunkLoadClass& cload );
+	bool Load_Objects( ChunkLoadClass& cload );
+	bool Load_Categories( ChunkLoadClass& cload );
 
-	static void					Validate_Data (void);
+	static void Validate_Data(void);
 
-	static void					Free_Objects (void);
-	static void					Free_Categories (void);
+	static void Free_Objects(void);
+	static void Free_Categories(void);
 
-	//
-	//	ID managment
-	//
-	static uint32				Find_Unique_ID (void);
+	// ID managment
+	static uint32 Find_Unique_ID(void);
 
 
 	//////////////////////////////////////////////////////////////
 	//	Protected data types
 	//////////////////////////////////////////////////////////////
-	enum
-	{
+	enum {
 		ID_MIN	= 1000,
 		ID_MAX	= 999999
 	};
@@ -228,26 +217,24 @@ private:
 	//////////////////////////////////////////////////////////////
 	//	Private member data
 	//////////////////////////////////////////////////////////////
-	static TDB_OBJ_LIST			m_ObjectList;
+	static TDB_OBJ_LIST m_ObjectList;
 	static HashTemplateClass<StringClass,TDBObjClass*> m_ObjectHash;
-	static TDB_CATEGORY_LIST	m_CategoryList;
-	static uint32					m_VersionNumber;
-	static uint32					m_LanguageID;
-	static bool						IsSingleLanguageExport;
-	static uint32					CategoryExportFilter;
-	static FILTER_OPT				FilterType;
-	static uint32					FilterCategoryID;
+	static TDB_CATEGORY_LIST m_CategoryList;
+	static uint32 m_VersionNumber;
+	static uint32 m_LanguageID;
+	static bool IsSingleLanguageExport;
+	static uint32 CategoryExportFilter;
+	static FILTER_OPT FilterType;
+	static uint32 FilterCategoryID;
 };
 
 
 //////////////////////////////////////////////////////////////
 //	Get_String
 //////////////////////////////////////////////////////////////
-inline const WCHAR *
-TranslateDBClass::Get_String (uint32 id)
-{
+inline const WCHAR* TranslateDBClass::Get_String( uint32 id ){
 	// ID of 0 (zero) is a special case NULL string.
-	if (id == 0) {
+	if( id == 0 ){
 		return NULL;
 	}
 	

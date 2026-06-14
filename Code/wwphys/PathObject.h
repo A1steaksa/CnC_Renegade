@@ -103,7 +103,10 @@ public:
 	bool			Is_Flag_Set (Flags flag) const;
 	void			Set_Flag (Flags flag, bool onoff);
 
-	int			Get_Key_Ring (void) const	{ return m_KeyRing; }
+	int			Get_Key_Ring (void) const	{
+        return m_KeyRing; 
+    
+    }
 	void			Set_Key_Ring (int keys)		{ m_KeyRing = keys; }
 
 private:

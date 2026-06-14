@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /*********************************************************************************************** 
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               *** 
  *********************************************************************************************** 
@@ -42,7 +24,6 @@
 #include	"trim.h"
 #include	"wwfile.h"
 #include	"xstraw.h"
-//#include	<ctype.h>
 #include	<string.h>
 
 
@@ -73,10 +54,9 @@
  * HISTORY:                                                                                    * 
  *   02/06/1997 JLB : Created.                                                                 * 
  *=============================================================================================*/
-int Read_Line(FileClass & file, char * buffer, int len, bool & eof)
-{
-	FileStraw fs(file);
-	return(Read_Line(fs, buffer, len, eof));
+int Read_Line( FileClass& file, char* buffer, int len, bool & eof ){
+	FileStraw fs = file;
+	return( Read_Line( fs, buffer, len, eof ) );
 }
 
 
@@ -101,50 +81,58 @@ int Read_Line(FileClass & file, char * buffer, int len, bool & eof)
  * HISTORY:                                                                                    * 
  *   02/06/1997 JLB : Created.                                                                 * 
  *=============================================================================================*/
-int Read_Line(Straw & file, char * buffer, int len, bool & eof)
-{
-	if (len == 0 || buffer == NULL) return(0);
+int Read_Line( Straw& file, char* buffer, int len, bool& eof ){
+	if( len == 0 || buffer == NULL ){
+        return 0;
+    }
 
 	int count = 0;
-	for (;;) {
+	for( ;; ){
 		char c;
-		if (file.Get(&c, sizeof(c)) != sizeof(c)) {
+		if( file.Get( &c, sizeof(c) ) != sizeof(c) ){
 			eof = true;
 			buffer[count] = '\0';
 			break;
 		}
 
-		if (c == '\x0A') break;
-		if (c != '\x0D' && count+1 < len) {
+		if (c == '\x0A'){
+            break;
+        }
+
+		if( c != '\x0D' && count+1 < len ){
 			buffer[count++] = c;
 		}
 	}
 	buffer[count] = '\0';
 
-	strtrim(buffer);
-	return(strlen(buffer));
+	strtrim( buffer );
+	return strlen( buffer );
 }
 
-int Read_Line(Straw & file, wchar_t * buffer, int len, bool & eof)
-{
-	if (len == 0 || buffer == NULL) return(0);
+int Read_Line( Straw& file, wchar_t* buffer, int len, bool& eof ){
+	if( len == 0 || buffer == NULL){
+        return 0;
+    }
 
 	int count = 0;
-	for (;;) {
+	for( ;; ){
 		wchar_t c;
-		if (file.Get(&c, sizeof(c)) != sizeof(c)) {
+		if( file.Get( &c, sizeof(c) ) != sizeof(c) ){
 			eof = true;
 			buffer[count] = L'\0';
 			break;
 		}
 
-		if (c == L'\x0A') break;
-		if (c != L'\x0D' && count+1 < len) {
+		if( c == L'\x0A'){
+            break;
+        }
+
+		if( c != L'\x0D' && ( count + 1 ) < len ){
 			buffer[count++] = c;
 		}
 	}
 	buffer[count] = '\0';
 
-	wcstrim(buffer);
-	return(wcslen(buffer));
+	wcstrim( buffer );
+	return wcslen( buffer );
 }

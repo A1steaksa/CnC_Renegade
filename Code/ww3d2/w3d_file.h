@@ -316,7 +316,7 @@ June 5, 2001
 #define W3D_GET_MAJOR_VERSION(ver)			((ver)>>16)
 #define W3D_GET_MINOR_VERSION(ver)			((ver) & 0xFFFF)
 
-#define W3D_NAME_LEN	16
+#define W3D_NAME_LEN 16
 
 
 
@@ -512,83 +512,71 @@ typedef IOQuaternionStruct		W3dQuaternionStruct;
 /////////////////////////////////////////////////////////////////////////////////////////////
 // texture coordinate
 /////////////////////////////////////////////////////////////////////////////////////////////
-struct W3dTexCoordStruct
-{
-	bool operator == (W3dTexCoordStruct t)
-	{
+struct W3dTexCoordStruct {
+	bool operator ==( W3dTexCoordStruct t ){
 		return ((U == t.U) && (V == t.V));
 	}
 
-	float32		U;					  	// U,V coordinates
-	float32		V;
+	float32 U;					  	// U,V coordinates
+	float32 V;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // rgb color, one byte per channel, padded to an even 4 bytes
 /////////////////////////////////////////////////////////////////////////////////////////////
-struct W3dRGBStruct
-{
-	W3dRGBStruct () {} 
-	W3dRGBStruct (uint8 r, uint8 g, uint8 b)
-	{
+struct W3dRGBStruct {
+	W3dRGBStruct() {} 
+	W3dRGBStruct( uint8 r, uint8 g, uint8 b ){
 		R = r;
 		G = g;
 		B = b;
 	} 
 
-	void Set (uint8 r, uint8 g, uint8 b)
-	{
+	void Set( uint8 r, uint8 g, uint8 b ){
 		R = r;
 		G = g;
 		B = b;
 	}
 
-	void Set (float r, float g, float b)
-	{
+	void Set( float r, float g, float b ){
 		R = (unsigned char) MIN ((float) UCHAR_MAX, MAX (0.0f, r) * ((float) (UCHAR_MAX + 1)));
 		G = (unsigned char) MIN ((float) UCHAR_MAX, MAX (0.0f, g) * ((float) (UCHAR_MAX + 1)));
 		B = (unsigned char) MIN ((float) UCHAR_MAX, MAX (0.0f, b) * ((float) (UCHAR_MAX + 1)));
 	}
 
-	bool operator == (W3dRGBStruct c)
-	{
+	bool operator ==( W3dRGBStruct c ){
 		return ((R == c.R) && (G == c.G) && (B == c.B));
 	}
 
-	bool operator != (W3dRGBStruct c)
-	{
+	bool operator !=( W3dRGBStruct c ){
 		return (!(*this == c));
 	}
 	
-	W3dRGBStruct operator += (W3dRGBStruct c)
-	{
+	W3dRGBStruct operator += (W3dRGBStruct c){
 		R = MIN (((unsigned) R) + ((unsigned) c.R), (unsigned) UCHAR_MAX);
 		G = MIN (((unsigned) G) + ((unsigned) c.G), (unsigned) UCHAR_MAX);
 		B = MIN (((unsigned) B) + ((unsigned) c.B), (unsigned) UCHAR_MAX);
 		return (*this);
 	}
 
-	W3dRGBStruct operator *= (W3dRGBStruct c)
-	{
+	W3dRGBStruct operator *= (W3dRGBStruct c){
 		R = (((unsigned) R) * ((unsigned) c.R)) / ((unsigned) UCHAR_MAX);
 		G = (((unsigned) G) * ((unsigned) c.G)) / ((unsigned) UCHAR_MAX);
 		B = (((unsigned) B) * ((unsigned) c.B)) / ((unsigned) UCHAR_MAX);
 		return (*this);
 	}
 
-	unsigned Get_Color()
-	{
+	unsigned Get_Color(){
 		return (R<<24)|(G<<16)|(B<<8);
 	}
 
-	uint8			R;
-	uint8			G;
-	uint8			B;
-	uint8			pad;
+	uint8 R;
+	uint8 G;
+	uint8 B;
+	uint8 pad;
 };
 
-struct W3dRGBAStruct
-{
+struct W3dRGBAStruct {
 	uint8			R;
 	uint8			G;
 	uint8			B;
@@ -608,8 +596,7 @@ struct W3dRGBAStruct
 // the texel and the frame buffer contents.
 //
 /////////////////////////////////////////////////////////////////////////////////////////////
-struct W3dMaterialInfoStruct
-{
+struct W3dMaterialInfoStruct {
 	uint32		PassCount;				// how many material passes this render object uses
 	uint32		VertexMaterialCount;	// how many vertex materials are used
 	uint32		ShaderCount;			// how many shaders are used
@@ -673,12 +660,10 @@ struct W3dMaterialInfoStruct
 #define		W3DVERTMAT_PSX_TRANS_MINUS_100 						0x04000000
 #define		W3DVERTMAT_PSX_NO_RT_LIGHTING 						0x08000000
 
-struct W3dVertexMaterialStruct
-{
+struct W3dVertexMaterialStruct{
 	W3dVertexMaterialStruct(void) {}
 
-	bool operator == (W3dVertexMaterialStruct vm)
-	{
+	bool operator ==( W3dVertexMaterialStruct vm ){
 		return (	  Attributes   == vm.Attributes
 				  && Ambient	   == vm.Ambient
 				  && Diffuse	   == vm.Diffuse
@@ -689,23 +674,21 @@ struct W3dVertexMaterialStruct
 				  && Translucency == vm.Translucency);
 	}
 
-	bool operator != (W3dVertexMaterialStruct vm)
-	{
+	bool operator !=( W3dVertexMaterialStruct vm ){
 		return (!(*this == vm));
 	}
 	
-	uint32					Attributes;					// bitfield for the flags defined above
-	W3dRGBStruct			Ambient;
-	W3dRGBStruct			Diffuse;
-	W3dRGBStruct			Specular;
-	W3dRGBStruct			Emissive;
-	float32					Shininess;					// how tight the specular highlight will be, 1 - 1000 (default = 1)
-	float32					Opacity;						// how opaque the material is, 0.0 = invisible, 1.0 = fully opaque (default = 1)
-	float32					Translucency;				// how much light passes through the material. (default = 0)
+	uint32 Attributes;		// bitfield for the flags defined above
+	W3dRGBStruct Ambient;
+	W3dRGBStruct Diffuse;
+	W3dRGBStruct Specular;
+	W3dRGBStruct Emissive;
+	float32 Shininess;		// how tight the specular highlight will be, 1 - 1000 (default = 1)
+	float32 Opacity;		// how opaque the material is, 0.0 = invisible, 1.0 = fully opaque (default = 1)
+	float32 Translucency;	// how much light passes through the material. (default = 0)
 };
 
-inline void W3d_Vertex_Material_Reset(W3dVertexMaterialStruct * vmat) 
-{ 
+inline void W3d_Vertex_Material_Reset( W3dVertexMaterialStruct* vmat ){ 
 	vmat->Attributes = 0;
 	vmat->Ambient.R = vmat->Ambient.G = vmat->Ambient.B = 255;
 	vmat->Diffuse.R = vmat->Diffuse.G = vmat->Diffuse.B = 255;
@@ -719,8 +702,7 @@ inline void W3d_Vertex_Material_Reset(W3dVertexMaterialStruct * vmat)
 
 // W3dShaderStruct bits.  These control every setting in the shader.  Use the helper functions
 // to set them and test them more easily.
-enum
-{
+enum {
 	W3DSHADER_DEPTHCOMPARE_PASS_NEVER = 0,			// pass never (i.e. always fail depth comparison test)
 	W3DSHADER_DEPTHCOMPARE_PASS_LESS,				// pass if incoming less than stored
 	W3DSHADER_DEPTHCOMPARE_PASS_EQUAL,				// pass if incoming equal to stored
@@ -825,29 +807,29 @@ enum PS2_SHADER_SETTINGS {
 	PSS_DEPTHCOMPARE_PASS_LEQUAL,				
 };
 
-struct W3dShaderStruct
-{
-	W3dShaderStruct(void) {}
-	uint8						DepthCompare;
-	uint8						DepthMask;
-	uint8						ColorMask;		// now obsolete and ignored
-	uint8						DestBlend;
-	uint8						FogFunc;			// now obsolete and ignored
-	uint8						PriGradient;
-	uint8						SecGradient;
-	uint8						SrcBlend;
-	uint8						Texturing;
-	uint8						DetailColorFunc;
-	uint8						DetailAlphaFunc;
-	uint8						ShaderPreset;	// now obsolete and ignored
-	uint8						AlphaTest;
-	uint8						PostDetailColorFunc;
-	uint8						PostDetailAlphaFunc;
-	uint8						pad[1];
+struct W3dShaderStruct {
+	W3dShaderStruct(void){
+	}
+
+	uint8 DepthCompare;
+	uint8 DepthMask;
+	uint8 ColorMask; // now obsolete and ignored
+	uint8 DestBlend;
+	uint8 FogFunc; // now obsolete and ignored
+	uint8 PriGradient;
+	uint8 SecGradient;
+	uint8 SrcBlend;
+	uint8 Texturing;
+	uint8 DetailColorFunc;
+	uint8 DetailAlphaFunc;
+	uint8 ShaderPreset;	// now obsolete and ignored
+	uint8 AlphaTest;
+	uint8 PostDetailColorFunc;
+	uint8 PostDetailAlphaFunc;
+	uint8 pad[1];
 };
 
-struct W3dPS2ShaderStruct
-{
+struct W3dPS2ShaderStruct {
 	uint8						DepthCompare;
 	uint8						DepthMask;
 	uint8						PriGradient;
@@ -970,13 +952,14 @@ inline int W3d_Shader_Get_Post_Detail_Alpha_Func(const W3dShaderStruct * s)	 { r
 #define W3DTEXTURE_ANIM_ONCE				0x0002
 #define W3DTEXTURE_ANIM_MANUAL			0x0003
 
-struct W3dTextureInfoStruct
-{
-	W3dTextureInfoStruct(void)	{}
-	uint16					Attributes;					// flags for this texture
-	uint16					AnimType;					// animation logic
-	uint32					FrameCount;					// Number of frames (1 if not animated)
-	float32					FrameRate;					// Frame rate, frames per second in floating point
+struct W3dTextureInfoStruct {
+	W3dTextureInfoStruct(void){
+	}
+
+	uint16 Attributes; // flags for this texture
+	uint16 AnimType;   // animation logic
+	uint32 FrameCount; // Number of frames (1 if not animated)
+	float32 FrameRate; // Frame rate, frames per second in floating point
 };
 
 
@@ -984,19 +967,17 @@ struct W3dTextureInfoStruct
 // A triangle, occurs inside the W3D_CHUNK_TRIANGLES chunk
 // This was introduced with version 3.0 of the file format
 /////////////////////////////////////////////////////////////////////////////////////////////
-struct W3dTriStruct
-{
-	uint32					Vindex[3];			// vertex,vnormal,texcoord,color indices
-	uint32					Attributes;			// attributes bits
-	W3dVectorStruct		Normal;				// plane normal
-	float32					Dist;					// plane distance
+struct W3dTriStruct {
+	uint32 Vindex[3];       // vertex, vnormal, texcoord, color indices
+	uint32 Attributes;      // attributes bits
+	W3dVectorStruct Normal; // plane normal
+	float32 Dist; 			// plane distance
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Flags for the Triangle Attributes member
 /////////////////////////////////////////////////////////////////////////////////////////////
-typedef enum
-{
+typedef enum {
 	SURFACE_TYPE_LIGHT_METAL = 0,
 	SURFACE_TYPE_HEAVY_METAL,
 	SURFACE_TYPE_WATER,
@@ -1033,8 +1014,7 @@ typedef enum
 	SURFACE_TYPE_MAX			// NOTE: if you add a surface type, add it to the SurfaceEffects.INI file!
 } W3D_SURFACE_TYPES;
 
-const char * const SURFACE_TYPE_STRINGS[SURFACE_TYPE_MAX] =
-{
+const char * const SURFACE_TYPE_STRINGS[SURFACE_TYPE_MAX] = {
 	"Light Metal",
 	"Heavy Metal",
 	"Water",
@@ -1130,42 +1110,40 @@ const char * const SURFACE_TYPE_STRINGS[SURFACE_TYPE_MAX] =
 #define W3D_FACE_CHANNEL_FACE				0x00000001	// basic face info, W3dTriStruct...
 
 // boundary values for W3dMeshHeaderStruct::SortLevel
-#define SORT_LEVEL_NONE						0
-#define MAX_SORT_LEVEL						32
-#define SORT_LEVEL_BIN1						20
-#define SORT_LEVEL_BIN2						15
-#define SORT_LEVEL_BIN3						10
+#define SORT_LEVEL_NONE	0
+#define MAX_SORT_LEVEL	32
+#define SORT_LEVEL_BIN1	20
+#define SORT_LEVEL_BIN2	15
+#define SORT_LEVEL_BIN3	10
 
-struct W3dMeshHeader3Struct
-{
-	uint32					Version;							
-	uint32					Attributes;
+struct W3dMeshHeader3Struct {
+	uint32 Version;							
+	uint32 Attributes;
 	
-	char						MeshName[W3D_NAME_LEN];		
-	char						ContainerName[W3D_NAME_LEN];
+	char MeshName[W3D_NAME_LEN];		
+	char ContainerName[W3D_NAME_LEN];
 
 	//
 	// Counts, these can be regarded as an inventory of what is to come in the file.
 	//
-	uint32					NumTris;				// number of triangles
-	uint32					NumVertices;		// number of unique vertices
-	uint32					NumMaterials;		// number of unique materials
-	uint32					NumDamageStages;	// number of damage offset chunks
-	sint32					SortLevel;			// static sorting level of this mesh
-	uint32					PrelitVersion;		// mesh generated by this version of Lightmap Tool
-	uint32					FutureCounts[1];	// future counts
+	uint32 NumTris; // number of triangles
+	uint32 NumVertices; // number of unique vertices
+	uint32 NumMaterials; // number of unique materials
+	uint32 NumDamageStages;	// number of damage offset chunks
+	sint32 SortLevel; // static sorting level of this mesh
+	uint32 PrelitVersion; // mesh generated by this version of Lightmap Tool
+	uint32 FutureCounts[1];	// future counts
 
-	uint32					VertexChannels;	// bits for presence of types of per-vertex info
-	uint32					FaceChannels;		// bits for presence of types of per-face info
+	uint32 VertexChannels; // bits for presence of types of per-vertex info
+	uint32 FaceChannels; // bits for presence of types of per-face info
 	
 	//
 	// Bounding volumes
 	//
-	W3dVectorStruct		Min;					// Min corner of the bounding box
-	W3dVectorStruct		Max;					// Max corner of the bounding box
-	W3dVectorStruct		SphCenter;			// Center of bounding sphere
-	float32					SphRadius;			// Bounding sphere radius
-
+	W3dVectorStruct Min; // Min corner of the bounding box
+	W3dVectorStruct Max; // Max corner of the bounding box
+	W3dVectorStruct SphCenter; // Center of bounding sphere
+	float32 SphRadius; // Bounding sphere radius
 };
 
 //
@@ -1976,24 +1954,21 @@ struct W3dAggregateMiscInfo
 #define W3D_CURRENT_HLOD_VERSION			W3D_MAKE_VERSION(1,0)
 #define NO_MAX_SCREEN_SIZE					WWMATH_FLOAT_MAX
 
-struct W3dHLodHeaderStruct
-{
-	uint32					Version;
-	uint32					LodCount;
-	char						Name[W3D_NAME_LEN];
-	char						HierarchyName[W3D_NAME_LEN];		// name of the hierarchy tree to use (\0 if none)
+struct W3dHLodHeaderStruct {
+	uint32 Version;
+	uint32 LodCount;
+	char Name[W3D_NAME_LEN];
+	char HierarchyName[W3D_NAME_LEN];		// name of the hierarchy tree to use (\0 if none)
 };
 
-struct W3dHLodArrayHeaderStruct
-{
-	uint32					ModelCount;
-	float32					MaxScreenSize;		// if model is bigger than this, switch to higher lod.
+struct W3dHLodArrayHeaderStruct {
+	uint32 ModelCount;
+	float32 MaxScreenSize;		// if model is bigger than this, switch to higher lod.
 };
 
-struct W3dHLodSubObjectStruct
-{
-	uint32					BoneIndex;
-	char						Name[W3D_NAME_LEN*2];
+struct W3dHLodSubObjectStruct {
+	uint32 BoneIndex;
+	char Name[W3D_NAME_LEN*2];
 };
 
 
@@ -2026,14 +2001,13 @@ struct W3dHLodSubObjectStruct
 #define W3D_BOX_ATTRIBTUE_COLLISION_TYPE_CAMERA			0x00000080		// cameras collide with this mesh
 #define W3D_BOX_ATTRIBTUE_COLLISION_TYPE_VEHICLE		0x00000100		// vehicles collide with this mesh
 
-struct W3dBoxStruct
-{
-	uint32				Version;						// file format version
-	uint32				Attributes;					// box attributes (above #define's)
-	char					Name[2*W3D_NAME_LEN];	// name is in the form <containername>.<boxname>
-	W3dRGBStruct		Color;						// color to use when drawing the box
-	W3dVectorStruct	Center;						// center of the box
-	W3dVectorStruct	Extent;						// extent of the box
+struct W3dBoxStruct {
+	uint32 Version;				// file format version
+	uint32 Attributes;			// box attributes (above #define's)
+	char Name[2*W3D_NAME_LEN];	// name is in the form <containername>.<boxname>
+	W3dRGBStruct Color;			// color to use when drawing the box
+	W3dVectorStruct	Center;		// center of the box
+	W3dVectorStruct	Extent;		// extent of the box
 };
 
 
@@ -2047,14 +2021,13 @@ struct W3dBoxStruct
 	levels of detail.
 
 ********************************************************************************/
-#define W3D_NULL_OBJECT_CURRENT_VERSION					W3D_MAKE_VERSION(1,0)
+#define W3D_NULL_OBJECT_CURRENT_VERSION		W3D_MAKE_VERSION(1,0)
 
-struct W3dNullObjectStruct
-{
-	uint32				Version;						// file format version
-	uint32				Attributes;					// object attributes (currently un-used)
-	uint32				pad[2];						// pad space
-	char					Name[2*W3D_NAME_LEN];	// name is in the form <containername>.<boxname>
+struct W3dNullObjectStruct {
+	uint32 Version;					// file format version
+	uint32 Attributes;				// object attributes (currently un-used)
+	uint32 pad[2];					// pad space
+	char Name[ 2 * W3D_NAME_LEN ];	// name is in the form <containername>.<boxname>
 };
 
 

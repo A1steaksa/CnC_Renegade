@@ -29,18 +29,16 @@
 ** NOTE: If _TheFileFactory is ever changed to point to an object of a different class which does
 ** not derive from SimpleFileFactoryClass, _TheSimpleFileFactory should be set to NULL.
 */
-SimpleFileFactoryClass		_DefaultFileFactory;
-FileFactoryClass *			_TheFileFactory = &_DefaultFileFactory;
-SimpleFileFactoryClass *	_TheSimpleFileFactory = &_DefaultFileFactory;
+SimpleFileFactoryClass _DefaultFileFactory;
+FileFactoryClass* _TheFileFactory = &_DefaultFileFactory;
+SimpleFileFactoryClass* _TheSimpleFileFactory = &_DefaultFileFactory;
 
-SimpleFileFactoryClass		_DefaultWritingFileFactory;
-FileFactoryClass *			_TheWritingFileFactory = &_DefaultWritingFileFactory;
+SimpleFileFactoryClass _DefaultWritingFileFactory;
+FileFactoryClass* _TheWritingFileFactory = &_DefaultWritingFileFactory;
 
-/*
-**
-*/
-file_auto_ptr::file_auto_ptr(FileFactoryClass *fac, const char *filename) :
-	_Ptr(NULL), _Fac(fac)
+file_auto_ptr::file_auto_ptr( FileFactoryClass* fac, const char* filename ):
+	_Ptr(NULL),
+    _Fac(fac)
 {
 	assert(_Fac);
 	_Ptr=_Fac->Get_File(filename);
@@ -49,23 +47,18 @@ file_auto_ptr::file_auto_ptr(FileFactoryClass *fac, const char *filename) :
 	}
 }
 
-file_auto_ptr::~file_auto_ptr()
-{
-	_Fac->Return_File(_Ptr);
+file_auto_ptr::~file_auto_ptr(){
+	_Fac->Return_File( _Ptr );
 }
-
-
 
 /*
 ** RawFileFactoryClass implementation
 */
-FileClass * RawFileFactoryClass::Get_File( char const *filename )
-{
+FileClass* RawFileFactoryClass::Get_File( char const* filename ){
 	return new RawFileClass( filename );
 }
 
-void RawFileFactoryClass::Return_File( FileClass *file )
-{
+void RawFileFactoryClass::Return_File( FileClass* file ){
 	delete file;
 }
 
@@ -76,7 +69,7 @@ void RawFileFactoryClass::Return_File( FileClass *file )
 SimpleFileFactoryClass::SimpleFileFactoryClass( void ) : IsStripPath( false ), Mutex(){
 }
 
-void SimpleFileFactoryClass::Get_Sub_Directory( StringClass& new_dir ) const{
+void SimpleFileFactoryClass::Get_Sub_Directory( StringClass& new_dir ) const {
 	// BEGIN SERIALIZATION
 
 	// We cannot return a const char * here because the StringClass
@@ -91,10 +84,9 @@ void SimpleFileFactoryClass::Get_Sub_Directory( StringClass& new_dir ) const{
 	// destination StringClass object and modify that.
 
 	CriticalSectionClass::LockClass lock(Mutex);
-	new_dir=SubDirectory;
+	new_dir = SubDirectory;
 	// END SERIALIZATION
 }
-
 
 void SimpleFileFactoryClass::Set_Sub_Directory( const char* sub_directory ){
 	// BEGIN SERIALIZATION
@@ -195,30 +187,30 @@ static bool Is_Full_Path( const char* path ){
 	return retval;
 }
 
-FileClass * SimpleFileFactoryClass::Get_File( char const* filename ){
+FileClass* SimpleFileFactoryClass::Get_File( char const* filename ){
 	// strip off the path (if needed). Note that if path stripping is off, and the requested file
 	// has a path in its name, and the current subdirectory is not empty, the paths will just be
 	// concatenated which may not produce reasonable results.
 	StringClass stripped_name(true);
-	if (IsStripPath) {
-		const char * ptr = ::strrchr( filename, '\\' );
+	if( IsStripPath ){
+		const char* ptr = ::strrchr( filename, '\\' );
 
-		if (ptr != 0) {
+		if( ptr != 0 ){
 			ptr++;
 			stripped_name = ptr;
-		} else {
+		}else{
 			stripped_name = filename;
 		}
-	} else {
+	}else{
 		stripped_name = filename;
 	}
 
-	RawFileClass *file = new BufferedFileClass();// new RawWritingFileClass();
+	RawFileClass* file = new BufferedFileClass();
 	assert( file );
 
 	//	Do we need to find the path for this file request?
-	StringClass new_name(stripped_name,true);
-	if (Is_Full_Path ( new_name ) == false) {
+	StringClass new_name( stripped_name, true );
+	if( Is_Full_Path( new_name ) == false ){
 
 		// BEGIN SERIALIZATION
 
@@ -229,22 +221,21 @@ FileClass * SimpleFileFactoryClass::Get_File( char const* filename ){
 
 		CriticalSectionClass::LockClass lock(Mutex);
 
-		if (!SubDirectory.Is_Empty()) {
+		if( !SubDirectory.Is_Empty() ){
 			// SubDirectory may contain a semicolon seperated search path...
 			// If the file doesn't exist, we'll set the path to the last dir in
 			// the search path.  Therefore newly created files will always go in the
 			// last dir in the search path.
-			StringClass subdir(SubDirectory,true);
+			StringClass subdir( SubDirectory, true );
 
-			if (strchr(subdir,';'))
-			{
+			if( strchr( subdir,';' ) ){
 				char *tokstart=subdir.Peek_Buffer();
 				const char *tok;
-				while((tok=strtok(tokstart, ";")) != NULL) {
-					tokstart=NULL;
-					new_name.Format("%s%s",tok,stripped_name.Peek_Buffer());
+				while( ( tok = strtok( tokstart, ";" ) ) != NULL ){
+					tokstart = NULL;
+					new_name.Format( "%s%s", tok, stripped_name.Peek_Buffer() );
 					file->Set_Name( new_name );	// Call Set_Name to force an allocated name
-					if (file->Open()) {
+					if( file->Open() ){
 						file->Close();
 						break;
 					}
@@ -261,8 +252,7 @@ FileClass * SimpleFileFactoryClass::Get_File( char const* filename ){
 	return file;
 }
 
-void SimpleFileFactoryClass::Return_File( FileClass *file )
-{
+void SimpleFileFactoryClass::Return_File( FileClass* file ){
 	delete file;
 }
 

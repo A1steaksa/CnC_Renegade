@@ -53,17 +53,14 @@ class SoldierGameObj;
 //	PlayerTerminalClass
 //
 ////////////////////////////////////////////////////////////////
-class PlayerTerminalClass
-{
+class PlayerTerminalClass {
 public:
-
 	////////////////////////////////////////////////////////////////
 	//	Public constants
 	////////////////////////////////////////////////////////////////
-	typedef enum
-	{
-		TYPE_NONE		= -1,
-		TYPE_GDI			= 0,
+	typedef enum {
+		TYPE_NONE = -1,
+		TYPE_GDI  = 0,
 		TYPE_NOD,
 		TYPE_MUTANT
 	} TYPE;
@@ -71,7 +68,8 @@ public:
 	////////////////////////////////////////////////////////////////
 	//	Public constructors/destructors
 	////////////////////////////////////////////////////////////////
-	virtual ~PlayerTerminalClass (void)		{}
+	virtual ~PlayerTerminalClass(void){
+    }
 
 	////////////////////////////////////////////////////////////////
 	//	Public methods
@@ -80,20 +78,24 @@ public:
 	//
 	//	Display methods
 	//
-	virtual void		Display_Terminal (SoldierGameObj * /*player*/, TYPE /*type*/) {}
-	virtual void		Display_Default_Terminal_For_Player (SoldierGameObj * /*player*/) {}
+	virtual void Display_Terminal( SoldierGameObj* /*player*/, TYPE /*type*/ ){
+    }
+
+	virtual void Display_Default_Terminal_For_Player( SoldierGameObj* /*player*/ ){
+    }
 
 	//
 	//	Static methods
 	//
-	static PlayerTerminalClass *	Get_Instance (void)	{ return _TheInstance; }
+	static PlayerTerminalClass* Get_Instance(void){
+        return _TheInstance;
+    }
 
 protected:
-
 	////////////////////////////////////////////////////////////////
 	//	Protected methods
 	////////////////////////////////////////////////////////////////
-	static PlayerTerminalClass *	_TheInstance;
+	static PlayerTerminalClass* _TheInstance;
 };
 
 

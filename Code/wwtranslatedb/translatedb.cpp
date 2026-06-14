@@ -80,16 +80,14 @@ uint32								TranslateDBClass::FilterCategoryID			= 0xFFFFFFFF;
 ///////////////////////////////////////////////////////////////////////
 //	Constants
 ///////////////////////////////////////////////////////////////////////
-enum
-{
+enum {
 	CHUNKID_VARIABLES			= 0x07141200,
 	CHUNKID_OBJECTS,
 	CHUNKID_CATEGORIES
 };
 
 
-enum
-{
+enum {
 	VARID_VERSION_NUMBER		= 0x01,
 	VARID_LANGUAGE_ID
 };
@@ -102,9 +100,7 @@ const char *	ENGLISH_STRING_NOT_FOUND	= "TDBERR";
 //	Chunk_ID
 //
 ///////////////////////////////////////////////////////////////////////
-uint32
-TranslateDBClass::Chunk_ID (void) const
-{
+uint32 TranslateDBClass::Chunk_ID(void) const {
 	return CHUNKID_TRANSLATE_DB;
 }
 
@@ -114,11 +110,8 @@ TranslateDBClass::Chunk_ID (void) const
 //	Initialize
 //
 ///////////////////////////////////////////////////////////////////////
-void
-TranslateDBClass::Initialize (void)
-{
+void TranslateDBClass::Initialize(void){
 	m_ObjectList.Set_Growth_Step (1000);
-	return ;
 }
 
 
@@ -127,12 +120,9 @@ TranslateDBClass::Initialize (void)
 //	Shutdown
 //
 ///////////////////////////////////////////////////////////////////////
-void
-TranslateDBClass::Shutdown (void)
-{
-	Free_Objects ();
-	Free_Categories ();
-	return ;
+void TranslateDBClass::Shutdown(void){
+	Free_Objects();
+	Free_Categories();
 }
 
 
@@ -141,9 +131,7 @@ TranslateDBClass::Shutdown (void)
 //	Free_Categories
 //
 ///////////////////////////////////////////////////////////////////////
-void
-TranslateDBClass::Free_Categories (void)
-{
+void TranslateDBClass::Free_Categories(void){
 	//
 	//	Loop over and free all the translation categories
 	//
@@ -155,7 +143,6 @@ TranslateDBClass::Free_Categories (void)
 	}
 	
 	m_CategoryList.Delete_All ();
-	return ;
 }
 
 

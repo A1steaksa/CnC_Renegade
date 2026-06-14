@@ -42,9 +42,6 @@
 #include "god.h"
 #include "campaign.h"
 
-/*
-**
-*/
 CommandoSaveLoadClass	_CommandoSaveLoad;
 
 enum {
@@ -52,7 +49,6 @@ enum {
 	CHUNKID_GOD,
 	CHUNKID_CAMPAIGN,
 };
-
 
 bool CommandoSaveLoadClass::Save( ChunkSaveClass& csave ){
 	WWMEMLOG(MEM_GAMEDATA);
@@ -75,7 +71,7 @@ bool CommandoSaveLoadClass::Save( ChunkSaveClass& csave ){
 bool CommandoSaveLoadClass::Load( ChunkLoadClass& cload ){
 	WWMEMLOG(MEM_GAMEDATA);
 
-	while (cload.Open_Chunk()) {
+	while( cload.Open_Chunk() ){
 		switch(cload.Cur_Chunk_ID()) {
 
 			case CHUNKID_NETWORK:
@@ -99,5 +95,3 @@ bool CommandoSaveLoadClass::Load( ChunkLoadClass& cload ){
 	}
 	return true;
 }
-
-

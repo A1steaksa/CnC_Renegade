@@ -500,9 +500,7 @@ GameInitMgrClass::Transmit_Player_Data (int teamChoice, unsigned long clanID)
 //	Start_Client_Server
 //
 ////////////////////////////////////////////////////////////////
-void
-GameInitMgrClass::Start_Client_Server (void)
-{
+void GameInitMgrClass::Start_Client_Server(void){
    WWDEBUG_SAY (("GameInitMgrClass::Start_Client_Server\n"));
 
 	assert(GameModeManager::Find("WOL"));
@@ -517,7 +515,7 @@ GameInitMgrClass::Start_Client_Server (void)
 	//
 	//	Start the server (if necessary)
 	//
-	if (IsServerRequired && !cNetwork::I_Am_Server ()) {
+	if( IsServerRequired && !cNetwork::I_Am_Server () ){
 		cNetwork::Init_Server ();
 		PacketManager.Set_Is_Server(true);
 
@@ -571,7 +569,6 @@ GameInitMgrClass::Start_Client_Server (void)
 
 	// Sample output every 2 seconds.
 	PacketManager.Set_Stats_Sampling_Frequency_Delay(2000);
-	return ;
 }
 
 

@@ -95,35 +95,26 @@ void W3dUtilityClass::Convert_Color(const W3dRGBAStruct & rgb,Vector4 * set)
 	set->W = (float)rgb.A / 255.0f;
 }
 
-void W3dUtilityClass::Convert_Color(const Vector4 & v,W3dRGBAStruct * color)
-{
+void W3dUtilityClass::Convert_Color( const Vector4& v, W3dRGBAStruct* color ){
 	color->R = (uint8)(255.0f * v.X);
 	color->G = (uint8)(255.0f * v.Y);
 	color->B = (uint8)(255.0f * v.Z);
 	color->A = (uint8)(255.0f * v.W);
 }
 
-void W3dUtilityClass::Convert_Shader(const W3dShaderStruct & shader,ShaderClass * set)
-{
-	set->Set_Depth_Compare		((ShaderClass::DepthCompareType)W3d_Shader_Get_Depth_Compare(&shader));
-	set->Set_Depth_Mask			((ShaderClass::DepthMaskType)W3d_Shader_Get_Depth_Mask(&shader));
-	set->Set_Color_Mask			(ShaderClass::COLOR_WRITE_ENABLE);
-	set->Set_Dst_Blend_Func		((ShaderClass::DstBlendFuncType)W3d_Shader_Get_Dest_Blend_Func(&shader));
-	set->Set_Fog_Func				(ShaderClass::FOG_DISABLE);
-	set->Set_Primary_Gradient	((ShaderClass::PriGradientType)W3d_Shader_Get_Pri_Gradient(&shader));
-	set->Set_Secondary_Gradient((ShaderClass::SecGradientType)W3d_Shader_Get_Sec_Gradient(&shader));
-	set->Set_Src_Blend_Func		((ShaderClass::SrcBlendFuncType)W3d_Shader_Get_Src_Blend_Func(&shader));
-	set->Set_Texturing			((ShaderClass::TexturingType)W3d_Shader_Get_Texturing(&shader));
-	set->Set_Alpha_Test			((ShaderClass::AlphaTestType)W3d_Shader_Get_Alpha_Test(&shader));
-// Jani: No cull mode settings for w3d shader - problem?
-//	set->Set_Dither_Mask			(ShaderClass::DITHER_ENABLE);
-	// The tools do not enable setting post-detail stuff, and in any case we probably wouldn't
-	// want to confuse the artists with the distinction between detail and post-detail settings at
-	// this point, so we just copy the detail settings into the post-detail settings.
-//	set->Set_Post_Detail_Color_Func ((ShaderClass::DetailColorFuncType) W3d_Shader_Get_Post_Detail_Color_Func (&shader));
-//	set->Set_Post_Detail_Alpha_Func ((ShaderClass::DetailAlphaFuncType) W3d_Shader_Get_Post_Detail_Alpha_Func (&shader));
-	set->Set_Post_Detail_Color_Func ((ShaderClass::DetailColorFuncType) W3d_Shader_Get_Detail_Color_Func (&shader));
-	set->Set_Post_Detail_Alpha_Func ((ShaderClass::DetailAlphaFuncType) W3d_Shader_Get_Detail_Alpha_Func (&shader));
+void W3dUtilityClass::Convert_Shader( const W3dShaderStruct& shader, ShaderClass* set ){
+	set->Set_Depth_Compare( (ShaderClass::DepthCompareType) W3d_Shader_Get_Depth_Compare( &shader ) );
+	set->Set_Depth_Mask( (ShaderClass::DepthMaskType) W3d_Shader_Get_Depth_Mask( &shader ) );
+	set->Set_Color_Mask( ShaderClass::COLOR_WRITE_ENABLE );
+	set->Set_Dst_Blend_Func( (ShaderClass::DstBlendFuncType) W3d_Shader_Get_Dest_Blend_Func( &shader ) );
+	set->Set_Fog_Func( ShaderClass::FOG_DISABLE );
+	set->Set_Primary_Gradient( (ShaderClass::PriGradientType) W3d_Shader_Get_Pri_Gradient( &shader ) );
+	set->Set_Secondary_Gradient( (ShaderClass::SecGradientType) W3d_Shader_Get_Sec_Gradient( &shader ) );
+	set->Set_Src_Blend_Func( (ShaderClass::SrcBlendFuncType) W3d_Shader_Get_Src_Blend_Func( &shader ) );
+	set->Set_Texturing( (ShaderClass::TexturingType) W3d_Shader_Get_Texturing( &shader ) );
+	set->Set_Alpha_Test( (ShaderClass::AlphaTestType) W3d_Shader_Get_Alpha_Test( &shader ) );
+	set->Set_Post_Detail_Color_Func( (ShaderClass::DetailColorFuncType) W3d_Shader_Get_Detail_Color_Func( &shader ) );
+	set->Set_Post_Detail_Alpha_Func( (ShaderClass::DetailAlphaFuncType) W3d_Shader_Get_Detail_Alpha_Func( &shader ) );
 }
 
 void W3dUtilityClass::Convert_Shader(const ShaderClass & shader,W3dShaderStruct * set)

@@ -48,8 +48,7 @@
 // At one point in time I was using the 'O' prefix to mean obsolete.  Now we just move stuff
 // into this file...
 /////////////////////////////////////////////////////////////////////////////////////////////
-enum 
-{
+enum {
 		W3D_CHUNK_MESH_HEADER					=0x00000001,	// header for a mesh
 		W3D_CHUNK_SURRENDER_NORMALS			=0x00000004,	// array of surrender normals (one per vertex as req. by surrender)
 		W3D_CHUNK_TEXCOORDS						=0x00000005,	// array of texture coordinates
@@ -170,8 +169,7 @@ struct W3dMaterial2Struct
 //			W3D_CHUNK_MATERIAL3_SI_MAP
 //		
 /////////////////////////////////////////////////////////////////////////////////////////////
-struct W3dMaterial3Struct
-{
+struct W3dMaterial3Struct {
 	uint32					Attributes;					// flags,hints,etc.
 	
 	W3dRGBStruct			DiffuseColor;				// diffuse color

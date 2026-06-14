@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -72,7 +54,7 @@ class Targa;
 **      format is alpha.
 */
 enum WW3DFormat {
-	WW3D_FORMAT_UNKNOWN=0,
+	WW3D_FORMAT_UNKNOWN = 0,
 	WW3D_FORMAT_R8G8B8,
 	WW3D_FORMAT_A8R8G8B8,
 	WW3D_FORMAT_X8R8G8B8,
@@ -89,9 +71,9 @@ enum WW3DFormat {
 	WW3D_FORMAT_L8,
 	WW3D_FORMAT_A8L8,
 	WW3D_FORMAT_A4L4,
-	WW3D_FORMAT_U8V8,		// Bumpmap
-	WW3D_FORMAT_L6V5U5,	// Bumpmap
-	WW3D_FORMAT_X8L8V8U8,	// Bumpmap
+	WW3D_FORMAT_U8V8,       // Bumpmap
+	WW3D_FORMAT_L6V5U5,     // Bumpmap
+	WW3D_FORMAT_X8L8V8U8,   // Bumpmap
 	WW3D_FORMAT_DXT1,
 	WW3D_FORMAT_DXT2,
 	WW3D_FORMAT_DXT3,

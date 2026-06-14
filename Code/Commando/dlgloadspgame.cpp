@@ -510,79 +510,50 @@ LoadSPGameMenuClass::On_Command (int ctrl_id, int message_id, DWORD param)
 //	Load_Game
 //
 ////////////////////////////////////////////////////////////////
-void
-LoadSPGameMenuClass::Load_Game (void)
-{
-#ifndef MULTIPLAYERDEMO
-
-	//
-	//	Get a pointer to the list control
-	//
-	ListCtrlClass *list_ctrl = (ListCtrlClass *)Get_Dlg_Item (IDC_LOAD_GAME_LIST_CTRL);
-	if (list_ctrl == NULL) {
-		return ;
+void LoadSPGameMenuClass::Load_Game(void){
+	// Get a pointer to the list control
+	ListCtrlClass* list_ctrl = (ListCtrlClass*) Get_Dlg_Item( IDC_LOAD_GAME_LIST_CTRL );
+	if( list_ctrl == NULL ){
+		return;
 	}
 
-#if 0 // MOVED BELOW AND TO DIFFICULTY SELECTION
-	//
-	//	End the current game before we load the new one
-	//
-	if (GameModeManager::Find ("Combat")->Is_Suspended ()) {
-		GameInitMgrClass::End_Game();
-		GameModeManager::Safely_Deactivate ();
-	}
-#endif
-	//
-	//	Get the currently selected entry
-	//
-	int item_index = list_ctrl->Get_Curr_Sel ();
-	if (item_index != -1) {
+	// Get the currently selected entry
+	int item_index = list_ctrl->Get_Curr_Sel();
+	if( item_index != -1 ){
+		// Get the name of the map
+		StringClass* filename = (StringClass*) list_ctrl->Get_Entry_Data( item_index, 2 );
+		StringClass save_name( filename->Peek_Buffer(), true );
 
-		//
-		//	Get the name of the map
-		//
-		StringClass *filename	= (StringClass *)list_ctrl->Get_Entry_Data (item_index, 2);
-		StringClass save_name(filename->Peek_Buffer(),true);
-
-		StringClass map_name(0,true);
+		StringClass map_name( 0, true );
 		int mission = 0;
-		if (SaveGameManager::Peek_Map_Name (save_name, map_name)) {
+		if( SaveGameManager::Peek_Map_Name( save_name, map_name ) ){
 			mission = cGameData::Get_Mission_Number_From_Map_Name( map_name );
 		} else {
 			mission = cGameData::Get_Mission_Number_From_Map_Name( save_name );
 		}
-		CampaignManager::Select_Backdrop_Number( mission );		// Force default loading screen
+		CampaignManager::Select_Backdrop_Number( mission ); // Force default loading screen
 
 		bool is_replay = Get_Game_Rank( save_name ) > 0;
-		if ( is_replay ) {
+		if( is_replay ){
 			// if replay
-			DifficultyMenuClass * dialog = new DifficultyMenuClass();
+			DifficultyMenuClass* dialog = new DifficultyMenuClass();
 			dialog->Set_Replay( save_name );
 			dialog->Start_Dialog();
 			dialog->Release_Ref();
 		} else {
-
-			//
-			//	End the current game before we load the new one
-			//
-			if (GameModeManager::Find ("Combat")->Is_Suspended ()) {
+			// End the current game before we load the new one
+			if( GameModeManager::Find( "Combat" )->Is_Suspended() ){
 				GameInitMgrClass::End_Game();
-				GameModeManager::Safely_Deactivate ();
+				GameModeManager::Safely_Deactivate();
 			}
 
-			//
-			//	Load the map
-			//
-			GameInitMgrClass::Initialize_SP ();
-			GameInitMgrClass::Start_Game (save_name, -1, 0);
+			// Load the map
+			GameInitMgrClass::Initialize_SP();
+			GameInitMgrClass::Start_Game( save_name, -1, 0 );
 		}
 	}
 
 	cGod::Reset_Inventory();
-
-	return ;
-
-#endif // !MULTIPLAYERDEMO
 }
 
 

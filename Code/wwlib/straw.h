@@ -35,7 +35,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
+#endif
 
 #ifndef STRAW_H
 #define STRAW_H
@@ -47,30 +47,34 @@
 **	versions are presumed to modify the data in some useful way or monitor the data
 **	flow.
 */
-class Straw
-{
+class Straw {
 	public:
-		Straw(void) : ChainTo(0), ChainFrom(0) {}
+		Straw(void) : ChainTo(0), ChainFrom(0) {
+        }
+
 		virtual ~Straw(void);
 
-		virtual void Get_From(Straw * pipe);
-		void Get_From(Straw & pipe) {Get_From(&pipe);}
-		virtual int Get(void * buffer, int slen);
+		virtual void Get_From( Straw* pipe );
+		
+        void Get_From( Straw& pipe ){
+            Get_From( &pipe );
+        }
+		
+        virtual int Get( void* buffer, int slen);
 
 		/*
 		**	Pointer to the next pipe segment in the chain.
 		*/
-		Straw * ChainTo;
-		Straw * ChainFrom;
+		Straw* ChainTo;
+		Straw* ChainFrom;
 
 	private:
 
 		/*
 		**	Disable the copy constructor and assignment operator.
 		*/
-		Straw(Straw & rvalue);
-		Straw & operator = (Straw const & pipe);
+		Straw( Straw& rvalue );
+		Straw& operator =( Straw& const pipe );
 };
-
 
 #endif

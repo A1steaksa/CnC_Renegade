@@ -72,8 +72,7 @@
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-CompositeRenderObjClass::CompositeRenderObjClass(void)
-{
+CompositeRenderObjClass::CompositeRenderObjClass(void){
 }
 
 

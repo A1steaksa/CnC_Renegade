@@ -53,15 +53,16 @@ inline DWORD F2DW( FLOAT f ) { return *((DWORD*)&f); }
 // HY 1/26/01
 // Rewritten to use DX 8 texture matrices
 
-TextureMapperClass::TextureMapperClass(unsigned int stage)
-{
+TextureMapperClass::TextureMapperClass( unsigned int stage ){
 	Stage = stage;
-	if (Stage >= MeshMatDescClass::MAX_TEX_STAGES) Stage = MeshMatDescClass::MAX_TEX_STAGES - 1;
+	if( Stage >= MeshMatDescClass::MAX_TEX_STAGES ){
+		Stage = MeshMatDescClass::MAX_TEX_STAGES - 1;
+	}
 }
 
 LinearOffsetTextureMapperClass::LinearOffsetTextureMapperClass(const Vector2 &offset_per_sec, const Vector2 &scale, unsigned int stage) :
 	ScaleTextureMapperClass(scale, stage),
-	LastUsedSyncTime(WW3D::Get_Sync_Time())
+	LastUsedSyncTime( WW3D::Get_Sync_Time() )
 {
 	CurrentUVOffset.X = 0.0f;
 	CurrentUVOffset.Y = 0.0f;

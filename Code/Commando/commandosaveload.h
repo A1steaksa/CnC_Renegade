@@ -49,26 +49,27 @@
 	#include "commandochunkids.h"
 #endif
 
-/*
-**
-*/
 class CommandoSaveLoadClass : public SaveLoadSubSystemClass {
-
 public:
-	CommandoSaveLoadClass(void) {}
-	virtual ~CommandoSaveLoadClass(void) {}
+	CommandoSaveLoadClass(void){
+	}
 
-	virtual uint32	Chunk_ID (void) const { return CHUNKID_COMMANDO; }
+	virtual ~CommandoSaveLoadClass(void) {
+	}
+
+	virtual uint32 Chunk_ID (void) const {
+		return CHUNKID_COMMANDO;
+	}
 
 protected:
-	virtual bool	Save( ChunkSaveClass &csave );
-	virtual bool	Load( ChunkLoadClass &cload );
-	virtual const char* Name() const { return "CommandoSaveLoadClass"; }
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	
+	virtual const char* Name() const {
+		return "CommandoSaveLoadClass";
+	}
 };
 
-/*
-**
-*/
-extern	CommandoSaveLoadClass	_CommandoSaveLoad;
+extern CommandoSaveLoadClass _CommandoSaveLoad;
 
 #endif	//	COMBATSAVELOAD_H

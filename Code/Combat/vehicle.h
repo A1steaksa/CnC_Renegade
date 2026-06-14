@@ -283,7 +283,8 @@ public:
     static void	Set_Camera_Locked_To_Turret( bool flag ) {
         CameraLockedToTurret = flag;    
 }
-    static bool	Get_Camera_Locked_To_Turret( void ) {
+    static bool	Get_Camera_Locked_To_Turret
+    ( void ) {
         return CameraLockedToTurret;
     }
 

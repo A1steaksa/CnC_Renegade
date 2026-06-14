@@ -223,7 +223,7 @@ LensflareName=DEFAULT_LENSFLARE
 */
 
 // Global instance of a dazzle loader
-DazzleLoaderClass		_DazzleLoader;
+DazzleLoaderClass _DazzleLoader;
 
 static SimpleVecClass<DazzleRenderObjClass*> temp_ptrs;
 

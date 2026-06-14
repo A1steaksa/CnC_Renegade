@@ -96,11 +96,11 @@ public:
 	static REFUSAL_CODE Application_Acceptance_Handler(cPacket & packet);
    static void Eviction_Handler(int evicted_rhost_id);
 
-   static bool I_Am_Client(void)				{return PClientConnection != NULL;}
-   static bool I_Am_Server(void)				{return PServerConnection != NULL;}
-   static bool	I_Am_Only_Client(void)		{return PClientConnection != NULL && PServerConnection == NULL;}
-   static bool	I_Am_Only_Server(void)		{return PClientConnection == NULL && PServerConnection != NULL;}
-   static bool	I_Am_Client_Server(void)	{return PClientConnection != NULL && PServerConnection != NULL;}
+   static bool I_Am_Client(void){return PClientConnection != NULL;}
+   static bool I_Am_Server(void){return PServerConnection != NULL;}
+   static bool	I_Am_Only_Client(void){return PClientConnection != NULL && PServerConnection == NULL;}
+   static bool	I_Am_Only_Server(void){return PClientConnection == NULL && PServerConnection != NULL;}
+   static bool	I_Am_Client_Server(void){return PClientConnection != NULL && PServerConnection != NULL;}
 	static bool I_Am_God(void);
 
 
@@ -190,7 +190,7 @@ public:
 	// Hide...
 	//
 	static cConnection * PServerConnection;
-   static cConnection * PClientConnection;
+    static cConnection * PClientConnection;
 
 	// Temp - going away later. ST - 10/16/2001 9:33PM
 	static bool SensibleUpdates;

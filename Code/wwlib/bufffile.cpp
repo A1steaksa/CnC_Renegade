@@ -2,12 +2,12 @@
 **	Command & Conquer Renegade(tm)
 **	Copyright 2025 Electronic Arts Inc.
 **
-**	This program is free software: you can redistribute it and/or modify
+**	This program is free software: you can redistribute it and/or modifyo
 **	it under the terms of the GNU General Public License as published by
 **	the Free Software Foundation, either version 3 of the License, or
 **	(at your option) any later version.
 **
-**	This program is distributed in the hope that it will be useful,
+**	This program is distributed in the h- that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **	GNU General Public License for more details.
@@ -39,7 +39,7 @@
 #include	"wwdebug.h"
 #include	<string.h>
 
-int		BufferedFileClass::_DesiredBufferSize	=	1024*16;	
+int BufferedFileClass::_DesiredBufferSize	=	1024*16;	
 
 /***********************************************************************************************
  * BufferedFileClass::BufferedFileClass -- Default constructor for a file object.              *
@@ -56,7 +56,7 @@ BufferedFileClass::BufferedFileClass(void) :
 /***********************************************************************************************
  * BufferedFileClass::BufferedFileClass -- Simple constructor for a file object.                         *
  *=============================================================================================*/
-BufferedFileClass::BufferedFileClass(char const * filename) :
+BufferedFileClass::BufferedFileClass( char const* filename ) :
 	RawFileClass( filename ),
 	Buffer( NULL ),
 	BufferSize( 0 ),
@@ -68,21 +68,18 @@ BufferedFileClass::BufferedFileClass(char const * filename) :
 /***********************************************************************************************
  * BufferedFileClass::~BufferedFileClass -- Default deconstructor for a file object.                     *
  *=============================================================================================*/
-BufferedFileClass::~BufferedFileClass(void)
-{
+BufferedFileClass::~BufferedFileClass(void){
 	Reset_Buffer();
 }
 
 /***********************************************************************************************
  * BufferedFileClass::Close -- Perform a closure of the file.                                       *
  *=============================================================================================*/
-void BufferedFileClass::Close(void)
-{
+void BufferedFileClass::Close(void){
 	BASECLASS::Close();
 
 	Reset_Buffer();
 }
-
 
 /***********************************************************************************************
  * BufferedFileClass::Read -- Reads the specified number of bytes into a memory buffer.             *
@@ -106,8 +103,7 @@ void BufferedFileClass::Close(void)
  * HISTORY:                                                                                    *
  *   10/18/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
-int BufferedFileClass::Read(void * buffer, int size)
-{
+int BufferedFileClass::Read( void* buffer, int size ){
 	int read = 0;
 
 	// If there is anything in the buffer, copy it in.
@@ -167,7 +163,6 @@ int BufferedFileClass::Read(void * buffer, int size)
 	return read;
 }
 
-
 /***********************************************************************************************
  * BufferedFileClass::Write -- Writes the specified data to the buffer specified.                   *
  *                                                                                             *
@@ -186,9 +181,8 @@ int BufferedFileClass::Read(void * buffer, int size)
  * HISTORY:                                                                                    *
  *   10/18/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
-int BufferedFileClass::Write(void const * buffer, int size)
-{
-	if ( BufferSize != 0 ) {
+int BufferedFileClass::Write(void const* buffer, int size ){
+	if( BufferSize != 0 ){
 		WWASSERT( 0 );
 	}
 
@@ -217,14 +211,13 @@ int BufferedFileClass::Write(void const * buffer, int size)
  * HISTORY:                                                                                    *
  *   10/18/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
-int BufferedFileClass::Seek(int pos, int dir)
-{
-	if ( (dir != SEEK_CUR) || (pos < 0) ) {
+int BufferedFileClass::Seek( int pos, int dir ){
+	if( (dir != SEEK_CUR) || (pos < 0) ){
 		Reset_Buffer();
 	}
 
 	// If not buffered, pass through
-	if ( BufferAvailable == 0 ) {
+	if( BufferAvailable == 0 ){
 		return BASECLASS::Seek( pos, dir );
 	}
 
@@ -237,11 +230,7 @@ int BufferedFileClass::Seek(int pos, int dir)
 	return BASECLASS::Seek( pos, dir ) - BufferAvailable;
 }
 
-/*
-**
-*/
-void	BufferedFileClass::Reset_Buffer( void )
-{
+void BufferedFileClass::Reset_Buffer(void){
 	if ( Buffer != NULL ) {
 		delete [] Buffer;
 		Buffer = NULL;

@@ -93,11 +93,10 @@
 /*
 ** Loader Instance
 */
-DistLODLoaderClass			_DistLODLoader;
+DistLODLoaderClass _DistLODLoader;
 
 
-RenderObjClass * DistLODPrototypeClass::Create(void)			
-{ 
+RenderObjClass* DistLODPrototypeClass::Create(void){ 
 	DistLODClass * dist = NEW_REF( DistLODClass , ( *Definition ) ); 
 
 	// Have to pull each LOD out of the DistLOD, create a copy of the name

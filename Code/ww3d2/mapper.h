@@ -55,10 +55,8 @@ class INIClass;
 ** TextureMapperClass
 ** Base class for all texture mappers.
 */
-class TextureMapperClass : public RefCountClass
-{
+class TextureMapperClass : public RefCountClass {
 	public:
-
 		enum {
 			MAPPER_ID_UNKNOWN,
 			MAPPER_ID_LINEAR_OFFSET,
@@ -83,30 +81,47 @@ class TextureMapperClass : public RefCountClass
 			MAPPER_ID_BUMPENV,
 		};
 
-		TextureMapperClass(unsigned int stage=0);
-		TextureMapperClass(const TextureMapperClass & src) : Stage(src.Stage) { }
+		TextureMapperClass( unsigned int stage = 0 );
 
-		virtual void Reset(void) { }
+		TextureMapperClass( const TextureMapperClass& src ) : Stage( src.Stage ){
+		}
+
+		virtual void Reset(void){
+		}
 		
-		virtual TextureMapperClass *		Clone(void) const=0;		
-		virtual int								Mapper_ID(void) const { return MAPPER_ID_UNKNOWN;}
+		virtual TextureMapperClass* Clone(void) const = 0;		
+		
+		virtual int Mapper_ID(void) const {
+			return MAPPER_ID_UNKNOWN;
+		}
 
-		virtual bool Is_Time_Variant(void) { return false; }
-		virtual void							Apply(int uv_array_index)=0;
-		virtual bool							Needs_Normals(void) { return false; }
-		void										Set_Stage(int stage) { Stage = stage; }
-		int										Get_Stage(void) const { return Stage; }
+		virtual bool Is_Time_Variant(void){
+			return false;
+		}
+
+		virtual void Apply( int uv_array_index ) = 0;
+		
+		virtual bool Needs_Normals(void){
+			return false;
+		}
+
+		void Set_Stage( int stage ){
+			Stage = stage;
+		}
+
+		int Get_Stage(void) const {
+			return Stage;
+		}
 
 	protected:
-		unsigned int							Stage;
+		unsigned int Stage;
 };
 
 /*
 ** ScaleTextureMapperClass
 ** Scales UV coordinates
 */
-class ScaleTextureMapperClass : public TextureMapperClass
-{
+class ScaleTextureMapperClass : public TextureMapperClass {
 public:	
 	ScaleTextureMapperClass(unsigned int stage);
 	ScaleTextureMapperClass(const Vector2 &scale, unsigned int stage);

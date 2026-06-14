@@ -54,7 +54,7 @@
 #include "meshmatdesc.h"
 #include "texturethumbnail.h"
 
-const unsigned DEFAULT_INACTIVATION_TIME=20000;
+const unsigned DEFAULT_INACTIVATION_TIME = 20000;
 
 /*
 ** Definitions of static members:
@@ -154,12 +154,12 @@ TextureClass::TextureClass(unsigned width, unsigned height, WW3DFormat format, M
 // ----------------------------------------------------------------------------
 
 TextureClass::TextureClass(
-	const char *name,
-	const char *full_path,
+	const char* name,
+	const char* full_path,
 	MipCountType mip_level_count,
 	WW3DFormat texture_format,
-	bool allow_compression)
-	:
+	bool allow_compression
+) :
 	D3DTexture(NULL),
 	texture_id(unused_texture_id++),
 	Initialized(false),
@@ -183,7 +183,7 @@ TextureClass::TextureClass(
 	ExtendedInactivationTime(0),
 	LastInactivationSyncTime(0)
 {
-	switch (TextureFormat) {
+	switch( TextureFormat ){
 	case WW3D_FORMAT_DXT1:
 	case WW3D_FORMAT_DXT2:
 	case WW3D_FORMAT_DXT3:
@@ -217,42 +217,44 @@ TextureClass::TextureClass(
 	int len=strlen(name);
 	for (int i=0;i<len;++i) {
 		if (name[i]=='+') {
-			IsLightmap=true;
+			IsLightmap = true;
 
 			// Set bilinear filtering for lightmaps (they are very stretched and
 			// low detail so we don't care for anisotropic or trilinear filtering...)
-			TextureMinFilter=FILTER_TYPE_FAST;
-			TextureMagFilter=FILTER_TYPE_FAST;
-			if (mip_level_count!=MIP_LEVELS_1) MipMapFilter=FILTER_TYPE_FAST;
+			TextureMinFilter = FILTER_TYPE_FAST;
+			TextureMagFilter = FILTER_TYPE_FAST;
+			if( mip_level_count != MIP_LEVELS_1 ){
+				MipMapFilter = FILTER_TYPE_FAST;
+			}
 			break;
 		}
 	}
-	Set_Texture_Name(name);
-	Set_Full_Path(full_path);
+	Set_Texture_Name( name );
+	Set_Full_Path( full_path );
 	WWASSERT(name[0]!='\0');
-	if (!WW3D::Is_Texturing_Enabled()) {
-		Initialized=true;
-		D3DTexture=0;
+	if( !WW3D::Is_Texturing_Enabled() ){
+		Initialized = true;
+		D3DTexture = 0;
 	}
 
 	// Find original size from the thumbnail (but don't create thumbnail texture yet!)
-	ThumbnailClass* thumb=NULL;
-	ThumbnailManagerClass* thumb_man=ThumbnailManagerClass::Peek_List().Head();
-	while (thumb_man) {
-		thumb=thumb_man->Peek_Thumbnail_Instance(Get_Full_Path());
-		if (thumb) {
-			Width=thumb->Get_Original_Texture_Width();
-			Height=thumb->Get_Original_Texture_Height();
+	ThumbnailClass* thumb = NULL;
+	ThumbnailManagerClass* thumb_man = ThumbnailManagerClass::Peek_List().Head();
+	while( thumb_man ){
+		thumb = thumb_man->Peek_Thumbnail_Instance( Get_Full_Path() );
+		if( thumb ){
+			Width = thumb->Get_Original_Texture_Width();
+			Height = thumb->Get_Original_Texture_Height();
 			break;
 		}
-		thumb_man=thumb_man->Succ();
+		thumb_man = thumb_man->Succ();
 	}
 
-	LastAccessed=WW3D::Get_Sync_Time();
+	LastAccessed = WW3D::Get_Sync_Time();
 
 	// If the thumbnails are not enabled, init the texture at this point to avoid stalling when the
 	// mesh is rendered.
-	if (!WW3D::Get_Thumbnail_Enabled()) {
+	if( !WW3D::Get_Thumbnail_Enabled() ){
 		if (TextureLoader::Is_DX8_Thread()) {
 			Init();
 		}
@@ -916,24 +918,22 @@ void TextureClass::_Set_Default_Mip_Filter(FilterType filter)
 }
 
 // Utility functions
-TextureClass *Load_Texture(ChunkLoadClass & cload)
-{
+TextureClass* Load_Texture( ChunkLoadClass& cload ){
 	// Assume failure
 	TextureClass *newtex = NULL;
 
 	char name[256];
-	if (cload.Open_Chunk () && (cload.Cur_Chunk_ID () == W3D_CHUNK_TEXTURE)) {
-
+	if( cload.Open_Chunk () && (cload.Cur_Chunk_ID () == W3D_CHUNK_TEXTURE) ){
 		W3dTextureInfoStruct texinfo;
 		bool hastexinfo = false;
 
 		/*
 		** Read in the texture filename, and a possible texture info structure.
 		*/
-		while (cload.Open_Chunk()) {
-			switch (cload.Cur_Chunk_ID()) {
+		while( cload.Open_Chunk() ){
+			switch( cload.Cur_Chunk_ID() ){
 				case W3D_CHUNK_TEXTURE_NAME:
-					cload.Read(&name,cload.Cur_Chunk_Length());
+					cload.Read( &name, cload.Cur_Chunk_Length() );
 					break;
 
 				case W3D_CHUNK_TEXTURE_INFO:
@@ -948,11 +948,10 @@ TextureClass *Load_Texture(ChunkLoadClass & cload)
 		/*
 		** Get the texture from the asset manager
 		*/
-		if (hastexinfo) {
-
+		if( hastexinfo ){
 			TextureClass::MipCountType mipcount;
 
-			bool no_lod = ((texinfo.Attributes & W3DTEXTURE_NO_LOD) == W3DTEXTURE_NO_LOD);
+			bool no_lod = ( ( texinfo.Attributes & W3DTEXTURE_NO_LOD) == W3DTEXTURE_NO_LOD );
 
 			if (no_lod) {
 				mipcount = TextureClass::MIP_LEVELS_1;
@@ -1018,8 +1017,8 @@ TextureClass *Load_Texture(ChunkLoadClass & cload)
 			bool v_clamp = ((texinfo.Attributes & W3DTEXTURE_CLAMP_V) != 0);
 			newtex->Set_V_Addr_Mode(v_clamp ? TextureClass::TEXTURE_ADDRESS_CLAMP : TextureClass::TEXTURE_ADDRESS_REPEAT);
 
-		} else {
-			newtex = WW3DAssetManager::Get_Instance()->Get_Texture(name);
+		}else{
+			newtex = WW3DAssetManager::Get_Instance()->Get_Texture( name );
 		}
 
 		WWASSERT(newtex);

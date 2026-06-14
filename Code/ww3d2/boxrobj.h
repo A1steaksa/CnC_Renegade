@@ -184,8 +184,7 @@ inline const AABoxClass & AABoxRenderObjClass::Get_Box(void)
 /*
 ** OBBoxRenderObjClass - render object for oriented collision boxes
 */
-class OBBoxRenderObjClass : public BoxRenderObjClass
-{
+class OBBoxRenderObjClass : public BoxRenderObjClass {
 public:
 
 	OBBoxRenderObjClass(void);
@@ -228,34 +227,32 @@ protected:
 /*
 ** Loader for boxes
 */
-class BoxLoaderClass : public PrototypeLoaderClass
-{
+class BoxLoaderClass : public PrototypeLoaderClass {
 public:
-	virtual int						Chunk_Type (void)  { return W3D_CHUNK_BOX; }
-	virtual PrototypeClass *	Load_W3D(ChunkLoadClass & cload);
+	virtual int Chunk_Type(void){
+		return W3D_CHUNK_BOX;
+	}
+
+	virtual PrototypeClass* Load_W3D( ChunkLoadClass& cload );
 };
 
 /*
 ** Prototype for Box objects
 */
-class BoxPrototypeClass : public PrototypeClass
-{
+class BoxPrototypeClass : public PrototypeClass {
 public:
-	BoxPrototypeClass(W3dBoxStruct box);
-	virtual const char *			Get_Name(void) const;
-	virtual int						Get_Class_ID(void) const;
-	virtual RenderObjClass *	Create(void);
+	BoxPrototypeClass( W3dBoxStruct box );
+	virtual const char* Get_Name(void) const;
+	virtual int Get_Class_ID(void) const;
+	virtual RenderObjClass* Create(void);
 private:
-	W3dBoxStruct					Definition;
+	W3dBoxStruct Definition;
 };
 
 /*
 ** Instance of the loader which the asset manager installs
 */
-extern BoxLoaderClass			_BoxLoader;
-
-
-
+extern BoxLoaderClass _BoxLoader;
 
 #endif
 

@@ -142,7 +142,7 @@
 /*
 ** Loader Instance
 */
-HLodLoaderClass			_HLodLoader;
+HLodLoaderClass _HLodLoader;
 
 
 /** 
@@ -209,23 +209,21 @@ public:
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-PrototypeClass *HLodLoaderClass::Load_W3D( ChunkLoadClass &cload )
-{
-	HLodDefClass * def = new HLodDefClass;
+PrototypeClass *HLodLoaderClass::Load_W3D( ChunkLoadClass& cload ){
+	HLodDefClass* def = new HLodDefClass;
 
-	if (def == NULL)
-	{
+	if( def == NULL ){
 		return NULL;
 	}
 
-	if (def->Load_W3D(cload) != WW3D_ERROR_OK) {
+	if( def->Load_W3D( cload ) != WW3D_ERROR_OK ){
 		// load failed, delete the model and return an error
 		delete def;
 		return NULL;
 	} else {
 		// ok, accept this model! 
 		HLodPrototypeClass *proto = new HLodPrototypeClass(def);
-		return proto;	
+		return proto;
 	}
 	return NULL;
 }
@@ -247,9 +245,8 @@ PrototypeClass *HLodLoaderClass::Load_W3D( ChunkLoadClass &cload )
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-RenderObjClass * HLodPrototypeClass::Create(void)			
-{ 
-	HLodClass * hlod = NEW_REF( HLodClass , ( *Definition ) ); 
+RenderObjClass* HLodPrototypeClass::Create(void){ 
+	HLodClass* hlod = NEW_REF( HLodClass , (*Definition) ); 
 	return hlod;
 }
 
@@ -298,8 +295,7 @@ HLodDefClass::HLodDefClass(HLodClass &src_lod) :
 	Lod(NULL),
 	ProxyArray(NULL)
 {
-	Initialize (src_lod);
-	return ;
+	Initialize( src_lod );
 }
 
 
@@ -315,10 +311,8 @@ HLodDefClass::HLodDefClass(HLodClass &src_lod) :
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-HLodDefClass::~HLodDefClass(void)
-{
-	Free ();
-	return ;
+HLodDefClass::~HLodDefClass(void){
+	Free();
 }
 
 
@@ -334,27 +328,24 @@ HLodDefClass::~HLodDefClass(void)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodDefClass::Free(void)
-{
-	if (Name) {
-		::free(Name);
+void HLodDefClass::Free(void){
+	if( Name ){
+		::free( Name );
 		Name = NULL;
 	}
 
 	if (HierarchyTreeName) {
-		::free(HierarchyTreeName);
+		::free( HierarchyTreeName );
 		HierarchyTreeName = NULL;
 	}
 
-	if (Lod) {
+	if( Lod ){
 		delete[] Lod;
 		Lod = NULL;
 	}
 	LodCount = 0;
 
-	REF_PTR_RELEASE(ProxyArray);
-
-	return ;
+	REF_PTR_RELEASE( ProxyArray );
 }
 
 
@@ -370,8 +361,7 @@ void HLodDefClass::Free(void)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodDefClass::Initialize(HLodClass &src_lod)
-{
+void HLodDefClass::Initialize(HLodClass &src_lod){
 	// Start with a fresh set of data
 	Free ();
 
@@ -574,28 +564,28 @@ WW3DErrorType HLodDefClass::Save_Aggregate_Array(ChunkSaveClass & csave)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType HLodDefClass::Load_W3D(ChunkLoadClass & cload)
-{
+WW3DErrorType HLodDefClass::Load_W3D( ChunkLoadClass& cload ){
 	/* 
 	** First make sure we release any memory in use
 	*/
 	Free();
 
-	if (read_header(cload) == FALSE) {        
+	if( read_header(cload) == FALSE ){        
 	  return WW3D_ERROR_LOAD_FAILED;
 	}
 
 	/*
 	**	Loop through all the LODs and read the info from its chunk
 	*/    
-	for (int iLOD = 0; iLOD < LodCount; iLOD ++) {
-
+	for( int iLOD = 0; iLOD < LodCount; iLOD++ ){
 		/*
 		**	Open the next chunk, it should be a LOD struct
 		*/
-		if (!cload.Open_Chunk()) return WW3D_ERROR_LOAD_FAILED;
+		if( !cload.Open_Chunk() ){
+			return WW3D_ERROR_LOAD_FAILED;
+		}
 
-		if (cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_LOD_ARRAY) {
+		if( cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_LOD_ARRAY ){
 			// ERROR: Expected LOD struct!
 			return WW3D_ERROR_LOAD_FAILED;
 		}
@@ -609,9 +599,8 @@ WW3DErrorType HLodDefClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	** Parse the rest of the chunks
 	*/
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) 
-		{
+	while( cload.Open_Chunk() ){
+		switch(cload.Cur_Chunk_ID() ){
 			case W3D_CHUNK_HLOD_AGGREGATE_ARRAY:
 				Aggregates.Load_W3D(cload);
 				break;
@@ -638,27 +627,28 @@ WW3DErrorType HLodDefClass::Load_W3D(ChunkLoadClass & cload)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-bool HLodDefClass::read_header(ChunkLoadClass & cload)
-{
+bool HLodDefClass::read_header(ChunkLoadClass & cload){
 	/*
 	**	Open the first chunk, it should be the LOD header
 	*/
-	if (!cload.Open_Chunk()) return false;
+	if( !cload.Open_Chunk() ){
+		return false;
+	}
 
-	if (cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_HEADER) {
+	if( cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_HEADER ){
 		// ERROR: Expected HLOD Header!
 		return false;
 	}
 
 	W3dHLodHeaderStruct header;
-	if (cload.Read(&header,sizeof(header)) != sizeof(header)) {
+	if( cload.Read( &header,sizeof(header) ) != sizeof(header) ){
 		return false;
 	}
 	cload.Close_Chunk();
 
 	// Copy the name into our internal variable
-	Name = ::_strdup(header.Name);
-	HierarchyTreeName = ::strdup(header.HierarchyName);
+	Name = ::_strdup( header.Name );
+	HierarchyTreeName = ::strdup( header.HierarchyName );
 	LodCount = header.LodCount;
 	Lod = new SubObjectArrayClass[LodCount];
 	return true;
@@ -747,8 +737,7 @@ HLodDefClass::SubObjectArrayClass::SubObjectArrayClass(void) :
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-HLodDefClass::SubObjectArrayClass::~SubObjectArrayClass(void)
-{
+HLodDefClass::SubObjectArrayClass::~SubObjectArrayClass(void){
 	Reset();
 }
 
@@ -765,12 +754,11 @@ HLodDefClass::SubObjectArrayClass::~SubObjectArrayClass(void)
  * HISTORY:                                                                                    *
  *   10/25/2000 gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodDefClass::SubObjectArrayClass::Reset(void)
-{
+void HLodDefClass::SubObjectArrayClass::Reset(void){
 	MaxScreenSize = NO_MAX_SCREEN_SIZE;
 	
-	if (ModelName != NULL) {
-		for (int imodel=0; imodel<ModelCount;imodel++) {
+	if( ModelName != NULL ){
+		for( int imodel = 0; imodel<ModelCount; imodel++ ){
 			free(ModelName[imodel]);
 		}
 		delete[] ModelName;
@@ -797,39 +785,57 @@ void HLodDefClass::SubObjectArrayClass::Reset(void)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-bool HLodDefClass::SubObjectArrayClass::Load_W3D(ChunkLoadClass & cload)
-{
+bool HLodDefClass::SubObjectArrayClass::Load_W3D( ChunkLoadClass& cload ){
 	/*
 	** Open the first chunk, it should be a Lod Array Header
 	*/
-	if (!cload.Open_Chunk()) return false;
-	if (cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_SUB_OBJECT_ARRAY_HEADER) return false;
+	if( !cload.Open_Chunk() ){
+		return false;
+	}
+
+	if( cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_SUB_OBJECT_ARRAY_HEADER ){
+		return false;
+	}
 	
 	W3dHLodArrayHeaderStruct header;
-	if (cload.Read(&header,sizeof(header)) != sizeof(header)) return false;
+	if( cload.Read( &header, sizeof(header) ) != sizeof(header) ){
+		return false;
+	}
 	
-	if (!cload.Close_Chunk()) return false;
+	if( !cload.Close_Chunk() ){
+		return false;
+	}
 
 	ModelCount = header.ModelCount;
 	MaxScreenSize = header.MaxScreenSize;
-	ModelName = new char * [ModelCount];
-	BoneIndex = new int [ModelCount];
+	ModelName = new char*[ModelCount];
+	BoneIndex = new int[ModelCount];
 
 	/*
 	** Read each sub object definition
 	*/
-	for (int imodel=0; imodel<ModelCount; ++imodel) {
-		if (!cload.Open_Chunk()) return false;
-		if (cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_SUB_OBJECT) return false;
+	for( int imodel = 0; imodel < ModelCount; ++imodel ){
+		if( !cload.Open_Chunk() ){
+			return false;
+		}
+
+		if( cload.Cur_Chunk_ID() != W3D_CHUNK_HLOD_SUB_OBJECT ){
+			return false;
+		}
 
 		W3dHLodSubObjectStruct subobjdef;
-		if (cload.Read(&subobjdef,sizeof(subobjdef)) != sizeof(subobjdef)) return false;
+		if( cload.Read( &subobjdef, sizeof(subobjdef) ) != sizeof(subobjdef) ){
+			return false;
+		}
 
-		if (!cload.Close_Chunk()) return false;
+		if( !cload.Close_Chunk() ){
+			return false;
+		}
 
-		ModelName[imodel] = strdup(subobjdef.Name);
+		ModelName[imodel] = strdup( subobjdef.Name );
 		BoneIndex[imodel] = subobjdef.BoneIndex;
 	}
+
 	return true;
 }
 
@@ -976,7 +982,7 @@ HLodClass::HLodClass(const HLodClass & src) :
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-HLodClass::HLodClass(const char * name,RenderObjClass ** lods,int count) :
+HLodClass::HLodClass( const char* name, RenderObjClass** lods, int count ) :
 	Animatable3DObjClass(NULL),
 	LodCount(0),
 	CurLod(0),

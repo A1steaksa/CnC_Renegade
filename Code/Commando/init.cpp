@@ -99,26 +99,18 @@ extern const char *VALUE_NAME_TEXTURE_FILTER_MODE;
 ** Define IMMEDIATE_LOAD if you want to have the game start right
 ** up in a given level (for profiling for example)
 */
-
-// HACK: ATI demo loads the demo level bypassing the mainmenu
-#ifdef ATI_DEMO_HACK
-#define IMMEDIATE_LOAD						1
-#define IMMEDIATE_LOAD_LEVELNAME			"MDD_0807.mix"
-#else
 #define IMMEDIATE_LOAD						0
 #define IMMEDIATE_LOAD_LEVELNAME			"MDD_0803.mix"
-#endif
-
 
 
 
 /*
 ** This defines the subdirectory where the game will load all data from
 */
-const char *	DATA_SUBDIRECTORY		= "DATA\\";
-const char *	SAVE_SUBDIRECTORY		= "DATA\\SAVE\\";
-const char *	CONFIG_SUBDIRECTORY		= "DATA\\CONFIG\\";
-const char *	MOVIES_SUBDIRECTORY		= "DATA\\MOVIES\\";
+const char* DATA_SUBDIRECTORY   = "DATA\\";
+const char* SAVE_SUBDIRECTORY   = "DATA\\SAVE\\";
+const char* CONFIG_SUBDIRECTORY = "DATA\\CONFIG\\";
+const char* MOVIES_SUBDIRECTORY = "DATA\\MOVIES\\";
 
 
 #define	STRINGS_FILENAME					"STRINGS.TDB"
@@ -272,77 +264,13 @@ void Commando_Assert_Handler(const char * message)
 	//    THE REGISTRY SWITCHES!!!!!!!!!!!!!
 	//
 	//
-#ifdef WWDEBUG
-	Copy_Logs(DebugManager::Get_Version_Number());
-#endif // WWDEBUG
 	RegistryClass registry( APPLICATION_SUB_KEY_NAME_DEBUG );
 	if ( registry.Is_Valid() ) {
 		registry.Set_Int( VALUE_NAME_APPLICATION_CRASH_VERSION, 0 );
 
 	}
-
-#ifdef WWDEBUG
-
-   if (cDevOptions::SoundEffectOnAssert.Is_True() &&
-		WWAudioClass::Get_Instance() != NULL) {
-		//
-		// Sound effect
-		//
-		WWAudioClass::Get_Instance()->Create_Instant_Sound("Debug_Assertion", Matrix3D(1));
-   }
-
-   if (cDevOptions::DisplayLogfileOnAssert.Is_True()) {
-		//
-		// Open up the logfile so that the user can see the assert
-		// at the bottom.
-		//
-		cNetwork::Shell_Command(DebugManager::Logfile_Name());
-	}
-
-	//LOG_CALL_STACK;
-
-	if (cDevOptions::BreakToDebuggerOnAssert.Is_True()) {
-
-		if (cDevOptions::ShutdownInputOnAssert.Is_True()) {
-			//
-			// This input shutdown is to help those of us who still have the
-			// DirectInput / debugger problem. For some of us the registry fix
-			// doesn't help.
-			//
-			Input::Shutdown();
-		}
-																																			/*
-
-									  m
-			$m                mm            m
-			 "$mmmmm        m$"    mmmmmmm$"
-					 """$m   m$    m$""""""
-			mmmmmmm$$$$$$$$$"mmmm
-		  mmm$$$$$$$$$$$$$$$$$$ m$$$$m  "    m  "
-		$$$$$$$$$$$$$$$$$$$$$$  $$$$$$"$$$
-		 mmmmmmmmmmmmmmmmmmmmm  $$$$$$$$$$
-		 $$$$$$$$$$$$$$$$$$$$$  $$$$$$$"""  m
-		 "$$$$$$$$$$$$$$$$$$$$$ $$$$$$  "      "
-			  """""""$$$$$$$$$$$m """"
-				 mmmmmmmm"  m$   "$mmmmm
-			  $$""""""      "$     """"""$$
-			m$"               "m           "
-                       																												*/
-
-		_asm int 0x03;
-	}
-
-	if (cDevOptions::ExitThreadOnAssert.Is_True()) {
-      ExitThread(1);
-   }
-
-#endif // WWDEBUG
-
 }
 
-/*
-**
-*/
 void _stdcall AudioTextCallback(AudibleSoundClass *sound_obj, const StringClass &text, uint32 user_param)
 {
 	Vector3 red = Vector3( 1, 0.5f, 0.5f );
@@ -351,9 +279,7 @@ void _stdcall AudioTextCallback(AudibleSoundClass *sound_obj, const StringClass 
 	DebugManager::Display_Text( str, red );
 }
 
-/*
-**
-*/
+
 class LoggingFileFactoryClass : public SimpleFileFactoryClass {
 public:
 	virtual FileClass * Get_File( const char * filename ) {
@@ -366,9 +292,7 @@ private:
 	FileFactoryClass * BaseFactory;
 };
 
-/*
-**
-*/
+
 class StrippingFileFactoryClass : public SimpleFileFactoryClass {
 public:
 	virtual FileClass * Get_File( const char * filename ) {
@@ -381,20 +305,16 @@ private:
 	FileFactoryClass * BaseFactory;
 };
 
-/*
-**
-*/
+
 SimpleFileFactoryClass	RenegadeWritingFileFactory;
 
 SimpleFileFactoryClass	RenegadeBaseFileFactory;
-MixFileFactoryClass	*	AlwaysMixFileFactory;
+MixFileFactoryClass*	AlwaysMixFileFactory;
 FileFactoryListClass		_RenegadeFileFactory;
 StrippingFileFactoryClass	AudioFileFactory;
 LoggingFileFactoryClass		LoggingFileFactory;
 
-/*
-**
-*/
+
 void	Construct_Directory_Structure(void)
 {
 	//
@@ -437,20 +357,10 @@ void	Construct_Directory_Structure(void)
 	if (GetFileAttributes (config_dir) == 0xFFFFFFFF) {
 		::CreateDirectory (config_dir, NULL);
 	}
-
-
-	return ;
 }
 
-static bool Verify_Log_Directory(const StringClass& folder)
-{
+static bool Verify_Log_Directory(const StringClass& folder){
 	if (GetFileAttributes(folder)!=0xffffffff) return true;
-	//HANDLE file;
-	//file = CreateFile(folder, 0, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	//if (file!=INVALID_HANDLE_VALUE) {
-	//	CloseHandle(file);
-	//	return true;
-	//}
 
 	if (CreateDirectory(folder,NULL)) {
 		return true;
@@ -527,7 +437,7 @@ public:
 		char path[MAX_PATH];
 		reg.Get_String("LogPath", path, sizeof(path), "\\\\tanya\\game\\projects\\renegade\\_error_logs");
 		strcat(path, "\\");
-
+ 
 		StringClass folder_name(0,true);
 		folder_name.Format("%s%d.%d",path,Version>>16,Version&0xffff);
 		if (!Verify_Log_Directory(folder_name)) return;
@@ -535,7 +445,7 @@ public:
 		folder_name+=computer_name;
 		if (!Verify_Log_Directory(folder_name)) return;
 
-		Copy_Log(folder_name,DebugManager::Logfile_Name(),true);		//"_logfile.txt",true);
+		Copy_Log(folder_name,DebugManager::Logfile_Name(),true);
 		Copy_Log(folder_name,"_asserts.txt",true);
 		Copy_Log(folder_name,"_except.txt",true);
 		Copy_Log(folder_name,"sysinfo.txt",false);
@@ -564,9 +474,6 @@ void Copy_Logs(unsigned version)
 
 void Application_Exception_Callback(void)
 {
-#ifdef WWDEBUG
-	Copy_Logs(DebugManager::Get_Version_Number());
-#endif // WWDEBUG
 	RegistryClass registry( APPLICATION_SUB_KEY_NAME_DEBUG );
 	if ( registry.Is_Valid() ) {
 		registry.Set_Int( VALUE_NAME_APPLICATION_CRASH_VERSION, 0 );
@@ -670,7 +577,7 @@ bool Game_Init(void){
 
 	// Lets seed the Random Generator, a little
 	int count = TIMEGETTIME() & 0xFF;
-	while ( count-- > 0 ) {
+	while( count-- > 0 ){
 		FreeRandom.Get_Int();
 	}
 

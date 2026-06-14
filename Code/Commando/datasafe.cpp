@@ -233,18 +233,8 @@ void GenericDataSafeClass::Reset_Timers(void)
  * HISTORY:                                                                                    *
  *   7/30/2001 11:38AM ST : Created                                                            *
  *=============================================================================================*/
-void GenericDataSafeClass::Reset(void)
-{
+void GenericDataSafeClass::Reset(void){
 	CRCErrors = 0;
-
-#ifdef WWDEBUG
-	LastDump = TIMEGETTIME();
-	NumSwaps = 0;
-	NumFetches = 0;
-	SlopCount = 0;
-	NumSecurityChecks = 0;
-	NumShuffles = 0;
-#endif	//WWDEBUG
 
 	if (NumLists) {
 		Shuffle();

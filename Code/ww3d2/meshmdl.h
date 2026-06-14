@@ -117,40 +117,52 @@ struct VertexFormatXYZNDUV2;
 ** Texture, Shader, Material,
 ** TextureArray, MaterialArray, ShaderArray
 */
-class MeshModelClass : public MeshGeometryClass
-{
+class MeshModelClass : public MeshGeometryClass {
 public:	
 
 	MeshModelClass(void);
-	MeshModelClass(const MeshModelClass & that);
+	MeshModelClass( const MeshModelClass& that );
 	~MeshModelClass(void);
 	
-	MeshModelClass & operator = (const MeshModelClass & that);
-	void							Reset(int polycount,int vertcount,int passcount);
-	void							Register_For_Rendering();
-	void							Shadow_Render(SpecialRenderInfoClass & rinfo,const Matrix3D & tm,const HTreeClass * htree);	
+	MeshModelClass & operator =(const MeshModelClass& that);
+	void Reset( int polycount, int vertcount, int passcount );
+	void Register_For_Rendering();
+	void Shadow_Render( SpecialRenderInfoClass& rinfo, const Matrix3D& tm, const HTreeClass* htree );	
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Material interface, All of these functions call through to the current
 	// material decription.
 	/////////////////////////////////////////////////////////////////////////////////////
-	void							Set_Pass_Count(int passes)														{ CurMatDesc->Set_Pass_Count(passes); }
-	int							Get_Pass_Count(void) const														{ return CurMatDesc->Get_Pass_Count(); }
+	void Set_Pass_Count( int passes ){
+		CurMatDesc->Set_Pass_Count(passes);
+	}
+
+	int Get_Pass_Count(void) const {
+		return CurMatDesc->Get_Pass_Count();
+	}
 	
-	const Vector2 *			Get_UV_Array(int pass = 0, int stage = 0)									{ return CurMatDesc->Get_UV_Array(pass,stage); }
-	int							Get_UV_Array_Count(void)														{ return CurMatDesc->Get_UV_Array_Count(); }
-	const Vector2 *			Get_UV_Array_By_Index(int index)												{ return CurMatDesc->Get_UV_Array_By_Index(index, false); }
+	const Vector2* Get_UV_Array( int pass = 0, int stage = 0 ){
+		return CurMatDesc->Get_UV_Array(pass,stage);
+	}
 
-	unsigned *					Get_DCG_Array(int pass)															{ return CurMatDesc->Get_DCG_Array(pass); }
-	unsigned *					Get_DIG_Array(int pass)															{ return CurMatDesc->Get_DIG_Array(pass); }
-	VertexMaterialClass::ColorSourceType Get_DCG_Source(int pass)										{ return CurMatDesc->Get_DCG_Source(pass); }
-	VertexMaterialClass::ColorSourceType Get_DIG_Source(int pass)										{ return CurMatDesc->Get_DIG_Source(pass); }
+	int Get_UV_Array_Count(void){
+		return CurMatDesc->Get_UV_Array_Count();
+	}
 
-	unsigned *					Get_Color_Array(int array_index,bool create = true)					{ return CurMatDesc->Get_Color_Array(array_index,create); }
+	const Vector2* Get_UV_Array_By_Index( int index ){
+		return CurMatDesc->Get_UV_Array_By_Index( index, false );
+	}
 
-	void							Set_Single_Material(VertexMaterialClass * vmat,int pass=0)			{ CurMatDesc->Set_Single_Material(vmat,pass); }
-	void							Set_Single_Texture(TextureClass * tex,int pass=0,int stage=0)		{ CurMatDesc->Set_Single_Texture(tex,pass,stage); }
-	void							Set_Single_Shader(ShaderClass shader,int pass=0)						{ CurMatDesc->Set_Single_Shader(shader,pass); }
+	unsigned* Get_DCG_Array( int pass ){ return CurMatDesc->Get_DCG_Array(pass); }
+	unsigned* Get_DIG_Array( int pass ){ return CurMatDesc->Get_DIG_Array(pass); }
+	VertexMaterialClass::ColorSourceType Get_DCG_Source( int pass ){ return CurMatDesc->Get_DCG_Source(pass); }
+	VertexMaterialClass::ColorSourceType Get_DIG_Source( int pass ){ return CurMatDesc->Get_DIG_Source(pass); }
+
+	unsigned* Get_Color_Array(int array_index,bool create = true){ return CurMatDesc->Get_Color_Array(array_index,create); }
+
+	void Set_Single_Material( VertexMaterialClass* vmat, int pass = 0 ){ CurMatDesc->Set_Single_Material(vmat,pass); }
+	void Set_Single_Texture( TextureClass* tex, int pass = 0, int stage = 0 ){ CurMatDesc->Set_Single_Texture(tex,pass,stage); }
+	void Set_Single_Shader( ShaderClass shader, int pass = 0 ){ CurMatDesc->Set_Single_Shader(shader,pass); }
 
 	// the "Get" functions add a reference before returning the pointer (if appropriate)
 	VertexMaterialClass *	Get_Single_Material(int pass=0) const										{ return CurMatDesc->Get_Single_Material(pass); }
@@ -193,7 +205,7 @@ public:
 	void							Make_Color_Array_Unique(int array_index=0);
 
 	// Load the w3d file format
-	WW3DErrorType				Load_W3D(ChunkLoadClass & cload);
+	WW3DErrorType Load_W3D(ChunkLoadClass & cload);
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	//	Decal interface
@@ -217,21 +229,20 @@ public:
 protected:
 
 	// MeshClass will set this for skins so that they can get the bone transforms
-	void							Set_HTree(const HTreeClass * htree);
+	void Set_HTree( const HTreeClass* htree );
 
 public: // Jani: I need to have an access to these for now...
 
-	TexBufferClass *			Get_Texture_Array(int pass,int stage,bool create = true)
-	{
-		return CurMatDesc->Get_Texture_Array(pass,stage,create);
+	TexBufferClass* Get_Texture_Array( int pass, int stage, bool create = true ){
+		return CurMatDesc->Get_Texture_Array( pass, stage, create );
 	}
-	MatBufferClass *			Get_Material_Array(int pass,bool create = true)
-	{
-		return CurMatDesc->Get_Material_Array(pass,create);
+
+	MatBufferClass* Get_Material_Array( int pass, bool create = true ){
+		return CurMatDesc->Get_Material_Array( pass, create );
 	}
-	ShaderClass *				Get_Shader_Array(int pass,bool create = true)
-	{
-		return CurMatDesc->Get_Shader_Array(pass,create);
+
+	ShaderClass* Get_Shader_Array( int pass, bool create = true ){
+		return CurMatDesc->Get_Shader_Array( pass, create );
 	}
 
 protected:
@@ -291,16 +302,16 @@ protected:
 	// DefMatDesc - the default material description, allocated in constructor, always present.
 	// AlternateMatDes - an optional alternate material description, allocated at load time if needed
 	// CurMatDesc - pointer to the currently active material description.
-	MeshMatDescClass *									DefMatDesc;
-	MeshMatDescClass *									AlternateMatDesc;
-	MeshMatDescClass *									CurMatDesc;
+	MeshMatDescClass* DefMatDesc;
+	MeshMatDescClass* AlternateMatDesc;
+	MeshMatDescClass* CurMatDesc;
 
 	// Collection of the unique materials in the mesh
-	MaterialInfoClass	*									MatInfo;
+	MaterialInfoClass* MatInfo;
 
 	// Jani: Adding this here temporarily... must fine better place
-	GapFillerClass *										GapFiller;
-	bool														HasBeenInUse;	// For debugging purposes!
+	GapFillerClass* GapFiller;
+	bool HasBeenInUse; // For debugging purposes!
 
 	friend class MeshClass;
 	friend class MeshDeformSetClass;

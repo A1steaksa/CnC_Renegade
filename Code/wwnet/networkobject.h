@@ -164,9 +164,17 @@ public:
 	//
 	//	Filtering support
 	//
-	virtual int Get_Vis_ID(void)																		{ return -1; }
-	virtual bool Get_World_Position( Vector3& pos ) const										{ return false; }
-	virtual float Get_Filter_Distance(void) const													{ return 10000.0f; }
+	virtual int Get_Vis_ID(void){
+        return -1;
+    }
+
+	virtual bool Get_World_Position( Vector3& pos ) const {
+        return false;
+    }
+
+	virtual float Get_Filter_Distance(void) const {
+        return 10000.0f;
+    }
 
 	//
 	// Client-side update tracking
@@ -296,7 +304,6 @@ private:
 
 	int LastObjectIdIDamaged;
 	int LastObjectIdIGotDamagedBy;
-
 
 	// The size of this objects FREQUENT tier export. Used as a starting point for bandwidth calculation.
 	// It better not be exporting more than 255 bytes!

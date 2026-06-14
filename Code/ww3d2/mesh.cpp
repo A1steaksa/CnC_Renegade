@@ -192,8 +192,8 @@ MeshClass::MeshClass(void) :
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-MeshClass::MeshClass(const MeshClass & that) :
-	RenderObjClass(that),
+MeshClass::MeshClass( const MeshClass& that ) :
+	RenderObjClass( that ),
 	Model(NULL),
 	DecalMesh(NULL),
 	LightEnvironment(NULL),
@@ -219,8 +219,7 @@ MeshClass::MeshClass(const MeshClass & that) :
  * HISTORY:                                                                                    *
  *   1/6/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-MeshClass & MeshClass::operator = (const MeshClass & that)
-{
+MeshClass& MeshClass::operator =( const MeshClass& that ){
 	if (this != &that) {
 
 		TheDX8MeshRenderer.Unregister_Mesh_Type(this);
@@ -255,8 +254,7 @@ MeshClass & MeshClass::operator = (const MeshClass & that)
  * HISTORY:                                                                                    *
  *   1/6/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-MeshClass::~MeshClass(void) 
-{
+MeshClass::~MeshClass(void){
 	TheDX8MeshRenderer.Unregister_Mesh_Type(this);
 	Free();
 }
@@ -275,12 +273,11 @@ MeshClass::~MeshClass(void)
  * HISTORY:                                                                                    *
  *   8/30/00     NH : Created.                                                                 *
  *=============================================================================================*/
-bool MeshClass::Contains(const Vector3 &point)
-{
+bool MeshClass::Contains( const Vector3& point ){
 	// Transform point to object space and pass on to model
 	Vector3 obj_point;
-	Matrix3D::Inverse_Transform_Vector(Transform, point, &obj_point);
-	return Model->Contains(obj_point);
+	Matrix3D::Inverse_Transform_Vector( Transform, point, &obj_point );
+	return Model->Contains( obj_point );
 }
 
 
@@ -296,11 +293,10 @@ bool MeshClass::Contains(const Vector3 &point)
  * HISTORY:                                                                                    *
  *   1/6/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-void MeshClass::Free(void)
-{
-	REF_PTR_RELEASE(Model);
-	REF_PTR_RELEASE(DecalMesh);
-	if (UserLighting != NULL) {
+void MeshClass::Free(void){
+	REF_PTR_RELEASE( Model );
+	REF_PTR_RELEASE( DecalMesh );
+	if( UserLighting != NULL ){
 		delete[] UserLighting;
 		UserLighting = NULL;
 	}
@@ -319,9 +315,8 @@ void MeshClass::Free(void)
  * HISTORY:                                                                                    *
  *   1/6/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-RenderObjClass * MeshClass::Clone(void) const
-{
-	return NEW_REF( MeshClass, (*this));
+RenderObjClass* MeshClass::Clone(void) const {
+	return NEW_REF( MeshClass, (*this) );
 }
 
 
@@ -337,9 +332,8 @@ RenderObjClass * MeshClass::Clone(void) const
  * HISTORY:                                                                                    *
  *   5/15/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-const char * MeshClass::Get_Name(void) const
-{ 
-	return Model->Get_Name(); 
+const char* MeshClass::Get_Name(void) const {
+	return Model->Get_Name();
 }
 
 
@@ -355,9 +349,8 @@ const char * MeshClass::Get_Name(void) const
  * HISTORY:                                                                                    *
  *   3/9/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-void MeshClass::Set_Name(const char * name)
-{
-	Model->Set_Name(name);
+void MeshClass::Set_Name( const char* name ){
+	Model->Set_Name( name );
 }
 
 /***********************************************************************************************
@@ -1074,9 +1067,8 @@ void MeshClass::Make_Unique()
  * HISTORY:                                                                                    * 
  *   06/12/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-WW3DErrorType MeshClass::Load_W3D(ChunkLoadClass & cload)
-{
-	Vector3 boxmin,boxmax;
+WW3DErrorType MeshClass::Load_W3D( ChunkLoadClass& cload ){
+	Vector3 boxmin, boxmax;
 
 	/*
 	** Make sure this mesh is "empty"
@@ -1325,12 +1317,11 @@ bool MeshClass::Intersect_OBBox(OBBoxIntersectionTestClass & boxtest)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshClass::Get_Obj_Space_Bounding_Sphere(SphereClass & sphere) const
-{
-	if (Model) {
-		Model->Get_Bounding_Sphere(&sphere);
-	} else {
-		sphere.Center.Set(0,0,0);
+void MeshClass::Get_Obj_Space_Bounding_Sphere( SphereClass& sphere ) const {
+	if( Model ){
+		Model->Get_Bounding_Sphere( &sphere );
+	}else{
+		sphere.Center.Set( 0, 0, 0 );
 		sphere.Radius = 1.0f;
 	}
 }
@@ -1437,8 +1428,7 @@ void MeshClass::Add_Dependencies_To_List
  * HISTORY:                                                                                    *
  *   5/14/2001    NH : Created.                                                                *
  *=============================================================================================*/
-void MeshClass::Update_Cached_Bounding_Volumes(void) const
-{
+void MeshClass::Update_Cached_Bounding_Volumes(void) const {
 	Get_Obj_Space_Bounding_Sphere(CachedBoundingSphere);
 
 	CachedBoundingSphere.Center = Get_Transform() * CachedBoundingSphere.Center;

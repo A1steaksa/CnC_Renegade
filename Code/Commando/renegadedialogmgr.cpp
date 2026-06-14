@@ -172,7 +172,6 @@ void RenegadeDialogMgrClass::Initialize(void){
 		DialogMgrClass::Initialize( STYLE_MGR_INI );
 	}
 	DialogMgrClass::Install_Input( _TheWWUIInput );
-	return;
 }
 
 

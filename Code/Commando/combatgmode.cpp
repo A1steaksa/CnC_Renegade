@@ -607,8 +607,6 @@ void ::Load_Level(void){
 	WWLOG_INTERMEDIATE("Spawn_Point_Validation()");
 	// -------------------------------------------------------------------------
 
-   //DefinitionMgrClass::List_Available_Definitions();
-
 	INIT_STATUS("Compute world size");
 	Compute_World_Size();
 	WWLOG_INTERMEDIATE("Compute_World_Size()");
@@ -619,7 +617,6 @@ void ::Load_Level(void){
 	// more of them.
 	//
 	ControlClass::Set_Precision();
-	//SoldierGameObj::Set_Precision();
 	HumanStateClass::Set_Precision();
 	VehicleGameObj::Set_Precision();
 	DoorPhysClass::Set_Precision();

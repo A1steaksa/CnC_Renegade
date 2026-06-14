@@ -50,8 +50,7 @@ class DynamicPhysDefClass;
 ** the current vis-ID for the object and has a method to automatically update it which should 
 ** be called whenever the object moves.  This class is not a concrete derived class.
 */
-class DynamicPhysClass : public PhysClass
-{
+class DynamicPhysClass : public PhysClass {
 public:
 	
 	DynamicPhysClass(void);
@@ -70,12 +69,29 @@ public:
 	/*
 	** Simulation and rendering toggles for all dynamic physics objects
 	*/
-	virtual bool								Is_Simulation_Disabled(void)				{ return _DisableDynamicPhysSimulation; }
-	virtual bool								Is_Rendering_Disabled(void)				{ return _DisableDynamicPhysRendering; }
-	static void									Disable_All_Simulation(bool onoff)		{ _DisableDynamicPhysSimulation = onoff; }
-	static void									Disable_All_Rendering(bool onoff)		{ _DisableDynamicPhysRendering = onoff; }
-	static bool									Is_All_Simulation_Disabled(void)			{ return _DisableDynamicPhysSimulation; }
-	static bool									Is_All_Rendering_Disabled(void)			{ return _DisableDynamicPhysRendering; }
+	virtual bool Is_Simulation_Disabled(void){
+		return _DisableDynamicPhysSimulation;
+	}
+
+	virtual bool Is_Rendering_Disabled(void){
+		return _DisableDynamicPhysRendering;
+	}
+
+	static void Disable_All_Simulation( bool onoff ){
+		_DisableDynamicPhysSimulation = onoff;
+	}
+
+	static void Disable_All_Rendering( bool onoff ){
+		_DisableDynamicPhysRendering = onoff;
+	}
+
+	static bool Is_All_Simulation_Disabled(void){
+		return _DisableDynamicPhysSimulation;
+	}
+
+	static bool Is_All_Rendering_Disabled(void){
+		return _DisableDynamicPhysRendering;
+	}
 
 	/*
 	** Save-Load System
@@ -110,35 +126,30 @@ private:
 ** DynamicPhysDefClass
 ** Definition data structure for DynamicPhysClass
 */
-class DynamicPhysDefClass : public PhysDefClass
-{
+class DynamicPhysDefClass : public PhysDefClass {
 public:
-	
+
 	DynamicPhysDefClass(void);
 
 	// From PersistClass
-	virtual bool								Save(ChunkSaveClass &csave);
-	virtual bool								Load(ChunkLoadClass &cload);
+	virtual bool Save(ChunkSaveClass &csave);
+	virtual bool Load(ChunkLoadClass &cload);
 
 	// From PhysDefClass
-	virtual const char *						Get_Type_Name(void)			{ return "DynamicPhysDef"; }
-	virtual bool								Is_Type(const char *);
+	virtual const char* Get_Type_Name(void){
+		return "DynamicPhysDef";
+	}
+
+	virtual bool Is_Type(const char *);
 
 	// Validation methods
-	virtual bool								Is_Valid_Config (StringClass &message);
+	virtual bool Is_Valid_Config( StringClass& message );
 
-	//	Editable interface requirements
-	DECLARE_EDITABLE(DynamicPhysDefClass,PhysDefClass);
+	// Editable interface requirements
+	DECLARE_EDITABLE( DynamicPhysDefClass, PhysDefClass );
 
 protected:
-
 	friend class DynamicPhysClass;
 };
 
-
-
-
 #endif //DYNAMICPHYS_H
-
-
-

@@ -69,8 +69,7 @@ const unsigned MAX_OVERRIDE_FLAG_LEVEL=32;
 **
 ** Camera - The camera being used to render the scene, contains culling code, etc
 */
-class RenderInfoClass
-{
+class RenderInfoClass {
 public:
 	RenderInfoClass(CameraClass & cam);
 	~RenderInfoClass(void);

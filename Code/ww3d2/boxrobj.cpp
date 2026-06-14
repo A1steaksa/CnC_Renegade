@@ -1,21 +1,3 @@
-/*
-**	Command & Conquer Renegade(tm)
-**	Copyright 2025 Electronic Arts Inc.
-**
-**	This program is free software: you can redistribute it and/or modify
-**	it under the terms of the GNU General Public License as published by
-**	the Free Software Foundation, either version 3 of the License, or
-**	(at your option) any later version.
-**
-**	This program is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**	GNU General Public License for more details.
-**
-**	You should have received a copy of the GNU General Public License
-**	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 /***********************************************************************************************
  ***              C O N F I D E N T I A L  ---  W E S T W O O D  S T U D I O S               ***
  ***********************************************************************************************
@@ -1345,38 +1327,33 @@ OBBoxClass & OBBoxRenderObjClass::Get_Box(void)
 /*
 ** BoxLoaderClass Implementation
 */
-PrototypeClass * BoxLoaderClass::Load_W3D(ChunkLoadClass & cload)
-{
+PrototypeClass* BoxLoaderClass::Load_W3D( ChunkLoadClass& cload ){
 	W3dBoxStruct box;
-	cload.Read(&box,sizeof(box));
-	return new BoxPrototypeClass(box);
+	cload.Read( &box, sizeof(box) );
+	return new BoxPrototypeClass( box );
 }
 
 /*
 ** BoxPrototypeClass Implementation
 */
-BoxPrototypeClass::BoxPrototypeClass(W3dBoxStruct box)
-{
+BoxPrototypeClass::BoxPrototypeClass( W3dBoxStruct box ){
 	Definition = box;
 }
 
-const char * BoxPrototypeClass::Get_Name(void) const
-{
+const char* BoxPrototypeClass::Get_Name(void) const {
 	return Definition.Name;
 }
 
-int BoxPrototypeClass::Get_Class_ID(void) const
-{
-	if (Definition.Attributes & W3D_BOX_ATTRIBUTE_ORIENTED) {
+int BoxPrototypeClass::Get_Class_ID(void) const {
+	if( Definition.Attributes & W3D_BOX_ATTRIBUTE_ORIENTED ){
 		return RenderObjClass::CLASSID_OBBOX;
-	} else {
+	}else{
 		return RenderObjClass::CLASSID_AABOX;
 	}
 }
 	
-RenderObjClass * BoxPrototypeClass::Create(void)
-{
-	if (Definition.Attributes & W3D_BOX_ATTRIBUTE_ORIENTED) {
+RenderObjClass* BoxPrototypeClass::Create(void){
+	if( Definition.Attributes & W3D_BOX_ATTRIBUTE_ORIENTED ){
 		return NEW_REF( OBBoxRenderObjClass, (Definition) );
 	} else {
 		return NEW_REF( AABoxRenderObjClass, (Definition) );

@@ -51,13 +51,11 @@
 /*
 **	This is the definition of a buffered read raw file class. 
 */
-class BufferedFileClass : public RawFileClass
-{
+class BufferedFileClass : public RawFileClass {
 	typedef RawFileClass BASECLASS;
 
 	public:
-
-		BufferedFileClass(char const *filename);
+		BufferedFileClass( char const* filename );
 		BufferedFileClass(void);
 		BufferedFileClass (RawFileClass const & f);
 		BufferedFileClass & operator = (BufferedFileClass const & f);
@@ -70,16 +68,16 @@ class BufferedFileClass : public RawFileClass
 
 	protected:
 
-		static	void		Set_Desired_Buffer_Size( int size ) { _DesiredBufferSize = size; }
+		static void Set_Desired_Buffer_Size( int size ) { _DesiredBufferSize = size; }
 
-		void					Reset_Buffer( void );
+		void Reset_Buffer( void );
 		
 	private:
-		unsigned char *	Buffer;				// The read buffer 
-		unsigned int		BufferSize;			// The allocated size of the read buffer
-		int					BufferAvailable;	// The amount of data in the read buffer
-		int					BufferOffset;		// The data already given out
-		static	int		_DesiredBufferSize;
+		unsigned char* Buffer; // The read buffer 
+		unsigned int BufferSize; // The allocated size of the read buffer
+		int BufferAvailable; // The amount of data in the read buffer
+		int BufferOffset; // The data already given out
+		static int _DesiredBufferSize;
 };
 
 #endif

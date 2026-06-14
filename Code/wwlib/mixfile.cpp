@@ -44,6 +44,7 @@ MixFileFactoryClass::MixFileFactoryClass( const char* mix_filename, FileFactoryC
 	Factory(NULL),
 	IsModified(false)
 {
+
 	MixFilename	= mix_filename;
 	Factory = factory;
 	FilenameList.Set_Growth_Step( 1000 );
@@ -162,27 +163,27 @@ bool MixFileFactoryClass::Build_Filename_List( DynamicVectorClass<StringClass>& 
 	return retval;
 }
 
-FileClass * MixFileFactoryClass::Get_File( char const *filename ){
-	if ( FileInfo.Length() == 0 ) {
+FileClass* MixFileFactoryClass::Get_File( char* const filename ){
+	if( FileInfo.Length() == 0 ){
 		return NULL;
 	}
 
-	RawFileClass *file = NULL;
+	RawFileClass* file = NULL;
 
-	//	Create the key block that will be used to binary search for the file.
+	// Create the key block that will be used to binary search for the file.
 	unsigned long crc = CRC_Stringi( filename );
 
-	//	Binary search for the file in this mixfile. If it is found, then create the file
-	FileInfoStruct * info = NULL;
-	FileInfoStruct * base = &FileInfo[0];
+	// Binary search for the file in this mixfile. If it is found, then create the file
+	FileInfoStruct* info = NULL;
+	FileInfoStruct* base = &FileInfo[0];
 	int stride = FileInfo.Length();
-	while (stride > 0) {
+	while( stride > 0 ){
 		int pivot = stride / 2;
-		FileInfoStruct * tryptr = base + pivot;
-		if (crc < tryptr->CRC) {
+		FileInfoStruct* tryptr = base + pivot;
+		if( crc < tryptr->CRC ){
 			stride = pivot;
-		} else {
-			if (tryptr->CRC == crc) {
+		}else{
+			if( tryptr->CRC == crc ){
 				info = tryptr;
 				break;
 			}
@@ -191,7 +192,7 @@ FileClass * MixFileFactoryClass::Get_File( char const *filename ){
 		}
 	}		
 
-	if ( info != NULL) {
+	if( info != NULL ){
 		file = (RawFileClass *)Factory->Get_File( MixFilename );
 		if ( file ) {
 			file->Bias( BaseOffset + info->Offset, info->Size );

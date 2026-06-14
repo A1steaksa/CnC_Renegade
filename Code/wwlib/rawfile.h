@@ -77,8 +77,7 @@
 **	error handling is required. This is more than likely if greater functionality is derived
 **	from this base class.
 */
-class RawFileClass : public FileClass
-{
+class RawFileClass : public FileClass {
 		typedef FileClass BASECLASS;
 
 	public:
@@ -89,9 +88,9 @@ class RawFileClass : public FileClass
 		*/
 		int Rights;
 
-		RawFileClass(char const *filename);
+		RawFileClass( char const *filename );
 		RawFileClass(void);
-		RawFileClass (RawFileClass const & f);
+		RawFileClass( RawFileClass const& f );
 		RawFileClass & operator = (RawFileClass const & f);
 		virtual ~RawFileClass(void);
 
@@ -101,10 +100,10 @@ class RawFileClass : public FileClass
 		virtual int Delete(void);
 		virtual bool Is_Available(int forced=false);
 		virtual bool Is_Open(void) const;
-		virtual int Open(char const *filename, int rights=READ);
-		virtual int Open(int rights=READ);
+		virtual int Open( char const* filename, int rights = READ );
+		virtual int Open( int rights = READ );
 		virtual int Read(void *buffer, int size);
-		virtual int Seek(int pos, int dir=SEEK_CUR);
+		virtual int Seek(int pos, int dir = SEEK_CUR);
 		virtual int Size(void);
 		virtual int Write(void const *buffer, int size);
 		virtual void Close(void);
@@ -112,10 +111,13 @@ class RawFileClass : public FileClass
 		virtual bool Set_Date_Time(unsigned long datetime);
 		virtual void Error(int error, int canretry = false, char const * filename=NULL);
 		virtual void Bias(int start, int length=-1);
-		virtual void * Get_File_Handle(void) { return Handle; } 
+		
+        virtual void * Get_File_Handle(void) {
+            return Handle;
+        } 
 
-		virtual void	Attach (void *handle, int rights=READ);
-		virtual void	Detach (void);		
+		virtual void Attach (void *handle, int rights=READ);
+		virtual void Detach (void);		
 
 		/*
 		**	These bias values enable a sub-portion of a file to appear as if it
@@ -133,7 +135,7 @@ class RawFileClass : public FileClass
 		*/
 		int Transfer_Block_Size(void);
 
-		int Raw_Seek(int pos, int dir=SEEK_CUR);
+		int Raw_Seek( int pos, int dir = SEEK_CUR );
 		void Reset(void);
 
 	private:
@@ -149,7 +151,6 @@ class RawFileClass : public FileClass
 
 		StringClass Filename;
 
-		//
 		// file date and time are in the following formats:
 		//
 		//      date   bits 0-4   day (0-31)
@@ -183,11 +184,8 @@ class RawFileClass : public FileClass
  *   11/25/2001 Jani: Note that this is virtual function and thus can't be inlined. Is there a *
  *					 reason for it to be virtual?																	  *
  *=============================================================================================*/
-inline char const * RawFileClass::File_Name(void) const
-{
-	return(Filename);
+inline char* const RawFileClass::File_Name(void) const {
+	return Filename;
 }
-
-
 
 #endif

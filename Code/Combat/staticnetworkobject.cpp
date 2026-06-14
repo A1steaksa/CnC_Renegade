@@ -208,32 +208,6 @@ StaticNetworkObjectClass::Network_Think (void)
 	return ;
 }
 
-
-/*
-////////////////////////////////////////////////////////////////////////////
-//
-//	Compute_Object_Priority - TSS092201
-//
-/////////////////////////////////////////////////////////////////////////////
-float
-StaticNetworkObjectClass::Compute_Object_Priority (int client_id, const Vector3 &client_pos)
-{
-	float priority = 1.0F;
-
-	if (Get_Object_Dirty_Bit (client_id, BIT_RARE) == false) {
-		priority = NetworkObjectClass::Compute_Object_Priority (client_id, client_pos);
-	}
-
-	//
-	// Priority value is cached, update the cached value.
-	//
-	Set_Cached_Priority(priority);
-
-	return priority;
-}
-*/
-
-
 ////////////////////////////////////////////////////////////////
 //
 //	Generate_Static_Network_Objects

@@ -41,13 +41,9 @@
 #ifndef __APPPACKETTYPES_H__
 #define __APPPACKETTYPES_H__
 
-//-----------------------------------------------------------------------------
-//
 // Leaf node net object types
 // N.B. If you add to this list you must also add in cAppPacketStats::Interpret_Type.
-//
-enum
-{
+enum {
 	//
 	// S->C
 	//	
@@ -87,9 +83,7 @@ enum
 	APPPACKETTYPE_NETBACKGROUND,
 	APPPACKETTYPE_GAMESPYSCCHALLENGEEVENT,
 
-	//
 	// C->S
-	//	
 	APPPACKETTYPE_CLIENTCONTROL,
 	APPPACKETTYPE_CSTEXTOBJ,
 	APPPACKETTYPE_SUICIDEEVENT,
@@ -114,25 +108,10 @@ enum
 	APPPACKETTYPE_DONATEEVENT,
 	APPPACKETTYPE_GAMESPYCSCHALLENGERESPONSEEVENT,
 
-	//
 	// Summation
-	//
 	APPPACKETTYPE_ALL,
 
 	APPPACKETTYPE_COUNT,
 };	
 
-//-----------------------------------------------------------------------------
-
 #endif //__APPPACKETTYPES_H__
-
-
-
-
-
-
-
-
-
-	//APPPACKETTYPE_FLAGCAPEVENT,
-	//APPPACKETTYPE_STEALTHEVENT,

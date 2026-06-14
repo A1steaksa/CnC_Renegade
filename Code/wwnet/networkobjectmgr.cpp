@@ -213,7 +213,7 @@ void NetworkObjectMgrClass::Think(void){
 // This is for cleanup only.
 //
 ////////////////////////////////////////////////////////////////
-void NetworkObjectMgrClass::Set_All_Delete_Pending(void) {
+void NetworkObjectMgrClass::Set_All_Delete_Pending(void){
 	WWDEBUG_SAY(("NetworkObjectMgrClass::Set_All_Delete_Pending\n"));
 
     // Mark all netobjects as delete pending
