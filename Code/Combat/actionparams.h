@@ -49,18 +49,12 @@
 	#include "gameobjobserver.h"
 #endif
 
-/*
-**
-*/
-class		ScriptableGameObj;
-typedef	ScriptableGameObj	 GameObject;
+class ScriptableGameObj;
+typedef	ScriptableGameObj GameObject;
 
-/*
-**
-*/
 typedef enum {
-	NO_AI_STATE_CHANGE			= -1,
-	AI_STATE_IDLE					= 0,
+	NO_AI_STATE_CHANGE      = -1,
+	AI_STATE_IDLE           = 0,
 	AI_STATE_SECONDARY_IDLE,
 	AI_STATE_SEARCH,
 	AI_STATE_COMBAT

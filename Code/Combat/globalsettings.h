@@ -151,32 +151,35 @@ protected:
 class HumanLoiterGlobalSettingsDef : public DefinitionClass
 {
 public:
-	HumanLoiterGlobalSettingsDef( void );
-	~HumanLoiterGlobalSettingsDef( void );
+	HumanLoiterGlobalSettingsDef(void);
+	~HumanLoiterGlobalSettingsDef(void);
 
-	virtual uint32								Get_Class_ID( void ) const;
-	virtual PersistClass *					Create( void ) const ;
-	virtual bool								Save( ChunkSaveClass &csave );
-	virtual bool								Load( ChunkLoadClass &cload );
-	virtual const PersistFactoryClass &	Get_Factory( void ) const;
+	virtual uint32 Get_Class_ID(void) const;
+	virtual PersistClass* Create(void) const ;
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	virtual const PersistFactoryClass& Get_Factory(void) const;
 
 	DECLARE_EDITABLE( HumanLoiterGlobalSettingsDef, DefinitionClass );
 
-	float		Get_Activation_Delay( void )	{ return ActivationDelay; }
-	const char *	Pick_Animation( void );
+	float Get_Activation_Delay(void){
+		return ActivationDelay;
+	}
 
-	static	HumanLoiterGlobalSettingsDef * Get_Default_Loiters( void );
-	static	HumanLoiterGlobalSettingsDef * Get_Weapon_Loiters( void );
-	static	HumanLoiterGlobalSettingsDef * Get_Weaponless_Loiters( void );
+	const char* Pick_Animation(void);
+
+	static HumanLoiterGlobalSettingsDef* Get_Default_Loiters(void);
+	static HumanLoiterGlobalSettingsDef* Get_Weapon_Loiters(void);
+	static HumanLoiterGlobalSettingsDef* Get_Weaponless_Loiters(void);
 
 protected:
-	float											ActivationDelay;
-	float											LoiterFrequency;
-	DynamicVectorClass<StringClass>		LoiterAnimList;
+	float ActivationDelay;
+	float LoiterFrequency;
+	DynamicVectorClass<StringClass> LoiterAnimList;
 
-	static	HumanLoiterGlobalSettingsDef * DefaultLoiters;
-	static	HumanLoiterGlobalSettingsDef * WeaponLoiters;
-	static	HumanLoiterGlobalSettingsDef * WeaponlessLoiters;
+	static HumanLoiterGlobalSettingsDef* DefaultLoiters;
+	static HumanLoiterGlobalSettingsDef* WeaponLoiters;
+	static HumanLoiterGlobalSettingsDef* WeaponlessLoiters;
 };
 
 /*
@@ -325,25 +328,25 @@ public:
 /*
 ** HumanAnimOverrides
 */
-class	HumanAnimOverrideDef : public DefinitionClass {
+class HumanAnimOverrideDef : public DefinitionClass {
 
 public:
 	HumanAnimOverrideDef( void );		
 
-	virtual uint32								Get_Class_ID( void ) const;
-	virtual PersistClass *					Create( void ) const ;
-	virtual bool								Save( ChunkSaveClass &csave );
-	virtual bool								Load( ChunkLoadClass &cload );
-	virtual const PersistFactoryClass &	Get_Factory( void ) const;
+	virtual uint32 Get_Class_ID(void) const;
+	virtual PersistClass* Create(void) const;
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	virtual const PersistFactoryClass&	Get_Factory( void ) const;
 
 	DECLARE_EDITABLE( HumanAnimOverrideDef, DefinitionClass );
 
-	StringClass									RunEmptyHands;
-	StringClass									WalkEmptyHands;
-	StringClass									RunAtChest;
-	StringClass									WalkAtChest;
-	StringClass									RunAtHip;
-	StringClass									WalkAtHip;
+	StringClass RunEmptyHands;
+	StringClass WalkEmptyHands;
+	StringClass RunAtChest;
+	StringClass WalkAtChest;
+	StringClass RunAtHip;
+	StringClass WalkAtHip;
 };
 
 #endif	//	GLOBALSETTINGS_H

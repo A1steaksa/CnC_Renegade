@@ -604,11 +604,16 @@ WWINLINE void Vector3::Subtract(const Vector3 &a,const Vector3 &b,Vector3 * set_
  * HISTORY:                                                                                    *
  *   10/18/99   gth : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void Vector3::Update_Min(const Vector3 & a)
-{	
-	if (a.X < X) X = a.X;
-	if (a.Y < Y) Y = a.Y;
-	if (a.Z < Z) Z = a.Z;
+WWINLINE void Vector3::Update_Min( const Vector3& a ){
+	if( a.X < X ){
+		X = a.X;
+	}
+	if( a.Y < Y ){
+		Y = a.Y;
+	}
+	if( a.Z < Z ){
+		Z = a.Z;
+	}
 }
 
 
@@ -624,8 +629,7 @@ WWINLINE void Vector3::Update_Min(const Vector3 & a)
  * HISTORY:                                                                                    *
  *   10/18/99   gth : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void Vector3::Update_Max(const Vector3 & a)
-{	
+WWINLINE void Vector3::Update_Max( const Vector3& a ){
 	if (a.X > X) X = a.X;
 	if (a.Y > Y) Y = a.Y;
 	if (a.Z > Z) Z = a.Z;

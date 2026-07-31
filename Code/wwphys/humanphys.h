@@ -81,11 +81,11 @@ public:
 	** Save-Load system
 	*/
 	virtual const PersistFactoryClass &	Get_Factory (void) const;
-	virtual bool								Save (ChunkSaveClass &csave);
-	virtual bool								Load (ChunkLoadClass &cload);
+	virtual bool Save (ChunkSaveClass &csave);
+	virtual bool Load (ChunkLoadClass &cload);
 
-	bool								Has_Just_Jumped (void) const { return JustJumped; }
-	void								Jump_To_Point (const Vector3 &point);
+	bool Has_Just_Jumped (void) const { return JustJumped; }
+	void Jump_To_Point (const Vector3 &point);
 	
 protected:
 

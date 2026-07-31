@@ -68,9 +68,8 @@ PivotClass::PivotClass(void) :
 }
 
 
-void PivotClass::Capture_Update(void)
-{
-	if ( WorldSpaceTranslation ) {
+void PivotClass::Capture_Update(void){
+	if( WorldSpaceTranslation ){
 		// The Translation of CapTransform is meant to be in world space,
 		// so remove before applying orientation
 		Matrix3D CapOrientation = CapTransform;
@@ -78,7 +77,7 @@ void PivotClass::Capture_Update(void)
 		Matrix3D::Multiply(Transform,CapOrientation,&(Transform));
 		// Now apply translation in world space
 		Transform.Adjust_Translation( CapTransform.Get_Translation() );
-	} else {
+	}else{
 		Matrix3D::Multiply(Transform,CapTransform,&(Transform));
 	}
 }

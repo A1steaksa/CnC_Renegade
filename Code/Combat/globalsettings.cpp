@@ -308,9 +308,9 @@ SimplePersistFactoryClass<HumanLoiterGlobalSettingsDef, CHUNKID_GLOBAL_SETTINGS_
 
 DECLARE_DEFINITION_FACTORY(HumanLoiterGlobalSettingsDef, CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_LOITER, "HumanLoiter") _HumanLoiterGlobalSettingsDefDefFactory;
 
-HumanLoiterGlobalSettingsDef * HumanLoiterGlobalSettingsDef::DefaultLoiters		= NULL;
-HumanLoiterGlobalSettingsDef * HumanLoiterGlobalSettingsDef::WeaponLoiters			= NULL;
-HumanLoiterGlobalSettingsDef * HumanLoiterGlobalSettingsDef::WeaponlessLoiters	= NULL;
+HumanLoiterGlobalSettingsDef* HumanLoiterGlobalSettingsDef::DefaultLoiters    = NULL;
+HumanLoiterGlobalSettingsDef* HumanLoiterGlobalSettingsDef::WeaponLoiters     = NULL;
+HumanLoiterGlobalSettingsDef* HumanLoiterGlobalSettingsDef::WeaponlessLoiters = NULL;
 
 HumanLoiterGlobalSettingsDef::HumanLoiterGlobalSettingsDef( void ) :
 	ActivationDelay( 20 ),
@@ -334,33 +334,29 @@ HumanLoiterGlobalSettingsDef::~HumanLoiterGlobalSettingsDef( void )
 	}
 }
 
-uint32	HumanLoiterGlobalSettingsDef::Get_Class_ID (void) const	
-{ 
+uint32 HumanLoiterGlobalSettingsDef::Get_Class_ID(void) const	{
 	return CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_LOITER; 
 }
 
-const PersistFactoryClass & HumanLoiterGlobalSettingsDef::Get_Factory (void) const 
-{ 
+const PersistFactoryClass& HumanLoiterGlobalSettingsDef::Get_Factory(void) const {
 	return _HumanLoiterGlobalSettingsDefPersistFactory; 
 }
 
-PersistClass *	HumanLoiterGlobalSettingsDef::Create( void ) const 
-{
+PersistClass* HumanLoiterGlobalSettingsDef::Create(void) const {
 	WWASSERT( 0 );
 	return NULL;
 }
 
-enum	{
-	CHUNKID_HL_DEF_PARENT							=	803001812,
+enum {
+	CHUNKID_HL_DEF_PARENT =	803001812,
 	CHUNKID_HL_DEF_VARIABLES,
 
-	MICROCHUNKID_HL_DEF_ACTIVATION_DELAY		=	1,
+	MICROCHUNKID_HL_DEF_ACTIVATION_DELAY = 1,
 	MICROCHUNKID_HL_DEF_LOITER_FREQUENCY,
 	MICROCHUNKID_HL_DEF_LOITER_ANIM_LIST_ENTRY,
 };
 
-bool	HumanLoiterGlobalSettingsDef::Save( ChunkSaveClass & csave )
-{
+bool HumanLoiterGlobalSettingsDef::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_HL_DEF_PARENT );
 		DefinitionClass::Save( csave );
 	csave.End_Chunk();
@@ -377,8 +373,7 @@ bool	HumanLoiterGlobalSettingsDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	HumanLoiterGlobalSettingsDef::Load( ChunkLoadClass &cload )
-{
+bool HumanLoiterGlobalSettingsDef::Load( ChunkLoadClass& cload ){
 	while (cload.Open_Chunk()) {
 		switch(cload.Cur_Chunk_ID()) {
 
@@ -419,23 +414,21 @@ bool	HumanLoiterGlobalSettingsDef::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-HumanLoiterGlobalSettingsDef * HumanLoiterGlobalSettingsDef::Get_Default_Loiters( void )
-{
-	if ( DefaultLoiters == NULL ) {
-		DefaultLoiters = (HumanLoiterGlobalSettingsDef *)DefinitionMgrClass::Find_Typed_Definition( "Loiter", CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_LOITER );
+HumanLoiterGlobalSettingsDef* HumanLoiterGlobalSettingsDef::Get_Default_Loiters(void){
+	if( DefaultLoiters == NULL ){
+		DefaultLoiters = (HumanLoiterGlobalSettingsDef*) DefinitionMgrClass::Find_Typed_Definition( "Loiter", CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_LOITER );
 	}
-	if ( DefaultLoiters == NULL ) {
+	if( DefaultLoiters == NULL ){
 		Debug_Say(( "Failed to load Default Loiter\n" ));
 	}
 	return DefaultLoiters;
 }
 
-HumanLoiterGlobalSettingsDef * HumanLoiterGlobalSettingsDef::Get_Weapon_Loiters( void )
-{
-	if ( WeaponLoiters == NULL ) {
-		WeaponLoiters = (HumanLoiterGlobalSettingsDef *)DefinitionMgrClass::Find_Typed_Definition( "Weapon Loiters", CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_LOITER );
+HumanLoiterGlobalSettingsDef* HumanLoiterGlobalSettingsDef::Get_Weapon_Loiters(void){
+	if( WeaponLoiters == NULL ){
+		WeaponLoiters = (HumanLoiterGlobalSettingsDef*) DefinitionMgrClass::Find_Typed_Definition( "Weapon Loiters", CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_LOITER );
 	}
-	if ( WeaponLoiters == NULL ) {
+	if( WeaponLoiters == NULL ){
 		Debug_Say(( "Failed to Weapons Loiter\n" ));
 	}
 	return WeaponLoiters;
@@ -452,9 +445,8 @@ HumanLoiterGlobalSettingsDef * HumanLoiterGlobalSettingsDef::Get_Weaponless_Loit
 	return WeaponlessLoiters;
 }
 
-const char * HumanLoiterGlobalSettingsDef::Pick_Animation( void )
-{
-	if ( LoiterAnimList.Count() == 0 ) {
+const char* HumanLoiterGlobalSettingsDef::Pick_Animation(void){
+	if( LoiterAnimList.Count() == 0 ){
 		return "";
 	}
 	return LoiterAnimList[ FreeRandom.Get_Int( LoiterAnimList.Count() ) ];
@@ -1126,8 +1118,7 @@ SimplePersistFactoryClass<HumanAnimOverrideDef, CHUNKID_GLOBAL_SETTINGS_DEF_HUMA
 
 DECLARE_DEFINITION_FACTORY(HumanAnimOverrideDef, CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_ANIM_OVERRIDE, "HUMAN_ANIM_OVERRIDE") _HumanAnimOverrideDefDefFactory;
 
-HumanAnimOverrideDef::HumanAnimOverrideDef( void ) 
-{
+HumanAnimOverrideDef::HumanAnimOverrideDef(void){
 	EDITABLE_PARAM( HumanAnimOverrideDef, ParameterClass::TYPE_STRING, RunEmptyHands );
 	EDITABLE_PARAM( HumanAnimOverrideDef, ParameterClass::TYPE_STRING, WalkEmptyHands );
 	EDITABLE_PARAM( HumanAnimOverrideDef, ParameterClass::TYPE_STRING, RunAtChest );
@@ -1136,18 +1127,15 @@ HumanAnimOverrideDef::HumanAnimOverrideDef( void )
 	EDITABLE_PARAM( HumanAnimOverrideDef, ParameterClass::TYPE_STRING, WalkAtHip );
 }
 
-uint32	HumanAnimOverrideDef::Get_Class_ID (void) const	
-{ 
+uint32 HumanAnimOverrideDef::Get_Class_ID(void) const	{
 	return CLASSID_GLOBAL_SETTINGS_DEF_HUMAN_ANIM_OVERRIDE; 
 }
 
-const PersistFactoryClass & HumanAnimOverrideDef::Get_Factory (void) const 
-{ 
+const PersistFactoryClass& HumanAnimOverrideDef::Get_Factory(void) const { 
 	return _HumanAnimOverrideDefPersistFactory; 
 }
 
-PersistClass *	HumanAnimOverrideDef::Create( void ) const 
-{
+PersistClass* HumanAnimOverrideDef::Create( void ) const {
 	WWASSERT( 0 );
 	return NULL;
 }
@@ -1162,12 +1150,9 @@ enum	{
 	MICROCHUNKID_HAO_DEF_WALK_AT_CHEST,		
 	MICROCHUNKID_HAO_DEF_RUN_AT_HIP,			
 	MICROCHUNKID_HAO_DEF_WALK_AT_HIP,		
-
-
 };
 
-bool	HumanAnimOverrideDef::Save( ChunkSaveClass & csave )
-{
+bool HumanAnimOverrideDef::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_HAO_DEF_PARENT );
 		DefinitionClass::Save( csave );
 	csave.End_Chunk();
@@ -1184,10 +1169,9 @@ bool	HumanAnimOverrideDef::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	HumanAnimOverrideDef::Load( ChunkLoadClass &cload )
-{
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
+bool HumanAnimOverrideDef::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 
 			case CHUNKID_HAO_DEF_PARENT:
 				DefinitionClass::Load( cload );

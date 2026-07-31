@@ -89,15 +89,11 @@ protected:
 	int HumanLoiterCollectionDefID;
 	int DeathSoundPresetID;
 
-	friend class								SoldierGameObj;
-	friend class								SoldierObserverClass;
+	friend class SoldierGameObj;
+	friend class SoldierObserverClass;
 };
 
-class SoldierGameObj 
-
-
-: public SmartGameObj {
-
+class SoldierGameObj : public SmartGameObj {
 public:
 	SoldierGameObj();
 	virtual ~SoldierGameObj();
@@ -383,7 +379,7 @@ public:
 		return ( ( 1 << key_number ) & KeyRing ) != 0;
 	}
 
-	virtual bool		Wants_Powerups(void){
+	virtual bool Wants_Powerups(void){
 		return Is_Human_Controlled();
 	}
 	virtual bool		Allow_Special_Damage_State_Lock(void){
@@ -439,9 +435,10 @@ protected:
 	Vector3 HeadLookAngle;
 	float HeadLookAngleTimer;
 
-	HumanStateClass::HumanStateType 	Get_State(void){
+	HumanStateClass::HumanStateType Get_State(void){
 		return HumanState.Get_State();
 	}
+
 	int Get_Sub_State(void){
 		return HumanState.Get_Sub_State();
 	}
@@ -449,15 +446,17 @@ protected:
 	void Update_Locked_Facing(void);
 	void Update_Back_Gun(void);
 	void Set_Back_Weapon_Model( const char* model_name );
+
 	// Move below to public?
 	void Set_Back_Flag_Model( const char* model_name, const Vector3& tint = Vector3( 0, 0, 0 ) );
 
-	int Get_Ouch_Type( const	Vector3& direction, const char* collision_box_name ){
+	int Get_Ouch_Type( const Vector3& direction, const char* collision_box_name ){
 		return HumanState.Get_Ouch_Type( direction, collision_box_name );
 	}
+
 	bool Internal_Set_Targeting( const Vector3& pos, bool do_tilt = true );
 
-	ArmorWarheadManager::SpecialDamageType			SpecialDamageMode;
+	ArmorWarheadManager::SpecialDamageType SpecialDamageMode;
 	float SpecialDamageTimer;
 	GameObjReference SpecialDamageDamager;
 	TransitionEffectClass* SpecialDamageEffect;
@@ -466,8 +465,6 @@ protected:
 	TransitionEffectClass* HealingEffect;
 
 	void Handle_Head_look(void);
-
-	//int						CtfTeamFlag; // Capture The Flag - use NO_FLAG for no flag
 
 	GameObjReference FacingObject;
 	bool FacingAllowBodyTurn;

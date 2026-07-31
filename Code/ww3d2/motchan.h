@@ -60,54 +60,57 @@ class Quaternion;
 
 ******************************************************************************/
 
-class MotionChannelClass
-{
+class MotionChannelClass {
 
 public:
-	void Do_Data_Compression(int datasize);
-	void Get_Vector(int frame,float * setvec) const;
+	void Do_Data_Compression( int datasize );
+	void Get_Vector( int frame, float* setvec ) const;
 
 	MotionChannelClass(void);
 	~MotionChannelClass(void);
 
-	bool	Load_W3D(ChunkLoadClass & cload);		
-	WWINLINE int Get_Type(void) const { return Type; }
-	WWINLINE int Get_Pivot(void) const { return PivotIdx; }
-	WWINLINE void Set_Pivot(int idx) { PivotIdx=idx; }
+	bool Load_W3D( ChunkLoadClass& cload );
+	
+	WWINLINE int Get_Type(void) const {
+		return Type;
+	}
+	
+	WWINLINE int Get_Pivot(void) const {
+		return PivotIdx;
+	}
+	
+	WWINLINE void Set_Pivot( int idx ){
+		PivotIdx = idx;
+	}
 
 private:
 
-	uint32	PivotIdx;			// what pivot is this channel applied to
-	uint32	Type;					// what type of channel is this
-	int		VectorLen;			// size of each individual vector
+	uint32 PivotIdx; // what pivot is this channel applied to
+	uint32 Type; // what type of channel is this
+	int VectorLen; // size of each individual vector
 
-	float		ValueOffset;
-	float		ValueScale;
+	float ValueOffset;
+	float ValueScale;
 	unsigned short* CompressedData;
 
-	float	*	Data;					// pointer to the raw floating point data
-	int		FirstFrame;			// first frame which was non-identity
-	int		LastFrame;			// last frame which was non-identity
+	float* Data; // pointer to the raw floating point data
+	int FirstFrame; // first frame which was non-identity
+	int LastFrame; // last frame which was non-identity
 	void Free(void);
-	WWINLINE void set_identity(float * setvec) const;
+	WWINLINE void set_identity( float* setvec ) const;
 
 //	friend class HRawAnimClass;
 
 };
 
-WWINLINE void MotionChannelClass::set_identity(float * setvec) const
-{
-	if (Type == ANIM_CHANNEL_Q) {
-
+WWINLINE void MotionChannelClass::set_identity( float* setvec ) const {
+	if( Type == ANIM_CHANNEL_Q ){
 		setvec[0] = 0.0f;
 		setvec[1] = 0.0f;
 		setvec[2] = 0.0f;
 		setvec[3] = 1.0f;
-
-	} else {
-
+	}else{
 		setvec[0] = 0.0f;
-
 	}
 }
 
@@ -173,8 +176,7 @@ WWINLINE int BitChannelClass::Get_Bit(int frame) const
 
 ******************************************************************************/
 
-class TimeCodedMotionChannelClass
-{
+class TimeCodedMotionChannelClass {
 
 public:
 

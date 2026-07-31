@@ -1150,10 +1150,9 @@ struct W3dMeshHeader3Struct {
 // Vertex Influences.  For "skins" each vertex can be associated with a
 // different bone.
 // 
-struct W3dVertInfStruct
-{
-	uint16					BoneIdx;
-	uint8						Pad[6];
+struct W3dVertInfStruct {
+	uint16 BoneIdx;
+	uint8 Pad[6];
 };
 
 //
@@ -1265,26 +1264,23 @@ struct W3dMeshAABTreeNode
 
 #define W3D_CURRENT_HTREE_VERSION		W3D_MAKE_VERSION(4,1)
 
-struct W3dHierarchyStruct
-{
-	uint32					Version;
-	char						Name[W3D_NAME_LEN];	// Name of the hierarchy
-	uint32					NumPivots;				
-	W3dVectorStruct		Center;					
+struct W3dHierarchyStruct {
+	uint32 Version;
+	char Name[W3D_NAME_LEN]; // Name of the hierarchy
+	uint32 NumPivots;				
+	W3dVectorStruct Center;					
 };
 
-struct W3dPivotStruct
-{
-	char						Name[W3D_NAME_LEN];	// Name of the node (UR_ARM, LR_LEG, TORSO, etc)
-	uint32					ParentIdx;					// 0xffffffff = root pivot; no parent
-	W3dVectorStruct		Translation;			// translation to pivot point
-	W3dVectorStruct		EulerAngles;			// orientation of the pivot point
-	W3dQuaternionStruct	Rotation;				// orientation of the pivot point
+struct W3dPivotStruct {
+	char Name[W3D_NAME_LEN]; // Name of the node (UR_ARM, LR_LEG, TORSO, etc)
+	uint32 ParentIdx; // 0xffffffff = root pivot; no parent
+	W3dVectorStruct Translation; // translation to pivot point
+	W3dVectorStruct EulerAngles; // orientation of the pivot point
+	W3dQuaternionStruct	Rotation; // orientation of the pivot point
 };
 
-struct W3dPivotFixupStruct
-{
-	float32					TM[4][3];				// this is a direct dump of a MAX 3x4 matrix
+struct W3dPivotFixupStruct {
+	float32 TM[4][3]; // this is a direct dump of a MAX 3x4 matrix
 };
 
 
@@ -1303,29 +1299,25 @@ struct W3dPivotFixupStruct
 #define W3D_CURRENT_COMPRESSED_HANIM_VERSION	W3D_MAKE_VERSION(0,1)
 #define W3D_CURRENT_MORPH_HANIM_VERSION		W3D_MAKE_VERSION(0,1)
 
-struct W3dAnimHeaderStruct
-{
-	uint32					Version;
-	char						Name[W3D_NAME_LEN];				
-	char						HierarchyName[W3D_NAME_LEN];
-	uint32					NumFrames;
-	uint32					FrameRate;
-
+struct W3dAnimHeaderStruct {
+	uint32 Version;
+	char Name[W3D_NAME_LEN];				
+	char HierarchyName[W3D_NAME_LEN];
+	uint32 NumFrames;
+	uint32 FrameRate;
 };
 
-struct W3dCompressedAnimHeaderStruct
-{
-	uint32					Version;
-	char						Name[W3D_NAME_LEN];				
-	char						HierarchyName[W3D_NAME_LEN];
-	uint32					NumFrames;
-	uint16					FrameRate;
-	uint16					Flavor;
+struct W3dCompressedAnimHeaderStruct {
+	uint32 Version;
+	char Name[W3D_NAME_LEN];				
+	char HierarchyName[W3D_NAME_LEN];
+	uint32 NumFrames;
+	uint16 FrameRate;
+	uint16 Flavor;
 };
 
 
-enum 
-{
+enum {
 	ANIM_CHANNEL_X = 0,
 	ANIM_CHANNEL_Y,
 	ANIM_CHANNEL_Z,
@@ -1358,31 +1350,28 @@ enum
 
 // Begin Classic Structures
 
-struct W3dAnimChannelStruct
-{
-	uint16					FirstFrame;			
-	uint16					LastFrame;			
-	uint16					VectorLen;			// length of each vector in this channel
-	uint16					Flags;					// channel type.
-	uint16					Pivot;					// pivot affected by this channel
-	uint16					pad;
-	float32					Data[1];				// will be (LastFrame - FirstFrame + 1) * VectorLen long
+struct W3dAnimChannelStruct {
+	uint16 FirstFrame;			
+	uint16 LastFrame;			
+	uint16 VectorLen; // length of each vector in this channel
+	uint16 Flags; // channel type.
+	uint16 Pivot; // pivot affected by this channel
+	uint16 pad;
+	float32 Data[1]; // will be (LastFrame - FirstFrame + 1) * VectorLen long
 };
 
-enum 
-{
-	BIT_CHANNEL_VIS = 0,							// turn meshes on and off depending on anim frame.
+enum {
+	BIT_CHANNEL_VIS = 0, // turn meshes on and off depending on anim frame.
 	BIT_CHANNEL_TIMECODED_VIS,
 };
 
-struct W3dBitChannelStruct
-{
-	uint16					FirstFrame;			// all frames outside "First" and "Last" are assumed = DefaultVal
-	uint16					LastFrame;			
-	uint16					Flags;					// channel type.
-	uint16					Pivot;					// pivot affected by this channel
-	uint8						DefaultVal;			// default state when outside valid range.
-	uint8						Data[1];				// will be (LastFrame - FirstFrame + 1) / 8 long
+struct W3dBitChannelStruct {
+	uint16 FirstFrame; // all frames outside "First" and "Last" are assumed = DefaultVal
+	uint16 LastFrame;			
+	uint16 Flags; // channel type.
+	uint16 Pivot; // pivot affected by this channel
+	uint8 DefaultVal; // default state when outside valid range.
+	uint8 Data[1]; // will be (LastFrame - FirstFrame + 1) / 8 long
 };
 
 // End Classic Structures
@@ -1393,39 +1382,36 @@ struct W3dBitChannelStruct
 
 #define W3D_TIMECODED_BINARY_MOVEMENT_FLAG  0x80000000
 
-struct W3dTimeCodedAnimChannelStruct
-{
-	uint32					NumTimeCodes;		// number of time coded entries
-	uint16					Pivot;				// pivot affected by this channel
-	uint8						VectorLen;			// length of each vector in this channel
-	uint8						Flags;				// channel type.
-	uint32					Data[1];				// will be (NumTimeCodes * ((VectorLen * sizeof(uint32)) + sizeof(uint32)))
+struct W3dTimeCodedAnimChannelStruct {
+	uint32 NumTimeCodes; // number of time coded entries
+	uint16 Pivot; // pivot affected by this channel
+	uint8 VectorLen; // length of each vector in this channel
+	uint8 Flags; // channel type.
+	uint32 Data[1]; // will be (NumTimeCodes * ((VectorLen * sizeof(uint32)) + sizeof(uint32)))
 };								  
 
 // The bit channel is encoded right into the MSB of each time code
 #define W3D_TIMECODED_BIT_MASK	0x80000000
 
-struct W3dTimeCodedBitChannelStruct
-{
-	uint32					NumTimeCodes;  		// number of time coded entries 
-	uint16					Pivot;					// pivot affected by this channel
-	uint8						Flags;					// channel type.
-	uint8						DefaultVal;				// default state when outside valid range.
-	uint32					Data[1];					// will be (NumTimeCodes * sizeof(uint32))
+struct W3dTimeCodedBitChannelStruct {
+	uint32 NumTimeCodes; // number of time coded entries 
+	uint16 Pivot; // pivot affected by this channel
+	uint8 Flags; // channel type.
+	uint8 DefaultVal; // default state when outside valid range.
+	uint32 Data[1]; // will be (NumTimeCodes * sizeof(uint32))
 };
 
 // End Time Coded Structures
 // Begin AdaptiveDelta Structures
 struct W3dAdaptiveDeltaAnimChannelStruct
 {
-	uint32					NumFrames;			// number of frames of animation
-	uint16					Pivot;				// pivot effected by this channel
-	uint8						VectorLen;			// num Channels
-	uint8						Flags;				// channel type
-	float						Scale;				// Filter Table Scale
+	uint32 NumFrames; // number of frames of animation
+	uint16 Pivot; // pivot effected by this channel
+	uint8 VectorLen; // num Channels
+	uint8 Flags; // channel type
+	float Scale; // Filter Table Scale
 
-	uint32					Data[1];				// OpCode Data Stream
-
+	uint32 Data[1]; // OpCode Data Stream
 };
 // End AdaptiveDelta Structures
 
@@ -1869,59 +1855,53 @@ struct W3dEmitterLinePropertiesStruct
 
 ********************************************************************************/
 
-#define W3D_CURRENT_AGGREGATE_VERSION			0x00010003
-const int MESH_PATH_ENTRIES						= 15;
-const int MESH_PATH_ENTRY_LEN						= (W3D_NAME_LEN * 2);
+#define W3D_CURRENT_AGGREGATE_VERSION 0x00010003
+const int MESH_PATH_ENTRIES = 15;
+const int MESH_PATH_ENTRY_LEN = ( W3D_NAME_LEN * 2 );
 
-struct W3dAggregateHeaderStruct
-{
-	uint32				Version;
-	char					Name[W3D_NAME_LEN];
+struct W3dAggregateHeaderStruct{
+	uint32 Version;
+	char Name[W3D_NAME_LEN];
 };
 
-struct W3dAggregateInfoStruct
-{
-	char					BaseModelName[W3D_NAME_LEN*2];
-	uint32				SubobjectCount;
+struct W3dAggregateInfoStruct{
+	char BaseModelName[W3D_NAME_LEN * 2];
+	uint32 SubobjectCount;
 };
 
-struct W3dAggregateSubobjectStruct
-{
-	char					SubobjectName[W3D_NAME_LEN*2];
-	char					BoneName[W3D_NAME_LEN*2];
+struct W3dAggregateSubobjectStruct{
+	char SubobjectName[W3D_NAME_LEN * 2];
+	char BoneName[W3D_NAME_LEN * 2];
 };
 
 //
 // Structures for version 1.1 and newer
 //
-struct W3dTextureReplacerHeaderStruct
-{
-	uint32				ReplacedTexturesCount;
+struct W3dTextureReplacerHeaderStruct{
+	uint32 ReplacedTexturesCount;
 };
 
-struct W3dTextureReplacerStruct
-{
-	char						MeshPath[MESH_PATH_ENTRIES][MESH_PATH_ENTRY_LEN];
-	char						BonePath[MESH_PATH_ENTRIES][MESH_PATH_ENTRY_LEN];
-	char						OldTextureName[260];
-	char						NewTextureName[260];
-	W3dTextureInfoStruct	TextureParams;
+struct W3dTextureReplacerStruct {
+	char MeshPath[MESH_PATH_ENTRIES][MESH_PATH_ENTRY_LEN];
+	char BonePath[MESH_PATH_ENTRIES][MESH_PATH_ENTRY_LEN];
+	char OldTextureName[260];
+	char NewTextureName[260];
+	W3dTextureInfoStruct TextureParams;
 };
 
 //
 // Flags used in the W3dAggregateMiscInfo structure
 //
-const int W3D_AGGREGATE_FORCE_SUB_OBJ_LOD		= 0x00000001;
+const int W3D_AGGREGATE_FORCE_SUB_OBJ_LOD = 0x00000001;
 
 //
 // Structures for version 1.2 and newer
 //
-struct W3dAggregateMiscInfo
-{
-	uint32				OriginalClassID;
-	uint32				Flags;
-	uint32				reserved[3];
-};
+struct W3dAggregateMiscInfo{
+	uint32 OriginalClassID;
+	uint32 Flags;
+	uint32 reserved[3];
+}
 
 
 /********************************************************************************

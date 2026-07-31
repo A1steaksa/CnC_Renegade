@@ -161,13 +161,12 @@ static ShaderClass					_BoxShader;
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-BoxRenderObjClass::BoxRenderObjClass(void)
-{
-	memset(Name,0,sizeof(Name));
-	Color.Set(1,1,1);
+BoxRenderObjClass::BoxRenderObjClass(void){
+	memset( Name, 0, sizeof(Name) );
+	Color.Set( 1, 1, 1);
 	Opacity = 0.25f;
-	ObjSpaceCenter.Set(0,0,0);
-	ObjSpaceExtent.Set(1,1,1);
+	ObjSpaceCenter.Set( 0, 0, 0 );
+	ObjSpaceExtent.Set( 1, 1, 1 );
 }
 
 
@@ -250,8 +249,7 @@ BoxRenderObjClass & BoxRenderObjClass::operator = (const BoxRenderObjClass & tha
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-int BoxRenderObjClass::Get_Num_Polys(void) const
-{
+int BoxRenderObjClass::Get_Num_Polys(void) const {
 	return 12;
 }
 
@@ -286,11 +284,10 @@ const char * BoxRenderObjClass::Get_Name(void) const
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void BoxRenderObjClass::Set_Name(const char * name)
-{
-	WWASSERT(name != NULL);
-	WWASSERT(strlen(name) < 2*W3D_NAME_LEN);
-	strcpy(Name,name);
+void BoxRenderObjClass::Set_Name( const char* name ){
+	WWASSERT( name != NULL );
+	WWASSERT( strlen(name) < 2 * W3D_NAME_LEN );
+	strcpy( Name, name );
 }
 
 
@@ -306,8 +303,7 @@ void BoxRenderObjClass::Set_Name(const char * name)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void BoxRenderObjClass::Set_Color(const Vector3 & color)
-{
+void BoxRenderObjClass::Set_Color( const Vector3& color ){
 	Color = color;
 }
 
@@ -548,8 +544,7 @@ void BoxRenderObjClass::vis_render_box(SpecialRenderInfoClass & rinfo,const Vect
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-AABoxRenderObjClass::AABoxRenderObjClass(void)
-{
+AABoxRenderObjClass::AABoxRenderObjClass(void){
 	update_cached_box();
 }
 
@@ -566,8 +561,8 @@ AABoxRenderObjClass::AABoxRenderObjClass(void)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-AABoxRenderObjClass::AABoxRenderObjClass(const W3dBoxStruct & def) :
-	BoxRenderObjClass(def)
+AABoxRenderObjClass::AABoxRenderObjClass( const W3dBoxStruct& def ) :
+	BoxRenderObjClass( def )
 {
 	update_cached_box();
 }
@@ -585,8 +580,7 @@ AABoxRenderObjClass::AABoxRenderObjClass(const W3dBoxStruct & def) :
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-AABoxRenderObjClass::AABoxRenderObjClass(const AABoxRenderObjClass & src)
-{
+AABoxRenderObjClass::AABoxRenderObjClass( const AABoxRenderObjClass& src ){
 	*this = src;
 }
 
@@ -603,11 +597,10 @@ AABoxRenderObjClass::AABoxRenderObjClass(const AABoxRenderObjClass & src)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-AABoxRenderObjClass::AABoxRenderObjClass(const AABoxClass & box)
-{
-	ObjSpaceCenter.Set(0,0,0);
-	ObjSpaceExtent.Set(box.Extent);
-	Set_Position(box.Center);
+AABoxRenderObjClass::AABoxRenderObjClass( const AABoxClass& box ){
+	ObjSpaceCenter.Set( 0, 0, 0 );
+	ObjSpaceExtent.Set( box.Extent );
+	Set_Position( box.Center );
 	update_cached_box();
 }
 
@@ -727,9 +720,8 @@ void AABoxRenderObjClass::Special_Render(SpecialRenderInfoClass & rinfo)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void AABoxRenderObjClass::Set_Transform(const Matrix3D &m)
-{
-	RenderObjClass::Set_Transform(m);
+void AABoxRenderObjClass::Set_Transform( const Matrix3D& m ){
+	RenderObjClass::Set_Transform( m );
 	update_cached_box();
 }
 
@@ -746,9 +738,8 @@ void AABoxRenderObjClass::Set_Transform(const Matrix3D &m)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void AABoxRenderObjClass::Set_Position(const Vector3 &v)
-{
-	RenderObjClass::Set_Position(v);
+void AABoxRenderObjClass::Set_Position( const Vector3& v){
+	RenderObjClass::Set_Position( v );
 	update_cached_box();
 }
 
@@ -765,8 +756,7 @@ void AABoxRenderObjClass::Set_Position(const Vector3 &v)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void AABoxRenderObjClass::update_cached_box(void)
-{
+void AABoxRenderObjClass::update_cached_box(void){
 	CachedBox.Center = Transform.Get_Translation() + ObjSpaceCenter;
 	CachedBox.Extent = ObjSpaceExtent;
 }
@@ -784,8 +774,7 @@ void AABoxRenderObjClass::update_cached_box(void)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-bool AABoxRenderObjClass::Cast_Ray(RayCollisionTestClass & raytest)
-{
+bool AABoxRenderObjClass::Cast_Ray( RayCollisionTestClass& raytest ){
 	if ((Get_Collision_Type() & raytest.CollisionType) == 0) return false;
 	if (Is_Animation_Hidden()) return false;
 	if (raytest.Result->StartBad) return false;
@@ -898,9 +887,8 @@ bool AABoxRenderObjClass::Intersect_OBBox(OBBoxIntersectionTestClass & boxtest)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void AABoxRenderObjClass::Get_Obj_Space_Bounding_Sphere(SphereClass & sphere) const
-{
-	sphere.Init(ObjSpaceCenter,ObjSpaceExtent.Length());
+void AABoxRenderObjClass::Get_Obj_Space_Bounding_Sphere( SphereClass& sphere ) const {
+	sphere.Init( ObjSpaceCenter, ObjSpaceExtent.Length() );
 }
 
 
@@ -916,9 +904,8 @@ void AABoxRenderObjClass::Get_Obj_Space_Bounding_Sphere(SphereClass & sphere) co
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void AABoxRenderObjClass::Get_Obj_Space_Bounding_Box(AABoxClass & box) const
-{
-	box.Init(ObjSpaceCenter,ObjSpaceExtent);
+void AABoxRenderObjClass::Get_Obj_Space_Bounding_Box( AABoxClass& box ) const {
+	box.Init( ObjSpaceCenter, ObjSpaceExtent );
 }
 
 
@@ -971,8 +958,7 @@ OBBoxRenderObjClass::OBBoxRenderObjClass(const W3dBoxStruct & def) :
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-OBBoxRenderObjClass::OBBoxRenderObjClass(const OBBoxRenderObjClass & that)
-{
+OBBoxRenderObjClass::OBBoxRenderObjClass( const OBBoxRenderObjClass& that ){
 	*this = that;
 }
 
@@ -989,8 +975,7 @@ OBBoxRenderObjClass::OBBoxRenderObjClass(const OBBoxRenderObjClass & that)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-OBBoxRenderObjClass::OBBoxRenderObjClass(const OBBoxClass & box)
-{
+OBBoxRenderObjClass::OBBoxRenderObjClass( const OBBoxClass& box ){
 	ObjSpaceCenter.Set(Vector3(0,0,0));
 	ObjSpaceExtent.Set(box.Extent);
 	Set_Transform(Matrix3D(box.Basis,box.Center));
@@ -1147,11 +1132,10 @@ void OBBoxRenderObjClass::Set_Position(const Vector3 &v)
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void OBBoxRenderObjClass::update_cached_box(void)
-{
-	Matrix3D::Transform_Vector(Transform,ObjSpaceCenter,&CachedBox.Center);
-	CachedBox.Extent.Set(ObjSpaceExtent);
-	CachedBox.Basis.Set(Transform);
+void OBBoxRenderObjClass::update_cached_box(void){
+	Matrix3D::Transform_Vector( Transform, ObjSpaceCenter, &CachedBox.Center );
+	CachedBox.Extent.Set( ObjSpaceExtent );
+	CachedBox.Basis.Set( Transform );
 }
 
 

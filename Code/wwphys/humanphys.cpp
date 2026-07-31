@@ -136,12 +136,11 @@ HumanPhysClass::HumanPhysClass(void)	:
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void HumanPhysClass::Init(const HumanPhysDefClass & def)
-{
+void HumanPhysClass::Init( const HumanPhysDefClass& def ){
 	Phys3Class::Init(def);
 
 	// (gth) turn on shadows for all humans for now
-	Enable_Shadow_Generation(true);
+	Enable_Shadow_Generation( true );
 }
 
 
@@ -729,18 +728,15 @@ enum
 	HUMANPHYSDEF_CHUNK_PHYS3DEF		= 0x00516000,			// phys3def data (parent class)
 };
 
-HumanPhysDefClass::HumanPhysDefClass(void) 
-{
+HumanPhysDefClass::HumanPhysDefClass(void){
 }
 
-uint32 HumanPhysDefClass::Get_Class_ID (void) const	
-{ 
-	return CLASSID_HUMANPHYSDEF; 
+uint32 HumanPhysDefClass::Get_Class_ID (void) const	{
+	return CLASSID_HUMANPHYSDEF;
 }
 
-PersistClass * HumanPhysDefClass::Create(void) const
-{
-	HumanPhysClass * obj = NEW_REF(HumanPhysClass,());
+PersistClass* HumanPhysDefClass::Create(void) const {
+	HumanPhysClass* obj = NEW_REF(HumanPhysClass,());
 	obj->Init(*this);
 	return obj;
 }
@@ -760,13 +756,11 @@ bool HumanPhysDefClass::Save(ChunkSaveClass &csave)
 	return true;
 }
 
-bool HumanPhysDefClass::Load(ChunkLoadClass &cload)
-{
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
+bool HumanPhysDefClass::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case HUMANPHYSDEF_CHUNK_PHYS3DEF:
-				Phys3DefClass::Load(cload);
+				Phys3DefClass::Load( cload );
 				break;
 
 			default:

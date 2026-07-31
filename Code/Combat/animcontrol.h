@@ -67,9 +67,9 @@ typedef	enum {
 ** AnimationDataRecord
 */
 struct AnimationDataRecord {
-	HAnimClass	*Animation;
-	float			Frame;
-	float			Weight;
+	HAnimClass* Animation;
+	float Frame;
+	float Weight;
 
 	bool operator == (AnimationDataRecord const & rec) const	{ return false; }
 	bool operator != (AnimationDataRecord const & rec) const	{ return true; }
@@ -80,7 +80,7 @@ typedef	DynamicVectorClass<AnimationDataRecord>	AnimationDataList;
 /*
 ** AnimChannelClass
 */
-class	AnimChannelClass {
+class AnimChannelClass {
 
 public:
 	// Constructor and Destructor
@@ -89,36 +89,61 @@ public:
 	AnimChannelClass & operator = (const AnimChannelClass &);
 	~AnimChannelClass(void);
 
-	virtual	bool 	Save( ChunkSaveClass & csave );
-	virtual	bool	Load( ChunkLoadClass & cload );
+	virtual	bool Save( ChunkSaveClass& csave );
+	virtual	bool Load( ChunkLoadClass& cload );
 
 	// Set Animation
-	void			Set_Animation( const char *name );
-	void			Set_Animation( const HAnimClass *anim );
-	HAnimClass	*Peek_Animation( void )		{ return Animation; }
+	void Set_Animation( const char* name );
+	void Set_Animation( const HAnimClass* anim );
+	
+	HAnimClass* Peek_Animation( void ){
+		return Animation;
+	}
 
 	// Set Mode
-	void			Set_Mode( AnimMode mode, float frame = -1 );
-	AnimMode		Get_Mode( void )					{ return Mode; }
-	bool			Is_Complete( void )				{ return (Animation == NULL) || ((Mode == ANIM_MODE_ONCE) && (Frame == NumFrames-1)) || ((Mode == ANIM_MODE_TARGET) && (Frame == TargetFrame)); }
-	const char *Get_Animation_Name( void )		{ return Animation ? Animation->Get_Name() : ""; }
+	void Set_Mode( AnimMode mode, float frame = -1 );
+	
+	AnimMode Get_Mode(void){
+		return Mode;
+	}
+	
+	bool Is_Complete(void){
+		return ( Animation == NULL ) || ( ( Mode == ANIM_MODE_ONCE ) && ( Frame == NumFrames - 1 ) ) || ( ( Mode == ANIM_MODE_TARGET ) && ( Frame == TargetFrame ) );
+	}
+	
+	const char* Get_Animation_Name(void){
+		return Animation ? Animation->Get_Name() : "";
+	}
 
 	// Frame
-	void			Set_Frame( float frame )	{ Frame = frame; }
-	float			Get_Frame( void )				{ return Frame; }
-	float			Get_Progress( void )			{ return NumFrames ? Frame / NumFrames : 0; }
+	void Set_Frame( float frame ){
+		Frame = frame;
+	}
 
-	void			Set_Target_Frame( float frame )	{ TargetFrame = frame; }
-	float			Get_Target_Frame( void )			{ return TargetFrame; }
+	float Get_Frame( void ){
+		return Frame;
+	}
+
+	float Get_Progress( void ){
+		return NumFrames ? Frame / NumFrames : 0;
+	}
+
+	void Set_Target_Frame( float frame ){
+		TargetFrame = frame;
+	}
+	
+	float Get_Target_Frame(void){
+		return TargetFrame;
+	}
 
 	// Update the animation
-	void			Update( float dtime );
+	void Update( float dtime );
 
 	// Get Animation Data
-	void			Get_Animation_Data( AnimationDataList & list, float weight = 1.0f  );
+	void Get_Animation_Data( AnimationDataList& list, float weight = 1.0f );
 
 	// Update Model
-	void			Update_Model( RenderObjClass	*anim_model );
+	void Update_Model( RenderObjClass	*anim_model );
 
 private:
 	HAnimClass *	Animation;
@@ -132,7 +157,7 @@ private:
 /*
 ** BlendableAnimChannelClass
 */
-class	BlendableAnimChannelClass {
+class BlendableAnimChannelClass {
 
 public:
 	// Constructor
@@ -144,13 +169,30 @@ public:
 	// Set Animation
 	void			Set_Animation( const char *name, float blendtime = 0.0f, float start_frame = 0.0f );
 	void			Set_Animation( const HAnimClass * anim, float blendtime = 0.0f, float start_frame = 0.0f  );
-	void			Set_Mode( AnimMode mode, float frame = -1 )	{ NewChannel.Set_Mode( mode, frame ); }
-	AnimMode		Get_Mode( void )					{ return NewChannel.Get_Mode(); }
-	bool	Is_Complete( void )						{ return NewChannel.Is_Complete(); }
-	const char *Get_Animation_Name( void )		{ return NewChannel.Get_Animation_Name(); }
+	
+	void Set_Mode( AnimMode mode, float frame = -1 ){
+		NewChannel.Set_Mode( mode, frame );
+	}
+	
+	AnimMode Get_Mode(void){
+		return NewChannel.Get_Mode();
+	}
+	
+	bool Is_Complete(void){
+		return NewChannel.Is_Complete();
+	}
 
-	void			Set_Target_Frame( float frame )	{ NewChannel.Set_Target_Frame ( frame ); }
-	float			Get_Target_Frame( void )			{ return NewChannel.Get_Target_Frame(); }
+	const char* Get_Animation_Name(void){
+		return NewChannel.Get_Animation_Name();
+	}
+
+	void Set_Target_Frame( float frame ){
+		NewChannel.Set_Target_Frame ( frame );
+	}
+	
+	float Get_Target_Frame(void){
+		return NewChannel.Get_Target_Frame();
+	}
 
 	HAnimClass	*Peek_Animation( void )			{ return NewChannel.Peek_Animation (); }
 
@@ -189,8 +231,11 @@ public:
 	virtual	bool	Load( ChunkLoadClass & cload );
 
 	// Set Model
-	virtual	void	Set_Model( RenderObjClass	*anim_model );
-	virtual	RenderObjClass	*Peek_Model( void )	{ return Model; }
+	virtual	void Set_Model( RenderObjClass* anim_model );
+	
+	virtual	RenderObjClass* Peek_Model(void){
+		return Model;
+	}
 
 	// Set Animation
 	virtual	void	Set_Animation( const char *name, float blendtime = 0.0f, float start_frame = 0.0f )	= 0;
@@ -230,10 +275,22 @@ public:
 	// Set Animation
 	virtual	void	Set_Animation( const char *name, float blendtime = 0.0f, float start_frame = 0.0f  );
 	virtual	void	Set_Animation( const HAnimClass * anim, float blendtime = 0.0f, float start_frame = 0.0f  );
-	virtual	void	Set_Mode( AnimMode mode, float frame = -1 )	{ Channel.Set_Mode( mode, frame ); }
-	virtual	AnimMode	Get_Mode( void )									{ return Channel.Get_Mode(); }
-	virtual	bool	Is_Complete( void )									{ return Channel.Is_Complete(); }
-	virtual	const char *Get_Animation_Name( void )					{ return Channel.Get_Animation_Name(); }
+	
+	virtual	void Set_Mode( AnimMode mode, float frame = -1 ){
+		Channel.Set_Mode( mode, frame );
+	}
+	
+	virtual	AnimMode Get_Mode( void ){
+		return Channel.Get_Mode();
+	}
+	
+	virtual	bool Is_Complete( void ){
+		return Channel.Is_Complete();
+	}
+	
+	virtual	const char* Get_Animation_Name( void ){
+		return Channel.Get_Animation_Name();
+	}
 
 	virtual	void	Set_Target_Frame( float frame )					{ Channel.Set_Target_Frame( frame ); }
 	virtual	float	Get_Target_Frame( void )							{ return Channel.Get_Target_Frame(); }
@@ -244,7 +301,7 @@ public:
 	virtual	void	Update( float dtime );
 
 private:
-	BlendableAnimChannelClass	Channel;
+	BlendableAnimChannelClass Channel;
 
 };
 

@@ -103,7 +103,7 @@ public:
 	virtual void					Apply_Impulse(const Vector3 & imp)								{ }
 	virtual void					Apply_Impulse(const Vector3 & imp,const Vector3 & wpos)	{ }
 
-	/*
+	/*]
 	** Collides on Move
 	*/
 	virtual void					Set_Collides_On_Move( bool onoff )								{ CollidesOnMove = onoff; }

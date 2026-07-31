@@ -60,31 +60,34 @@
 // same thing.  Adds the collision group and intersected objects list.
 //
 ///////////////////////////////////////////////////////////////////////////
-class PhysAABoxIntersectionTestClass : public AABoxIntersectionTestClass
-{
+class PhysAABoxIntersectionTestClass : public AABoxIntersectionTestClass {
 public:
-	PhysAABoxIntersectionTestClass(const AABoxClass & box,int col_group,int col_type,NonRefPhysListClass * result_list = NULL) :
-		AABoxIntersectionTestClass(box,col_type),
-		CollisionGroup(col_group),
-		IntersectedObjects(result_list),
-		CheckStaticObjs(true),
-		CheckDynamicObjs(true)
+	PhysAABoxIntersectionTestClass( const AABoxClass& box, int col_group, int col_type, NonRefPhysListClass* result_list = NULL ) :
+		AABoxIntersectionTestClass( box, col_type ),
+		CollisionGroup( col_group ),
+		IntersectedObjects( result_list ),
+		CheckStaticObjs( true ),
+		CheckDynamicObjs( true )
 	{
 	}
 
-	void							Add_Intersected_Object(PhysClass * obj) { if (IntersectedObjects) IntersectedObjects->Add(obj); }
+	void Add_Intersected_Object( PhysClass* obj ){
+		if( IntersectedObjects ){
+			IntersectedObjects->Add( obj );
+		}
+	}
 
 public:
-	int							CollisionGroup;
-	bool							CheckStaticObjs;
-	bool							CheckDynamicObjs;
+	int CollisionGroup;
+	bool CheckStaticObjs;
+	bool CheckDynamicObjs;
 
 private:
-	NonRefPhysListClass *	IntersectedObjects;
+	NonRefPhysListClass* IntersectedObjects;
 
 	// not implemented:
-	PhysAABoxIntersectionTestClass(const PhysAABoxIntersectionTestClass & );
-	PhysAABoxIntersectionTestClass & operator = (const PhysAABoxIntersectionTestClass & );
+	PhysAABoxIntersectionTestClass( const PhysAABoxIntersectionTestClass& );
+	PhysAABoxIntersectionTestClass & operator =( const PhysAABoxIntersectionTestClass& );
 };
 
 ///////////////////////////////////////////////////////////////////////////

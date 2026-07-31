@@ -118,11 +118,11 @@ void HumanStateClass::Init( HumanPhysClass* human_phys ) {
 	HumanPhys->Add_Ref();
 }
 
-void HumanStateClass::Reset( void ) {
+void HumanStateClass::Reset(void) {
 	REF_PTR_RELEASE( HumanPhys );
 
 	// Clear the sniping flag
-	if ( Get_State_Flag( SNIPING_FLAG ) ) {
+	if( Get_State_Flag( SNIPING_FLAG ) ){
 		Toggle_State_Flag( SNIPING_FLAG );
 	}
 }
@@ -173,7 +173,7 @@ enum {
 	MICROCHUNKID_HUMAN_LOITER_COLLECTION_DEF_ID,
 };
 
-bool	HumanStateClass::Save( ChunkSaveClass& csave ) {
+bool HumanStateClass::Save( ChunkSaveClass& csave ) {
 	csave.Begin_Chunk( CHUNKID_VARIABLES );
 	WRITE_MICRO_CHUNK( csave, MICROCHUNKID_STATE, State );
 	WRITE_MICRO_CHUNK( csave, MICROCHUNKID_STATE_FLAGS, StateFlags );
@@ -207,7 +207,7 @@ bool	HumanStateClass::Save( ChunkSaveClass& csave ) {
 	return true;
 }
 
-bool	HumanStateClass::Load( ChunkLoadClass& cload ) {
+bool HumanStateClass::Load( ChunkLoadClass& cload ) {
 	int human_anim_override_def_id = 0;
 	int human_loiter_collection_def_id = 0;
 
@@ -433,10 +433,9 @@ void HumanStateClass::Set_State( HumanStateType state, int sub_state ) {
 }
 
 
-bool	HumanStateClass::Is_State_Interruptable( void ) {
+bool HumanStateClass::Is_State_Interruptable( void ) {
 	return ( State == UPRIGHT ) || ( State == WOUNDED ) || ( State == LAND ) || ( State == LOITER ) || ( State == ANIMATION );
 }
-
 
 #define ADD_CASE(exp)  case exp: return #exp; break;  
 const char* HumanStateClass::Get_State_Name( void ) {
@@ -491,8 +490,6 @@ void	HumanStateClass::Start_Transition_Animation( const char* anim_name, bool bl
 		return;
 	}
 
-	//Debug_Say(("Start_Transition_Animation %s\n", anim_name));
-
 	if ( ( Get_State() == DEATH ) || ( Get_State() == DESTROY ) ) {
 		return;
 	}
@@ -507,24 +504,13 @@ void	HumanStateClass::Start_Transition_Animation( const char* anim_name, bool bl
 	StateLocked = true;
 }
 
-void	HumanStateClass::Start_Scripted_Animation( const char* anim_name, bool blend, bool looping ) {
-#if 0
-	if ( StateLocked ) {
-		Debug_Say( ( "State is Locked.  Can't Start Transition Anim %s\n", anim_name ) );
-		return;
-	}
-#endif
-
-	//Debug_Say(("Start_Scripted_Animation %s\n", anim_name));
-
+void HumanStateClass::Start_Scripted_Animation( const char* anim_name, bool blend, bool looping ) {
 	// We used to not start a scripted anim when wounded, but then the scripts couldn't set
 	// up custom events well.  So I am gonna try to remove the wounded check
 	// 8/17/01  Byon
-//	if (( Get_State() == DEATH ) || ( Get_State() == DESTROY ) || ( Get_State() == WOUNDED )) {
 	if ( ( Get_State() == DEATH ) || ( Get_State() == DESTROY ) ) {
 		return;
 	}
-
 
 	Set_State( ANIMATION );
 
@@ -560,29 +546,29 @@ void	HumanStateClass::Force_Animation( const char* anim_name, bool blend ) {
 **
 */
 typedef enum {
-	LEG_STYLE_STAND,						// A0
-	LEG_STYLE_RUN_FORWARD,				// A1
-	LEG_STYLE_RUN_BACKWARD,				// A2
-	LEG_STYLE_RUN_LEFT,					// A3
-	LEG_STYLE_RUN_RIGHT,					// A4
-	LEG_STYLE_TURN_LEFT,					// A5
-	LEG_STYLE_TURN_RIGHT,				// A6
-	LEG_STYLE_WALK_FORWARD,				// B1
-	LEG_STYLE_WALK_BACKWARD,			// B2
-	LEG_STYLE_WALK_LEFT,					// B3
-	LEG_STYLE_WALK_RIGHT,				// B4
-	LEG_STYLE_CROUCH,						// C0
+	LEG_STYLE_STAND,				// A0
+	LEG_STYLE_RUN_FORWARD,			// A1
+	LEG_STYLE_RUN_BACKWARD,			// A2
+	LEG_STYLE_RUN_LEFT,				// A3
+	LEG_STYLE_RUN_RIGHT,			// A4
+	LEG_STYLE_TURN_LEFT,			// A5
+	LEG_STYLE_TURN_RIGHT,			// A6
+	LEG_STYLE_WALK_FORWARD,			// B1
+	LEG_STYLE_WALK_BACKWARD,		// B2
+	LEG_STYLE_WALK_LEFT,			// B3
+	LEG_STYLE_WALK_RIGHT,			// B4
+	LEG_STYLE_CROUCH,				// C0
 	LEG_STYLE_CROUCH_MOVE_FORWARD,	// C1
 	LEG_STYLE_CROUCH_MOVE_BACKWARD,	// C2
 	LEG_STYLE_CROUCH_MOVE_LEFT,		// C3
-	LEG_STYLE_CROUCH_MOVE_RIGHT,		// C4
+	LEG_STYLE_CROUCH_MOVE_RIGHT,	// C4
 	LEG_STYLE_CROUCH_TURN_LEFT,		// C3
-	LEG_STYLE_CROUCH_TURN_RIGHT,		// C4
-	LEG_STYLE_JUMP_UP,					// D0
-	LEG_STYLE_JUMP_FORWARD,				// D1
-	LEG_STYLE_JUMP_BACKWARD,			// D2
-	LEG_STYLE_JUMP_LEFT,					// D3
-	LEG_STYLE_JUMP_RIGHT,				// D4
+	LEG_STYLE_CROUCH_TURN_RIGHT,	// C4
+	LEG_STYLE_JUMP_UP,				// D0
+	LEG_STYLE_JUMP_FORWARD,			// D1
+	LEG_STYLE_JUMP_BACKWARD,		// D2
+	LEG_STYLE_JUMP_LEFT,			// D3
+	LEG_STYLE_JUMP_RIGHT,			// D4
 } HUMAN_ANIM_LEG_STYLE;
 
 static const char* LegAnimNames[] = {
@@ -644,7 +630,7 @@ static const char* _dive_anims[4 * 2] = {
 };
 
 // Weapons style, weapon action, recoil, blend, vehicle, mix/math, aiming tilt
-void	HumanStateClass::Update_Animation( void ) {
+void HumanStateClass::Update_Animation(void){
 	WWPROFILE( "Human Animation" );
 
 	// no updates for visceroids
@@ -653,8 +639,7 @@ void	HumanStateClass::Update_Animation( void ) {
 		return;
 	}
 
-	if ( StateLocked ) {
-		//		Debug_Say(( "ERROR: updating animation when locked\n" ));
+	if( StateLocked ){
 		return;
 		// if you change your animn when locked, death state may clear a scripted anim
 	}
@@ -662,19 +647,17 @@ void	HumanStateClass::Update_Animation( void ) {
 	int hold_style = WeaponHoldStyle;
 
 	// Setup animation for state, substate, weapon, tilt, etc.
-	if ( ( State == UPRIGHT ) || ( State == AIRBORNE ) ) {
+	if( ( State == UPRIGHT ) || ( State == AIRBORNE ) ){
 		// determine leg style
 		int	leg_style = LEG_STYLE_STAND;
-		if ( State == AIRBORNE ) {
-
+		if( State == AIRBORNE ){
 			leg_style = LEG_STYLE_JUMP_UP;
 			if ( SubState & SUB_STATE_LEFT ) 				leg_style = LEG_STYLE_JUMP_LEFT;
 			if ( SubState & SUB_STATE_RIGHT )				leg_style = LEG_STYLE_JUMP_RIGHT;
 			if ( SubState & SUB_STATE_FORWARD ) 			leg_style = LEG_STYLE_JUMP_FORWARD;
 			if ( SubState & SUB_STATE_BACKWARD )			leg_style = LEG_STYLE_JUMP_BACKWARD;
 
-		}
-		else {
+		}else{
 			if ( SubState & SUB_STATE_TURN_LEFT ) 		leg_style = LEG_STYLE_TURN_LEFT;
 			if ( SubState & SUB_STATE_TURN_RIGHT )		leg_style = LEG_STYLE_TURN_RIGHT;
 			if ( SubState & SUB_STATE_LEFT ) 				leg_style = LEG_STYLE_RUN_LEFT;
@@ -775,26 +758,13 @@ void	HumanStateClass::Update_Animation( void ) {
 				}
 			}
 
-			// Saftey check anim
-//			Debug_Say(( "Anim name %s\n", (const char *)anim_name ));
-
-//			float frame = AnimControl->Get_Frame();			// Maintain the frame number for moving
 			AnimControl->Set_Animation( anim_name, blend_time );
-			//		AnimControl->Set_Mode( ANIM_MODE_LOOP, frame );
 			AnimControl->Set_Mode( ANIM_MODE_LOOP );
 		}
 
-	}
-	else if ( State == DIVE ) {
-
-
+	}else if( State == DIVE ){
 		const char* anim_name = NULL;
-#if 0
-		if ( SubState & SUB_STATE_LEFT ) 				anim_name = "S_A_HUMAN.H_A_DIV3";
-		if ( SubState & SUB_STATE_RIGHT )				anim_name = "S_A_HUMAN.H_A_DIV4";
-		if ( SubState & SUB_STATE_FORWARD ) 			anim_name = "S_A_HUMAN.H_A_DIV1";
-		if ( SubState & SUB_STATE_BACKWARD )			anim_name = "S_A_HUMAN.H_A_DIV2";
-#else
+
 		int offset = FreeRandom.Get_Int( 2 );
 		if ( !IS_SOLOPLAY ) {
 			offset = 0;
@@ -804,20 +774,29 @@ void	HumanStateClass::Update_Animation( void ) {
 		if ( SubState & SUB_STATE_LEFT ) 				offset += 4;
 		if ( SubState & SUB_STATE_RIGHT )				offset += 6;
 		anim_name = _dive_anims[offset];
-#endif
 
 		AnimControl->Set_Animation( anim_name, 0.2f );
 		AnimControl->Set_Mode( ANIM_MODE_ONCE );
 		StateLocked = true;
 
-	}
-	else if ( State == LAND ) {
+	}else if( State == LAND ){
 
 		int dir = 0;
-		if ( SubState & SUB_STATE_LEFT ) 				dir = 3;
-		if ( SubState & SUB_STATE_RIGHT )				dir = 4;
-		if ( SubState & SUB_STATE_FORWARD ) 			dir = 1;
-		if ( SubState & SUB_STATE_BACKWARD )			dir = 2;
+		if( SubState & SUB_STATE_LEFT ){
+			dir = 3;
+		}
+
+		if( SubState & SUB_STATE_RIGHT ){
+			dir = 4;
+		}
+
+		if( SubState & SUB_STATE_FORWARD ){
+			dir = 1;
+		}
+
+		if( SubState & SUB_STATE_BACKWARD ){
+			dir = 2;
+		}
 
 		StringClass anim_name( 0, true );
 		anim_name.Format( "S_A_HUMAN.H_A_A0L%d", dir );
@@ -897,10 +876,9 @@ void	HumanStateClass::Update_Animation( void ) {
 }
 
 #define	MOVING_THRESHHOLD			0.2
-//#define	WALKING_THRESHHOLD		4.5
 #define	WALKING_THRESHHOLD		3.21f
 
-void	HumanStateClass::Reset_Loiter_Delay( void ) {
+void HumanStateClass::Reset_Loiter_Delay(void){
 	LoiterDelay = FreeRandom.Get_Float( 6 ) - 3;
 }
 

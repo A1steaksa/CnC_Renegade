@@ -142,10 +142,10 @@ float SmartGameObj::GlobalSightRangeScale = 1.0f;
 /*
 ** SmartGameObj
 */
-SmartGameObj::SmartGameObj( void ) :
+SmartGameObj::SmartGameObj(void) :
 	Action( this ),
-   ControlOwner( SERVER_CONTROL_OWNER ),
-   ControlEnabled( true ),
+	ControlOwner( SERVER_CONTROL_OWNER ),
+	ControlEnabled( true ),
 	IsEnemySeenEnabled( false ),
 	MovingSoundTimer( 0 ),
 	PlayerData( NULL ),
@@ -162,8 +162,7 @@ SmartGameObj::SmartGameObj( void ) :
 }
 
 
-SmartGameObj::~SmartGameObj( void )
-{
+SmartGameObj::~SmartGameObjvoid){
 	GameObjManager::Remove_Smart( this );
 	Listener->Remove_From_Scene();
 	Listener->Release_Ref();

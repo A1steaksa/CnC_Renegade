@@ -264,7 +264,6 @@ public:
     }
 
 protected:
-
     ControlClass Control;
     PhysControllerClass	Controller; // controller for the physics object
     bool ControlEnabled;

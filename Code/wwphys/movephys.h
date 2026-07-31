@@ -65,69 +65,101 @@ public:
 	/*
 	** Physical properites
 	*/
-	virtual void					Set_Mass(float mass)											{ Mass = mass; MassInv = 1.0f / mass; }
-	float								Get_Mass(void)													{ return Mass; }
-	float								Get_Mass_Inv(void)											{ return MassInv; }
-	virtual void					Set_Gravity_Multiplier(float grav)						{ GravScale = grav; }
-	float								Get_Gravity_Multiplier(void) const						{ return GravScale; }
-	virtual void					Set_Elasticity(float e)										{ Elasticity = e; }
-	float								Get_Elasticity(void) const									{ return Elasticity; }
-	virtual void					Get_Inertia_Inv(Matrix3 * set_I_inv);
+	virtual void Set_Mass( float mass ){
+		Mass = mass;
+		MassInv = 1.0f / mass;
+	}
+
+	float Get_Mass(void){
+		return Mass;
+	}
+
+	float Get_Mass_Inv(void){
+		return MassInv;
+	}
+
+	virtual void Set_Gravity_Multiplier( float grav ){
+		GravScale = grav;
+	}
+
+	float Get_Gravity_Multiplier(void) const {
+		return GravScale;
+	}
+
+	virtual void Set_Elasticity( float e ){
+		Elasticity = e;
+	}
+
+	float Get_Elasticity(void) const {
+		return Elasticity;
+	}
+
+	virtual void Get_Inertia_Inv( Matrix3* set_I_inv );
 
 	/*
 	** Teleport support
 	*/
-	virtual bool					Can_Teleport(const Matrix3D &new_tm, bool check_dyn_only = false,NonRefPhysListClass * result_list = NULL)	{ return false; }
-	virtual bool					Can_Teleport_And_Stand(const Matrix3D &new_tm, Matrix3D *out)	{ *out = new_tm; return false; }
-	virtual bool					Find_Teleport_Location(const Vector3 &start, float radius, Vector3 *out)			{ return false; }
-	virtual bool					Can_Move_To(const Matrix3D &new_tm) { return false; }
-	virtual bool					Cinematic_Move_To(const Matrix3D & new_tm);
+	virtual bool Can_Teleport(const Matrix3D &new_tm, bool check_dyn_only = false,NonRefPhysListClass * result_list = NULL)	{ return false; }
+	virtual bool Can_Teleport_And_Stand(const Matrix3D &new_tm, Matrix3D *out)	{ *out = new_tm; return false; }
+	virtual bool Find_Teleport_Location(const Vector3 &start, float radius, Vector3 *out)			{ return false; }
+	virtual bool Can_Move_To(const Matrix3D &new_tm) { return false; }
+	virtual bool Cinematic_Move_To(const Matrix3D & new_tm);
 
 	/*
 	** Controller
 	*/
-	void								Set_Controller(PhysControllerClass * control)		{ Controller = control; }	
-	PhysControllerClass *		Get_Controller(void)											{ return Controller; }
+	void Set_Controller( PhysControllerClass* control ){
+		Controller = control;
+	}
+		
+	PhysControllerClass* Get_Controller(void){
+		return Controller;
+	}
 
 
 	/*
 	** Save-Load system
 	*/
-	virtual bool					Save (ChunkSaveClass &csave);
-	virtual bool					Load (ChunkLoadClass &cload);
-	virtual void					On_Post_Load (void);
+	virtual bool Save( ChunkSaveClass& csave );
+	virtual bool Load( ChunkLoadClass& cload );
+	virtual void On_Post_Load(void);
 	
 	/*
 	** Access to the state of the object
 	*/
-	virtual void					Get_Velocity(Vector3 * set_vel) const					= 0;
-	virtual void					Set_Velocity(const Vector3 & newvel)					{ }
+	virtual void Get_Velocity( Vector3* set_vel ) const = 0;
+
+	virtual void Set_Velocity( const Vector3& newvel ){
+	}
 
 	/*
 	** Shadow Casting. 
 	** Get_Blob_Shadow_Bounding_Box - Should return a tight object-space aabox; used for shadow blobs
 	*/
-	virtual void					Get_Shadow_Blob_Box(AABoxClass * set_obj_space_box);
-	virtual bool					Is_Casting_Shadow(void)										{ return ShadowManager.Is_Casting_Shadow(); }
+	virtual void Get_Shadow_Blob_Box( AABoxClass* set_obj_space_box );
+	
+	virtual bool Is_Casting_Shadow(void){
+		return ShadowManager.Is_Casting_Shadow();
+	}
 
 	/*
 	** Rider support.  All moveable objects can be riders.
 	*/
-	virtual void					Link_To_Carrier(PhysClass * carrier,RenderObjClass * carrier_sub_obj = NULL);
-	virtual PhysClass *			Peek_Carrier_Object(void); // TSS added 08-15-01
-	virtual RenderObjClass *	Peek_Carrier_Sub_Object(void);
+	virtual void Link_To_Carrier( PhysClass* carrier, RenderObjClass* carrier_sub_obj = NULL );
+	virtual PhysClass* Peek_Carrier_Object(void); // TSS added 08-15-01
+	virtual RenderObjClass* Peek_Carrier_Sub_Object(void);
 
 protected:
 
-	float								Mass;
-	float								MassInv;
-	float								GravScale;
-	float								Elasticity;
+	float Mass;
+	float MassInv;
+	float GravScale;
+	float Elasticity;
 	
-	PhysControllerClass *		Controller;
-	PhysClass *						Carrier;
-	RenderObjClass *				CarrierSubObject;
-	DynamicShadowManagerClass	ShadowManager;
+	PhysControllerClass* Controller;
+	PhysClass* Carrier;
+	RenderObjClass* CarrierSubObject;
+	DynamicShadowManagerClass ShadowManager;
 
 	// Not Implemented:
 	MoveablePhysClass(const MoveablePhysClass &);

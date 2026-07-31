@@ -1550,8 +1550,7 @@ WWINLINE bool operator != (const Matrix3D &A, const Matrix3D &B)
 }
 
 
-WWINLINE void Matrix3D::Transform_Vector(const Matrix3D & A,const Vector3 & in,Vector3 * out)
-{
+WWINLINE void Matrix3D::Transform_Vector( const Matrix3D& A, const Vector3& in, Vector3* out ){
 	Vector3 tmp;
 	Vector3 * v;
 
@@ -1568,8 +1567,7 @@ WWINLINE void Matrix3D::Transform_Vector(const Matrix3D & A,const Vector3 & in,V
 	out->Z = (A[2][0] * v->X + A[2][1] * v->Y + A[2][2] * v->Z + A[2][3]);
 }
 
-WWINLINE void	Matrix3D::Rotate_Vector(const Matrix3D & A,const Vector3 & in,Vector3 * out)
-{
+WWINLINE void Matrix3D::Rotate_Vector( const Matrix3D& A, const Vector3& in, Vector3* out ){
 	Vector3 tmp;
 	Vector3 * v;
 

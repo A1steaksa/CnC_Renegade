@@ -184,9 +184,8 @@ const char * CompositeRenderObjClass::Get_Name(void) const
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void CompositeRenderObjClass::Set_Name(const char * name)												
-{ 
-	Name=name;
+void CompositeRenderObjClass::Set_Name( const char* name ){
+	Name = name;
 }
 
 

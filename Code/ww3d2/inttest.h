@@ -69,14 +69,15 @@
 // collision test classes though.
 //  
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class IntersectionTestClass
-{
+class IntersectionTestClass {
 public:
-	IntersectionTestClass(int collision_type) : CollisionType(collision_type)								{ }
-	IntersectionTestClass(const IntersectionTestClass & that) :	CollisionType(that.CollisionType)	{ }
+	IntersectionTestClass( int collision_type ) : CollisionType( collision_type ) {
+	}
 
+	IntersectionTestClass( const IntersectionTestClass& that ) : CollisionType( that.CollisionType ) {
+	}
 public:
-	int								CollisionType; 
+	int CollisionType;
 };
 
 
@@ -86,58 +87,69 @@ public:
 // This is an intersection test which uses an Axis-Aligned Box
 //  
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class AABoxIntersectionTestClass : public IntersectionTestClass
-{
+class AABoxIntersectionTestClass : public IntersectionTestClass {
 public:
-	AABoxIntersectionTestClass(const AABoxClass & box,int collision_type) :
-		IntersectionTestClass(collision_type),
-		Box(box)
+	AABoxIntersectionTestClass( const AABoxClass& box, int collision_type ) :
+		IntersectionTestClass( collision_type ),
+		Box( box )
 	{
 	}
 
-	AABoxIntersectionTestClass(const AABoxIntersectionTestClass & that) :
-		IntersectionTestClass(that),
-		Box(that.Box)
+	AABoxIntersectionTestClass( const AABoxIntersectionTestClass& that ) :
+		IntersectionTestClass( that ),
+		Box( that.Box )
 	{
 	}
 
-	bool								Cull(const Vector3 & cull_min,const Vector3 & cull_max);
-	bool								Cull(const AABoxClass & cull_box);
-	bool								Intersect_Triangle(const TriClass & tri);
+	bool Cull( const Vector3& cull_min, const Vector3& cull_max );
+	bool Cull( const AABoxClass& cull_box );
+	bool Intersect_Triangle( const TriClass& tri );
 
 public:
-	AABoxClass						Box;					// world space aabox that we want to test with
-
+	AABoxClass Box; // world space aabox that we want to test with
 };
 
-inline bool AABoxIntersectionTestClass::Cull(const Vector3 & cull_min,const Vector3 & cull_max)
-{
+inline bool AABoxIntersectionTestClass::Cull( const Vector3& cull_min, const Vector3& cull_max ){
 	Vector3 box_min;
-	Vector3::Subtract(Box.Center,Box.Extent,&box_min);
+	Vector3::Subtract( Box.Center, Box.Extent, &box_min );
 	
 	Vector3 box_max;
-	Vector3::Add(Box.Center,Box.Extent,&box_max);
+	Vector3::Add( Box.Center, Box.Extent, &box_max );
 
-	if ((box_min.X > cull_max.X) || (box_max.X < cull_min.X)) return true;
-	if ((box_min.Y > cull_max.Y) || (box_max.Y < cull_min.Y)) return true;
-	if ((box_min.Z > cull_max.Z) || (box_max.Z < cull_min.Z)) return true;
+	if( ( box_min.X > cull_max.X ) || ( box_max.X < cull_min.X ) ){
+		return true;
+	}
+
+	if( ( box_min.Y > cull_max.Y ) || ( box_max.Y < cull_min.Y ) ){
+		return true;
+	}
+
+	if( ( box_min.Z > cull_max.Z ) || ( box_max.Z < cull_min.Z ) ){
+		return true;
+	}
 }
 
-inline bool AABoxIntersectionTestClass::Cull(const AABoxClass & cull_box)
-{
+inline bool AABoxIntersectionTestClass::Cull( const AABoxClass& cull_box ){
 	Vector3 dc;
 	Vector3 r;
-	Vector3::Subtract(cull_box.Center,Box.Center,&dc);
-	Vector3::Add(cull_box.Extent,Box.Extent,&r);
+	Vector3::Subtract( cull_box.Center, Box.Center, &dc );
+	Vector3::Add( cull_box.Extent, Box.Extent, &r );
 
-	if (WWMath::Fabs(dc.X) > r.X) return true;
-	if (WWMath::Fabs(dc.Y) > r.Y) return true;
-	if (WWMath::Fabs(dc.Z) > r.Z) return true;
+	if( WWMath::Fabs( dc.X ) > r.X ){
+		return true;
+	}
+
+	if( WWMath::Fabs( dc.Y ) > r.Y ){
+		return true;
+	}
+
+	if( WWMath::Fabs( dc.Z ) > r.Z ){
+		return true;
+	}
 }
 
-inline bool AABoxIntersectionTestClass::Intersect_Triangle(const TriClass & tri)
-{
-	return CollisionMath::Intersection_Test(Box,tri);
+inline bool AABoxIntersectionTestClass::Intersect_Triangle( const TriClass& tri ){
+	return CollisionMath::Intersection_Test( Box, tri );
 }
 
 
@@ -147,25 +159,23 @@ inline bool AABoxIntersectionTestClass::Intersect_Triangle(const TriClass & tri)
 // This is an intersection test which uses an Axis-Aligned Box
 //  
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class OBBoxIntersectionTestClass : public IntersectionTestClass
-{
+class OBBoxIntersectionTestClass : public IntersectionTestClass {
 public:
+	OBBoxIntersectionTestClass( const OBBoxClass& box, int collision_type );
+	OBBoxIntersectionTestClass( const OBBoxIntersectionTestClass& that );
+	OBBoxIntersectionTestClass( const OBBoxIntersectionTestClass& that, const Matrix3D& tm );
+	OBBoxIntersectionTestClass( const AABoxIntersectionTestClass& that, const Matrix3D& tm );
 
-	OBBoxIntersectionTestClass(const OBBoxClass & box,int collision_type);
-	OBBoxIntersectionTestClass(const OBBoxIntersectionTestClass & that);
-	OBBoxIntersectionTestClass(const OBBoxIntersectionTestClass & that,const Matrix3D & tm);
-	OBBoxIntersectionTestClass(const AABoxIntersectionTestClass & that,const Matrix3D & tm);
-
-	bool								Cull(const Vector3 & min,const Vector3 & max);
-	bool								Cull(const AABoxClass & box);
-	bool								Intersect_Triangle(const TriClass & tri);
+	bool Cull( const Vector3& min, const Vector3& max );
+	bool Cull( const AABoxClass& box );
+	bool Intersect_Triangle( const TriClass& tri );
 
 protected:	
-	void								update_bounding_box(void);
+	void update_bounding_box(void);
 
 public:
-	OBBoxClass						Box;					// world space obbox that we want to test with
-	AABoxClass						BoundingBox;		// axis aligned w-s bounding box
+	OBBoxClass Box; // world space obbox that we want to test with
+	AABoxClass BoundingBox; // axis aligned w-s bounding box
 };
 
 

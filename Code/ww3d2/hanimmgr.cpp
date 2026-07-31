@@ -69,8 +69,7 @@
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-HAnimManagerClass::HAnimManagerClass(void) 
-{
+HAnimManagerClass::HAnimManagerClass(void){
 	// Create the hash tables
 	AnimPtrTable = new HashTableClass( 2048 );
 	MissingAnimTable = new HashTableClass( 2048 );
@@ -114,23 +113,21 @@ HAnimManagerClass::~HAnimManagerClass(void)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-int HAnimManagerClass::Load_Anim(ChunkLoadClass & cload)
-{
+int HAnimManagerClass::Load_Anim( ChunkLoadClass& cload ){
 	WWMEMLOG(MEM_ANIMATION);
 
-	switch (cload.Cur_Chunk_ID()) 
-	{
-	case W3D_CHUNK_ANIMATION:
-		return Load_Raw_Anim(cload);
-		break;
+	switch( cload.Cur_Chunk_ID() ){
+		case W3D_CHUNK_ANIMATION:
+			return Load_Raw_Anim( cload );
+			break;
 
-	case W3D_CHUNK_COMPRESSED_ANIMATION:
-		return Load_Compressed_Anim(cload);
-		break;
+		case W3D_CHUNK_COMPRESSED_ANIMATION:
+			return Load_Compressed_Anim( cload );
+			break;
 
-	case W3D_CHUNK_MORPH_ANIMATION:
-		return Load_Morph_Anim(cload);
-		break;
+		case W3D_CHUNK_MORPH_ANIMATION:
+			return Load_Morph_Anim( cload );
+			break;
 	}
 
 	return 0;
@@ -192,25 +189,24 @@ Error:
  * HISTORY:                                                                                    *
  *   5/23/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-int HAnimManagerClass::Load_Raw_Anim(ChunkLoadClass & cload)
-{
-	HRawAnimClass * newanim = new HRawAnimClass;
+int HAnimManagerClass::Load_Raw_Anim( ChunkLoadClass& cload ){
+	HRawAnimClass* newanim = new HRawAnimClass;
 
-	if (newanim == NULL) {
+	if( newanim == NULL ){
 		goto Error;
 	}
 
 	SET_REF_OWNER( newanim );
 
-	if (newanim->Load_W3D(cload) != HRawAnimClass::OK) {
+	if( newanim->Load_W3D( cload ) != HRawAnimClass::OK ){
 		// load failed!
 		newanim->Release_Ref();
 		goto Error;
-	} else if (Peek_Anim(newanim->Get_Name()) != NULL) {
+	}else if( Peek_Anim( newanim->Get_Name() ) != NULL ){
 		// duplicate exists!
 		newanim->Release_Ref();	// Release the one we just loaded
 		goto Error;
-	} else {
+	}else{
 		Add_Anim( newanim );
 		newanim->Release_Ref();
 	}
@@ -235,25 +231,23 @@ Error:
  * HISTORY:                                                                                    *
  *   5/23/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-int HAnimManagerClass::Load_Compressed_Anim(ChunkLoadClass & cload)
-{
-	HCompressedAnimClass * newanim = new HCompressedAnimClass;
-
-	if (newanim == NULL) {
+int HAnimManagerClass::Load_Compressed_Anim( ChunkLoadClass& cload ){
+	HCompressedAnimClass* newanim = new HCompressedAnimClass;
+	if( newanim == NULL ){
 		goto Error;
 	}
 
 	SET_REF_OWNER( newanim );
 
-	if (newanim->Load_W3D(cload) != HCompressedAnimClass::OK) {
+	if( newanim->Load_W3D(cload) != HCompressedAnimClass::OK ){
 		// load failed!
 		newanim->Release_Ref();
 		goto Error;
-	} else if (Peek_Anim(newanim->Get_Name()) != NULL) {
+	}else if( Peek_Anim( newanim->Get_Name() ) != NULL ){
 		// duplicate exists!
 		newanim->Release_Ref();	// Release the one we just loaded
 		goto Error;
-	} else {
+	}else{
 		Add_Anim( newanim );
 		newanim->Release_Ref();
 	}
@@ -277,9 +271,8 @@ Error:
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-HAnimClass * HAnimManagerClass::Peek_Anim(const char * name)
-{
-	return (HAnimClass*)AnimPtrTable->Find( name );
+HAnimClass* HAnimManagerClass::Peek_Anim( const char* name ){
+	return (HAnimClass*) AnimPtrTable->Find( name );
 }
 
 
@@ -295,10 +288,9 @@ HAnimClass * HAnimManagerClass::Peek_Anim(const char * name)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-HAnimClass * HAnimManagerClass::Get_Anim(const char * name)
-{	
-	HAnimClass * anim = Peek_Anim( name );
-	if ( anim != NULL ) {
+HAnimClass* HAnimManagerClass::Get_Anim( const char* name ){	
+	HAnimClass* anim = Peek_Anim( name );
+	if( anim != NULL ){
 		anim->Add_Ref();
 	}
 	return anim;
@@ -317,8 +309,7 @@ HAnimClass * HAnimManagerClass::Get_Anim(const char * name)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HAnimManagerClass::Free_All_Anims(void)
-{
+void HAnimManagerClass::Free_All_Anims(void){
 	// Make an iterator, and release all ptrs
 	HAnimManagerIterator it( *this );
 	for( it.First(); !it.Is_Done(); it.Next() ) {
@@ -343,12 +334,11 @@ void HAnimManagerClass::Free_All_Anims(void)
  * HISTORY:                                                                                    * 
  *   05/31/2000 PDS  : Created.                                                                * 
  *=============================================================================================*/
-bool HAnimManagerClass::Add_Anim(HAnimClass *new_anim)
-{
-	WWASSERT (new_anim != NULL);
+bool HAnimManagerClass::Add_Anim( HAnimClass* new_anim ){
+	WWASSERT( new_anim != NULL );
 
 	// Increment the refcount on the new animation and add it to our table.
-	new_anim->Add_Ref ();
+	new_anim->Add_Ref();
 	AnimPtrTable->Add( new_anim );
 
 	//
@@ -369,22 +359,19 @@ bool HAnimManagerClass::Add_Anim(HAnimClass *new_anim)
 ** so that if they are asked for again, we can quickly return NULL, without searching the
 ** disk again.
 */
-void	HAnimManagerClass::Register_Missing( const char * name )
-{
+void HAnimManagerClass::Register_Missing( const char* name ){
 	MissingAnimTable->Add( new MissingAnimClass( name ) );
 }
 
-bool	HAnimManagerClass::Is_Missing( const char * name )
-{
+bool HAnimManagerClass::Is_Missing( const char* name ){
 	return ( MissingAnimTable->Find( name ) != NULL );
 }
 
-void	HAnimManagerClass::Reset_Missing( void )
-{
+void HAnimManagerClass::Reset_Missing(void){
 	// Make an iterator, and release all ptrs
 	HashTableIteratorClass it( *MissingAnimTable );
 	for( it.First(); !it.Is_Done(); it.Next() ) {
-		MissingAnimClass *missing = (MissingAnimClass *)it.Get_Current();
+		MissingAnimClass* missing = (MissingAnimClass*) it.Get_Current();
 		delete missing;
 	}
 

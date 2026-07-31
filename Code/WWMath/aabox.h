@@ -98,10 +98,15 @@ public:
 	bool operator== (const AABoxClass &src);
 	bool operator!= (const AABoxClass &src);
 
-	WWINLINE void		Init(const Vector3& center,const Vector3 & extent) { Center = center; Extent = extent; }
-	WWINLINE void		Init(Vector3 * points,int num);
-	WWINLINE void		Init(const MinMaxAABoxClass & minmaxbox);
-	void		Init(const LineSegClass & line);
+	WWINLINE void Init( const Vector3& center, const Vector3& extent ){
+		Center = center;
+		Extent = extent;
+	}
+
+	WWINLINE void Init( Vector3* points, int num );
+	WWINLINE void Init( const MinMaxAABoxClass& minmaxbox );
+	void Init( const LineSegClass& line );
+	
 	void		Init_Min_Max(const Vector3 & min,const Vector3 & max);
 	void		Init_Random(float min_center = -1.0f,float max_center = 1.0f,float min_extent = 0.5f,float max_extent = 1.0f);
 
@@ -131,35 +136,42 @@ public:
 ** and then convert it into a center-extent AABox in some cases.  Its purpose
 ** is basically that.
 */
-class MinMaxAABoxClass
-{
+class MinMaxAABoxClass {
 public:
 
-	WWINLINE MinMaxAABoxClass(void) { }
+	WWINLINE MinMaxAABoxClass(void){
+	}
 
-	WWINLINE MinMaxAABoxClass(const Vector3 & min_corner,const Vector3 & max_corner) :
-		MinCorner(min_corner),
-		MaxCorner(max_corner)
+	WWINLINE MinMaxAABoxClass( const Vector3& min_corner, const Vector3& max_corner ) :
+		MinCorner( min_corner ),
+		MaxCorner( max_corner )
 	{
 	}
 	
-	WWINLINE MinMaxAABoxClass(Vector3 * points,int num) { Init(points,num); }
+	WWINLINE MinMaxAABoxClass( Vector3* points, int num ){
+		Init( points, num );
+	}
 
-	WWINLINE MinMaxAABoxClass(const AABoxClass & that) { Init(that); }
+	WWINLINE MinMaxAABoxClass( const AABoxClass& that ){
+		Init( that );
+	}
 
-	WWINLINE void		Init(Vector3 * points,int num);
-	WWINLINE void		Init(const AABoxClass & box);
-	void		Init_Empty(void);
+	WWINLINE void Init( Vector3* points, int num );
+	WWINLINE void Init( const AABoxClass& box );
+	void Init_Empty(void);
 	
-	void		Add_Point(const Vector3 & point);
-	void		Add_Box(const MinMaxAABoxClass & box);
-	void		Add_Box(const AABoxClass & box);
-	void		Add_Box(const Vector3 & min_corner,const Vector3 & max_corner);
+	void Add_Point( const Vector3& point );
+	void Add_Box( const MinMaxAABoxClass& box );
+	void Add_Box( const AABoxClass& box );
+	void Add_Box( const Vector3& min_corner, const Vector3& max_corner );
 
-	void		Transform(const Matrix3D & tm);
-	void		Translate(const Vector3 & pos);
+	void Transform( const Matrix3D& tm );
+	void Translate( const Vector3& pos );
 
-	WWINLINE float		Volume(void) const { Vector3 size = MaxCorner - MinCorner; return size.X*size.Y*size.Z; }
+	WWINLINE float Volume(void) const {
+		Vector3 size = MaxCorner - MinCorner;
+		return size.X * size.Y * size.Z;
+	}
 
 	Vector3	MinCorner;
 	Vector3	MaxCorner;
@@ -500,9 +512,8 @@ WWINLINE bool AABoxClass::Contains(const MinMaxAABoxClass & other_box) const
  * HISTORY:                                                                                    *
  *   9/2/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE bool AABoxClass::Contains(const Vector3 & point) const
-{
-	return CollisionMath::Overlap_Test(*this,point) == CollisionMath::INSIDE;
+WWINLINE bool AABoxClass::Contains( const Vector3& point ) const {
+	return CollisionMath::Overlap_Test( *this, point ) == CollisionMath::INSIDE;
 }
 
 /***********************************************************************************************
@@ -519,8 +530,7 @@ WWINLINE bool AABoxClass::Contains(const Vector3 & point) const
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void MinMaxAABoxClass::Init(Vector3 * points,int num)
-{
+WWINLINE void MinMaxAABoxClass::Init( Vector3* points, int num ){
 	assert(num > 0);
 	assert(points != NULL);
 	MinCorner = points[0];
@@ -544,8 +554,7 @@ WWINLINE void MinMaxAABoxClass::Init(Vector3 * points,int num)
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void MinMaxAABoxClass::Init(const AABoxClass & box)
-{
+WWINLINE void MinMaxAABoxClass::Init( const AABoxClass& box ){
 	MinCorner = box.Center - box.Extent;
 	MaxCorner = box.Center + box.Extent;
 }
@@ -563,8 +572,7 @@ WWINLINE void MinMaxAABoxClass::Init(const AABoxClass & box)
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void MinMaxAABoxClass::Add_Point(const Vector3 & point)
-{
+WWINLINE void MinMaxAABoxClass::Add_Point(const Vector3 & point){
 	MinCorner.Update_Min(point);
 	MaxCorner.Update_Max(point);
 }
@@ -582,14 +590,12 @@ WWINLINE void MinMaxAABoxClass::Add_Point(const Vector3 & point)
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void MinMaxAABoxClass::Add_Box(const MinMaxAABoxClass & box)
-{
-	if (box.MinCorner == box.MaxCorner) return;
+WWINLINE void MinMaxAABoxClass::Add_Box( const MinMaxAABoxClass& box ){
+	if( box.MinCorner == box.MaxCorner ) return;
 
-	MinCorner.Update_Min(box.MinCorner);
-	MaxCorner.Update_Max(box.MaxCorner);
+	MinCorner.Update_Min( box.MinCorner );
+	MaxCorner.Update_Max( box.MaxCorner );
 }
-
 
 /***********************************************************************************************
  * MinMaxAABoxClass::Add_Box -- update this box to enclose the given box                       *
@@ -603,8 +609,7 @@ WWINLINE void MinMaxAABoxClass::Add_Box(const MinMaxAABoxClass & box)
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void MinMaxAABoxClass::Add_Box(const AABoxClass & box)
-{
+WWINLINE void MinMaxAABoxClass::Add_Box( const AABoxClass& box ){
 	if (box.Extent == Vector3(0.0f, 0.0f, 0.0f)) return;
 
 	MinCorner.Update_Min(box.Center - box.Extent);
@@ -623,16 +628,17 @@ WWINLINE void MinMaxAABoxClass::Add_Box(const AABoxClass & box)
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void MinMaxAABoxClass::Add_Box(const Vector3 & min_corner,const Vector3 & max_corner)
-{
-	assert(max_corner.X >= min_corner.X);
-	assert(max_corner.Y >= min_corner.Y);
-	assert(max_corner.Z >= min_corner.Z);
+WWINLINE void MinMaxAABoxClass::Add_Box( const Vector3& min_corner, const Vector3& max_corner ){
+	assert( max_corner.X >= min_corner.X );
+	assert( max_corner.Y >= min_corner.Y );
+	assert( max_corner.Z >= min_corner.Z );
 
-	if (min_corner == max_corner) return;
+	if( min_corner == max_corner ){
+		return;
+	}
 
-	MinCorner.Update_Min(min_corner);
-	MaxCorner.Update_Max(max_corner);
+	MinCorner.Update_Min( min_corner );
+	MaxCorner.Update_Max( max_corner );
 }
 
 
@@ -648,11 +654,10 @@ WWINLINE void MinMaxAABoxClass::Add_Box(const Vector3 & min_corner,const Vector3
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void MinMaxAABoxClass::Transform(const Matrix3D & tm)
-{
+WWINLINE void MinMaxAABoxClass::Transform( const Matrix3D& tm ){
 	Vector3 oldmin = MinCorner;
 	Vector3 oldmax = MaxCorner;
-	tm.Transform_Min_Max_AABox(oldmin,oldmax,&MinCorner,&MaxCorner);
+	tm.Transform_Min_Max_AABox( oldmin, oldmax, &MinCorner, &MaxCorner );
 }
 
 

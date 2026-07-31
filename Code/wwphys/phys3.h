@@ -225,6 +225,7 @@ protected:
 		COLLIDE_MOVE
 	};
 
+	
 	/*
 	** Members
 	*/

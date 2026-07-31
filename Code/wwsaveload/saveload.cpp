@@ -183,19 +183,6 @@ void SaveLoadSystemClass::Register_Pointer (void *old_pointer, void *new_pointer
 	PointerRemapper.Register_Pointer(old_pointer,new_pointer);
 }
 
-#ifdef WWDEBUG
-
-void SaveLoadSystemClass::Request_Pointer_Remap (void **pointer_to_convert,const char * file,int line)
-{
-	PointerRemapper.Request_Pointer_Remap(pointer_to_convert,file,line);
-}
-
-void SaveLoadSystemClass::Request_Ref_Counted_Pointer_Remap (RefCountClass **pointer_to_convert,const char * file,int line)
-{
-	PointerRemapper.Request_Ref_Counted_Pointer_Remap(pointer_to_convert,file,line);
-}
-
-#else
 
 void SaveLoadSystemClass::Request_Pointer_Remap (void **pointer_to_convert)
 {
@@ -206,8 +193,6 @@ void SaveLoadSystemClass::Request_Ref_Counted_Pointer_Remap (RefCountClass **poi
 {
 	PointerRemapper.Request_Ref_Counted_Pointer_Remap(pointer_to_convert);
 }
-
-#endif
 
 void SaveLoadSystemClass::Link_Sub_System( SaveLoadSubSystemClass* sys ){
 	WWASSERT(sys != NULL);

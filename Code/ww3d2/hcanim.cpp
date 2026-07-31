@@ -60,28 +60,29 @@
 #include <nstrdup.h>
 
 
-struct NodeCompressedMotionStruct
-{
+struct NodeCompressedMotionStruct{
 	NodeCompressedMotionStruct();
 	~NodeCompressedMotionStruct();
 
-	void SetFlavor(int flavor)  {Flavor = flavor;}
+	void SetFlavor( int flavor ){
+		Flavor = flavor;
+	}
 
 	int Flavor;
 
 	union {
 		struct {
-			TimeCodedMotionChannelClass *		X;
-			TimeCodedMotionChannelClass *		Y;
-			TimeCodedMotionChannelClass *		Z;
-			TimeCodedMotionChannelClass *		Q;
+			TimeCodedMotionChannelClass* X;
+			TimeCodedMotionChannelClass* Y;
+			TimeCodedMotionChannelClass* Z;
+			TimeCodedMotionChannelClass* Q;
 		} tc;
 
 		struct {
-			AdaptiveDeltaMotionChannelClass *		X;
-			AdaptiveDeltaMotionChannelClass *		Y;
-			AdaptiveDeltaMotionChannelClass *		Z;
-			AdaptiveDeltaMotionChannelClass *		Q;
+			AdaptiveDeltaMotionChannelClass* X;
+			AdaptiveDeltaMotionChannelClass* Y;
+			AdaptiveDeltaMotionChannelClass* Z;
+			AdaptiveDeltaMotionChannelClass* Q;
 
 		} ad;
 
@@ -93,8 +94,7 @@ struct NodeCompressedMotionStruct
 		} vd;
 	};
 
-
-	TimeCodedBitChannelClass *			Vis;
+	TimeCodedBitChannelClass* Vis;
 };
 
 /***********************************************************************************************

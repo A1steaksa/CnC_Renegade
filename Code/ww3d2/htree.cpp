@@ -94,9 +94,7 @@ void HTreeClass::Init_Default(void)
 	Pivot[0].Transform.Make_Identity();
 	Pivot[0].IsVisible = true;
 	strcpy(Pivot[0].Name,"RootTransform");
-	//::strcpy (Name, "Default");
 	Name[0] = 0;
-	return ;
 }
 
 /*********************************************************************************************** 
@@ -137,16 +135,16 @@ HTreeClass::HTreeClass(const HTreeClass & src) :
 	memcpy(&Name,&src.Name,sizeof(Name));
 
 	NumPivots = src.NumPivots;
-	if (NumPivots > 0) {
+	if( NumPivots > 0 ){
 		Pivot = new PivotClass[NumPivots];
 	}
 
-	for (int pi = 0; pi < NumPivots; pi++) {
+	for( int pi = 0; pi < NumPivots; pi++ ){
 		Pivot[pi] = src.Pivot[pi];
 		
-		if (src.Pivot[pi].Parent != NULL) {
+		if( src.Pivot[pi].Parent != NULL ){
 			Pivot[pi].Parent = &(Pivot[src.Pivot[pi].Parent->Index]);
-		} else {
+		}else{
 			Pivot[pi].Parent = NULL;
 		}
 	}
@@ -166,16 +164,17 @@ HTreeClass::HTreeClass(const HTreeClass & src) :
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-int HTreeClass::Load_W3D(ChunkLoadClass & cload)
-{
+int HTreeClass::Load_W3D( ChunkLoadClass& cload ){
 	Free();
 
 	/*
 	**	Read the first chunk, it should be the hierarchy header
 	*/
-	if (!cload.Open_Chunk()) return LOAD_ERROR;
+	if( !cload.Open_Chunk() ){
+		return LOAD_ERROR;
+	}
 
-	if (cload.Cur_Chunk_ID() != W3D_CHUNK_HIERARCHY_HEADER) {
+	if( cload.Cur_Chunk_ID() != W3D_CHUNK_HIERARCHY_HEADER ){
 		// ERROR: Expected Hierarchy Header
 		return LOAD_ERROR;
 	}
@@ -193,7 +192,7 @@ int HTreeClass::Load_W3D(ChunkLoadClass & cload)
 	** notified of this.
 	*/
 	bool pre30 = false;
-	if (header.Version < W3D_MAKE_VERSION(3,0)) {
+	if( header.Version < W3D_MAKE_VERSION(3,0) ){
 		header.NumPivots ++;
 		pre30 = true;
 	}
@@ -203,7 +202,7 @@ int HTreeClass::Load_W3D(ChunkLoadClass & cload)
 	*/
 	memcpy(Name,header.Name,W3D_NAME_LEN);
 	NumPivots = header.NumPivots;
-	if (NumPivots > 0) {
+	if( NumPivots > 0 ){
 		Pivot = new PivotClass[NumPivots];
 	}
 
@@ -211,12 +210,12 @@ int HTreeClass::Load_W3D(ChunkLoadClass & cload)
 	** Now, read in all of the other chunks for this hierarchy.
 	*/
 
-	while (cload.Open_Chunk()) {
+	while( cload.Open_Chunk() ){
 
-		switch (cload.Cur_Chunk_ID()) {
+		switch( cload.Cur_Chunk_ID() ){
 
 			case W3D_CHUNK_PIVOTS:
-				if (!read_pivots(cload,pre30)) {
+				if( !read_pivots( cload, pre30 ) ){
 					goto Error;
 				}			
 				break;
@@ -249,8 +248,7 @@ Error:
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-bool HTreeClass::read_pivots(ChunkLoadClass & cload,bool pre30)
-{
+bool HTreeClass::read_pivots( ChunkLoadClass& cload, bool pre30 ){
 	W3dPivotStruct piv;
 	
 	int first_piv = 0;
@@ -269,7 +267,7 @@ bool HTreeClass::read_pivots(ChunkLoadClass & cload,bool pre30)
 		first_piv++;
 	}
 
-	for (int pidx=first_piv; pidx < NumPivots; pidx++) {
+	for( int pidx = first_piv; pidx < NumPivots; pidx++ ){
 
 		if (cload.Read(&piv,sizeof(W3dPivotStruct)) != sizeof(W3dPivotStruct)) {
 			return false;
@@ -296,7 +294,7 @@ bool HTreeClass::read_pivots(ChunkLoadClass & cload,bool pre30)
 		** At version 3.0 a root node was added, this "fixes up" pre-3.0 files
 		** to have that root node
 		*/
-		if (pre30) {
+		if( pre30 ){
 			piv.ParentIdx += 1;
 		}
 
@@ -310,7 +308,6 @@ bool HTreeClass::read_pivots(ChunkLoadClass & cload,bool pre30)
 		} else {
 			Pivot[pidx].Parent = &(Pivot[piv.ParentIdx]);
 		}
-
 	}
 
 	Pivot[0].Transform.Make_Identity();
@@ -332,8 +329,7 @@ bool HTreeClass::read_pivots(ChunkLoadClass & cload,bool pre30)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HTreeClass::Free(void)
-{
+void HTreeClass::Free(void){
 	if (Pivot != NULL) {
 		delete[] Pivot;
 		Pivot = NULL;
@@ -357,62 +353,36 @@ void HTreeClass::Free(void)
  * HISTORY:                                                                                    * 
  *   04/13/2000 PDS  : Created.                                                                * 
  *=============================================================================================*/
-bool HTreeClass::Simple_Evaluate_Pivot
-(	
-	HAnimClass *		motion,
-	int					pivot_index,
-	float					frame,
-	const Matrix3D &	obj_tm,
-	Matrix3D *			end_tm
-) const
-{
+bool HTreeClass::Simple_Evaluate_Pivot( HAnimClass* motion, int pivot_index, float frame, const Matrix3D& obj_tm, Matrix3D* end_tm ) const {
 	bool retval = false;
-	end_tm->Make_Identity ();
+	end_tm->Make_Identity();
 
-	if (	motion != NULL &&
-			end_tm != NULL &&
-			pivot_index >= 0 &&
-			pivot_index < NumPivots)
-	{
-		//
-		//	Loop over the hierarchy of pivots that this pivot is
+	if( motion != NULL && end_tm != NULL && pivot_index >= 0 && pivot_index < NumPivots ){
+		// Loop over the hierarchy of pivots that this pivot is
 		// attached to and transform each.
-		//
-		for (	PivotClass *pivot = &Pivot[pivot_index];
-				pivot != NULL && pivot->Parent != NULL;
-				pivot = pivot->Parent)
-		{
-			//
-			//	Build a matrix that represents the animation for this pivot
-			//
-
+		for(
+			PivotClass* pivot = &Pivot[pivot_index];
+			pivot != NULL && pivot->Parent != NULL;
+			pivot = pivot->Parent
+		){
+			// Build a matrix that represents the animation for this pivot
 			Matrix3D anim_tm;
-			motion->Get_Transform(anim_tm, pivot->Index, frame);
-
-//			Quaternion q;
-//			motion->Get_Orientation (q, pivot->Index, frame);
-//			Matrix3D anim_tm = ::Build_Matrix3D(q);
+			motion->Get_Transform( anim_tm, pivot->Index, frame );
 
 			Vector3 trans;
-			anim_tm.Get_Translation (&trans);
-			anim_tm.Set_Translation (trans * ScaleFactor);
+			anim_tm.Get_Translation( &trans );
+			anim_tm.Set_Translation( trans * ScaleFactor );
 
-			//
-			//	Transform the animation transform by the 'relative-to-parent' transform.
-			//
+			// Transform the animation transform by the 'relative-to-parent' transform.
 			Matrix3D curr_tm;
-			Matrix3D::Multiply (pivot->BaseTransform, anim_tm, &curr_tm);
+			Matrix3D::Multiply( pivot->BaseTransform, anim_tm, &curr_tm );
 
-			//
-			//	Transform the return value by this transform
-			//
-			Matrix3D::Multiply (curr_tm, *end_tm, end_tm);
+			// Transform the return value by this transform
+			Matrix3D::Multiply( curr_tm, *end_tm, end_tm );
 		}
 
-		//
-		//	Transform the return value by the object's transform
-		//
-		Matrix3D::Multiply (obj_tm, *end_tm, end_tm);		
+		// Transform the return value by the object's transform
+		Matrix3D::Multiply( obj_tm, *end_tm, end_tm );
 
 		// Success!
 		retval = true;
@@ -435,49 +405,31 @@ bool HTreeClass::Simple_Evaluate_Pivot
  * HISTORY:                                                                                    * 
  *   04/13/2000 PDS  : Created.                                                                * 
  *=============================================================================================*/
-bool HTreeClass::Simple_Evaluate_Pivot
-(	
-	int					pivot_index,
-	const Matrix3D &	obj_tm,
-	Matrix3D *			end_tm
-) const
-{
+bool HTreeClass::Simple_Evaluate_Pivot( int pivot_index, const Matrix3D& obj_tm, Matrix3D* end_tm ) const {
 	bool retval = false;
-	end_tm->Make_Identity ();
+	end_tm->Make_Identity();
 
-	if (	end_tm != NULL &&
-			pivot_index >= 0 &&
-			pivot_index < NumPivots)
-	{
-		//
-		//	Loop over the hierarchy of pivots that this pivot is
+	if( end_tm != NULL && pivot_index >= 0 && pivot_index < NumPivots ){
+		// Loop over the hierarchy of pivots that this pivot is
 		// attached to and transform each.
-		//
-		for (	PivotClass *pivot = &Pivot[pivot_index];
-				pivot != NULL && pivot->Parent != NULL;
-				pivot = pivot->Parent)
-		{
-			//
-			//	Build a matrix that represents the animation for this pivot
-			//
-			Matrix3D anim_tm (1);
+		for(
+			PivotClass* pivot = &Pivot[pivot_index];
+			pivot != NULL && pivot->Parent != NULL;
+			pivot = pivot->Parent
+		){
+			// Build a matrix that represents the animation for this pivot
+			Matrix3D anim_tm( 1 );
 
-			//
-			//	Transform the animation transform by the 'relative-to-parent' transform.
-			//
+			// Transform the animation transform by the 'relative-to-parent' transform.
 			Matrix3D curr_tm;
-			Matrix3D::Multiply (pivot->BaseTransform, anim_tm, &curr_tm);
+			Matrix3D::Multiply( pivot->BaseTransform, anim_tm, &curr_tm );
 
-			//
-			//	Transform the return value by this transform
-			//
-			Matrix3D::Multiply (curr_tm, *end_tm, end_tm);
+			// Transform the return value by this transform
+			Matrix3D::Multiply( curr_tm, *end_tm, end_tm );
 		}
 
-		//
-		//	Transform the return value by the object's transform
-		//
-		Matrix3D::Multiply (obj_tm, *end_tm, end_tm);		
+		// Transform the return value by the object's transform
+		Matrix3D::Multiply( obj_tm, *end_tm, end_tm );		
 		retval = true;
 	}	
 
@@ -497,22 +449,22 @@ bool HTreeClass::Simple_Evaluate_Pivot
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HTreeClass::Base_Update(const Matrix3D & root)
-{
-	PivotClass *pivot;
+void HTreeClass::Base_Update( const Matrix3D& root ){
+	PivotClass* pivot;
 
 	Pivot[0].Transform = root;
 	Pivot[0].IsVisible = true;
 
-	for (int piv_idx=1; piv_idx < NumPivots; piv_idx++) {
-		
+	for( int piv_idx = 1; piv_idx < NumPivots; piv_idx++ ){
 		pivot = &Pivot[piv_idx];
 		
-		assert(pivot->Parent != NULL);
-		Matrix3D::Multiply(pivot->Parent->Transform,pivot->BaseTransform,&(pivot->Transform));
+		assert( pivot->Parent != NULL );
+		Matrix3D::Multiply( pivot->Parent->Transform, pivot->BaseTransform, &(pivot->Transform) );
 		pivot->IsVisible = 1;
 
-		if (pivot->IsCaptured) pivot->Capture_Update();
+		if( pivot->IsCaptured ){
+			pivot->Capture_Update();
+		}
 	}
 }
 
@@ -986,11 +938,13 @@ HTreeClass * HTreeClass::Create_Interpolated(	const HTreeClass * tree_a0_b0,
 }
 
 // Create an HTree by Interpolating between others
-HTreeClass * HTreeClass::Create_Interpolated(const HTreeClass * tree_base, 
-														   const HTreeClass * tree_a, 
-														   const HTreeClass * tree_b, 
-														   float a_scale, float b_scale )
-{
+HTreeClass * HTreeClass::Create_Interpolated(
+	const HTreeClass* tree_base, 
+	const HTreeClass* tree_a, 
+	const HTreeClass* tree_b, 
+	float a_scale,
+	float b_scale
+){
 	WWMEMLOG(MEM_ANIMATION);
 	assert( tree_base->NumPivots == tree_a->NumPivots );
 	assert( tree_base->NumPivots == tree_b->NumPivots );
@@ -998,22 +952,26 @@ HTreeClass * HTreeClass::Create_Interpolated(const HTreeClass * tree_base,
 	// Clone the first one,
 	HTreeClass * new_tree = new HTreeClass( *tree_base );
 
-	float	a_scale_abs = WWMath::Fabs( a_scale );
-	float	b_scale_abs = WWMath::Fabs( b_scale );
+	float a_scale_abs = WWMath::Fabs( a_scale );
+	float b_scale_abs = WWMath::Fabs( b_scale );
 
-	if ( a_scale_abs + b_scale_abs > 0 ) {
-
+	if( a_scale_abs + b_scale_abs > 0 ){
 		// Then interpolate all the pivots translations
-		for (int pi = 0; pi < new_tree->NumPivots; pi++) {
+		for( int pi = 0; pi < new_tree->NumPivots; pi++ ){
 
-			Vector3 pos_a = Lerp( tree_base->Pivot[pi].BaseTransform.Get_Translation(),
-							  			 tree_a->Pivot[pi].BaseTransform.Get_Translation(),
-										 a_scale );
-			Vector3 pos_b = Lerp( tree_base->Pivot[pi].BaseTransform.Get_Translation(),
-										 tree_b->Pivot[pi].BaseTransform.Get_Translation(),
-										 b_scale );
+			Vector3 pos_a = Lerp(
+				tree_base->Pivot[pi].BaseTransform.Get_Translation(),
+				tree_a->Pivot[pi].BaseTransform.Get_Translation(),
+				a_scale
+			);
+			
+			Vector3 pos_b = Lerp(
+				tree_base->Pivot[pi].BaseTransform.Get_Translation(),
+				tree_b->Pivot[pi].BaseTransform.Get_Translation(),
+				b_scale
+			);
 
-			Vector3 pos   = (pos_a * a_scale_abs + pos_b * b_scale_abs ) / ( a_scale_abs + b_scale_abs );
+			Vector3 pos = ( pos_a * a_scale_abs + pos_b * b_scale_abs ) / ( a_scale_abs + b_scale_abs );
 
 			new_tree->Pivot[pi].BaseTransform.Set_Translation( pos );
 		}

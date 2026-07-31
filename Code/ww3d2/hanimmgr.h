@@ -72,32 +72,30 @@ private:
 	This class is used to keep track of all of the motion data.
 */
 
-class HAnimManagerClass
-{
-
+class HAnimManagerClass {
 public:
 	HAnimManagerClass(void);
 	~HAnimManagerClass(void);
 
-	int			 		Load_Anim(ChunkLoadClass & cload);
-	HAnimClass *		Get_Anim(const char * name);
-	HAnimClass *		Peek_Anim(const char * name);
-	bool					Add_Anim(HAnimClass *new_anim);
-	void			 		Free_All_Anims(void);
+	int Load_Anim( ChunkLoadClass& cload );
+	HAnimClass* Get_Anim( const char* name );
+	HAnimClass* Peek_Anim( const char* name );
+	bool Add_Anim( HAnimClass* new_anim );
+	void Free_All_Anims(void);
 
-	void					Register_Missing( const char * name );
-	bool					Is_Missing( const char * name );
-	void					Reset_Missing( void );
+	void Register_Missing( const char* name );
+	bool Is_Missing( const char* name );
+	void Reset_Missing( void );
 
 private:
-	int					Load_Compressed_Anim(ChunkLoadClass & cload);
-	int					Load_Raw_Anim(ChunkLoadClass & cload);
-	int					Load_Morph_Anim(ChunkLoadClass & cload);
+	int Load_Compressed_Anim( ChunkLoadClass& cload );
+	int Load_Raw_Anim( ChunkLoadClass& cload );
+	int Load_Morph_Anim( ChunkLoadClass& cload );
 
-	HashTableClass	*	AnimPtrTable;
-	HashTableClass	*	MissingAnimTable;
+	HashTableClass*	AnimPtrTable;
+	HashTableClass*	MissingAnimTable;
 
-	friend	class		HAnimManagerIterator;
+	friend class HAnimManagerIterator;
 };
 
 

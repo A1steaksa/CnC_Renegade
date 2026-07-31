@@ -654,7 +654,7 @@ void PowerUpGameObj::Think( void ){
 		AABoxClass box = Peek_Model()->Get_Bounding_Box();
 
 		SLNode<SmartGameObj> * smart_objnode;
-		for (smart_objnode = GameObjManager::Get_Smart_Game_Obj_List()->Head(); smart_objnode; smart_objnode = smart_objnode->Next()) {
+		for( smart_objnode = GameObjManager::Get_Smart_Game_Obj_List()->Head(); smart_objnode; smart_objnode = smart_objnode->Next() ){
 			SmartGameObj * obj = smart_objnode->Data();
 			WWASSERT( obj != NULL );
 

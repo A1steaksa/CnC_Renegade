@@ -57,20 +57,19 @@
 #include "htree.h"
 
 
-struct NodeMotionStruct
-{
+struct NodeMotionStruct{
 	NodeMotionStruct();
 	~NodeMotionStruct();
 
-	MotionChannelClass *		X;
-	MotionChannelClass *		Y;
-	MotionChannelClass *		Z;
-	MotionChannelClass *		XR;
-	MotionChannelClass *		YR;
-	MotionChannelClass *		ZR;
-	MotionChannelClass *		Q;
+	MotionChannelClass* X;
+	MotionChannelClass* Y;
+	MotionChannelClass* Z;
+	MotionChannelClass* XR;
+	MotionChannelClass* YR;
+	MotionChannelClass* ZR;
+	MotionChannelClass* Q;
 
-	BitChannelClass *			Vis;
+	BitChannelClass* Vis;
 };
 
 /***********************************************************************************************
@@ -211,8 +210,7 @@ void HRawAnimClass::Free(void)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-int HRawAnimClass::Load_W3D(ChunkLoadClass & cload)
-{
+int HRawAnimClass::Load_W3D( ChunkLoadClass& cload ){
 	bool pre30 = false;
 
 	/* 
@@ -223,9 +221,9 @@ int HRawAnimClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	**	Open the first chunk, it should be the animation header
 	*/
-	if (!cload.Open_Chunk()) return LOAD_ERROR;
+	if( !cload.Open_Chunk() ) return LOAD_ERROR;
 
-	if (cload.Cur_Chunk_ID() != W3D_CHUNK_ANIMATION_HEADER) {
+	if( cload.Cur_Chunk_ID() != W3D_CHUNK_ANIMATION_HEADER ){
 		// ERROR: Expected Animation Header!
 		return LOAD_ERROR;
 	}
@@ -253,10 +251,10 @@ int HRawAnimClass::Load_W3D(ChunkLoadClass & cload)
    WWASSERT(HierarchyName != NULL);
    WWASSERT(aheader.HierarchyName != NULL);
    WWASSERT(sizeof(HierarchyName) >= W3D_NAME_LEN);
-   strncpy(HierarchyName,aheader.HierarchyName,W3D_NAME_LEN);
+   strncpy( HierarchyName, aheader.HierarchyName, W3D_NAME_LEN );
 
-	HTreeClass * base_pose = WW3DAssetManager::Get_Instance()->Get_HTree(HierarchyName);
-	if (base_pose == NULL) {
+	HTreeClass * base_pose = WW3DAssetManager::Get_Instance()->Get_HTree( HierarchyName );
+	if( base_pose == NULL ){
 		goto Error;
 	}
 	NumNodes = base_pose->Num_Pivots();
@@ -264,23 +262,21 @@ int HRawAnimClass::Load_W3D(ChunkLoadClass & cload)
 	NumFrames = aheader.NumFrames;
 	FrameRate = aheader.FrameRate;
 
-	NodeMotion = new NodeMotionStruct[ NumNodes ];
-	if (NodeMotion == NULL) {
+	NodeMotion = new NodeMotionStruct[NumNodes];
+	if( NodeMotion == NULL ){
 		goto Error;
 	}
 
 	/*
 	** Now, read in all of the other chunks (motion channels).
 	*/
-	MotionChannelClass * newchan;
-	BitChannelClass * newbitchan;
+	MotionChannelClass* newchan;
+	BitChannelClass* newbitchan;
 
-	while (cload.Open_Chunk()) {
-
-		switch (cload.Cur_Chunk_ID()) {
-
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case W3D_CHUNK_ANIMATION_CHANNEL:
-				if (!read_channel(cload,&newchan,pre30)) {
+				if( !read_channel( cload, &newchan, pre30 ) ){
 					goto Error;
 				}			
 
@@ -338,14 +334,12 @@ Error:
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-bool HRawAnimClass::read_channel(ChunkLoadClass & cload,MotionChannelClass * * newchan,bool pre30)
-{
+bool HRawAnimClass::read_channel( ChunkLoadClass& cload, MotionChannelClass** newchan, bool pre30 ){
 	*newchan = new MotionChannelClass;
-	bool result = (*newchan)->Load_W3D(cload);	
+	bool result = (*newchan)->Load_W3D( cload );
 	
-	if (result && pre30) {
-//		(*newchan)->PivotIdx += 1;
-		(*newchan)->Set_Pivot((*newchan)->Get_Pivot()+1);
+	if( result && pre30 ){
+		(*newchan)->Set_Pivot( (*newchan)->Get_Pivot() + 1 );
 	}
 	
 	return result;
@@ -462,16 +456,14 @@ void HRawAnimClass::add_bit_channel(BitChannelClass * newchan)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HRawAnimClass::Get_Translation(Vector3& trans, int pividx, float frame ) const
-{
-	struct NodeMotionStruct * motion = &NodeMotion[pividx];
+void HRawAnimClass::Get_Translation(Vector3& trans, int pividx, float frame ) const {
+	struct NodeMotionStruct* motion = &NodeMotion[pividx];
 
 	if ( (motion->X == NULL) && (motion->Y == NULL) && (motion->Z == NULL) ) {
 		 trans.Set(0.0f,0.0f,0.0f);
 		return;
 	}
 
-//	int frame0 = (int)frame;
 	int frame0=WWMath::Float_To_Long(frame-0.499999f);
 
 	int frame1 = frame0 + 1;
@@ -574,14 +566,8 @@ void HRawAnimClass::Get_Orientation(Quaternion& q, int pividx,float frame) const
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HRawAnimClass::Get_Transform(Matrix3D& mtx, int pividx, float frame ) const
-{
+void HRawAnimClass::Get_Transform( Matrix3D& mtx, int pividx, float frame ) const {
 	struct NodeMotionStruct * motion = &NodeMotion[pividx];
-
-//	if ( (motion->X == NULL) && (motion->Y == NULL) && (motion->Z == NULL) ) {
-//		 trans.Set(0.0f,0.0f,0.0f);
-//		return;
-//	}
 
 	int frame0=WWMath::Float_To_Long(frame-0.499999f);
 

@@ -398,7 +398,6 @@ bool PhysicalGameObj::Load( ChunkLoadClass &cload ){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_HUD_POKABLE_INDICATOR, HUDPokableIndicatorEnabled );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_IS_INNATE_CONVERSATIONS_ENABLED, IsInnateConversationsEnabled );
 
-
 						default:
 							Debug_Say(( "Unrecognized PhysicalGameObj Variable chunkID\n" ));
 							break;
@@ -712,9 +711,8 @@ void PhysicalGameObj::Set_Animation( const char *animation_name, bool looping, f
 		Set_Anim_Control( new SimpleAnimControlClass );		// be sure we have a anim control
 	}
 
-	StringClass	anim_name(animation_name,true);
+	StringClass	anim_name( animation_name, true );
 	if( !anim_name.Is_Empty() ){
-
 		// make sure it lead with model name
 		if( ::strchr( anim_name, '.' ) == NULL ){
 			Create_Animation_Name( anim_name, animation_name, Peek_Model()->Get_Name() );
@@ -740,7 +738,6 @@ void PhysicalGameObj::Set_Animation_Frame( const char *animation_name, int frame
 
  	StringClass	anim_name(animation_name,true);
 	if( !anim_name.Is_Empty() ){
-
 		// make sure it lead with model name
 		if( ::strchr( anim_name, '.' ) == NULL ){
 			Create_Animation_Name( anim_name, animation_name, Peek_Model()->Get_Name() );

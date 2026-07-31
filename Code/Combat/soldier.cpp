@@ -126,14 +126,11 @@ SoldierGameObjDef::SoldierGameObjDef( void ) :
 
 	MODEL_DEF_PARAM( SoldierGameObjDef, PhysDefID, "HumanPhysDef" );
 
-	//
 	//	We want soldiers to use innate conversations by default
-	//
 	AllowInnateConversations = true;
-	return;
 }
 
-uint32	SoldierGameObjDef::Get_Class_ID( void ) const {
+uint32 SoldierGameObjDef::Get_Class_ID( void ) const {
 	return CLASSID_GAME_OBJECT_DEF_SOLDIER;
 }
 
@@ -167,7 +164,7 @@ enum {
 	MICROCHUNKID_DEF_HUMAN_LOITER_COLLECTION_DEF_ID,
 };
 
-bool	SoldierGameObjDef::Save( ChunkSaveClass& csave ) {
+bool SoldierGameObjDef::Save( ChunkSaveClass& csave ) {
 	csave.Begin_Chunk( CHUNKID_DEF_PARENT );
 	SmartGameObjDef::Save( csave );
 	csave.End_Chunk();
@@ -200,7 +197,7 @@ bool	SoldierGameObjDef::Save( ChunkSaveClass& csave ) {
 	return true;
 }
 
-bool	SoldierGameObjDef::Load( ChunkLoadClass& cload ) {
+bool SoldierGameObjDef::Load( ChunkLoadClass& cload ) {
 	int dialog_index = 0;
 
 	while ( cload.Open_Chunk() ) {
@@ -266,7 +263,7 @@ const PersistFactoryClass& SoldierGameObj::Get_Factory( void ) const {
 	return _SoldierGameObjPersistFactory;
 }
 
-bool	SoldierGameObj::DisplayDebugBoxForGhostCollision = false;
+bool SoldierGameObj::DisplayDebugBoxForGhostCollision = false;
 
 SoldierGameObj::SoldierGameObj() :
 	WeaponRenderModel( NULL ),
@@ -313,8 +310,8 @@ SoldierGameObj::SoldierGameObj() :
 }
 
 //------------------------------------------------------------------------------------
-SoldierGameObj::~SoldierGameObj() {
-	if ( HealingEffect != NULL ) {
+SoldierGameObj::~SoldierGameObj(){
+	if( HealingEffect != NULL ){
 		Peek_Human_Phys()->Remove_Effect_From_Me( HealingEffect );
 		REF_PTR_RELEASE( HealingEffect );
 	}
@@ -371,21 +368,19 @@ SoldierGameObj::~SoldierGameObj() {
 }
 
 //------------------------------------------------------------------------------------
-void	SoldierGameObj::Init( void ) {
+void SoldierGameObj::Init( void ){
 	Re_Init( Get_Definition() );
-	return;
 }
 
-void	SoldierGameObj::Init( const SoldierGameObjDef& definition ) {
+void SoldierGameObj::Init( const SoldierGameObjDef& definition ){
 	SmartGameObj::Init( definition );
 	Copy_Settings( definition );
-	return;
 }
 
-void	SoldierGameObj::Copy_Settings( const SoldierGameObjDef& definition ) {
+void SoldierGameObj::Copy_Settings( const SoldierGameObjDef& definition ){
 	HumanState.Init( Peek_Human_Phys() );
 	HumanState.Set_Anim_Control( (HumanAnimControlClass*) Get_Anim_Control() );  // Must set the anim control after the phys object
-	//HumanState.Set_Human_Anim_Override( "HAO Test" );
+
 	if ( Get_Definition().HumanAnimOverrideDefID != 0 ) {
 		HumanState.Set_Human_Anim_Override( Get_Definition().HumanAnimOverrideDefID );
 	}
@@ -402,27 +397,23 @@ void	SoldierGameObj::Copy_Settings( const SoldierGameObjDef& definition ) {
 		model->Set_Sub_Objects_Match_LOD( true );
 	}
 
-	if ( InnateObserver == NULL &&
+	if( InnateObserver == NULL &&
 		Get_Definition().UseInnateBehavior &&
-		Is_Controlled_By_Me() == false ) {
+		Is_Controlled_By_Me() == false
+	){
 		InnateObserver = new SoldierObserverClass;
 		Insert_Observer( InnateObserver );
 	}
 
-	//
 	//	Copy the dialog entries from the definition
-	//
-	for ( int index = 0; index < DIALOG_MAX; index++ ) {
+	for( int index = 0; index < DIALOG_MAX; index++ ){
 		DialogList[index] = definition.DialogList[index];
 	}
 
-	//
 	//	Put the soldier in its own collision group 
-	//
 	Peek_Physical_Object()->Set_Collision_Group( SOLDIER_COLLISION_GROUP );
 
 	Prepare_Speech_Framework();
-	return;
 }
 
 
@@ -3408,7 +3399,7 @@ void SoldierGameObj::Enter_Ladder( bool top ) {
 	}
 }
 
-HumanPhysClass* SoldierGameObj::Peek_Human_Phys( void ) const {
+HumanPhysClass* SoldierGameObj::Peek_Human_Phys(void) const {
 	WWASSERT( Peek_Physical_Object() );
 	WWASSERT( Peek_Physical_Object()->As_HumanPhysClass() );
 	return Peek_Physical_Object()->As_HumanPhysClass();

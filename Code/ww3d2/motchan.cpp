@@ -133,13 +133,13 @@ MotionChannelClass::~MotionChannelClass(void)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void MotionChannelClass::Free(void)
-{
-	if (CompressedData) {
+void MotionChannelClass::Free(void){
+	if( CompressedData ){
 		delete[] CompressedData;
-		CompressedData=NULL;
+		CompressedData = NULL;
 	}
-	if (Data) {
+
+	if( Data ){
 		delete[] Data;
 		Data = NULL;
 	}
@@ -158,40 +158,39 @@ void MotionChannelClass::Free(void)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-bool MotionChannelClass::Load_W3D(ChunkLoadClass & cload)
-{
+bool MotionChannelClass::Load_W3D( ChunkLoadClass& cload ){
 	int size = cload.Cur_Chunk_Length();
 	// There was a bug in the exporter which saved too much data, so let's try and not load everything.
 	unsigned int saved_datasize = (size - sizeof(W3dAnimChannelStruct));
   
 	W3dAnimChannelStruct chan;
-	if (cload.Read(&chan,sizeof(W3dAnimChannelStruct)) != sizeof(W3dAnimChannelStruct)) {
+	if( cload.Read( &chan, sizeof(W3dAnimChannelStruct)) != sizeof(W3dAnimChannelStruct) ){
 		return false;
 	}
 
 	FirstFrame = chan.FirstFrame;
 	LastFrame  = chan.LastFrame;
 	VectorLen  = chan.VectorLen;
-	Type 			 = chan.Flags;
+	Type 	   = chan.Flags;
 	PivotIdx   = chan.Pivot;
 
-	unsigned int num_floats = LastFrame-FirstFrame+1;//(datasize / sizeof(float32)) + 1;
-	num_floats*=VectorLen;
-	unsigned int datasize=(num_floats-1)*sizeof(float);
+	unsigned int num_floats = LastFrame - FirstFrame + 1;
+	num_floats *= VectorLen;
+	unsigned int datasize = ( num_floats - 1 ) * sizeof(float);
 
 	Data = new float32[num_floats];
 	Data[0] = chan.Data[0];
 	
-	if (cload.Read(&(Data[1]),datasize) != datasize) {
+	if( cload.Read( &(Data[1]), datasize ) != datasize ){
 		Free();
 		return false;
 	}
 	// Skip over the extra data at the end of the chunk (saved by an error in the exporter)
-	if (saved_datasize-datasize>0) {
-		cload.Seek(saved_datasize-datasize);
+	if( saved_datasize-datasize > 0 ){
+		cload.Seek( saved_datasize-datasize );
 	}
 
-	Do_Data_Compression(datasize);
+	Do_Data_Compression( datasize );
 	return true;
 }
 
@@ -937,8 +936,7 @@ void AdaptiveDeltaMotionChannelClass::Free(void)
  * HISTORY:                                                                                    * 
  *   02/18/2000 JGA : Created.                                                                 * 
  *=============================================================================================*/
-bool AdaptiveDeltaMotionChannelClass::Load_W3D(ChunkLoadClass & cload)
-{
+bool AdaptiveDeltaMotionChannelClass::Load_W3D( ChunkLoadClass& cload ){
 	int size = cload.Cur_Chunk_Length();
 	unsigned int datasize = size - sizeof(W3dAdaptiveDeltaAnimChannelStruct);
 	unsigned int numInts  = (datasize / sizeof(uint32)) + 1;
@@ -1272,9 +1270,7 @@ Quaternion AdaptiveDeltaMotionChannelClass::Get_QuatVector(float32 frame)
 } // Get_QuatVector
 
 //==========================================================================================
-void MotionChannelClass::
-Do_Data_Compression(int datasize)
-{
+void MotionChannelClass::Do_Data_Compression(int datasize){
 return;
 	//Find Min_Max
 	float value_min=FLT_MAX;
@@ -1313,10 +1309,6 @@ return;
 		float new_scale=ValueScale/65535.0f;
 		float new_value=int(CompressedData[i]);
 		float new_float = new_value*new_scale+ValueOffset;
-//			if (fabs(new_float-Data[i])>ValueScale/65536.0f) {
-//				int ii=0;
-//			}
-
 	}
 
 	delete[] Data;
@@ -1324,23 +1316,21 @@ return;
 }
 
 //==========================================================================================
-void MotionChannelClass::
-Get_Vector(int frame,float * setvec) const{
-	if ((frame < FirstFrame) || (frame > LastFrame)) {
-		set_identity(setvec);
-	}else {
+void MotionChannelClass::Get_Vector( int frame, float* setvec ) const {
+	if( ( frame < FirstFrame ) || ( frame > LastFrame ) ){
+		set_identity( setvec );
+	}else{
 		int vframe = frame - FirstFrame;
-		if (Data) {
-			for (int i=0; i<VectorLen; i++) {
+		if( Data ){
+			for( int i = 0; i < VectorLen; i++ ){
 				setvec[i] = Data[vframe * VectorLen + i];
 			}
-		}
-		else {
-			WWASSERT(CompressedData);
-			float scale=ValueScale/65535.0f;
-			for (int i=0; i<VectorLen; i++) {
-				float value=int(CompressedData[vframe * VectorLen + i]);
-				setvec[i] = value*scale+ValueOffset;
+		}else{
+			WWASSERT( CompressedData );
+			float scale = ValueScale / 65535.0f;
+			for( int i = 0; i < VectorLen; i++ ){
+				float value=int( CompressedData[vframe * VectorLen + i] );
+				setvec[i] = value * scale + ValueOffset;
 			}
 		}
 	}

@@ -473,10 +473,9 @@ RenderObjClass * RenderObjClass::Get_Sub_Object_By_Name(const char * name) const
  * HISTORY:                                                                                    *
  *   3/4/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-int RenderObjClass::Add_Sub_Object_To_Bone(RenderObjClass * subobj,const char * bname)
-{
-	int bindex = Get_Bone_Index(bname);
-	return Add_Sub_Object_To_Bone(subobj,bindex);
+int RenderObjClass::Add_Sub_Object_To_Bone( RenderObjClass* subobj, const char* bname ){
+	int bindex = Get_Bone_Index( bname );
+	return Add_Sub_Object_To_Bone( subobj, bindex );
 }
 
 
@@ -591,27 +590,28 @@ int RenderObjClass::Calculate_Cost_Value_Arrays(float screen_area, float *values
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void RenderObjClass::Update_Sub_Object_Bits(void)
-{
+void RenderObjClass::Update_Sub_Object_Bits(void){
 	// this doesn't do anything for non-composite objects
-	if (Get_Num_Sub_Objects() == 0) return;
+	if( Get_Num_Sub_Objects() == 0 ){
+		return;
+	}
 	
 	// go through all of our sub-objects
 	int coltype = 0;
 	int istrans = 0;
 
-	for (int ni = 0; ni < Get_Num_Sub_Objects(); ni++) {
-		RenderObjClass * robj = Get_Sub_Object(ni);
+	for( int ni = 0; ni < Get_Num_Sub_Objects(); ni++ ){
+		RenderObjClass* robj = Get_Sub_Object( ni );
 		coltype |= robj->Get_Collision_Type();
 		istrans |= robj->Is_Translucent();
 		robj->Release_Ref();
 	}
 	
-	Set_Collision_Type(coltype);
-	Set_Translucent(istrans);	
+	Set_Collision_Type( coltype );
+	Set_Translucent( istrans );
 
 	// if we are a sub-object, tell our container to do this
-	if (Container) {
+	if( Container ){
 		Container->Update_Sub_Object_Bits();
 	}
 }
@@ -711,8 +711,7 @@ void RenderObjClass::Remove(void)
  * HISTORY:                                                                                    *
  *   2/25/99    GTH : Created.                                                                 *
  *=============================================================================================*/
-void RenderObjClass::Notify_Added(SceneClass * scene)
-{
+void RenderObjClass::Notify_Added( SceneClass* scene ){
 	Scene = scene;
 }
 

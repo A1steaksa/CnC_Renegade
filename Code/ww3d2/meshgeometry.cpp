@@ -381,9 +381,8 @@ void MeshGeometryClass::Set_User_Text(char * usertext)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshGeometryClass::Get_Bounding_Box(AABoxClass * set_box)
-{
-	WWASSERT(set_box != NULL);
+void MeshGeometryClass::Get_Bounding_Box( AABoxClass* set_box ){
+	WWASSERT( set_box != NULL );
 	set_box->Center = (BoundBoxMax + BoundBoxMin) * 0.5f;
 	set_box->Extent = (BoundBoxMax - BoundBoxMin) * 0.5f;
 }	
@@ -1883,20 +1882,18 @@ WW3DErrorType MeshGeometryClass::read_user_text(ChunkLoadClass & cload)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-WW3DErrorType MeshGeometryClass::read_vertex_influences(ChunkLoadClass & cload)
-{
+WW3DErrorType MeshGeometryClass::read_vertex_influences( ChunkLoadClass& cload ){
 	W3dVertInfStruct vinf;
-	uint16 * links = get_bone_links(true);
+	uint16* links = get_bone_links( true );
 	WWASSERT(links);
 
-	for (int i=0; i<Get_Vertex_Count(); i++) {
-
-		if (cload.Read(&vinf,sizeof(W3dVertInfStruct)) != sizeof(W3dVertInfStruct)) {
+	for( int i = 0; i < Get_Vertex_Count(); i++ ){
+		if( cload.Read( &vinf, sizeof(W3dVertInfStruct) ) != sizeof(W3dVertInfStruct) ){
 			return WW3D_ERROR_LOAD_FAILED;
 		}
 		links[i] = vinf.BoneIdx;		
 	}	
-	Set_Flag(SKIN,true);
+	Set_Flag( SKIN, true );
 
 	return WW3D_ERROR_OK;	
 }

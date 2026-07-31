@@ -72,31 +72,31 @@ class HTreeClass;
 	contains the virtual interface that all animations must support.
 	
 **********************************************************************************/
-class HAnimClass : public RefCountClass, public	HashableClass
-{
+class HAnimClass : public RefCountClass, public	HashableClass {
 public:
+	HAnimClass(void) : HasEmbeddedSounds(false) {
+	}
 
-	HAnimClass(void)	:
-		HasEmbeddedSounds (false)	{ }
-	virtual ~HAnimClass(void)		{ }
+	virtual ~HAnimClass(void){
+	}
 
-	virtual const char *		Get_Name(void) const = 0;
-	virtual const char *		Get_HName(void) const = 0;
+	virtual const char* Get_Name(void) const = 0;
+	virtual const char* Get_HName(void) const = 0;
 
-	virtual const char *		Get_Key( void )						{ return Get_Name(); }
+	virtual const char* Get_Key(void){
+		return Get_Name();
+	}
 
 	virtual int					Get_Num_Frames(void) = 0;
 	virtual float				Get_Frame_Rate() = 0;
 	virtual float				Get_Total_Time() = 0;
 
-//	virtual Vector3			Get_Translation(int pividx,float frame) = 0;
-//	virtual Quaternion		Get_Orientation(int pividx,float frame) = 0;
 	// Jani: Changed to pass in reference of destination to avoid copying
 	virtual void				Get_Translation(int pividx,float frame) {}	// todo: remove
 	virtual void				Get_Orientation(int pividx,float frame) {}	// todo: remove
 	virtual void				Get_Translation(Vector3& translation, int pividx,float frame) const = 0;
 	virtual void				Get_Orientation(Quaternion& orientation, int pividx,float frame) const = 0;
-	virtual void				Get_Transform(Matrix3D&, int pividx, float frame) const = 0;
+	virtual void Get_Transform( Matrix3D&, int pividx, float frame ) const = 0;
 	virtual bool				Get_Visibility(int pividx,float frame) = 0;
 
 	virtual int					Get_Num_Pivots(void) const = 0;
@@ -185,31 +185,64 @@ class HAnimComboDataClass : public AutoPoolClass<HAnimComboDataClass,256> {
 		void Set_HAnim(HAnimClass *motion);
 		void Give_HAnim(HAnimClass *motion) { if(HAnim) HAnim->Release_Ref(); HAnim = motion; }	// used for giving this object the reference
 
-		void Set_Frame(float frame)		{ PrevFrame = Frame; Frame = frame; }		
-		void Set_Prev_Frame(float frame)	{ PrevFrame = frame; }
-		void Set_Weight(float weight)		{ Weight = weight; }
-		void Set_Pivot_Map(PivotMapClass *map);
-		
+		void Set_Frame( float frame ){
+			PrevFrame = Frame;
+			Frame = frame;
+		}
 
-		HAnimClass * Peek_HAnim(void)				const { return HAnim; }	// note: does not add reference
-		HAnimClass * Get_HAnim(void)				const { if(HAnim) HAnim->Add_Ref(); return HAnim; }	// note: does not add reference
-		float Get_Frame(void)						const { return Frame; }
-		float Get_Prev_Frame(void)					const { return PrevFrame; }
-		float Get_Weight(void)						const { return Weight; }
-		PivotMapClass * Peek_Pivot_Map(void)	const { return PivotMap; }
-		PivotMapClass * Get_Pivot_Map(void)		const { if(PivotMap) PivotMap->Add_Ref(); return PivotMap; }
-		bool Is_Shared(void)							const { return Shared; }
+		void Set_Prev_Frame( float frame ){
+			PrevFrame = frame;
+		}
+
+		void Set_Weight( float weight ){
+			Weight = weight;
+		}
+
+		void Set_Pivot_Map( PivotMapClass* map );
+		
+		HAnimClass* Peek_HAnim(void) const {
+			return HAnim;
+		}	// note: does not add reference
+		
+		HAnimClass* Get_HAnim(void) const {
+			if( HAnim ) HAnim->Add_Ref();
+			return HAnim;
+		}	// note: does not add reference
+		
+		float Get_Frame(void) const {
+			return Frame;
+		}
+		
+		float Get_Prev_Frame(void) const {
+			return PrevFrame;
+		}
+		
+		float Get_Weight(void) const {
+			return Weight;
+		}
+
+		PivotMapClass* Peek_Pivot_Map(void) const {
+			return PivotMap;
+		}
+
+		PivotMapClass* Get_Pivot_Map(void) const {
+			if( PivotMap ) PivotMap->Add_Ref();
+			return PivotMap;
+		}
+
+		bool Is_Shared(void) const {
+			return Shared;
+		}
 
 		void Build_Active_Pivot_Map(void);
 
 	private:
-
 		HAnimClass *HAnim;
 		float Frame;
 		float PrevFrame;
 		float Weight;
-		PivotMapClass * PivotMap;
-		bool Shared;			// this is set to false when the HAnimCombo allocates it
+		PivotMapClass* PivotMap;
+		bool Shared; // this is set to false when the HAnimCombo allocates it
 };
 
 /*

@@ -50,42 +50,35 @@
 
 
 /*
-
 	PivotClass
 
 	Each node of the hierarchy tree is represented by a 
-	PivotClass.
-	
+	PivotClass.	
 */
-
-
-
-struct PivotClass
-{
+struct PivotClass{
 public:
 
 	PivotClass(void);
 	~PivotClass(void) {}
 
-	char					Name[W3D_NAME_LEN];
-	int					Index;
+	char Name[W3D_NAME_LEN];
+	int Index;
 
-	PivotClass *		Parent;
+	PivotClass* Parent;
 
 	// Base configuration of this pivot
-	Matrix3D				BaseTransform;		// base-pose transform (relative to parent).
+	Matrix3D BaseTransform; // base-pose transform (relative to parent).
 
-	Matrix3D				Transform;			// computed transform for this pivot
-	bool					IsVisible;			// result of the visibility channel
+	Matrix3D Transform; // computed transform for this pivot
+	bool IsVisible; // result of the visibility channel
 	
 	// User control.  When a pivot is 'captured' animation data is ignored and the
 	// user data is used to control the pivot.
-	bool					IsCaptured;
-	Matrix3D				CapTransform;
-	bool					WorldSpaceTranslation;
+	bool IsCaptured;
+	Matrix3D CapTransform;
+	bool WorldSpaceTranslation;
 
 	void Capture_Update(void);
-
 };
 
 

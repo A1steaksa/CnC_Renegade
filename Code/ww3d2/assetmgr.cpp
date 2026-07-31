@@ -796,37 +796,35 @@ AssetIterator * WW3DAssetManager::Create_Font3DData_Iterator(void)
  * HISTORY:                                                                                    *
  *   12/21/97   GTH : Created.                                                                 *
  *=============================================================================================*/
-HAnimClass *	WW3DAssetManager::Get_HAnim(const char * name)
-{
+HAnimClass* WW3DAssetManager::Get_HAnim( const char* name ){
 	WWPROFILE( "WW3DAssetManager::Get_HAnim" );
 
 	// Try to find the hanim
 	HAnimClass * anim = HAnimManager.Get_Anim(name);
 
-	if (WW3D_Load_On_Demand && anim == NULL) {	// If we didn't find it, try to load on demand
-		
-		if ( !HAnimManager.Is_Missing( name ) ) {	// if this is NOT a known missing anim
+	if( WW3D_Load_On_Demand && anim == NULL ){	// If we didn't find it, try to load on demand
+		if( !HAnimManager.Is_Missing( name ) ){	// if this is NOT a known missing anim
 
-			AssetStatusClass::Peek_Instance()->Report_Load_On_Demand_HAnim(name);
+			AssetStatusClass::Peek_Instance()->Report_Load_On_Demand_HAnim( name );
 
 			char filename[ MAX_PATH ];
 			char *animname = strchr( name, '.');
-			if (animname != NULL) {
-				sprintf( filename, "%s.w3d", animname+1);
-			} else {
+			if( animname != NULL ){
+				sprintf( filename, "%s.w3d", animname + 1);
+			}else{
 				WWDEBUG_SAY(( "Animation %s has no . in the name\n", name ));
 				WWASSERT( 0 );
 				return NULL;
 			}
 
 			// If we can't find it, try the parent directory
-			if ( Load_3D_Assets( filename ) == false ) {
+			if( Load_3D_Assets( filename ) == false ){
 				StringClass	new_filename = StringClass("..\\") + filename;
 				Load_3D_Assets( new_filename );
 			}
 
 			anim = HAnimManager.Get_Anim(name);		// Try agai
-			if (anim == NULL) {
+			if( anim == NULL ){
 				HAnimManager.Register_Missing( name );		// This is now a KNOWN missing anim
 				AssetStatusClass::Peek_Instance()->Report_Missing_HAnim(name);
 			}
@@ -850,31 +848,29 @@ HAnimClass *	WW3DAssetManager::Get_HAnim(const char * name)
  * HISTORY:                                                                                    *
  *   12/21/97   GTH : Created.                                                                 *
  *=============================================================================================*/
-HTreeClass *	WW3DAssetManager::Get_HTree(const char * name)
-{
+HTreeClass* WW3DAssetManager::Get_HTree( const char* name ){
 	WWPROFILE( "WW3DAssetManager::Get_HTree" );
 
 	// Try to find the htree
 	HTreeClass * htree = HTreeManager.Get_Tree(name);
 
-	if (WW3D_Load_On_Demand && htree == NULL) {	// If we didn't find it, try to load on demand
-		
-		AssetStatusClass::Peek_Instance()->Report_Load_On_Demand_HTree(name);
+	if( WW3D_Load_On_Demand && htree == NULL ){ // If we didn't find it, try to load on demand
+		AssetStatusClass::Peek_Instance()->Report_Load_On_Demand_HTree( name );
 
 		char filename[ MAX_PATH ];
 		sprintf( filename, "%s.w3d", name);
 
 		// If we can't find it, try the parent directory
-		if ( Load_3D_Assets( filename ) == false ) {
+		if( Load_3D_Assets( filename ) == false ){
 			StringClass	new_filename("..\\",true);
 			new_filename+=filename;
 			Load_3D_Assets( new_filename );
 		}
 
-		htree = HTreeManager.Get_Tree(name);	// Try again
+		htree = HTreeManager.Get_Tree( name );	// Try again
 
-		if (htree == NULL) {
-			AssetStatusClass::Peek_Instance()->Report_Missing_HTree(name);
+		if( htree == NULL ){
+			AssetStatusClass::Peek_Instance()->Report_Missing_HTree( name );
 		}
 	}
 

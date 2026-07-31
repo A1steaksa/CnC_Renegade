@@ -59,7 +59,6 @@ class StringClass;
 class HumanAnimOverrideDef;
 class HumanLoiterGlobalSettingsDef;
 
-//#define CORPSE_PERSIST_TIME 10.0f		// Need different numbers for single and mp
 #define CORPSE_PERSIST_TIME 2.0f
 
 /*
@@ -164,6 +163,7 @@ public:
 	int Get_Sub_State(void){
 		return SubState;
 	}
+	
 	bool Is_Sub_State_Adjustable(void);
 
 	float Get_State_Timer(void){

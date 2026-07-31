@@ -143,29 +143,24 @@ void HTreeManagerClass::Free_All_Trees(void)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-int HTreeManagerClass::Load_Tree(ChunkLoadClass & cload)
-{
+int HTreeManagerClass::Load_Tree( ChunkLoadClass& cload ){
 	WWMEMLOG(MEM_ANIMATION);
-	HTreeClass * newtree = new HTreeClass;
+	HTreeClass* newtree = new HTreeClass;
 
-	if (newtree == NULL) {
+	if( newtree == NULL ){
 		goto Error;
 	}
 
-	if (newtree->Load_W3D(cload) != HTreeClass::OK) {
-		
+	if( newtree->Load_W3D( cload ) != HTreeClass::OK ){
 		// load failed, delete and return error
 		delete newtree;
 		goto Error;
 
-	} else if (Get_Tree_ID(newtree->Get_Name()) != -1) {
-		
+	}else if( Get_Tree_ID( newtree->Get_Name() ) != -1 ){	
 		// tree with this name already exists, reject it!	
 		delete newtree;
 		goto Error;
-
-	} else {
-
+	}else{
 		// ok, accept this hierarchy tree!
 		TreePtr[NumTrees] = newtree;
 		NumTrees++;
@@ -175,13 +170,10 @@ int HTreeManagerClass::Load_Tree(ChunkLoadClass & cload)
 		_strlwr(lower_case_name.Peek_Buffer());
 		TreeHash.Insert(lower_case_name,newtree);
 	}
-
 	return 0;
 
 Error:
-
 	return 1;
-
 }
 
 /*********************************************************************************************** 
@@ -196,8 +188,7 @@ Error:
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-int HTreeManagerClass::Get_Tree_ID(const char * name)
-{
+int HTreeManagerClass::Get_Tree_ID( const char* name ){
 	for (int i=0; i<NumTrees; i++) {
 		if (TreePtr[i] && (stricmp(name,TreePtr[i]->Get_Name()) == 0)) {
 			return i;
@@ -218,14 +209,12 @@ int HTreeManagerClass::Get_Tree_ID(const char * name)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-char *HTreeManagerClass::Get_Tree_Name(const int idx)
-{
-	if ((idx < NumTrees) && TreePtr[idx]) {
-		if (TreePtr[idx]) {
-			return (char *)TreePtr[idx]->Get_Name();
+char *HTreeManagerClass::Get_Tree_Name( const int idx ){
+	if( (idx < NumTrees) && TreePtr[idx] ){
+		if( TreePtr[idx] ){
+			return (char*) TreePtr[idx]->Get_Name();
 		}
 	}
-
 	return NULL;
 }
 
@@ -243,19 +232,10 @@ char *HTreeManagerClass::Get_Tree_Name(const int idx)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-HTreeClass * HTreeManagerClass::Get_Tree(const char * name)
-{
+HTreeClass* HTreeManagerClass::Get_Tree( const char* name ){
 	StringClass lower_case_name(name,true);
 	_strlwr(lower_case_name.Peek_Buffer());
-	return TreeHash.Get(lower_case_name);
-
-//	for (int i=0; i<NumTrees; i++) {
-//		if (TreePtr[i] && (stricmp(name,TreePtr[i]->Get_Name()) == 0)) {
-//
-//			return TreePtr[i];
-//		}
-//	}
-//	return NULL;
+	return TreeHash.Get( lower_case_name );
 }
 
 
@@ -271,8 +251,7 @@ HTreeClass * HTreeManagerClass::Get_Tree(const char * name)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-HTreeClass * HTreeManagerClass::Get_Tree(int id)
-{
+HTreeClass * HTreeManagerClass::Get_Tree( int id ){
 	if ((id >= 0) && (id < NumTrees)) {
 		return TreePtr[id];
 	} else {

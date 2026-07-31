@@ -98,15 +98,14 @@ extern const char * const DIALOG_EVENT_NAMES[DIALOG_MAX];
 //	DialogueOptionClass
 //
 ////////////////////////////////////////////////////////////////
-class DialogueOptionClass
-{
+class DialogueOptionClass {
 public:
 	
 	////////////////////////////////////////////////////////////////
 	//	Public constructors/destructors
 	////////////////////////////////////////////////////////////////
-	DialogueOptionClass (void);
-	DialogueOptionClass (const DialogueOptionClass &src);
+	DialogueOptionClass(void);
+	DialogueOptionClass(const DialogueOptionClass &src);
 	virtual ~DialogueOptionClass (void);
 
 	////////////////////////////////////////////////////////////////
@@ -121,30 +120,40 @@ public:
 	//
 	//	Accessors
 	//
-	int			Get_Conversation_ID (void) const		{ return ConversationID; }
-	float			Get_Weight (void) const					{ return Weight; }
+	int Get_Conversation_ID(void) const {
+		return ConversationID;
+	}
 
-	void			Set_Conversation_ID (int id)			{ ConversationID = id; }
-	void			Set_Weight (float weight)				{ Weight = weight; }
+	float Get_Weight(void) const {
+		return Weight;
+	}
+
+	void Set_Conversation_ID( int id ){
+		ConversationID = id;
+	}
+
+	void Set_Weight( float weight ){
+		Weight = weight;
+	}
 
 	//
 	//	Save/load
 	//
-	void			Save (ChunkSaveClass &csave);
-	void			Load (ChunkLoadClass &cload);
+	void Save( ChunkSaveClass& csave );
+	void Load( ChunkLoadClass& cload );
 
 protected:
 
 	////////////////////////////////////////////////////////////////
 	//	Protected methods
 	////////////////////////////////////////////////////////////////
-	void			Load_Variables (ChunkLoadClass &cload);
+	void Load_Variables( ChunkLoadClass& cload );
 
 	////////////////////////////////////////////////////////////////
 	//	Protected member data
 	////////////////////////////////////////////////////////////////
-	float			Weight;
-	int			ConversationID;
+	float Weight;
+	int ConversationID;
 };
 
 
@@ -153,21 +162,20 @@ protected:
 //	DialogueClass
 //
 ////////////////////////////////////////////////////////////////
-class DialogueClass
-{
+class DialogueClass {
 public:
 	
 	////////////////////////////////////////////////////////////////
 	//	Public constructors/destructors
 	////////////////////////////////////////////////////////////////
-	DialogueClass (void);
-	DialogueClass (const DialogueClass &src);
-	virtual ~DialogueClass (void);
+	DialogueClass(void);
+	DialogueClass( const DialogueClass& src );
+	virtual ~DialogueClass(void);
 
 	////////////////////////////////////////////////////////////////
 	//	Public operators
 	////////////////////////////////////////////////////////////////
-	const DialogueClass &	operator= (const DialogueClass &src);
+	const DialogueClass& operator=( const DialogueClass& src );
 
 	////////////////////////////////////////////////////////////////
 	//	Public methods
@@ -176,35 +184,43 @@ public:
 	//
 	//	Accessors
 	//
-	DIALOGUE_OPTION_LIST	&	Get_Option_List (void)					{ return OptionList; }
-	void							Free_Options (void);
+	DIALOGUE_OPTION_LIST& Get_Option_List(void){
+		return OptionList;
+	}
 
-	float							Get_Silence_Weight (void)				{ return SilenceWeight; }
-	void							Set_Silence_Weight (float weight)	{ SilenceWeight = weight; }
+	void Free_Options(void);
+
+	float Get_Silence_Weight(void){
+		return SilenceWeight;
+	}
+
+	void Set_Silence_Weight( float weight ){
+		SilenceWeight = weight;
+	}
 
 	//
 	//	Evaluation
 	//
-	int							Get_Conversation (void);
+	int Get_Conversation(void);
 
 	//
 	//	Save/load
 	//
-	void							Save (ChunkSaveClass &csave);
-	void							Load (ChunkLoadClass &cload);
+	void Save( ChunkSaveClass& csave );
+	void Load( ChunkLoadClass& cload );
 
 protected:
 
 	////////////////////////////////////////////////////////////////
 	//	Protected methods
 	////////////////////////////////////////////////////////////////
-	void							Load_Variables (ChunkLoadClass &cload);	
+	void Load_Variables( ChunkLoadClass& cload );	
 
 	////////////////////////////////////////////////////////////////
 	//	Protected member data
 	////////////////////////////////////////////////////////////////
-	DIALOGUE_OPTION_LIST		OptionList;
-	float							SilenceWeight;
+	DIALOGUE_OPTION_LIST OptionList;
+	float SilenceWeight;
 };
 
 

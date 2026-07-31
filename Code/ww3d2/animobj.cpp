@@ -86,7 +86,7 @@ Animatable3DObjClass::Animatable3DObjClass(const char * htree_name) :
 	CurMotionMode(BASE_POSE)
 {
 	// Inline struct members can't be initialized in init list for some reason...
-   ModeAnim.Motion=NULL;
+    ModeAnim.Motion=NULL;
 	ModeAnim.Frame=0.0f;
 	ModeAnim.PrevFrame=0.0f;
 	ModeAnim.LastSyncTime=WW3D::Get_Sync_Time();
@@ -102,16 +102,16 @@ Animatable3DObjClass::Animatable3DObjClass(const char * htree_name) :
 	/*
 	** Store a pointer to the htree
 	*/
-	if (htree_name == NULL) {
+	if( htree_name == NULL ){
 		HTree = NULL;
-	} else if (htree_name[0] == 0) {
+	}else if( htree_name[0] == 0 ){
 		HTree = new HTreeClass;
-		HTree->Init_Default ();
-	} else {
-		HTreeClass * source = WW3DAssetManager::Get_Instance()->Get_HTree(htree_name);
-		if (source != NULL) {
-			HTree = new HTreeClass(*source);
-		} else {
+		HTree->Init_Default();
+	}else{
+		HTreeClass* source = WW3DAssetManager::Get_Instance()->Get_HTree( htree_name );
+		if( source != NULL ){
+			HTree = new HTreeClass( *source );
+		}else{
 			WWDEBUG_SAY(("Unable to find HTree: %s\r\n",htree_name));
 			HTree = new HTreeClass;
 			HTree->Init_Default();
@@ -233,20 +233,16 @@ Animatable3DObjClass & Animatable3DObjClass::operator = (const Animatable3DObjCl
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Release( void ) 
-{
-	switch (CurMotionMode) {
-
+void Animatable3DObjClass::Release(void){
+	switch( CurMotionMode ){
 		case BASE_POSE:
 			break;
-
 		case SINGLE_ANIM:
 			if ( ModeAnim.Motion != NULL ) {
 				ModeAnim.Motion->Release_Ref();
 				ModeAnim.Motion = NULL;
 			}
 			break;
-
 		case DOUBLE_ANIM:
 			if ( ModeInterp.Motion0 != NULL ) {
 				ModeInterp.Motion0->Release_Ref();
@@ -258,10 +254,8 @@ void Animatable3DObjClass::Release( void )
 				ModeInterp.Motion1 = NULL;
 			}
 			break;
-
 		case MULTIPLE_ANIM:
 			break;
-
 		default:
 			break;
 	}
@@ -338,8 +332,7 @@ void Animatable3DObjClass::Special_Render(SpecialRenderInfoClass & rinfo)
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Set_Transform(const Matrix3D &m)
-{ 
+void Animatable3DObjClass::Set_Transform( const Matrix3D &m ){
 	CompositeRenderObjClass::Set_Transform(m); 
 	Set_Hierarchy_Valid(false); 
 }
@@ -443,8 +436,7 @@ int Animatable3DObjClass::Get_Bone_Index(const char * bonename)
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Set_Animation(void)
-{
+void Animatable3DObjClass::Set_Animation(void){
 	Release();
 	CurMotionMode = BASE_POSE;
 	Set_Hierarchy_Valid(false);
@@ -463,10 +455,8 @@ void Animatable3DObjClass::Set_Animation(void)
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Set_Animation(HAnimClass * motion, float frame, int mode)
-{
-
-	if ( motion ) {
+void Animatable3DObjClass::Set_Animation( HAnimClass* motion, float frame, int mode ){
+	if( motion ){
 		// Add_Ref before we remove, in case it is the same one.
 		motion->Add_Ref();
 		Release();
@@ -476,7 +466,7 @@ void Animatable3DObjClass::Set_Animation(HAnimClass * motion, float frame, int m
 		ModeAnim.Frame = frame;		
 		ModeAnim.LastSyncTime = WW3D::Get_Sync_Time();
 		ModeAnim.AnimMode = mode;
-	} else {
+	}else{
 		CurMotionMode = BASE_POSE;
 		Release();
 	}
@@ -497,11 +487,10 @@ void Animatable3DObjClass::Set_Animation(HAnimClass * motion, float frame, int m
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Set_Animation
-( 
-	HAnimClass * motion0,
+void Animatable3DObjClass::Set_Animation(
+	HAnimClass* motion0,
 	float frame0,
-	HAnimClass * motion1,
+	HAnimClass* motion1,
 	float frame1,
 	float percentage
 )
@@ -540,11 +529,7 @@ void Animatable3DObjClass::Set_Animation
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Set_Animation
-( 
-	HAnimComboClass * anim_combo
-)
-{
+void Animatable3DObjClass::Set_Animation( HAnimComboClass* anim_combo ){
 	Release();
 
 	CurMotionMode = MULTIPLE_ANIM;
@@ -824,29 +809,22 @@ void Animatable3DObjClass::Update_Sub_Object_Transforms(void)
  * HISTORY:                                                                                    *
  *   04/13/2000    PDS : Created.                                                              *
  *=============================================================================================*/
-bool Animatable3DObjClass::Simple_Evaluate_Bone(int boneindex, Matrix3D *tm) const
-{
+bool Animatable3DObjClass::Simple_Evaluate_Bone( int boneindex, Matrix3D* tm ) const {
 	bool retval = false;
 
-	//
 	//	Only do this for simple animations
-	//
-	if (	CurMotionMode == NONE ||
-			CurMotionMode == BASE_POSE ||
-			CurMotionMode == SINGLE_ANIM)
-	{		
-		//
-		//	Determine which frame we should be on, then use this
+	if(
+		CurMotionMode == NONE ||
+		CurMotionMode == BASE_POSE ||
+		CurMotionMode == SINGLE_ANIM
+	){		
+		// Determine which frame we should be on, then use this
 		// information to determine the bone's transform.
-		//
-		float curr_frame = Compute_Current_Frame ();
-		retval = Simple_Evaluate_Bone (boneindex, curr_frame, tm);
-	
-	} else {
-		
-		const_cast <Animatable3DObjClass *>(this)->Update_Sub_Object_Transforms();
-		*tm = HTree->Get_Transform(boneindex);
-
+		float curr_frame = Compute_Current_Frame();
+		retval = Simple_Evaluate_Bone( boneindex, curr_frame, tm );
+	}else{	
+		const_cast <Animatable3DObjClass*>(this)->Update_Sub_Object_Transforms();
+		*tm = HTree->Get_Transform( boneindex );
 	}
 
 	return retval;
@@ -866,23 +844,18 @@ bool Animatable3DObjClass::Simple_Evaluate_Bone(int boneindex, Matrix3D *tm) con
  * HISTORY:                                                                                    *
  *   04/13/2000    PDS : Created.                                                                *
  *=============================================================================================*/
-bool Animatable3DObjClass::Simple_Evaluate_Bone(int boneindex, float frame, Matrix3D *tm) const
-{
+bool Animatable3DObjClass::Simple_Evaluate_Bone( int boneindex, float frame, Matrix3D* tm ) const {
 	bool retval = false;
 
-	//
-	//	Only do this for simple animations
-	//
-	if (HTree != NULL) {
-		
-		if (CurMotionMode == SINGLE_ANIM) {
-			retval = HTree->Simple_Evaluate_Pivot (ModeAnim.Motion, boneindex, frame, Get_Transform (), tm);
-		} else if (CurMotionMode == NONE || CurMotionMode == BASE_POSE) {
-			retval = HTree->Simple_Evaluate_Pivot (boneindex, Get_Transform (), tm);
-		} else {
+	// Only do this for simple animations
+	if( HTree != NULL ){
+		if( CurMotionMode == SINGLE_ANIM ){
+			retval = HTree->Simple_Evaluate_Pivot( ModeAnim.Motion, boneindex, frame, Get_Transform(), tm );
+		}else if( CurMotionMode == NONE || CurMotionMode == BASE_POSE ){
+			retval = HTree->Simple_Evaluate_Pivot( boneindex, Get_Transform(), tm );
+		}else{
 			*tm = Transform;
 		}
-
 	} else {
 		*tm = Transform;
 	}
@@ -995,8 +968,7 @@ void Animatable3DObjClass::Single_Anim_Progress (void)
  * HISTORY:                                                                                    *
  *   4/13/99    BMG : Created.                                                                 *
  *=============================================================================================*/
-bool	Animatable3DObjClass::Is_Animation_Complete( void ) const
-{
+bool Animatable3DObjClass::Is_Animation_Complete( void ) const {
 	if (CurMotionMode == SINGLE_ANIM) {
 	
 		if ( ModeAnim.AnimMode == ANIM_MODE_ONCE ) {
@@ -1016,7 +988,7 @@ void Animatable3DObjClass::Set_HTree(HTreeClass * new_htree)
 	WWASSERT(new_htree->Num_Pivots() == HTree->Num_Pivots()); 
 	
 	// just assign it...
-	if (HTree != NULL) {
+	if( HTree != NULL ){
 		delete HTree;
 	}
 	HTree = new HTreeClass(*new_htree);

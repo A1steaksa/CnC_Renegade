@@ -45,7 +45,7 @@
 /*
 **
 */
-enum	{
+enum {
 	XXXCHUNKID_LEGS							=	910991512,
 	XXXCHUNKID_TORSO,
 	CHUNKID_CHANNEL,
@@ -71,7 +71,7 @@ enum	{
 /*
 ** AnimChannelClass
 */
-AnimChannelClass::AnimChannelClass( void ) :
+AnimChannelClass::AnimChannelClass(void) :
 	Animation( NULL ),
 	Frame( 0.0f ),
 	NumFrames( 1 ),
@@ -80,8 +80,7 @@ AnimChannelClass::AnimChannelClass( void ) :
 {
 }
 
-AnimChannelClass::~AnimChannelClass( void )
-{
+AnimChannelClass::~AnimChannelClass(void){
 	if ( Animation ) {
 		Animation->Release_Ref();
 		Animation = NULL;
@@ -104,8 +103,7 @@ AnimChannelClass & AnimChannelClass::operator = (const AnimChannelClass & src)
 	return *this;
 }
 
-bool 	AnimChannelClass::Save( ChunkSaveClass & csave )
-{
+bool AnimChannelClass::Save( ChunkSaveClass& csave ){
 	csave.Begin_Chunk( CHUNKID_VARIABLES );
 		// save the anim first, because the load will stomp the frame & weight
 		if ( Animation ) {
@@ -122,20 +120,17 @@ bool 	AnimChannelClass::Save( ChunkSaveClass & csave )
 	return true;
 }
 
-bool	AnimChannelClass::Load( ChunkLoadClass &cload )
-{
-	while (cload.Open_Chunk()) {
-		switch(cload.Cur_Chunk_ID()) {
-
+bool AnimChannelClass::Load( ChunkLoadClass& cload ){
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case CHUNKID_VARIABLES:
-				while (cload.Open_Micro_Chunk()) {
-					switch(cload.Cur_Micro_Chunk_ID()) {
+				while( cload.Open_Micro_Chunk() ){
+					switch( cload.Cur_Micro_Chunk_ID() ){
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_FRAME, Frame );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_MODE, Mode );
 						READ_MICRO_CHUNK( cload, MICROCHUNKID_TARGET_FRAME, TargetFrame );
 
-						case MICROCHUNKID_ANIMATION_NAME:
-						{
+						case MICROCHUNKID_ANIMATION_NAME: {
 							char anim_name[80];
 							cload.Read( anim_name, cload.Cur_Micro_Chunk_Length() );
 							Set_Animation( anim_name );
@@ -160,31 +155,30 @@ bool	AnimChannelClass::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void AnimChannelClass::Set_Animation( const char *name )
-{
+void AnimChannelClass::Set_Animation( const char* name ){
 	// If this is our current anim, bail
-	if ( ( Animation != NULL ) && ( name != NULL ) ) {
-		if ( stricmp( Animation->Get_Name(), name ) == 0 ) {
+	if( ( Animation != NULL ) && ( name != NULL ) ){
+		if( stricmp( Animation->Get_Name(), name ) == 0 ){
 			return;
 		}
 	}
 
-	if ( ( Animation == NULL ) && ( name == NULL ) ) {
+	if( ( Animation == NULL ) && ( name == NULL ) ){
 		return;
 	}
 
 	// Release the old anim
-	if ( Animation ) {
+	if( Animation ){
 		Animation->Release_Ref();
 		Animation = NULL;
 	}
 
 	// we need to switch anims
-	if (( name != NULL ) && ( name[0] != 0 ) ) {
+	if( ( name != NULL ) && ( name[0] != 0 ) ){
 		Animation = WW3DAssetManager::Get_Instance()->Get_HAnim( name );
 	}
 
-	if ( Animation ) {
+	if( Animation ){
 		SET_REF_OWNER( Animation );
 		NumFrames = Animation->Get_Num_Frames();
 		Mode = ANIM_MODE_ONCE;
@@ -193,23 +187,22 @@ void AnimChannelClass::Set_Animation( const char *name )
 	}
 }
 
-void AnimChannelClass::Set_Animation( const HAnimClass *anim )
-{
+void AnimChannelClass::Set_Animation( const HAnimClass* anim ){
 	// If this is our current anim, bail
-	if ( Animation == anim ) {
+	if( Animation == anim ){
 		return;
 	}
 
 	// Release the old anim
-	if ( Animation ) {
+	if( Animation ){
 		Animation->Release_Ref();
 		Animation = NULL;
 	}
 
 	// we need to switch anims
-	Animation = (HAnimClass *)anim;
+	Animation = (HAnimClass *) anim;
 
-	if ( Animation ) {
+	if( Animation ){
 		Animation->Add_Ref();
 		NumFrames = Animation->Get_Num_Frames();
 		Mode = ANIM_MODE_ONCE;
@@ -218,98 +211,68 @@ void AnimChannelClass::Set_Animation( const HAnimClass *anim )
 	}
 }
 
-void	AnimChannelClass::Set_Mode( AnimMode mode, float frame )
-{ 
+void AnimChannelClass::Set_Mode( AnimMode mode, float frame ){ 
 	Mode = mode; 
-	if ( frame >= 0 ) {
+	if( frame >= 0 ){
 		Frame = frame; 
 	}
 }
 
-void AnimChannelClass::Update( float dtime )
-{
-	if ( Mode == ANIM_MODE_STOP ) {
+void AnimChannelClass::Update( float dtime ){
+	if( Mode == ANIM_MODE_STOP ){
 		return;
 	}
 
-	if ( Animation != NULL ) {
-
-		switch ( Mode )
-		{		
+	if( Animation != NULL ){
+		switch ( Mode ){
 			case ANIM_MODE_LOOP:
-				
-				//
-				//	Increment the frame based on the current timeslice
-				//
+				// Increment the frame based on the current timeslice
 				Frame += dtime * Animation->Get_Frame_Rate();
 				
-				//
-				//	Handle wrapping
-				//
-				if ( Frame >= NumFrames-1 ) {
-					Frame -= NumFrames-1;
+				// Handle wrapping
+				if( Frame >= NumFrames - 1 ){
+					Frame -= NumFrames - 1;
 				}
 
-				if ( Frame >= NumFrames ) {
+				if( Frame >= NumFrames ){
 					Frame = 0;
 				}
 				break;
 
 			case ANIM_MODE_TARGET:
-			
-				//
-				//	Which direction are we animating?
-				//
-				if ( Frame < TargetFrame ) {
+				// Which direction are we animating?
+				if( Frame < TargetFrame ){
 					Frame += dtime * Animation->Get_Frame_Rate();
 					
-					//
 					// If we overshoot targetframe, snap to targetframe
-					//
-					if (Frame >= TargetFrame) {								
+					if( Frame >= TargetFrame ){								
 						Frame = TargetFrame;
 					}
 
-				} else if ( Frame > TargetFrame ) {
+				}else if( Frame > TargetFrame ){
 					Frame -= dtime * Animation->Get_Frame_Rate();
 					
-					//
 					// If we overshoot targetframe, snap to targetframe
-					//
-					if ( Frame <= TargetFrame ) {
+					if( Frame <= TargetFrame ){
 						Frame = TargetFrame;
 					}
 				}
 				break;
 
 			case ANIM_MODE_ONCE:
-
-				//
-				//	Increment the frame based on the current timeslice
-				//
+				// Increment the frame based on the current timeslice
 				Frame += dtime * Animation->Get_Frame_Rate();
 
-				//
-				//	Make sure we don't go past the end
-				//
-				if ( Frame > NumFrames-1 ) {
-					Frame = NumFrames-1;
+				// Make sure we don't go past the end
+				if( Frame > NumFrames - 1 ){
+					Frame = NumFrames - 1;
 				}
 				break;
 		}
-
-#if 0
-if ( dtime != 0 ) {
-	Debug_Say(( "Anim %s frame %1.3f\n", Animation->Get_Name(), Frame ));
-}
-#endif
-
 	}
-
 }
 
-void	AnimChannelClass::Get_Animation_Data( AnimationDataList & list, float weight )
-{
+void AnimChannelClass::Get_Animation_Data( AnimationDataList& list, float weight ){
 	if ( Animation != NULL && weight > 0 ) {
 		AnimationDataRecord * record = list.Uninitialized_Add();
 		WWASSERT( record != NULL );
@@ -319,11 +282,10 @@ void	AnimChannelClass::Get_Animation_Data( AnimationDataList & list, float weigh
 	}
 }
 
-void	AnimChannelClass::Update_Model( RenderObjClass	*anim_model )
-{
-	if ( Animation ) {
+void AnimChannelClass::Update_Model( RenderObjClass* anim_model ){
+	if( Animation ){
 		anim_model->Set_Animation( Animation, Frame );
-	} else {
+	}else{
 		anim_model->Set_Animation();
 	}
 }
@@ -393,104 +355,88 @@ bool	BlendableAnimChannelClass::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void	BlendableAnimChannelClass::Set_Animation( const char *name, float blendtime, float start_frame ) 
-{
+void BlendableAnimChannelClass::Set_Animation( const char* name, float blendtime, float start_frame ){
 	// if setting to our current anim, bail
-	if ( ( NewChannel.Peek_Animation() == NULL ) && ( name == NULL ) ) {
+	if( ( NewChannel.Peek_Animation() == NULL ) && ( name == NULL ) ){
 		return;
 	}
 
-	if ( ( NewChannel.Peek_Animation() != NULL ) && ( name != NULL ) ) {
-		if ( stricmp( NewChannel.Peek_Animation()->Get_Name(), name ) == 0 ) {
+	if( ( NewChannel.Peek_Animation() != NULL ) && ( name != NULL ) ){
+		if( stricmp( NewChannel.Peek_Animation()->Get_Name(), name ) == 0 ){
 			return;
 		}
 	}
 
 	// if no current channel, or no blend, or no new name, don't blend
-	if ( (NewChannel.Peek_Animation() == NULL) || (blendtime == 0) || (name == NULL) ) {
+	if( (NewChannel.Peek_Animation() == NULL) || ( blendtime == 0 ) || ( name == NULL ) ){
 		BlendTotal = 0.0f;
 		BlendTimer = 0.0f;
-	} else if ( BlendTotal == 0.0 ) {						//if not currently blending
+	}else if( BlendTotal == 0.0 ){						//if not currently blending
 		OldChannel = NewChannel;	
 		BlendTimer = 0.0f;
 		BlendTotal = blendtime;
-#if 0
-	} else if ( OldChannel.Peek_Animation() == new_anim.Peek_Animation() ) {	// if old anim is the new one
-		OldChannel.Copy_From( NewChannel );	
-		BlendTimer = (1.0f - (BlendTimer / BlendTotal)) * blendtime;
-		BlendTotal = blendtime;
-#endif
-	} else if ( (BlendTimer / BlendTotal) > 0.5 ) {	// if more than halfway through the old blend
+	}else if( ( BlendTimer / BlendTotal ) > 0.5 ){	// if more than halfway through the old blend
 		OldChannel = NewChannel;	
-		BlendTimer = (1.0f - (BlendTimer / BlendTotal)) * blendtime;
+		BlendTimer = ( 1.0f - ( BlendTimer / BlendTotal ) ) * blendtime;
 		BlendTotal = blendtime;
-	} else {
-		BlendTimer = (BlendTimer / BlendTotal) * blendtime;
+	}else{
+		BlendTimer = ( BlendTimer / BlendTotal ) * blendtime;
 		BlendTotal = blendtime;
 	}
 	NewChannel.Set_Animation( name );
-	if ( NewChannel.Peek_Animation() != NULL ) {
+	if( NewChannel.Peek_Animation() != NULL ){
 		NewChannel.Set_Frame( start_frame );
 	}
-	if ( name == NULL ) {
+	if( name == NULL ){
 		OldChannel.Set_Animation( (const char *)NULL );
 	}
 }
 
-void	BlendableAnimChannelClass::Set_Animation( const HAnimClass * anim, float blendtime, float start_frame )
-{
+void BlendableAnimChannelClass::Set_Animation( const HAnimClass* anim, float blendtime, float start_frame ){
 	// if setting to our current anim, bail
-	if ( ( NewChannel.Peek_Animation() == NULL ) && ( anim == NULL ) ) {
+	if( ( NewChannel.Peek_Animation() == NULL ) && ( anim == NULL ) ){
 		return;
 	}
 
-	if ( ( NewChannel.Peek_Animation() != NULL ) && ( anim != NULL ) ) {
-		if ( NewChannel.Peek_Animation() == anim ) {
+	if( ( NewChannel.Peek_Animation() != NULL ) && ( anim != NULL ) ){
+		if( NewChannel.Peek_Animation() == anim ){
 			return;
 		}
 	}
 
 	// if no current channel, or no blend, or no new name, don't blend
-	if ( (NewChannel.Peek_Animation() == NULL) || (blendtime == 0) || (anim == NULL) ) {
+	if( (NewChannel.Peek_Animation() == NULL) || ( blendtime == 0 ) || ( anim == NULL ) ){
 		BlendTotal = 0.0f;
 		BlendTimer = 0.0f;
-	} else if ( BlendTotal == 0.0 ) {						//if not currently blending
+	}else if( BlendTotal == 0.0 ){						//if not currently blending
 		OldChannel = NewChannel;	
 		BlendTimer = 0.0f;
 		BlendTotal = blendtime;
-#if 0
-	} else if ( OldChannel.Peek_Animation() == new_anim.Peek_Animation() ) {	// if old anim is the new one
-		OldChannel.Copy_From( NewChannel );	
-		BlendTimer = (1.0f - (BlendTimer / BlendTotal)) * blendtime;
-		BlendTotal = blendtime;
-#endif
-	} else if ( (BlendTimer / BlendTotal) > 0.5 ) {	// if more than halfway through the old blend
+	}else if( ( BlendTimer / BlendTotal ) > 0.5 ){	// if more than halfway through the old blend
 		OldChannel = NewChannel;	
-		BlendTimer = (1.0f - (BlendTimer / BlendTotal)) * blendtime;
+		BlendTimer = ( 1.0f - ( BlendTimer / BlendTotal ) ) * blendtime;
 		BlendTotal = blendtime;
-	} else {
-		BlendTimer = (BlendTimer / BlendTotal) * blendtime;
+	}else{
+		BlendTimer = ( BlendTimer / BlendTotal ) * blendtime;
 		BlendTotal = blendtime;
 	}
 	NewChannel.Set_Animation( anim );
-	if ( NewChannel.Peek_Animation() != NULL ) {
+	if( NewChannel.Peek_Animation() != NULL ){
 		NewChannel.Set_Frame( start_frame );
 	}
-	if ( anim == NULL ) {
+	if( anim == NULL ){
 		OldChannel.Set_Animation( (const HAnimClass *)NULL );
 	}
 }
 
 
-void	BlendableAnimChannelClass::Update( float dtime ) 
-{
-	if ( BlendTotal != 0.0f )	{			// if blending between two animations
+void BlendableAnimChannelClass::Update( float dtime ){
+	if( BlendTotal != 0.0f ){	// if blending between two animations
 		BlendTimer += dtime;	// Bump blend timer forward
-		if ( BlendTimer >= BlendTotal )	// blend complete, remove oldanim
-		{
+		if( BlendTimer >= BlendTotal ){	// blend complete, remove oldanim
 			BlendTotal = 0.0f;
 			BlendTimer = 0.0f;
-			OldChannel.Set_Animation( (const char *)NULL );
+			OldChannel.Set_Animation( (const char *) NULL );
 		}
 	}
 
@@ -513,22 +459,28 @@ void	BlendableAnimChannelClass::Get_Animation_Data( AnimationDataList & list, fl
 }
 
 
-void	BlendableAnimChannelClass::Update_Model( RenderObjClass	*anim_model )
-{
-	float blend_ratio = 1.0f;				// assume no blending
-	if ( BlendTotal != 0.0f )	{			// if blending between two animations
+void BlendableAnimChannelClass::Update_Model( RenderObjClass* anim_model ){
+	// assume no blending
+	float blend_ratio = 1.0f;
+	
+	// if blending between two animations
+	if( BlendTotal != 0.0f ){
 		// Calculate the blend percentage between the two animations.
 		// This starts at 0.0 (all OldAnimation) and proceeds to 1.0 (all Animation)
 		blend_ratio = WWMath::Clamp( BlendTimer / BlendTotal, 0, 1 );
 	}
 
-	if ( OldChannel.Peek_Animation() ) {
-		anim_model->Set_Animation(	OldChannel.Peek_Animation(),	OldChannel.Get_Frame(),
-										NewChannel.Peek_Animation(),	NewChannel.Get_Frame(),			
-										blend_ratio );
-	} else if ( NewChannel.Peek_Animation() ) {
+	if( OldChannel.Peek_Animation() ){
+		anim_model->Set_Animation(
+			OldChannel.Peek_Animation(),
+			OldChannel.Get_Frame(),
+			NewChannel.Peek_Animation(),
+			ewChannel.Get_Frame(),
+			blend_ratio
+		);
+	}else if( NewChannel.Peek_Animation() ){
 		anim_model->Set_Animation( NewChannel.Peek_Animation(), NewChannel.Get_Frame() );
-	} else {
+	}else{
 		anim_model->Set_Animation();
 	}
 }
@@ -593,8 +545,7 @@ bool	AnimControlClass::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void	AnimControlClass::Set_Model( RenderObjClass	*anim_model ) 
-{ 
+void AnimControlClass::Set_Model( RenderObjClass* anim_model ){ 
 	REF_PTR_SET( Model, anim_model ); 
 }
 
@@ -645,18 +596,15 @@ bool	SimpleAnimControlClass::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void	SimpleAnimControlClass::Set_Animation( const char *name, float blendtime, float start_frame )
-{
+void SimpleAnimControlClass::Set_Animation( const char* name, float blendtime, float start_frame ){
 	Channel.Set_Animation( name, blendtime, start_frame );
 }
 
-void	SimpleAnimControlClass::Set_Animation( const HAnimClass * anim, float blendtime, float start_frame )
-{
+void SimpleAnimControlClass::Set_Animation( const HAnimClass* anim, float blendtime, float start_frame ){
 	Channel.Set_Animation( anim, blendtime, start_frame );
 }
 
-void	SimpleAnimControlClass::Update( float dtime )
-{
+void SimpleAnimControlClass::Update( float dtime ){
 	Channel.Update( dtime );
 
 	// Setup the model for the current frame(s)
@@ -780,8 +728,7 @@ void HumanAnimControlClass::Build_Skeleton_Anim_Name( StringClass& new_name, con
 	}
 }
 
-void	HumanAnimControlClass::Set_Animation( const char *name, float	blendtime, float start_frame )
-{
+void HumanAnimControlClass::Set_Animation( const char *name, float	blendtime, float start_frame ){
 	StringClass new_name(0,true);
 	Build_Skeleton_Anim_Name( new_name, name );
 

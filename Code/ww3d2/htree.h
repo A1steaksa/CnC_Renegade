@@ -87,8 +87,14 @@ public:
 	int					Load_W3D(ChunkLoadClass & cload);
 	void					Init_Default(void);
 
-	WWINLINE const char *		Get_Name(void)								const { return Name; }
-	WWINLINE int					Num_Pivots(void)							const { return NumPivots; }
+	WWINLINE const char* Get_Name(void) const {
+		return Name;
+	}
+	
+	WWINLINE int Num_Pivots(void) const {
+		return NumPivots;
+	}
+	
 	int					Get_Bone_Index(const char * name)	const;
 	const char *		Get_Bone_Name(int boneid)				const;
 	int					Get_Parent_Index(int bone_indx)		const;
@@ -152,14 +158,13 @@ public:
 														   float a_scale, float b_scale );
 
 private:
+	char Name[W3D_NAME_LEN];
+	int NumPivots;
+	PivotClass* Pivot;
+	float ScaleFactor;
 
-	char					Name[W3D_NAME_LEN];
-	int					NumPivots;
-	PivotClass *		Pivot;
-	float					ScaleFactor;
-
-	void					Free(void);	
-	bool					read_pivots(ChunkLoadClass & cload,bool pre30);
+	void Free(void);
+	bool read_pivots( ChunkLoadClass& cload, bool pre30 );
 
 	friend class MeshClass;
 };
@@ -169,8 +174,7 @@ WWINLINE const Matrix3D &	HTreeClass::Get_Root_Transform(void) const
 	return Pivot[0].Transform;
 }
 
-WWINLINE bool HTreeClass::Get_Visibility(int pivot) const
-{
+WWINLINE bool HTreeClass::Get_Visibility( int pivot ) const {
 	WWASSERT(pivot >= 0);
 	WWASSERT(pivot < NumPivots);
 	return Pivot[pivot].IsVisible;
@@ -188,14 +192,11 @@ WWINLINE bool HTreeClass::Get_Visibility(int pivot) const
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-WWINLINE const Matrix3D & HTreeClass::Get_Transform(int pivot) const
-{
-	assert(pivot >= 0);
-	assert(pivot < NumPivots);
+WWINLINE const Matrix3D & HTreeClass::Get_Transform( int pivot ) const {
+	assert( pivot >= 0 );
+	assert( pivot < NumPivots );
 
 	return Pivot[pivot].Transform;
 }
-
-
 
 #endif

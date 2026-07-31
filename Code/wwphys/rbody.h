@@ -42,7 +42,7 @@ const float RBODY_SLEEP_DELAY	= 0.5f;	// if still for this many seconds, shut of
 ** RigidBodyStateStruct
 ** This is the state vector for a RigidBodyClass.  
 */
-struct RigidBodyStateStruct 
+struct RigidBodyStateStruct
 {
 	RigidBodyStateStruct(void) {}
 	RigidBodyStateStruct(const RigidBodyStateStruct & that);

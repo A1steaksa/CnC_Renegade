@@ -71,7 +71,6 @@ AggregateDefClass::AggregateDefClass (void)
 	::memset (&m_Info, 0, sizeof (m_Info));
 	::memset (&m_MiscInfo, 0, sizeof (m_MiscInfo));
 	m_MiscInfo.OriginalClassID = RenderObjClass::CLASSID_HLOD;
-	return ;
 }
 
 
@@ -105,8 +104,7 @@ AggregateDefClass::AggregateDefClass (RenderObjClass &base_model)
 	::memset (&m_MiscInfo, 0, sizeof (m_MiscInfo));
 	m_MiscInfo.OriginalClassID = RenderObjClass::CLASSID_HLOD;
 
-	Initialize (base_model);
-	return ;
+	Initialize( base_model );
 }
 
 
@@ -197,23 +195,25 @@ AggregateDefClass::Free_Subobject_List (void)
 //
 //	Create
 //
-RenderObjClass *
-AggregateDefClass::Create (void)
-{
+RenderObjClass* AggregateDefClass::Create(void){
 	// Attempt to create an instance of the hierarchy
-	RenderObjClass *pmodel = Create_Render_Object (m_Info.BaseModelName);
-	if (pmodel != NULL) {
+	RenderObjClass* pmodel = Create_Render_Object( m_Info.BaseModelName );
+	if( pmodel != NULL ){
 		
 		// Perform the aggregation
-		Attach_Subobjects (*pmodel);
+		Attach_Subobjects( *pmodel );
 
 		// Let the new object know what its new name and base name are.
-		pmodel->Set_Name (m_pName);
-		pmodel->Set_Base_Model_Name (m_Info.BaseModelName);
-		pmodel->Set_Sub_Objects_Match_LOD ((m_MiscInfo.Flags & W3D_AGGREGATE_FORCE_SUB_OBJ_LOD) == W3D_AGGREGATE_FORCE_SUB_OBJ_LOD);
-
-	} else {
-		WWDEBUG_SAY (("Unable to load aggregate %s.\r\n", m_Info.BaseModelName));
+		pmodel->Set_Name( m_pName );
+		pmodel->Set_Base_Model_Name( m_Info.BaseModelName );
+		pmodel->Set_Sub_Objects_Match_LOD(
+			(
+				m_MiscInfo.Flags &
+				W3D_AGGREGATE_FORCE_SUB_OBJ_LOD
+			) == W3D_AGGREGATE_FORCE_SUB_OBJ_LOD
+		);
+	}else{
+		WWDEBUG_SAY( ("Unable to load aggregate %s.\r\n", m_Info.BaseModelName) );
 	}
 
 	// Return a pointer to the new aggregate
@@ -279,9 +279,7 @@ AggregateDefClass::Find_Subobject
 //
 //	Attach_Subobjects
 //
-void
-AggregateDefClass::Attach_Subobjects (RenderObjClass &base_model)
-{
+void AggregateDefClass::Attach_Subobjects( RenderObjClass& base_model ){
 	// Now loop through all the subobjects and attach them to the appropriate bone
 	for (int index = 0; index < m_SubobjectList.Count (); index ++) {
 		W3dAggregateSubobjectStruct *psubobj_info = m_SubobjectList[index];
@@ -303,8 +301,6 @@ AggregateDefClass::Attach_Subobjects (RenderObjClass &base_model)
 			}
 		}
 	}
-	
-	return ;
 }
 
 
@@ -312,9 +308,7 @@ AggregateDefClass::Attach_Subobjects (RenderObjClass &base_model)
 //
 //	Create_Render_Object
 //
-RenderObjClass *
-AggregateDefClass::Create_Render_Object (const char *passet_name)
-{
+RenderObjClass* AggregateDefClass::Create_Render_Object( const char* passet_name ){
 	// Assume failure
 	RenderObjClass *prender_obj = NULL;
 
@@ -339,31 +333,28 @@ AggregateDefClass::Create_Render_Object (const char *passet_name)
 //
 //	Load_Assets
 //
-bool
-AggregateDefClass::Load_Assets (const char *passet_name)
-{
+bool AggregateDefClass::Load_Assets( const char* passet_name ){
 	// Assume failure
 	bool retval = false;
 
 	// Param OK?
-	if (passet_name != NULL) {
-		
+	if( passet_name != NULL ){
 		// Determine what the current working directory is
 		char path[MAX_PATH];
-		::GetCurrentDirectory (sizeof (path), path);
+		::GetCurrentDirectory( sizeof(path), path );
 
 		// Ensure the path is directory delimited
-		if (path[::lstrlen(path)-1] != '\\') {
-			::lstrcat (path, "\\");
+		if( path[::lstrlen( path ) - 1] != '\\' ){
+			::lstrcat( path, "\\" );
 		}
 
 		// Assume the filename is simply the "asset name" + the w3d extension
-		::lstrcat (path, passet_name);
-		::lstrcat (path, ".w3d");
+		::lstrcat( path, passet_name );
+		::lstrcat( path, ".w3d");
 
 		// If the file exists, then load it into the asset manager.
-		if (::GetFileAttributes (path) != 0xFFFFFFFF) {
-			retval = WW3DAssetManager::Get_Instance()->Load_3D_Assets (path);
+		if( ::GetFileAttributes( path ) != 0xFFFFFFFF ){
+			retval = WW3DAssetManager::Get_Instance()->Load_3D_Assets( path );
 		}
 	}
 
@@ -376,11 +367,9 @@ AggregateDefClass::Load_Assets (const char *passet_name)
 //
 //	Initialize
 //
-void
-AggregateDefClass::Initialize (RenderObjClass &base_model)
-{
+void AggregateDefClass::Initialize( RenderObjClass& base_model ){
 	// Start with fresh lists
-	Free_Subobject_List ();
+	Free_Subobject_List();
 
 	// Determine what the render objects original name was.
 	const char *orig_model_name = base_model.Get_Base_Model_Name ();
@@ -392,7 +381,6 @@ AggregateDefClass::Initialize (RenderObjClass &base_model)
 	m_MiscInfo.OriginalClassID = base_model.Class_ID ();
 	m_MiscInfo.Flags = 0;	
 	m_MiscInfo.Flags |= base_model.Is_Sub_Objects_Match_LOD_Enabled () ? W3D_AGGREGATE_FORCE_SUB_OBJ_LOD : 0;
-	
 
 	// Pass the aggregate name along
 	Set_Name (base_model.Get_Name ());
@@ -406,8 +394,7 @@ AggregateDefClass::Initialize (RenderObjClass &base_model)
 	Build_Subobject_List (*pvanilla_model, base_model);
 
 	// Release the model if necessary
-	REF_PTR_RELEASE (pvanilla_model);	
-	return ;
+	REF_PTR_RELEASE (pvanilla_model);
 }
 
 
@@ -533,18 +520,13 @@ AggregateDefClass::Is_Object_In_List
 //
 //	Load
 //
-WW3DErrorType
-AggregateDefClass::Load_W3D (ChunkLoadClass &chunk_load)
-{
+WW3DErrorType AggregateDefClass::Load_W3D( ChunkLoadClass& chunk_load ){
 	W3dTextureReplacerHeaderStruct header = { 0 };
 
-	
-	while (chunk_load.Open_Chunk()) {
-
+	while( chunk_load.Open_Chunk() ){
 		WW3DErrorType error = WW3D_ERROR_OK;
 
-		switch (chunk_load.Cur_Chunk_ID()) {
-
+		switch( chunk_load.Cur_Chunk_ID() ){
 			case W3D_CHUNK_AGGREGATE_HEADER:
 				error = Read_Header(chunk_load);
 				break;
@@ -571,7 +553,10 @@ AggregateDefClass::Load_W3D (ChunkLoadClass &chunk_load)
 				break;
 		}	
 		chunk_load.Close_Chunk();
-		if (error != WW3D_ERROR_OK) return (error);
+		
+		if( error != WW3D_ERROR_OK ){
+			return (error);
+		}
 	}
 	
 	return WW3D_ERROR_OK;
@@ -582,18 +567,15 @@ AggregateDefClass::Load_W3D (ChunkLoadClass &chunk_load)
 //
 //	Read_Header
 //
-WW3DErrorType
-AggregateDefClass::Read_Header (ChunkLoadClass &chunk_load)
-{
+WW3DErrorType AggregateDefClass::Read_Header( ChunkLoadClass& chunk_load ){
 	// Assume error
 	WW3DErrorType ret_val = WW3D_ERROR_LOAD_FAILED;
 
 	// Is this the header chunk?
 	W3dAggregateHeaderStruct header = { 0 };
-	if (chunk_load.Read (&header, sizeof (header)) == sizeof (header)) {
-
+	if( chunk_load.Read( &header, sizeof(header) ) == sizeof(header) ){
 		// Copy the name from the header structure
-		m_pName = ::_strdup (header.Name);
+		m_pName = ::_strdup( header.Name );
 		m_Version = header.Version;
 
 		// Success!
@@ -609,9 +591,7 @@ AggregateDefClass::Read_Header (ChunkLoadClass &chunk_load)
 //
 //	Read_Info
 //
-WW3DErrorType
-AggregateDefClass::Read_Info (ChunkLoadClass &chunk_load)
-{
+WW3DErrorType AggregateDefClass::Read_Info( ChunkLoadClass& chunk_load ){
 	// Assume error
 	WW3DErrorType ret_val = WW3D_ERROR_LOAD_FAILED;
 
@@ -628,7 +608,7 @@ AggregateDefClass::Read_Info (ChunkLoadClass &chunk_load)
 			  isubobject ++) {
 
 			// Read this subobject's definition from the file
-			ret_val = Read_Subobject (chunk_load);
+			ret_val = Read_Subobject( chunk_load );
 		}				
 	}
 
@@ -641,18 +621,15 @@ AggregateDefClass::Read_Info (ChunkLoadClass &chunk_load)
 //
 //	Read_Subobject
 //
-WW3DErrorType
-AggregateDefClass::Read_Subobject (ChunkLoadClass &chunk_load)
-{
+WW3DErrorType AggregateDefClass::Read_Subobject( ChunkLoadClass& chunk_load ){
 	// Assume error
 	WW3DErrorType ret_val = WW3D_ERROR_LOAD_FAILED;
 
 	// Read the subobject information from the file
 	W3dAggregateSubobjectStruct subobj_info = { 0 };
-	if (chunk_load.Read (&subobj_info, sizeof (subobj_info)) == sizeof (subobj_info)) {
-
+	if( chunk_load.Read( &subobj_info, sizeof( subobj_info ) ) == sizeof( subobj_info ) ){
 		// Add this subobject to our list
-		Add_Subobject (subobj_info);
+		Add_Subobject( subobj_info );
 
 		// Success!
 		ret_val = WW3D_ERROR_OK;
@@ -667,17 +644,14 @@ AggregateDefClass::Read_Subobject (ChunkLoadClass &chunk_load)
 //
 //	Add_Subobject
 //
-void
-AggregateDefClass::Add_Subobject (const W3dAggregateSubobjectStruct &subobj_info)
-{
+void AggregateDefClass::Add_Subobject( const W3dAggregateSubobjectStruct& subobj_info ){
 	// Create a new structure and copy the contents of the src
-	W3dAggregateSubobjectStruct *pnew_entry = new W3dAggregateSubobjectStruct;
-	::lstrcpy (pnew_entry->SubobjectName, subobj_info.SubobjectName);
-	::lstrcpy (pnew_entry->BoneName, subobj_info.BoneName);
+	W3dAggregateSubobjectStruct* pnew_entry = new W3dAggregateSubobjectStruct;
+	::lstrcpy( pnew_entry->SubobjectName, subobj_info.SubobjectName );
+	::lstrcpy( pnew_entry->BoneName, subobj_info.BoneName );
 
 	// Add this new entry to the list
-	m_SubobjectList.Add (pnew_entry);
-	return ;
+	m_SubobjectList.Add( pnew_entry );
 }
 
 
@@ -685,16 +659,13 @@ AggregateDefClass::Add_Subobject (const W3dAggregateSubobjectStruct &subobj_info
 //
 //	Read_Class_Info
 //
-WW3DErrorType
-AggregateDefClass::Read_Class_Info (ChunkLoadClass &chunk_load)
-{
+WW3DErrorType AggregateDefClass::Read_Class_Info( ChunkLoadClass& chunk_load ){
 	// Assume error
 	WW3DErrorType ret_val = WW3D_ERROR_LOAD_FAILED;
 
 	// Read the chunk straight into our header structure
-	::memset (&m_MiscInfo, 0, sizeof (m_MiscInfo));
-	if (chunk_load.Read (&m_MiscInfo, sizeof (m_MiscInfo)) == sizeof (m_MiscInfo)) {
-
+	::memset( &m_MiscInfo, 0, sizeof(m_MiscInfo) );
+	if( chunk_load.Read( &m_MiscInfo, sizeof(m_MiscInfo) ) == sizeof(m_MiscInfo) ){
 		// Success!
 		ret_val = WW3D_ERROR_OK;
 	}
@@ -865,30 +836,25 @@ AggregateDefClass::Save_Class_Info (ChunkSaveClass &chunk_save)
 //
 //	Load
 //
-PrototypeClass *
-AggregateLoaderClass::Load_W3D (ChunkLoadClass &chunk_load)
-{
+PrototypeClass* AggregateLoaderClass::Load_W3D( ChunkLoadClass& chunk_load ){
 	// Assume failure
-	AggregatePrototypeClass *pprototype = NULL;
+	AggregatePrototypeClass* pprototype = NULL;
 
 	// Create a definition object
-	AggregateDefClass *pdefinition = new AggregateDefClass;
-	if (pdefinition != NULL) {
-		
+	AggregateDefClass* pdefinition = new AggregateDefClass;
+	if( pdefinition != NULL ){
 		// Ask the definition object to load the aggregate data
-		if (pdefinition->Load_W3D (chunk_load) != WW3D_ERROR_OK) {
-			
+		if( pdefinition->Load_W3D( chunk_load ) != WW3D_ERROR_OK ){
 			// Error!  Free the definition
 			delete pdefinition;
 			pdefinition = NULL;
-		} else {
-
+		}else{
 			// Success!  Create a prototype from the definition
-			pprototype = new AggregatePrototypeClass (pdefinition);
+			pprototype = new AggregatePrototypeClass( pdefinition );
 		}
 	}
 
     // Return a pointer to the prototype
-	 return pprototype;
+	return pprototype;
 }
 

@@ -651,8 +651,7 @@ void MeshClass::Delete_Decal(uint32 decal_id)
  * HISTORY:                                                                                    *
  *   1/6/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-int MeshClass::Get_Num_Polys(void) const
-{
+int MeshClass::Get_Num_Polys(void) const {
 	if (Model) {
 		int num_passes=Model->Get_Pass_Count();
 		WWASSERT(num_passes>0);
@@ -1339,12 +1338,11 @@ void MeshClass::Get_Obj_Space_Bounding_Sphere( SphereClass& sphere ) const {
  * HISTORY:                                                                                    *
  *   1/19/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshClass::Get_Obj_Space_Bounding_Box(AABoxClass & box) const
-{
-	if (Model) {
-		Model->Get_Bounding_Box(&box);
-	} else {
-		box.Init(Vector3(0,0,0),Vector3(1,1,1));
+void MeshClass::Get_Obj_Space_Bounding_Box( AABoxClass& box ) const {
+	if( Model ){
+		Model->Get_Bounding_Box( &box );
+	}else{
+		box.Init( Vector3( 0, 0, 0 ), Vector3( 1, 1, 1 ) );
 	}
 }
 

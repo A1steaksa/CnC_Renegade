@@ -141,24 +141,22 @@ void HAnimComboDataClass::Copy(const HAnimComboDataClass *src)
 	}
 }
 
-HAnimComboDataClass::~HAnimComboDataClass(void)
-{
-	if(HAnim) 
+HAnimComboDataClass::~HAnimComboDataClass(void){
+	if( HAnim )
 		HAnim->Release_Ref();
-	if(PivotMap)
+	if( PivotMap )
 		PivotMap->Release_Ref();
 }
 
-void HAnimComboDataClass::Clear(void) 
-{
-	if ( HAnim != NULL ) {
+void HAnimComboDataClass::Clear(void){
+	if( HAnim != NULL ){
 		HAnim->Release_Ref();
 		HAnim = NULL;
 	}
 
 	// not sure if the pivot map should be deleted or just have everything set to one.
 	// removing it effectively sets it to one, so that's what I'm doing for now.
-	if(PivotMap) {
+	if( PivotMap ){
 		PivotMap->Release_Ref();
 		PivotMap = NULL;
 	}
@@ -169,24 +167,21 @@ void HAnimComboDataClass::Clear(void)
 	PivotMap = NULL;
 }
 
-void HAnimComboDataClass::Set_HAnim(HAnimClass *motion)
-{
-	if ( motion != NULL ) {
+void HAnimComboDataClass::Set_HAnim( HAnimClass* motion ){
+	if( motion != NULL ){
 		motion->Add_Ref();
 	}
-	if ( HAnim != NULL ) {
+	if( HAnim != NULL ){
 		HAnim->Release_Ref();
 	}
 	HAnim = motion;
 }
 
-
-void HAnimComboDataClass::Set_Pivot_Map(PivotMapClass *map)
-{
-	if ( map != NULL ) {
+void HAnimComboDataClass::Set_Pivot_Map( PivotMapClass* map ){
+	if( map != NULL ){
 		map->Add_Ref();
 	}
-	if ( PivotMap != NULL ) {
+	if( PivotMap != NULL ){
 		PivotMap->Release_Ref();
 	}
 	PivotMap = map;

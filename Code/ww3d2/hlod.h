@@ -157,15 +157,10 @@ public:
 	/////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface - Hierarchical Animation
 	/////////////////////////////////////////////////////////////////////////////
-	virtual void					Set_Animation(void);
-	virtual void					Set_Animation( HAnimClass * motion,
-															float frame, int anim_mode = ANIM_MODE_MANUAL);
-	virtual void					Set_Animation( HAnimClass * motion0,
-															float frame0,
-															HAnimClass * motion1,
-															float frame1,
-															float percentage);
-	virtual void					Set_Animation( HAnimComboClass * anim_combo);
+	virtual void Set_Animation(void);
+	virtual void Set_Animation( HAnimClass* motion, float frame, int anim_mode = ANIM_MODE_MANUAL );
+	virtual void Set_Animation( HAnimClass* motion0, float frame0, HAnimClass* motion1, float frame1, float percentage );
+	virtual void Set_Animation( HAnimComboClass* anim_combo );
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface - Collision Detection, Ray Tracing
@@ -292,7 +287,6 @@ protected:
 	// Current LOD Bias (affects recalculation of the Value array)
 	float LODBias;
 };
-
 
 /*
 ** Loaders for HLodClass
