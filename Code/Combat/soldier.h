@@ -288,7 +288,9 @@ public:
 
 	// Head Looking
 	void Look_At( const Vector3& pos, float time ){
-		HeadLookTarget = pos; HeadLookDuration = time; HeadLookAngle = Vector3( 0, 0, 0 );
+		HeadLookTarget = pos;
+		HeadLookDuration = time;
+		HeadLookAngle = Vector3( 0, 0, 0 );
 	}
 
 	void Update_Look_At( const Vector3& pos ){
@@ -314,9 +316,11 @@ public:
 	void Innate_Enable( int bits = 0xFFFFFFFF ){
 		InnateEnableBits |= bits;
 	}
+	
 	void Innate_Disable( int bits = 0xFFFFFFFF ){
 		InnateEnableBits &= ~bits;
 	}
+
 	bool Is_Innate_Enabled( int bits = 0xFFFFFFFF ){
 		return ( InnateEnableBits & bits ) != 0;
 	}

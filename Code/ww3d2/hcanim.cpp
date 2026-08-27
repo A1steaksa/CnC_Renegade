@@ -131,8 +131,7 @@ NodeCompressedMotionStruct::NodeCompressedMotionStruct() :
  *   10/23/98   GTH : Created.                                                                 *
  *   02/02/00   JGA : Compressed                                                               *
  *=============================================================================================*/
-NodeCompressedMotionStruct::~NodeCompressedMotionStruct()
-{
+NodeCompressedMotionStruct::~NodeCompressedMotionStruct(){
 	// Needs to be changed to call the correct destructors
 
 	switch (Flavor) {
@@ -212,8 +211,7 @@ HCompressedAnimClass::~HCompressedAnimClass(void)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HCompressedAnimClass::Free(void)
-{
+void HCompressedAnimClass::Free(void){
 	if (NodeMotion != NULL) {
 		delete[] NodeMotion;
 	}
@@ -232,8 +230,7 @@ void HCompressedAnimClass::Free(void)
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-int HCompressedAnimClass::Load_W3D(ChunkLoadClass & cload)
-{
+int HCompressedAnimClass::Load_W3D( ChunkLoadClass& cload ){
 	int i = 0;
 	/* 
 	** First make sure we release any memory in use
@@ -243,32 +240,34 @@ int HCompressedAnimClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	**	Open the first chunk, it should be the animation header
 	*/
-	if (!cload.Open_Chunk()) return LOAD_ERROR;
+	if( !cload.Open_Chunk() ){
+		return LOAD_ERROR;
+	}
 
-	if (cload.Cur_Chunk_ID() != W3D_CHUNK_COMPRESSED_ANIMATION_HEADER) {
+	if( cload.Cur_Chunk_ID() != W3D_CHUNK_COMPRESSED_ANIMATION_HEADER ){
 		// ERROR: Expected Animation Header!
 		return LOAD_ERROR;
 	}
 
 	W3dCompressedAnimHeaderStruct aheader;
-	if (cload.Read(&aheader,sizeof(W3dAnimHeaderStruct)) != sizeof(W3dAnimHeaderStruct)) {
+	if( cload.Read( &aheader, sizeof(W3dAnimHeaderStruct) ) != sizeof(W3dAnimHeaderStruct) ){
 		return LOAD_ERROR;
 	}
 
 	cload.Close_Chunk();
 
-	strcpy(Name,aheader.HierarchyName);
-	strcat(Name,".");
-	strcat(Name,aheader.Name);
+	strcpy( Name, aheader.HierarchyName );
+	strcat( Name, "." );
+	strcat( Name, aheader.Name );
 
 	// TSS chasing crash bug 05/26/99
-   WWASSERT(HierarchyName != NULL);
-   WWASSERT(aheader.HierarchyName != NULL);
-   WWASSERT(sizeof(HierarchyName) >= W3D_NAME_LEN);
-   strncpy(HierarchyName,aheader.HierarchyName,W3D_NAME_LEN);
+   WWASSERT( HierarchyName != NULL );
+   WWASSERT( aheader.HierarchyName != NULL );
+   WWASSERT( sizeof(HierarchyName) >= W3D_NAME_LEN );
+   strncpy( HierarchyName, aheader.HierarchyName, W3D_NAME_LEN );
 
-	HTreeClass * base_pose = WW3DAssetManager::Get_Instance()->Get_HTree(HierarchyName);
-	if (base_pose == NULL) {
+	HTreeClass* base_pose = WW3DAssetManager::Get_Instance()->Get_HTree( HierarchyName );
+	if( base_pose == NULL ){
 		goto Error;
 	}
 	NumNodes = base_pose->Num_Pivots();
@@ -278,7 +277,7 @@ int HCompressedAnimClass::Load_W3D(ChunkLoadClass & cload)
 	Flavor    = aheader.Flavor;
   																					
 	// Just for now                                          
-	WWASSERT((Flavor == ANIM_FLAVOR_TIMECODED)||(Flavor == ANIM_FLAVOR_ADAPTIVE_DELTA));
+	WWASSERT( ( Flavor == ANIM_FLAVOR_TIMECODED ) || ( Flavor == ANIM_FLAVOR_ADAPTIVE_DELTA ) );
 
 	NodeMotion = new NodeCompressedMotionStruct[ NumNodes ];
 	if (NodeMotion == NULL) {
@@ -293,26 +292,22 @@ int HCompressedAnimClass::Load_W3D(ChunkLoadClass & cload)
 	/*
 	** Now, read in all of the other chunks (motion channels).
 	*/
-	TimeCodedMotionChannelClass * tc_chan;
-	AdaptiveDeltaMotionChannelClass * ad_chan;
-	TimeCodedBitChannelClass * newbitchan;
+	TimeCodedMotionChannelClass* tc_chan;
+	AdaptiveDeltaMotionChannelClass* ad_chan;
+	TimeCodedBitChannelClass* newbitchan;
 
-	while (cload.Open_Chunk()) {
-
-		switch (cload.Cur_Chunk_ID()) {
-
+	while( cload.Open_Chunk() ){
+		switch( cload.Cur_Chunk_ID() ){
 			case W3D_CHUNK_COMPRESSED_ANIMATION_CHANNEL:
-
-				switch ( Flavor ) {
-
+				switch( Flavor ){
 					case ANIM_FLAVOR_TIMECODED:
-						
-						if (!read_channel(cload,&tc_chan)) {
+						if( !read_channel(cload, &tc_chan ) ){
 							goto Error;
-						}			
-						if (tc_chan->Get_Pivot() < NumNodes) {
-							add_channel(tc_chan);
-						} else {
+						}
+
+						if( tc_chan->Get_Pivot() < NumNodes ){
+							add_channel( tc_chan );
+						}else{
 							// PWG 12-14-98: we have only allocated space for NumNode pivots.  
 							// If we have an index thats equal or higher than NumNode we are
 							// gonna trash memory.  Boy will we trash memory.
@@ -320,16 +315,16 @@ int HCompressedAnimClass::Load_W3D(ChunkLoadClass & cload)
 							delete tc_chan;
 							WWDEBUG_SAY(("ERROR! animation %s indexes a bone not present in the model. Please re-export!\r\n",Name));
 						}
-
 						break;
 
 					case ANIM_FLAVOR_ADAPTIVE_DELTA:
-						if (!read_channel(cload,&ad_chan)) {
+						if( !read_channel( cload, &ad_chan ) ){
 							goto Error;
-						}			
-						if (ad_chan->Get_Pivot() < NumNodes) {
-							add_channel(ad_chan);
-						} else {
+						}
+
+						if( ad_chan->Get_Pivot() < NumNodes ){
+							add_channel( ad_chan );
+						}else{
 							// PWG 12-14-98: we have only allocated space for NumNode pivots.  
 							// If we have an index thats equal or higher than NumNode we are
 							// gonna trash memory.  Boy will we trash memory.
@@ -342,12 +337,13 @@ int HCompressedAnimClass::Load_W3D(ChunkLoadClass & cload)
 				break;
 	
 			case W3D_CHUNK_COMPRESSED_BIT_CHANNEL:
-				if (!read_bit_channel(cload,&newbitchan)) {
+				if( !read_bit_channel( cload, &newbitchan ) ){
 					goto Error;
 				}
-				if (newbitchan->Get_Pivot() < NumNodes) {
-					add_bit_channel(newbitchan);
-				} else {
+
+				if( newbitchan->Get_Pivot() < NumNodes ){
+					add_bit_channel( newbitchan );
+				}else{
 					// PWG 12-14-98: we have only allocated space for NumNode pivots.  
 					// If we have an index thats equal or higher than NumNode we are
 					// gonna trash memory.  Boy will we trash memory.
@@ -355,7 +351,6 @@ int HCompressedAnimClass::Load_W3D(ChunkLoadClass & cload)
 					delete newbitchan;
 					WWDEBUG_SAY(("ERROR! animation %s indexes a bone not present in the model. Please re-export!\r\n",Name));
 				}
-
 				break;
 
 			default:
@@ -373,6 +368,7 @@ Error:
 
 }	 // Load_W3D
 
+
 /*********************************************************************************************** 
  * HCompressedAnimClass::read_channel -- Reads in a single channel of motion                   * 
  *                                                                                             * 
@@ -385,19 +381,17 @@ Error:
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-bool HCompressedAnimClass::read_channel(ChunkLoadClass & cload,TimeCodedMotionChannelClass * * newchan)
-{
+bool HCompressedAnimClass::read_channel( ChunkLoadClass& cload, TimeCodedMotionChannelClass** newchan ){
 	*newchan = new TimeCodedMotionChannelClass;
-	bool result = (*newchan)->Load_W3D(cload);	
+	bool result = (*newchan)->Load_W3D( cload );	
 	
 	return result;
   
 }	// read_channel
 
-bool HCompressedAnimClass::read_channel(ChunkLoadClass & cload,AdaptiveDeltaMotionChannelClass * * newchan)
-{
+bool HCompressedAnimClass::read_channel( ChunkLoadClass& cload, AdaptiveDeltaMotionChannelClass** newchan ){
 	*newchan = new AdaptiveDeltaMotionChannelClass;
-	bool result = (*newchan)->Load_W3D(cload);	
+	bool result = (*newchan)->Load_W3D( cload );	
 	
 	return result;
   
@@ -416,12 +410,10 @@ bool HCompressedAnimClass::read_channel(ChunkLoadClass & cload,AdaptiveDeltaMoti
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HCompressedAnimClass::add_channel(TimeCodedMotionChannelClass * newchan)
-{
+void HCompressedAnimClass::add_channel( TimeCodedMotionChannelClass* newchan ){
 	int idx = newchan->Get_Pivot();
 
-	switch (newchan->Get_Type())
-	{
+	switch( newchan->Get_Type() ){
 		case ANIM_CHANNEL_X:
 			NodeMotion[idx].tc.X = newchan;
 			break;
@@ -441,12 +433,10 @@ void HCompressedAnimClass::add_channel(TimeCodedMotionChannelClass * newchan)
 
 }	// add_channel
 
-void HCompressedAnimClass::add_channel(AdaptiveDeltaMotionChannelClass * newchan)
-{
+void HCompressedAnimClass::add_channel( AdaptiveDeltaMotionChannelClass* newchan ){
 	int idx = newchan->Get_Pivot();
 
-	switch (newchan->Get_Type())
-	{
+	switch( newchan->Get_Type() ){
 		case ANIM_CHANNEL_X:
 			NodeMotion[idx].ad.X = newchan;
 			break;
@@ -467,8 +457,6 @@ void HCompressedAnimClass::add_channel(AdaptiveDeltaMotionChannelClass * newchan
 }	// add_channel
 
 
-
-
 /***********************************************************************************************
  * HCompressedAnimClass::read_bit_channel -- read a bit channel from the file                  *
  *                                                                                             *
@@ -481,15 +469,11 @@ void HCompressedAnimClass::add_channel(AdaptiveDeltaMotionChannelClass * newchan
  * HISTORY:                                                                                    *
  *   1/19/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-bool HCompressedAnimClass::read_bit_channel(ChunkLoadClass & cload,TimeCodedBitChannelClass * * newchan)
-{
+bool HCompressedAnimClass::read_bit_channel( ChunkLoadClass& cload, TimeCodedBitChannelClass** newchan ){
 	*newchan = new TimeCodedBitChannelClass;
-	bool result = (*newchan)->Load_W3D(cload);	
-
-	return result;		 
-  
+	bool result = (*newchan)->Load_W3D( cload );
+	return result;
 }	// read_bit_channel
-
 
 /***********************************************************************************************
  * HCompressedAnimClass::add_bit_channel -- install a bit channel into the animation           *
@@ -503,12 +487,10 @@ bool HCompressedAnimClass::read_bit_channel(ChunkLoadClass & cload,TimeCodedBitC
  * HISTORY:                                                                                    *
  *   1/19/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void HCompressedAnimClass::add_bit_channel(TimeCodedBitChannelClass * newchan)
-{
+void HCompressedAnimClass::add_bit_channel( TimeCodedBitChannelClass* newchan ){
 	int idx = newchan->Get_Pivot();
 
-	switch (newchan->Get_Type())
-	{
+	switch( newchan->Get_Type() ){
 		case BIT_CHANNEL_VIS:
 			NodeMotion[idx].Vis = newchan;
 			break;

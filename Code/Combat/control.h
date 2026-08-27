@@ -122,7 +122,10 @@ public:
 	void	Set_Boolean( BooleanControl control, bool state = true );
 	bool	Get_Boolean( BooleanControl control );
 
-	void	Clear_One_Time_Boolean( void )				{OneTimeBooleanBits = 0;}
+	void Clear_One_Time_Boolean(void){
+		OneTimeBooleanBits = 0;
+	}
+	
 	unsigned	long Get_One_Time_Boolean_Bits(void)	{return OneTimeBooleanBits;}
 	unsigned	char Get_Continuous_Boolean_Bits(void) {return ContinuousBooleanBits;}
 

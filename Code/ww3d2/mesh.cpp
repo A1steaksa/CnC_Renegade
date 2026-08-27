@@ -401,10 +401,9 @@ const char * MeshClass::Get_User_Text(void) const
  * HISTORY:                                                                                    *
  *   5/20/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-MaterialInfoClass * MeshClass::Get_Material_Info(void)
-{ 
-	if (Model) {
-		if (Model->MatInfo) {
+MaterialInfoClass* MeshClass::Get_Material_Info(void){
+	if( Model ){
+		if( Model->MatInfo ){
 			Model->MatInfo->Add_Ref();
 			return Model->MatInfo; 
 		}
@@ -425,9 +424,8 @@ MaterialInfoClass * MeshClass::Get_Material_Info(void)
  * HISTORY:                                                                                    *
  *   2/4/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-MeshModelClass * MeshClass::Get_Model(void)
-{
-	if (Model != NULL) {
+MeshModelClass* MeshClass::Get_Model(void){
+	if( Model != NULL ){
 		Model->Add_Ref();
 	}
 	return Model;
@@ -675,41 +673,40 @@ int MeshClass::Get_Num_Polys(void) const {
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-void MeshClass::Render(RenderInfoClass & rinfo)
-{
+void MeshClass::Render( RenderInfoClass& rinfo ){
 	WWPROFILE("Mesh::Render");
-	if (Is_Not_Hidden_At_All() == false) {
+	if( Is_Not_Hidden_At_All() == false ){
 		return;
 	}
 
 	// If static sort lists are enabled and this mesh has a sort level, put it on the list instead
 	// of rendering it.
-	unsigned int sort_level = (unsigned int)Model->Get_Sort_Level();
+	unsigned int sort_level = (unsigned int) Model->Get_Sort_Level();
 
-	if (WW3D::Are_Static_Sort_Lists_Enabled() && sort_level != SORT_LEVEL_NONE) {
+	if( WW3D::Are_Static_Sort_Lists_Enabled() && sort_level != SORT_LEVEL_NONE ){
 
-		WW3D::Add_To_Static_Sort_List(this, sort_level);
+		WW3D::Add_To_Static_Sort_List( this, sort_level );
 
 		/*
 		** Plug in lighting so that when this mesh gets rendered later
 		*/
-		Set_Lighting_Environment(rinfo.light_environment);
-
-	} else {
+		Set_Lighting_Environment( rinfo.light_environment );
+	}else{
 
 		/*
 		** Plug in the lighting environment unless we arrived here as part of the static
 		** sorting system being flushed
 		*/
-		if (WW3D::Are_Static_Sort_Lists_Enabled()) {
-			Set_Lighting_Environment(rinfo.light_environment);
+		if( WW3D::Are_Static_Sort_Lists_Enabled() ){
+			Set_Lighting_Environment( rinfo.light_environment );
 		}
 
-		const FrustumClass & frustum=rinfo.Camera.Get_Frustum();
+		const FrustumClass& frustum = rinfo.Camera.Get_Frustum();
 
-		if (	Model->Get_Flag(MeshGeometryClass::SKIN) ||
-				CollisionMath::Overlap_Test(frustum,Get_Bounding_Box())!=CollisionMath::OUTSIDE ) 
-		{
+		if(
+			Model->Get_Flag(MeshGeometryClass::SKIN )
+			|| CollisionMath::Overlap_Test( frustum, Get_Bounding_Box() ) != CollisionMath::OUTSIDE
+		){
 			bool rendered_something = false;
 			
 			/*
@@ -719,11 +716,6 @@ void MeshClass::Render(RenderInfoClass & rinfo)
 				Model->Register_For_Rendering();
 				TheDX8MeshRenderer.Register_Mesh_Type(this);
 			}
-
-			/*
-			** Process texture reductions:
-			*/
-//			Model->Process_Texture_Reduction();
 
 			/*
 			** Look up the FVF container that this mesh is in
@@ -790,7 +782,6 @@ void MeshClass::Render(RenderInfoClass & rinfo)
 			** to tell the mesh rendering system to process this skin
 			*/
 			if (rendered_something && Model->Get_Flag(MeshGeometryClass::SKIN)) {
-				//WWASSERT(dynamic_cast<DX8SkinFVFCategoryContainer *>(fvf_container) != NULL);
 				static_cast<DX8SkinFVFCategoryContainer*>(fvf_container)->Add_Visible_Skin(this);
 			}
 

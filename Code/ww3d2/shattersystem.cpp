@@ -1010,13 +1010,7 @@ void ShatterSystem::Shatter_Mesh(MeshClass * mesh,const Vector3 & point,const Ve
 						SHATTER_DEBUG_SAY(("UV pass: %d stage: %d: %f %f\n",ipass,istage,mtl_params.UV[ipass][istage][vert_index].X,mtl_params.UV[ipass][istage][vert_index].Y));
 					}
 				}
-
-/*				if (mtl_params.UVIndexArray[ipass] != NULL) {
-					int uv_index = mtl_params.UVIndexArray[ipass][ipoly][ivert];
-					polygon.Verts[ivert].TexCoord[ipass][0] = mtl_params.UV[ipass][0][uv_index];
-					SHATTER_DEBUG_SAY(("Per-Face UV pass: %d: %f %f\n",ipass,polygon.Verts[ivert].TexCoord[ipass][0].X,polygon.Verts[ivert].TexCoord[ipass][0].Y));
-				}
-*/			}
+			}
 		}
 		polygon.Set_Vertex_Count(3);
 		polygon.Compute_Plane();

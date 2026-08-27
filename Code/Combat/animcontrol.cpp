@@ -445,10 +445,9 @@ void BlendableAnimChannelClass::Update( float dtime ){
 	OldChannel.Update( dtime );
 }
 
-void	BlendableAnimChannelClass::Get_Animation_Data( AnimationDataList & list, float weight )
-{
-	float blend_ratio = 1.0f;				// assume no blending
-	if ( BlendTotal != 0.0f )	{			// if blending between two animations
+void BlendableAnimChannelClass::Get_Animation_Data( AnimationDataList& list, float weight ){
+	float blend_ratio = 1.0f; // assume no blending
+	if( BlendTotal != 0.0f ){ // if blending between two animations
 		// Calculate the blend percentage between the two animations.
 		// This starts at 0.0 (all OldAnimation) and proceeds to 1.0 (all Animation)
 		blend_ratio = WWMath::Clamp( BlendTimer / BlendTotal, 0, 1 );
@@ -694,34 +693,33 @@ bool	HumanAnimControlClass::Load( ChunkLoadClass &cload )
 	return true;
 }
 
-void HumanAnimControlClass::Build_Skeleton_Anim_Name( StringClass& new_name, const char * name )
-{
-	if (name == NULL) return;
-	if (*name == NULL) {
+void HumanAnimControlClass::Build_Skeleton_Anim_Name( StringClass& new_name, const char* name ){
+	if( name == NULL ) return;
+	if( *name == NULL ){
 		Debug_Say(( "No name in Build_Skeleton_Anim_Name\n" ));
 		return;
 	}
 	new_name = name;
 
-	if ( Skeleton == 'V' ) {	// Special case for visceroids
+	if( Skeleton == 'V' ){	// Special case for visceroids
 		return;
 	}
 
 	// If the anim doesn't start with "S_A_HUMAN.", add it
-	if ( ::strnicmp( name, "S_", 2 ) != 0 ) {
+	if( ::strnicmp( name, "S_", 2 ) != 0 ){
 		new_name.Format( "S_%c_HUMAN.%s", Skeleton, name );
 	}
 
 	// If the anim name is "S_A_HUMAN.H_A_*", and the Skeleton is not 'A', use
 	// the other skeleton anim, if found
-	if ( new_name.Get_Length() > 14 && Skeleton != 'A' && ::strnicmp( new_name, "S_A_HUMAN.H_A_", 14 ) == 0 ) {
+	if( new_name.Get_Length() > 14 && Skeleton != 'A' && ::strnicmp( new_name, "S_A_HUMAN.H_A_", 14 ) == 0 ){
 		StringClass	mod_name(new_name,true);
 		mod_name[2] = Skeleton;
 		mod_name[12] = Skeleton;
 
 		// can we find the anim name?
-		HAnimClass * anim = WW3DAssetManager::Get_Instance()->Get_HAnim( mod_name );
-		if ( anim != NULL ) {
+		HAnimClass* anim = WW3DAssetManager::Get_Instance()->Get_HAnim( mod_name );
+		if( anim != NULL ){
 			anim->Release_Ref();
 			new_name=mod_name;
 		}
@@ -737,48 +735,46 @@ void HumanAnimControlClass::Set_Animation( const char *name, float	blendtime, fl
 	Channel2Ratio = 0;
 }
 
-void	HumanAnimControlClass::Set_Animation( const HAnimClass * anim, float blendtime, float start_frame )
-{
-	if ( anim != NULL ) {
+void HumanAnimControlClass::Set_Animation( const HAnimClass* anim, float blendtime, float start_frame ){
+	if( anim != NULL ){
 		Set_Animation( anim->Get_Name(), blendtime, start_frame );
-	} else {
-		Set_Animation( (const char *)NULL, blendtime, start_frame );
+	}else{
+		Set_Animation( (const char*) NULL, blendtime, start_frame );
 	}
 }
 
-void	HumanAnimControlClass::Set_Animation( const char *name1, const char * name2, float ratio, float blendtime )
-{
+void HumanAnimControlClass::Set_Animation( const char *name1, const char * name2, float ratio, float blendtime ){
 	StringClass new_name1(0,true);
 	Build_Skeleton_Anim_Name( new_name1, name1 );
 	StringClass new_name2(0,true);
 	Build_Skeleton_Anim_Name( new_name2, name2 );
 
-	if ( ratio == 0 ) {
+	if( ratio == 0 ){
 		Set_Animation( new_name1, blendtime );
 		return;
 	}
-	if ( Channel2Ratio == 0 ) {
+
+	if( Channel2Ratio == 0 ){
 		Channel2 = Channel1;
 	}
+
 	Channel1.Set_Animation( new_name1, blendtime );
 	Channel2.Set_Animation( new_name2, blendtime );
 	Channel2Ratio = ratio;
 }
 
-void	HumanAnimControlClass::Set_Mode( AnimMode mode, float frame )
-{
+void HumanAnimControlClass::Set_Mode( AnimMode mode, float frame ){
 	Channel1.Set_Mode( mode, frame );
 	Channel2.Set_Mode( mode, frame );
 }
 
-void	HumanAnimControlClass::Set_Model( RenderObjClass	*anim_model )
-{
+void HumanAnimControlClass::Set_Model( RenderObjClass* anim_model ){
 	AnimControlClass::Set_Model( anim_model );
 
 	// Update the skeleton
-	if( anim_model != NULL ) {
-		const HTreeClass * tree = anim_model->Get_HTree();
-		if ( tree != NULL ) {
+	if( anim_model != NULL ){
+		const HTreeClass* tree = anim_model->Get_HTree();
+		if( tree != NULL ){
 			const char * name = tree->Get_Name();
 			Skeleton = name[2];
 		}
@@ -792,47 +788,39 @@ void	HumanAnimControlClass::Set_Model( RenderObjClass	*anim_model )
 StringClass	_MonitorAnimDescription;
 HumanAnimControlClass * _Monitor = NULL;
 
-void	HumanAnimControlClass::Update( float dtime )
-{
+void HumanAnimControlClass::Update( float dtime ){
 	// Update channels
 	Channel1.Update( dtime * AnimSpeedScale );
 	Channel2.Update( dtime * AnimSpeedScale );
 
-	if ( Model != NULL ) {
+	if( Model != NULL ){
 
 		// Get Animation data
 		DataList.Reset_Active();
-		Channel1.Get_Animation_Data( DataList, (1 - Channel2Ratio) );
+		Channel1.Get_Animation_Data( DataList, ( 1 - Channel2Ratio ) );
 		Channel2.Get_Animation_Data( DataList, Channel2Ratio );
 
 		// Use the cheapest anim method possible
 		int total_animations = DataList.Count();
 
-		if ( total_animations == 0 ) {
-
-//			Debug_Say(( "No animations to display!\n" ));
+		if( total_animations == 0 ){
 			Model->Set_Animation();
-
-		} else if ( total_animations == 1 ) {
-
-//			Debug_Say(( "1 animation to display!\n" ));
+		}else if( total_animations == 1 ){
 			Model->Set_Animation( DataList[0].Animation, DataList[0].Frame );
-
-		} else if ( total_animations == 2 ) {
-
-//			Debug_Say(( "2 animation to display!\n" ));
-			float percent = DataList[1].Weight / (DataList[0].Weight + DataList[1].Weight);
-			Model->Set_Animation(	DataList[0].Animation, DataList[0].Frame,
-											DataList[1].Animation, DataList[1].Frame, percent );
-
-		} else {
-
-//			Debug_Say(( ">2 animation to display!\n" ));
-
+		}else if( total_animations == 2 ){
+			float percent = DataList[1].Weight / ( DataList[0].Weight + DataList[1].Weight );
+			Model->Set_Animation(
+				DataList[0].Animation,
+				DataList[0].Frame,
+				DataList[1].Animation,
+				DataList[1].Frame,
+				percent
+			);
+		}else{
 			// set up anim combo
 			AnimCombo.Reset();
-			for ( int i = 0; i < total_animations; i++ ) {
-				HAnimComboDataClass * anim_data = new HAnimComboDataClass();
+			for( int i = 0; i < total_animations; i++ ){
+				HAnimComboDataClass* anim_data = new HAnimComboDataClass();
 				anim_data->Set_HAnim( DataList[i].Animation );
 				anim_data->Set_Frame( DataList[i].Frame );
 				anim_data->Set_Weight( DataList[i].Weight );
@@ -843,9 +831,9 @@ void	HumanAnimControlClass::Update( float dtime )
 			Model->Set_Animation( &AnimCombo );
 		}
 
-		if ( _Monitor == this ) {
-			for ( int i = 0; i < total_animations; i++ ) {
-				if ( i == 0 ) {
+		if( _Monitor == this ){
+			for( int i = 0; i < total_animations; i++ ){
+				if( i == 0 ){
 					_MonitorAnimDescription = "";
 				}
 				StringClass a(0,true);
@@ -853,7 +841,6 @@ void	HumanAnimControlClass::Update( float dtime )
 				_MonitorAnimDescription += a;
 			}
 		}
-
 	}
 }
 

@@ -124,15 +124,14 @@ HAnimComboDataClass::HAnimComboDataClass(const HAnimComboDataClass &src)
 	Weight = src.Get_Weight();
 }
 
-void HAnimComboDataClass::Copy(const HAnimComboDataClass *src)
-{
-	if(src) {
+void HAnimComboDataClass::Copy( const HAnimComboDataClass* src ){
+	if( src ){
 		HAnim = src->Get_HAnim();
 		PivotMap = src->Get_Pivot_Map();
 		Frame = src->Get_Frame();
 		PrevFrame = src->Get_Prev_Frame();
 		Weight = src->Get_Weight();
-	} else {
+	}else{
 		HAnim = 0;
 		PivotMap = 0;
 		Frame = 0;
@@ -188,11 +187,10 @@ void HAnimComboDataClass::Set_Pivot_Map( PivotMapClass* map ){
 }
 
 /*
-**	This function will replace the current pivot map (if any) with another pivot map that is
+** This function will replace the current pivot map (if any) with another pivot map that is
 ** set to 1 for only those pivot indices that actually have data.
 */
-void HAnimComboDataClass::Build_Active_Pivot_Map(void) 
-{
+void HAnimComboDataClass::Build_Active_Pivot_Map(void){
 	if ( PivotMap != NULL ) {
 		PivotMap->Release_Ref();
 	}
@@ -223,49 +221,43 @@ void HAnimComboDataClass::Build_Active_Pivot_Map(void)
 **
 */
 
-HAnimComboClass::HAnimComboClass(void)
-{}
+HAnimComboClass::HAnimComboClass(void){
+}
 
-HAnimComboClass::HAnimComboClass( int num_animations )
-{
+HAnimComboClass::HAnimComboClass( int num_animations ){
 	HAnimComboData.Resize(num_animations);
 
-	while(num_animations--) {
-		HAnimComboData.Add(new HAnimComboDataClass());
+	while( num_animations-- ){
+		HAnimComboData.Add( new HAnimComboDataClass() );
 	}
 }
 
-
-HAnimComboClass::~HAnimComboClass(void)
-{
+HAnimComboClass::~HAnimComboClass(void){
 	Reset();
 }
 
-
-void	HAnimComboClass::Clear( void )
-{
+void HAnimComboClass::Clear(void){
 	int numAnimations = HAnimComboData.Count();
-	while ( numAnimations-- ) {
-		HAnimComboDataClass *data = HAnimComboData[numAnimations];
-		if(data && (! data->Is_Shared()))
+	while( numAnimations-- ){
+		HAnimComboDataClass* data = HAnimComboData[numAnimations];
+		if( data && ( !data->Is_Shared() ) ){
 			data->Clear();
+		}
 	}
 }
 
-void	HAnimComboClass::Reset( void )
-{
+void HAnimComboClass::Reset(void){
 	int numAnimations = HAnimComboData.Count();
-	while ( numAnimations-- ) {
-		HAnimComboDataClass *data = HAnimComboData[numAnimations];
-		if(data && (! data->Is_Shared())) {
+	while( numAnimations-- ){
+		HAnimComboDataClass* data = HAnimComboData[numAnimations];
+		if( data && ( !data->Is_Shared() ) ){
 			delete data; 
 		}
 	}
 	HAnimComboData.Reset_Active();
 }
 
-bool	HAnimComboClass::Normalize_Weights(void)
-{
+bool HAnimComboClass::Normalize_Weights(void){
 	// NOTE: This can only work if either no anims have pivot weight maps (in which case we will
 	// adjust the anim weights to ensure normalization), or else if all do (in which case we will
 	// adjust the pivot maps). Otherwise we do nothing and return false.
@@ -348,29 +340,26 @@ bool	HAnimComboClass::Normalize_Weights(void)
 
 }
 
-void	HAnimComboClass::Set_Motion( int index, HAnimClass *motion )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+void HAnimComboClass::Set_Motion( int index, HAnimClass* motion ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
-	data->Set_HAnim(motion);
+	data->Set_HAnim( motion );
 }
 
-HAnimClass *HAnimComboClass::Get_Motion( int index )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+HAnimClass* HAnimComboClass::Get_Motion( int index ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
-	HAnimClass *anim = data->Peek_HAnim();
+	HAnimClass* anim = data->Peek_HAnim();
 
-	if ( anim != NULL ) {
+	if( anim != NULL ){
 		anim->Add_Ref();
 	}
 	return anim;
 }
 
-HAnimClass *HAnimComboClass::Peek_Motion( int index )
-{
+HAnimClass* HAnimComboClass::Peek_Motion( int index ){
 	HAnimComboDataClass *data = HAnimComboData[index];
 	WWASSERT(data);
 
@@ -378,86 +367,75 @@ HAnimClass *HAnimComboClass::Peek_Motion( int index )
 	return anim;
 }
 
-void	HAnimComboClass::Set_Frame( int index, float frame )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+void HAnimComboClass::Set_Frame( int index, float frame ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
-	data->Set_Frame(frame);
+	data->Set_Frame( frame );
 }
 
-float	HAnimComboClass::Get_Frame( int index )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+float HAnimComboClass::Get_Frame( int index ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
 	return data->Get_Frame();
 }
 
-void	HAnimComboClass::Set_Prev_Frame( int index, float frame )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+void HAnimComboClass::Set_Prev_Frame( int index, float frame ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
-	data->Set_Prev_Frame(frame);
+	data->Set_Prev_Frame( frame );
 }
 
-float	HAnimComboClass::Get_Prev_Frame( int index )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+float HAnimComboClass::Get_Prev_Frame( int index ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
 	return data->Get_Prev_Frame();
 }
 
-void	HAnimComboClass::Set_Weight( int index, float weight )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+void HAnimComboClass::Set_Weight( int index, float weight ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
 	data->Set_Weight(weight);
 }
 
-float	HAnimComboClass::Get_Weight( int index )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+float HAnimComboClass::Get_Weight( int index ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
 	return data->Get_Weight();
 }
 
-void	HAnimComboClass::Set_Pivot_Weight_Map( int index, PivotMapClass *map )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+void HAnimComboClass::Set_Pivot_Weight_Map( int index, PivotMapClass* map ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
-	data->Set_Pivot_Map(map);
+	data->Set_Pivot_Map( map );
 }
 
-PivotMapClass	*HAnimComboClass::Get_Pivot_Weight_Map( int index )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+PivotMapClass* HAnimComboClass::Get_Pivot_Weight_Map( int index ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
 	return data->Get_Pivot_Map();
 }
 
-PivotMapClass	*HAnimComboClass::Peek_Pivot_Weight_Map( int index )
-{
-	HAnimComboDataClass *data = HAnimComboData[index];
+PivotMapClass* HAnimComboClass::Peek_Pivot_Weight_Map( int index ){
+	HAnimComboDataClass* data = HAnimComboData[index];
 	WWASSERT(data);
 
 	return data->Peek_Pivot_Map();
 }
 
-void HAnimComboClass::Append_Anim_Combo_Data(HAnimComboDataClass * Data)
-{
-	HAnimComboData.Add(Data);
+void HAnimComboClass::Append_Anim_Combo_Data( HAnimComboDataClass* Data ){
+	HAnimComboData.Add( Data );
 }
 
-void HAnimComboClass::Remove_Anim_Combo_Data(HAnimComboDataClass * Data)
-{
-	HAnimComboData.Delete(Data);
+void HAnimComboClass::Remove_Anim_Combo_Data( HAnimComboDataClass* Data ){
+	HAnimComboData.Delete( Data );
 }
 
 

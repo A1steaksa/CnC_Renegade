@@ -55,17 +55,14 @@ DynamicVectorClass<AABoxClass>	UnitCoordinationZoneMgr::ZoneList;
 //	Build_Zones
 //
 //////////////////////////////////////////////////////////////////////
-void
-UnitCoordinationZoneMgr::Build_Zones (void)
-{
-	Reset ();
+void UnitCoordinationZoneMgr::Build_Zones(void){
+	Reset();
 
 	//
 	//	Build the zone lists for both ladder and elevators
 	//
-	Detect_Ladder_Zones ();
-	Detect_Elevator_Zones ();
-	return ;
+	Detect_Ladder_Zones();
+	Detect_Elevator_Zones();
 }
 
 
@@ -75,10 +72,8 @@ UnitCoordinationZoneMgr::Build_Zones (void)
 //
 //////////////////////////////////////////////////////////////////////
 void
-UnitCoordinationZoneMgr::Reset (void)
-{
-	ZoneList.Delete_All ();
-	return ;
+UnitCoordinationZoneMgr::Reset(void){
+	ZoneList.Delete_All();
 }
 
 
@@ -87,14 +82,12 @@ UnitCoordinationZoneMgr::Reset (void)
 //	Detect_Ladder_Zones
 //
 //////////////////////////////////////////////////////////////////////
-void
-UnitCoordinationZoneMgr::Detect_Ladder_Zones (void)
-{
+void UnitCoordinationZoneMgr::Detect_Ladder_Zones(void){
 	//
 	//	Build the list of transitions
 	//
-	DynamicVectorClass<TransitionInstanceClass *> transition_list;
-	TransitionManager::Build_Ladder_List (transition_list);
+	DynamicVectorClass<TransitionInstanceClass*> transition_list;
+	TransitionManager::Build_Ladder_List( transition_list );
 
 	//
 	//	Now, add a zone around the entrance and exit for each transition

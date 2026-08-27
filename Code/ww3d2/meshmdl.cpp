@@ -160,10 +160,8 @@ void MeshModelClass::Reset( int polycount, int vertcount, int passcount ){
 	GapFiller=NULL;
 }
 
-void MeshModelClass::Register_For_Rendering()
-{
-	HasBeenInUse=true;
-//WW3D::Set_NPatches_Level(1);
+void MeshModelClass::Register_For_Rendering(){
+	HasBeenInUse = true;
 	if (WW3D::Get_NPatches_Level()>1) {
 		if (WW3D::Get_NPatches_Gap_Filling_Mode()!=WW3D::NPATCHES_GAP_FILLING_DISABLED) {
 			Init_For_NPatch_Rendering();
@@ -172,9 +170,8 @@ void MeshModelClass::Register_For_Rendering()
 			delete GapFiller;
 			GapFiller=NULL;
 		}
-	}
-	else {
-		if (WW3D::Get_NPatches_Gap_Filling_Mode()==WW3D::NPATCHES_GAP_FILLING_FORCE) {
+	}else{
+		if( WW3D::Get_NPatches_Gap_Filling_Mode() == WW3D::NPATCHES_GAP_FILLING_FORCE ){
 			Init_For_NPatch_Rendering();
 		}
 		else if (GapFiller) {
@@ -182,67 +179,6 @@ void MeshModelClass::Register_For_Rendering()
 			GapFiller=NULL;
 		}
 	}
-}
-
-void MeshModelClass::Replace_Texture(TextureClass* texture,TextureClass* new_texture)
-{
-#pragma message("gth - TEMPORARILY REMOVING Replace_Texture")
-#if 0
-	WWASSERT(texture);
-	WWASSERT(new_texture);
-	for (int stage=0;stage<MeshMatDescClass::MAX_TEX_STAGES;++stage) {
-		for (int pass=0;pass<Get_Pass_Count();++pass) {
-			if (Has_Texture_Array(pass,stage)) {
-				for (int i=0;i<Get_Polygon_Count();++i) {
-					if (Peek_Texture(i,pass,stage)==texture) {
-						Set_Texture(i,new_texture,pass,stage);
-					}
-				}
-			}
-			else {
-				if (Peek_Single_Texture(pass,stage)==texture) {
-					Set_Single_Texture(new_texture,pass,stage);
-				}
-			}
-			// If this mesh model has been initialized for rendering we need to tell the rendering
-			// system to change texturing as well.
-			DX8FVFCategoryContainer* fvf_category=Peek_FVF_Category_Container();
-			if (fvf_category) {
-				fvf_category->Change_Polygon_Renderer_Texture(PolygonRendererList,texture,new_texture,pass,stage);
-			}
-		}
-	}
-#endif
-}
-
-void MeshModelClass::Replace_VertexMaterial(VertexMaterialClass* vmat,VertexMaterialClass* new_vmat)
-{
-#pragma message("gth - TEMPORARILY REMOVING Replace_Texture")
-#if 0
-	WWASSERT(vmat);
-	WWASSERT(new_vmat);
-	
-	for (int pass=0;pass<Get_Pass_Count();++pass) {
-		if (Has_Material_Array(pass)) {
-			for (int i=0;i<Get_Vertex_Count();++i) {
-				if (Peek_Material(i,pass)==vmat) {
-					Set_Material(i,new_vmat,pass);
-				}
-			}
-		}
-		else {
-			if (Peek_Single_Material(pass)==vmat) {
-				Set_Single_Material(new_vmat,pass);
-			}
-		}
-		// If this mesh model has been initialized for rendering we need to tell the rendering
-		// system to change texturing as well.
-		DX8FVFCategoryContainer* fvf_category=Peek_FVF_Category_Container();
-		if (fvf_category) {
-			fvf_category->Change_Polygon_Renderer_Material(PolygonRendererList,vmat,new_vmat,pass);
-		}
-	}	
-#endif
 }
 
 void MeshModelClass::Shadow_Render(SpecialRenderInfoClass & rinfo,const Matrix3D & tm,const HTreeClass * htree)

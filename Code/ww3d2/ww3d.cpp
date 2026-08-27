@@ -1796,15 +1796,13 @@ int WW3D::Get_Texture_Bitdepth()
 	return DX8Wrapper::Get_Texture_Bitdepth();
 }
 
-void WW3D::Add_To_Static_Sort_List(RenderObjClass *robj, unsigned int sort_level)
-{
-	if(sort_level < 1 || sort_level > MAX_SORT_LEVEL) {
+void WW3D::Add_To_Static_Sort_List( RenderObjClass* robj, unsigned int sort_level ){
+	if( sort_level < 1 || sort_level > MAX_SORT_LEVEL ){
 		WWASSERT(0);
 		return;
 	}
 
-	CurrentStaticSortLists[sort_level].Add_Tail(robj, false);
-
+	CurrentStaticSortLists[sort_level].Add_Tail( robj, false );
 }
 
 void WW3D::Render_And_Clear_Static_Sort_Lists(RenderInfoClass & rinfo)

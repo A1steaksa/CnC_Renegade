@@ -91,10 +91,8 @@ protected:
 ** each frame regardless of whether they are visible so they are registered
 ** for "ON_FRAME_UPDATE" processing.
 */
-class SceneClass : public RefCountClass
-{
+class SceneClass : public RefCountClass {
 public:
-
 	SceneClass(void);
 	virtual ~SceneClass(void);
 	

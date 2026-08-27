@@ -220,15 +220,14 @@ protected:
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-inline void Animatable3DObjClass::Base_Update(const Matrix3D & root)
-{
+inline void Animatable3DObjClass::Base_Update( const Matrix3D& root ){
 	/*
 	** This method simply puts the meshes in the base pose's configuration
 	*/
-	if (HTree) {
-		HTree->Base_Update(root);
+	if( HTree ){
+		HTree->Base_Update( root );
 	}
-	Set_Hierarchy_Valid(true);
+	Set_Hierarchy_Valid( true );
 }
 
 
@@ -244,15 +243,15 @@ inline void Animatable3DObjClass::Base_Update(const Matrix3D & root)
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-inline void Animatable3DObjClass::Anim_Update(const Matrix3D & root,HAnimClass * motion,float frame)
-{
+inline void Animatable3DObjClass::Anim_Update( const Matrix3D& root, HAnimClass* motion, float frame ){
 	/*
 	** Apply motion to the base pose
 	*/
-	if ((motion) && (HTree)) {
-		HTree->Anim_Update(root,motion,frame);
+	if( (motion) && (HTree) ){
+		HTree->Anim_Update( root, motion, frame );
 	}
-	Set_Hierarchy_Valid(true);
+
+	Set_Hierarchy_Valid( true );
 }
 
 

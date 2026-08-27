@@ -527,8 +527,7 @@ April 2001
 ** Drop all of the objects into the world in here, represented by physics objects, then
 ** you can do fun things like rendering and collision detection.
 */
-class PhysicsSceneClass : public SceneClass , public WidgetUserClass
-{
+class PhysicsSceneClass : public SceneClass , public WidgetUserClass {
 public:
 
 	PhysicsSceneClass(void);

@@ -3,5 +3,6 @@
     "Lua.runtime.version": "LuaJIT",
     "Lua.runtime.nonstandardSymbol": [],
     "Lua.diagnostics.disable": [],
-    "Lua.workspace.checkThirdParty": false
+    "Lua.workspace.checkThirdParty": false,
+    "editor.fontFamily": "'Cascadia Code', monospace"
 }

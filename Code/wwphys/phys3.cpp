@@ -527,9 +527,8 @@ void Phys3Class::Init( const Phys3DefClass& def ){
  *                                                                                             *
  * HISTORY:                                                                                    *
  *=============================================================================================*/
-Phys3Class::~Phys3Class(void)
-{
-	if (History != NULL) {
+Phys3Class::~Phys3Class(void){
+	if( History != NULL ){
 		delete History;
 	}
 }
@@ -547,8 +546,7 @@ Phys3Class::~Phys3Class(void)
  * HISTORY:                                                                                    *
  *   9/15/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-const AABoxClass & Phys3Class::Get_Bounding_Box(void) const
-{
+const AABoxClass & Phys3Class::Get_Bounding_Box(void) const {
 	assert(Model);
 	return Model->Get_Bounding_Box();
 }
@@ -566,8 +564,7 @@ const AABoxClass & Phys3Class::Get_Bounding_Box(void) const
  * HISTORY:                                                                                    *
  *   9/15/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-const Matrix3D & Phys3Class::Get_Transform(void) const
-{
+const Matrix3D & Phys3Class::Get_Transform(void) const {
 	assert(Model);
 	return Model->Get_Transform();
 }
@@ -588,16 +585,9 @@ const Matrix3D & Phys3Class::Get_Transform(void) const
  * HISTORY:                                                                                    *
  *   9/15/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Set_Transform(const Matrix3D & m)
-{
+void Phys3Class::Set_Transform( const Matrix3D& m ){
 	// copy the translation portion of the transform into our state
 	m.Get_Translation( &State.Position );
-
-#ifdef WWDEBUG
-	if (!State.Position.Is_Valid()) {
-		WWDEBUG_SAY(("Phys3Class::Set_Transform got an invalid position: %f, %f, %f\r\n",State.Position.X,State.Position.Y,State.Position.Z));
-	}
-#endif
 
 	// copy the Z rotation portion of the transform into our heading variable (ugh...)
 	Heading = m.Get_Z_Rotation();
@@ -627,13 +617,12 @@ void Phys3Class::Set_Transform(const Matrix3D & m)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Set_Position(const Vector3 & position)
-{
+void Phys3Class::Set_Position( const Vector3& position ){
 	State.Position = position;
 	VERBOSE_LOG(("Phys3::Set_Position %s, (%f, %f, %f)\r\n\r\n",Model->Get_Name(),position.X,position.Y,position.Z));
-	Update_Transform(true);
+	Update_Transform( true );
 	Update_Cull_Box();
-	Set_Flag(ASLEEP,false);
+	Set_Flag( ASLEEP, false );
 	Invalidate_Ground_State();
 }
 
@@ -689,8 +678,7 @@ void Phys3Class::Set_Heading( float heading ){
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-float Phys3Class::Get_Heading(void) const
-{
+float Phys3Class::Get_Heading(void) const {
 	return Heading;
 }
 
@@ -710,11 +698,10 @@ float Phys3Class::Get_Heading(void) const
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Set_Slide_Angle(float angle)
-{
+void Phys3Class::Set_Slide_Angle( float angle ){
 	SlideAngle = angle;
-	SlideNormalZ = WWMath::Cos(angle);
-	SlideAngleTan = tan(angle);
+	SlideNormalZ = WWMath::Cos( angle );
+	SlideAngleTan = tan( angle );
 }
 
 
@@ -730,8 +717,7 @@ void Phys3Class::Set_Slide_Angle(float angle)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-float Phys3Class::Get_Slide_Angle(void) const
-{
+float Phys3Class::Get_Slide_Angle(void) const {
 	return SlideAngle;
 }
 
@@ -748,36 +734,22 @@ float Phys3Class::Get_Slide_Angle(void) const
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Update_Transform(bool position_only)
-{
+void Phys3Class::Update_Transform( bool position_only ){
 	Vector3 pos_dif = Model->Get_Position();
 	pos_dif -= State.Position;
 
-	if ((position_only) && (!HeadingChanged)) {
-	
-		Model->Set_Position(State.Position);
-		
-	} else {
-		
+	if( (position_only) && (!HeadingChanged) ){
+		Model->Set_Position( State.Position );
+	}else{	
 		Matrix3D tm(1);
-		tm.Set_Translation(State.Position);
-		tm.Rotate_Z(Heading);
-		Model->Set_Transform(tm);
+		tm.Set_Translation( State.Position );
+		tm.Rotate_Z( Heading );
+		Model->Set_Transform( tm );
 	}
 
-	if ( pos_dif.Length2() > WWMATH_EPSILON2 ) {
+	if( pos_dif.Length2() > WWMATH_EPSILON2 ){
 		Update_Visibility_Status();
 	}
-
-	#ifdef WWDEBUG
-	for (int j=0;j<3;j++) {
-
-		WWASSERT(WWMath::Is_Valid_Float(State.Position.X));
-		WWASSERT(WWMath::Is_Valid_Float(State.Position.Y));
-		WWASSERT(WWMath::Is_Valid_Float(State.Position.Z));
-		WWASSERT(WWMath::Is_Valid_Float(Heading));
-	}
-	#endif
 
 	HeadingChanged = false;
 }
@@ -864,8 +836,7 @@ void Phys3Class::Update_Cached_Model_Parameters(void){
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Apply_Impulse(const Vector3 & impulse)
-{
+void Phys3Class::Apply_Impulse( const Vector3& impulse ){
 	// Impluse applied to center of mass simply adds to the linear momentum
 	// NOTE: the current algorithm does not maintain velocity uless undergoing
 	// ballistic movement... this routine will often have no effect...
@@ -885,10 +856,9 @@ void Phys3Class::Apply_Impulse(const Vector3 & impulse)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Apply_Impulse(const Vector3 & impulse, const Vector3 & wpos)
-{
+void Phys3Class::Apply_Impulse( const Vector3& impulse, const Vector3& wpos ){
 	// Phys3 has only linear momentum so just apply the impulse to the CM...
-	Apply_Impulse(impulse);
+	Apply_Impulse( impulse );
 }
 
 
@@ -904,9 +874,8 @@ void Phys3Class::Apply_Impulse(const Vector3 & impulse, const Vector3 & wpos)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-bool Phys3Class::Cast_Ray(PhysRayCollisionTestClass & raytest) 
-{
-	if (Model->Cast_Ray(raytest)) {
+bool Phys3Class::Cast_Ray( PhysRayCollisionTestClass& raytest ){
+	if( Model->Cast_Ray( raytest ) ){
 		raytest.CollidedPhysObj = this;
 		return true;
 	}
@@ -926,8 +895,7 @@ bool Phys3Class::Cast_Ray(PhysRayCollisionTestClass & raytest)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-bool Phys3Class::Cast_AABox(PhysAABoxCollisionTestClass & boxtest)
-{
+bool Phys3Class::Cast_AABox( PhysAABoxCollisionTestClass& boxtest ){
 	AABoxClass wrldbox;
 	wrldbox.Extent = CollisionBox.Extent;
 	wrldbox.Center = State.Position + CollisionBox.Center;
@@ -1219,9 +1187,6 @@ void Phys3Class::Timestep(float dt)
 		Set_Flag(ASLEEP,false);
 	}
 
-
-//	DEBUG_RENDER_VECTOR(State.Position,State.Velocity,VELOCITY_COLOR);
-
 	WWASSERT(WWMath::Is_Valid_Float(State.Position.X));
 	WWASSERT(WWMath::Is_Valid_Float(State.Position.Y));
 	WWASSERT(WWMath::Is_Valid_Float(State.Position.Z));
@@ -1246,8 +1211,7 @@ void Phys3Class::Timestep(float dt)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-Phys3Class::GroundStateStruct & Phys3Class::Get_Ground_State(void)
-{
+Phys3Class::GroundStateStruct& Phys3Class::Get_Ground_State(void){
 	WWPROFILE("Phys3::Get_Ground_State");
 	if (GroundState.IsDirty == true) {
 		GroundState.IsDirty = false;
@@ -1899,9 +1863,8 @@ inline bool Phys3Class::Debug_Verify_Position(void)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Snap_To_Ground(const Vector3 & actual_move,bool was_stepping)
-{
-	if (Get_Flag(ASLEEP)) {
+void Phys3Class::Snap_To_Ground( const Vector3& actual_move, bool was_stepping ){
+	if( Get_Flag( ASLEEP ) ){
 		return;
 	}
 	
@@ -2009,28 +1972,17 @@ void Phys3Class::Snap_To_Ground(const Vector3 & actual_move,bool was_stepping)
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Clip_Move(const Vector3 * contacts,int contact_count,Vector3 * move)
-{
+void Phys3Class::Clip_Move( const Vector3* contacts, int contact_count, Vector3* move ){
 	WWASSERT(contacts != NULL);
 	VERBOSE_LOG(("Phys3::Clip_Move\r\n"));
-
-#ifdef WWDEBUG
-	float move_len2 = move->Length2();
-#endif
 	
 	// Loop over all of the contacts.
 	//	On each one we modify our move vector to parallel that plane.  
 	// Immediately after each modification, we check if the other planes are a problem.  
 	// At the first time all planes are satisfied, we're done
-	for (int i=0; i<contact_count; i++) {
-		
-#ifdef WWDEBUG
-		if (fabs(contacts[i].Length() - 1.0f) > WWMATH_EPSILON) {
-			WWDEBUG_SAY(("Bad Contact Normal: %f %f %f  Length = %f\r\n",contacts[i].X,contacts[i].Y,contacts[i].Z,contacts[i].Length()));
-		}
-#endif
-		if (!( fabs(contacts[i].Length() - 1.0f) < WWMATH_EPSILON )) {
-			*move = Vector3(0,0,0);
+	for( int i=0; i<contact_count; i++ ){
+		if( !( fabs(contacts[i].Length() - 1.0f ) < WWMATH_EPSILON ) ){
+			*move = Vector3( 0, 0, 0 );
 			return;
 		}
 
@@ -2038,27 +1990,22 @@ void Phys3Class::Clip_Move(const Vector3 * contacts,int contact_count,Vector3 * 
 		
 		// push the velocity a little bit away from the plane
 		float dot = Vector3::Dot_Product(*move,contacts[i]);
-		if (dot < 0.0f) {
+		if( dot < 0.0f ){
 			Vector3 adjustment = 1.01f * dot * contacts[i];
 			*move -= adjustment;
-			//WWASSERT(Vector3::Dot_Product(*move,contacts[i]) >= 0.0f);
 		}
 		
-		for (int j=0; j<contact_count; j++) {
-			float check = Vector3::Dot_Product(*move,contacts[j]);
-			if (check < 0.0f) {
+		for( int j = 0; j < contact_count; j++ ){
+			float check = Vector3::Dot_Product( *move, contacts[j] );
+			if( check < 0.0f ){
 				break;	// this contact isn't happy yet... keep choppin.
 			}
 		}
-		if (j == contact_count) {
+
+		if( j == contact_count ){
 			break;	// all contacts are happy!
 		}
 	}
-
-#ifdef WWDEBUG
-	float new_move_len2 = move->Length2();
-	WWASSERT(new_move_len2 <= move_len2 + WWMATH_EPSILON);
-#endif
 }
 
 
@@ -2074,8 +2021,7 @@ void Phys3Class::Clip_Move(const Vector3 * contacts,int contact_count,Vector3 * 
  * HISTORY:                                                                                    *
  *   9/16/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void Phys3Class::Get_Shadow_Blob_Box(AABoxClass * set_obj_space_box)
-{
+void Phys3Class::Get_Shadow_Blob_Box( AABoxClass* set_obj_space_box ){
 	WWASSERT(set_obj_space_box != NULL);
 	*set_obj_space_box = CollisionBox;
 }
@@ -2123,12 +2069,6 @@ bool Phys3Class::Push(const Vector3 & move)
 	Update_Cull_Box();
 
 	Vector3 error = (State.Position - old_pos) - move;
-
-#if VERBOSE_LOGGING
-	Vector3 actual_move = State.Position - old_pos;
-	bool success = (State.Position - old_pos) == move;
-	VERBOSE_LOG((" Phys3::Push. Apparent success: %d Error: %f %f %f\r\n",success, error.X,error.Y,error.Z));
-#endif
 
  	return (error.Length2() < WWMATH_EPSILON * WWMATH_EPSILON);
 }
@@ -2362,36 +2302,28 @@ bool Phys3Class::Can_Move_To(const Matrix3D &new_tm)
 
 
 
-void Phys3Class::Assert_State_Valid(void)
-{
+void Phys3Class::Assert_State_Valid(void){
 	AABoxClass box;
-	Compute_WS_Collision_Box(State,&box);
+	Compute_WS_Collision_Box( State, &box );
 
 	CastResultStruct result;
-	PhysAABoxCollisionTestClass test(	box,
-													Vector3(0,0,0),
-													&result,
-													0,
-													COLLISION_TYPE_PHYSICAL		);
+	PhysAABoxCollisionTestClass test(
+		box,
+		Vector3( 0, 0, 0 ),
+		&result,
+		0,
+		COLLISION_TYPE_PHYSICAL
+	);
 
 	Inc_Ignore_Counter();
-	PhysicsSceneClass::Get_Instance()->Cast_AABox(test);
+	PhysicsSceneClass::Get_Instance()->Cast_AABox( test );
 	Dec_Ignore_Counter();
-	
-#if VERBOSE_LOGGING
-	if (result.StartBad) {
-		VERBOSE_LOG(("Phys3 Intersection! ModelName = %s\r\n",Model->Get_Name()));
-	}
-#endif
 
-	WWASSERT(State.Position.Is_Valid());
-	WWASSERT(State.Velocity.Is_Valid());
-
-
+	WWASSERT( State.Position.Is_Valid() );
+	WWASSERT( State.Velocity.Is_Valid() );
 }
 
-void Phys3Class::Network_State_Update(const Vector3 & pos,const Vector3 & vel)
-{
+void Phys3Class::Network_State_Update( const Vector3& pos,const Vector3& vel ){
 	Vector3 delta = pos - State.Position;
 	Set_Position(pos);
 	Set_Velocity(vel);

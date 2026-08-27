@@ -1340,12 +1340,11 @@ enum {
 //
 // Flavor Enumerations
 //
-enum
-{
+enum {
     ANIM_FLAVOR_TIMECODED = 0,
     ANIM_FLAVOR_ADAPTIVE_DELTA,
 
-	 ANIM_FLAVOR_VALID
+	ANIM_FLAVOR_VALID
 };
 
 // Begin Classic Structures
@@ -1400,11 +1399,10 @@ struct W3dTimeCodedBitChannelStruct {
 	uint8 DefaultVal; // default state when outside valid range.
 	uint32 Data[1]; // will be (NumTimeCodes * sizeof(uint32))
 };
-
 // End Time Coded Structures
+
 // Begin AdaptiveDelta Structures
-struct W3dAdaptiveDeltaAnimChannelStruct
-{
+struct W3dAdaptiveDeltaAnimChannelStruct {
 	uint32 NumFrames; // number of frames of animation
 	uint16 Pivot; // pivot effected by this channel
 	uint8 VectorLen; // num Channels

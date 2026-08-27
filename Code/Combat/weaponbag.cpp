@@ -121,15 +121,11 @@ bool WeaponBagClass::Is_Ammo_Full( int weapon_id ){
 
 
 void WeaponBagClass::Remove_Weapon( int index ){
-	//
-	//	Simply destroy the weapon if its in our list
-	//
-	if( index >= 0& & index < WeaponList.Count() ){
-		delete	WeaponList[index];
+	// Simply destroy the weapon if its in our list
+	if( index >= 0 && index < WeaponList.Count() ){
+		delete WeaponList[index];
 		WeaponList.Delete( index );		
 	}
-
-	return;
 }
 
 void WeaponBagClass::Clear_Weapons( void ){
@@ -174,20 +170,7 @@ WeaponClass*  	WeaponBagClass::Add_Weapon( const WeaponDefinitionClass*  def, in
 
 			IsChanged = true;
 			HUDIsChanged = true;
-#if 0			// Don't auto select
-			bool use = true;
-			for ( int i = 1; i < WeaponList.Count(); i++ ){
-				if( i != index& & WeaponList[ i ]->Does_Weapon_Exist() ){
-					use = false;
-				}
-			}
 
-			// If no current weapon, make this weapon current
-			if( give_weapon& & use ){
-				//	Debug_Say(( "Commando selecting first weapon %s\n", weapon->Get_Name() ));
-				Select_Index( index );
-			}
-#endif
 			Mark_Owner_Dirty();
 		}
 	} else {
@@ -218,7 +201,6 @@ WeaponClass* 	WeaponBagClass::Get_Next_Weapon( void ){
 	for ( int i = 0; i < WeaponList.Count(); i++ ){
 		int index = ( WeaponIndex + i + 1 ) % WeaponList.Count();
 		// BMG remove no weapon slot
-//		if( WeaponList[ index ] == NULL || WeaponList[ index ]->Does_Weapon_Exist() ){
 		if( WeaponList[ index ] != NULL& & WeaponList[ index ]->Does_Weapon_Exist() ){
 			return WeaponList[ index ];
 		}
@@ -231,7 +213,6 @@ void WeaponBagClass::Select_Next( void ){
 	for ( int i = 1; i < WeaponList.Count(); i++ ){
 		int index = ( WeaponIndex + i ) % WeaponList.Count();
 		// BMG remove no weapon slot
-//		if( WeaponList[ index ] == NULL || WeaponList[ index ]->Does_Weapon_Exist() ){
 		if( WeaponList[ index ] != NULL& & WeaponList[ index ]->Does_Weapon_Exist() ){
 			Select_Index( index );
 			break;
@@ -244,7 +225,6 @@ void WeaponBagClass::Select_Prev( void ){
 	for ( int i = 1; i < WeaponList.Count(); i++ ){
 		int index = ( WeaponIndex - i + WeaponList.Count()) % WeaponList.Count();
 		// BMG remove no weapon slot
-//		if( WeaponList[ index ] == NULL || WeaponList[ index ]->Does_Weapon_Exist() ){
 		if( WeaponList[ index ] != NULL& & WeaponList[ index ]->Does_Weapon_Exist() ){
 			Select_Index( index );
 			break;
@@ -395,14 +375,12 @@ bool WeaponBagClass::Move_Contents( WeaponBagClass*  source ){
 				my_weapon->Set_Weapon_Exists( true );
 				moved = true;
 			}
-//			Debug_Say(( "Add %s %d\n", weapon->Get_Definition()->Get_Name(), weapon->Get_Total_Rounds() ));
 		} else {
 			// else, give it to me
 			Add_Weapon( weapon->Get_Definition(), weapon->Get_Total_Rounds(), weapon->Does_Weapon_Exist() );
 			if( weapon->Does_Weapon_Exist() ){
 				moved = true;
 			}
-//			Debug_Say(( "Give %s %d\n", weapon->Get_Definition()->Get_Name(), weapon->Get_Total_Rounds() ));
 		}
 	}
 

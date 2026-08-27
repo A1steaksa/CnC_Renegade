@@ -342,8 +342,7 @@ inline void MeshMatDescClass::Set_UV_Source( int pass, int stage, int sourceinde
 	UVSource[pass][stage] = sourceindex;	
 }
 
-inline int MeshMatDescClass::Get_UV_Source(int pass,int stage)
-{
+inline int MeshMatDescClass::Get_UV_Source( int pass, int stage ){
 	WWASSERT(pass >= 0);
 	WWASSERT(pass < MAX_PASSES);
 	WWASSERT(stage >= 0);

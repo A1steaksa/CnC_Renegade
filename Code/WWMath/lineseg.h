@@ -54,9 +54,7 @@ class SphereClass;
 class Matrix3D;
 
 
-class LineSegClass
-{
-
+class LineSegClass{
 public:
 
 	LineSegClass(void) { }

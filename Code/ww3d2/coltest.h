@@ -85,8 +85,7 @@ class RenderObjClass;
 //
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class CollisionTestClass
-{
+class CollisionTestClass {
 public:
 	CollisionTestClass(CastResultStruct * res,int collision_type);
 	CollisionTestClass(const CollisionTestClass & that);
@@ -120,11 +119,10 @@ inline CollisionTestClass::CollisionTestClass(const CollisionTestClass & that) :
 // pointer to a CollisionStruct for the result
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class RayCollisionTestClass : public CollisionTestClass
-{
+class RayCollisionTestClass : public CollisionTestClass {
 public:
 	
-	RayCollisionTestClass(const LineSegClass & ray,CastResultStruct * res,int collision_type = COLLISION_TYPE_0,bool ignore_translucent_meshes=false);
+	RayCollisionTestClass( const LineSegClass& ray, CastResultStruct* res, int collision_type = COLLISION_TYPE_0, bool ignore_translucent_meshes = false );
 	RayCollisionTestClass(const RayCollisionTestClass & raytest,const Matrix3D & tm);
 		
 	bool Cull(const Vector3 & min,const Vector3 & max);

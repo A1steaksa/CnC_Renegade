@@ -753,7 +753,7 @@ void RenderObjClass::Update_Cached_Bounding_Volumes(void) const {
 	Get_Obj_Space_Bounding_Sphere( CachedBoundingSphere );
 
 	CachedBoundingSphere.Center = Get_Transform() * CachedBoundingSphere.Center;
-	CachedBoundingBox.Transform(Get_Transform());
+	CachedBoundingBox.Transform( Get_Transform() );
 
 	Validate_Cached_Bounding_Volumes();
 }

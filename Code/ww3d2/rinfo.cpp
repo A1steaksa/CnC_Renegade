@@ -46,33 +46,30 @@
 **
 ***********************************************************************************************/
 RenderInfoClass::RenderInfoClass(CameraClass & cam) :
-	Camera(cam), 
-	fog_start(0.0f),
-	fog_end(0.0f),
-	fog_scale(0.0f),
-	light_environment(0),
-	AdditionalMaterialPassCount(0),
-	RejectedMaterialPasses(0),
-	OverrideFlagLevel(0)
-{ 
+	Camera( cam ),
+	fog_start( 0.0f ),
+	fog_end( 0.0f ),
+	fog_scale( 0.0f ),
+	light_environment( 0 ),
+	AdditionalMaterialPassCount( 0 ),
+	RejectedMaterialPasses( 0 ),
+	OverrideFlagLevel( 0 )
+{
 	// Need to have one entry in the override flags stack, initialize it to default values.
-	OverrideFlag[OverrideFlagLevel]=RINFO_OVERRIDE_DEFAULT;
+	OverrideFlag[OverrideFlagLevel] = RINFO_OVERRIDE_DEFAULT;
 }
 
-RenderInfoClass::~RenderInfoClass(void)
-{
+RenderInfoClass::~RenderInfoClass(void){
 }
 
-void RenderInfoClass::Push_Material_Pass(MaterialPassClass * matpass)
-{
+void RenderInfoClass::Push_Material_Pass( MaterialPassClass* matpass ){
 	// add to the end of the array
-	if (AdditionalMaterialPassCount<MAX_ADDITIONAL_MATERIAL_PASSES-1) {
-
-		if (matpass) {
+	if( AdditionalMaterialPassCount<MAX_ADDITIONAL_MATERIAL_PASSES - 1 ){
+		if( matpass ){
 			matpass->Add_Ref();
 		}
-		AdditionalMaterialPassArray[AdditionalMaterialPassCount++]=matpass;
-	} else {
+		AdditionalMaterialPassArray[AdditionalMaterialPassCount++] = matpass;
+	}else{
 		RejectedMaterialPasses++;
 	}
 }

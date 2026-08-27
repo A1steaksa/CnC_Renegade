@@ -299,10 +299,9 @@ WWINLINE void AABoxClass::Init(Vector3 * points,int num)
  * HISTORY:                                                                                    *
  *   7/31/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-WWINLINE void AABoxClass::Init(const MinMaxAABoxClass & mmbox)
-{
-	Center = (mmbox.MaxCorner + mmbox.MinCorner) * 0.5f;
-	Extent = (mmbox.MaxCorner - mmbox.MinCorner) * 0.5f;
+WWINLINE void AABoxClass::Init( const MinMaxAABoxClass& mmbox ){
+	Center = ( mmbox.MaxCorner + mmbox.MinCorner ) * 0.5f;
+	Extent = ( mmbox.MaxCorner - mmbox.MinCorner ) * 0.5f;
 }
 
 

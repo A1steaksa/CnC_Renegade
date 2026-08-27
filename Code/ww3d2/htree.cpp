@@ -481,41 +481,39 @@ void HTreeClass::Base_Update( const Matrix3D& root ){
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HTreeClass::Anim_Update(const Matrix3D & root,HAnimClass * motion,float frame)
-{
-	PivotClass *pivot;
+void HTreeClass::Anim_Update( const Matrix3D& root, HAnimClass* motion, float frame ){
+	PivotClass* pivot;
 
 	Pivot[0].Transform = root;
 	Pivot[0].IsVisible = true;
 
-	int num_anim_pivots = motion->Get_Num_Pivots ();
+	int num_anim_pivots = motion->Get_Num_Pivots();
 
-	for (int piv_idx=1; piv_idx < NumPivots; piv_idx++) {
+	for( int piv_idx = 1; piv_idx < NumPivots; piv_idx++ ){
 		pivot = &Pivot[piv_idx];
 
 		// base pose
-		assert(pivot->Parent != NULL);
-		Matrix3D::Multiply(pivot->Parent->Transform,pivot->BaseTransform,&(pivot->Transform));
+		assert( pivot->Parent != NULL );
+		Matrix3D::Multiply( pivot->Parent->Transform, pivot->BaseTransform, &(pivot->Transform) );
 			
 		// Don't update this pivot if the HTree doesn't have animation data for it...
-		if (piv_idx < num_anim_pivots) {
-			
+		if( piv_idx < num_anim_pivots ){
 			// animation
 			Vector3 trans;
-			motion->Get_Translation(trans,piv_idx,frame);
-			pivot->Transform.Translate(trans * ScaleFactor);
+			motion->Get_Translation( trans, piv_idx, frame);
+			pivot->Transform.Translate( trans * ScaleFactor );
 
 			Quaternion q;
-			motion->Get_Orientation(q,piv_idx,frame);
-			Matrix3D mtx=::Build_Matrix3D(q);
+			motion->Get_Orientation( q, piv_idx, frame);
+			Matrix3D mtx=::Build_Matrix3D( q );
 
 			pivot->Transform = pivot->Transform * mtx;
 
 			// visibility
-			pivot->IsVisible = motion->Get_Visibility(piv_idx,frame);
+			pivot->IsVisible = motion->Get_Visibility( piv_idx, frame );
 		}
 
-		if (pivot->IsCaptured) { 
+		if( pivot->IsCaptured ){
 			pivot->Capture_Update();
 			pivot->IsVisible = true;
 		} 
@@ -601,85 +599,70 @@ void HTreeClass::Blend_Update
  * HISTORY:                                                                                    *
  *   3/4/98     GTH : Created.                                                                 *
  *=============================================================================================*/
-void HTreeClass::Combo_Update
-(
-	const Matrix3D & root,
-	HAnimComboClass *anim
-)
-{
-	PivotClass *pivot;
+void HTreeClass::Combo_Update( const Matrix3D& root, HAnimComboClass* anim ){
+	PivotClass* pivot;
 
 	Pivot[0].Transform = root;
 	Pivot[0].IsVisible = true;
 	
 	int num_anim_pivots = 100000;
-	for ( int anim_num = 0; anim_num < anim->Get_Num_Anims(); anim_num++ ) {
+	for( int anim_num = 0; anim_num < anim->Get_Num_Anims(); anim_num++ ){
 		num_anim_pivots = MIN( num_anim_pivots, anim->Peek_Motion( anim_num )->Get_Num_Pivots() );
 	}
-	if ( num_anim_pivots == 100000 ) {
+
+	if( num_anim_pivots == 100000 ){
 		num_anim_pivots = 0;
 	}
 
-	for (int piv_idx=1; piv_idx < NumPivots; piv_idx++) {
+	for( int piv_idx = 1; piv_idx < NumPivots; piv_idx++ ){
 		
 		pivot = &Pivot[piv_idx];
-		assert(pivot->Parent != NULL);
-		Matrix3D::Multiply(pivot->Parent->Transform,pivot->BaseTransform,&(pivot->Transform));
+		assert( pivot->Parent != NULL );
+		Matrix3D::Multiply( pivot->Parent->Transform, pivot->BaseTransform, &(pivot->Transform) );
 		
-		if (piv_idx < num_anim_pivots) {
+		if( piv_idx < num_anim_pivots ){
 
 #define	ASSUME_NORMALIZED_ANIM_COMBO_WEIGHTS
 
-			Vector3 trans(0,0,0);
+			Vector3 trans( 0, 0, 0 );
 			Quaternion q0;
 			Quaternion q1;
-#ifndef ASSUME_NORMALIZED_ANIM_COMBO_WEIGHTS
-			float	last_weight = 0;
-#endif
-			float	weight_total = 0;
+
+			float weight_total = 0;
 			int wcount = 0;
 
-			for ( int anim_num = 0; anim_num < anim->Get_Num_Anims(); anim_num++ ) {
+			for( int anim_num = 0; anim_num < anim->Get_Num_Anims(); anim_num++ ){
 
-				HAnimClass *motion = anim->Get_Motion( anim_num );
+				HAnimClass* motion = anim->Get_Motion( anim_num );
 
-				if ( motion != NULL ) {
+				if( motion != NULL ){
 
 					float frame_num = anim->Get_Frame( anim_num );
 
-					PivotMapClass * pivot_map = anim->Get_Pivot_Weight_Map( anim_num );
+					PivotMapClass* pivot_map = anim->Get_Pivot_Weight_Map( anim_num );
 
-					//float	*pivot_map = anim->Get_Pivot_Weight_Map( anim_num );
+					float weight = anim->Get_Weight( anim_num );
 
-					float	weight = anim->Get_Weight( anim_num );
-
-					if ( pivot_map != NULL ) {
+					if( pivot_map != NULL ){
 						weight *= (*pivot_map)[piv_idx];
 						// GREG - Pivot maps are ref counted so shouldn't we
 						// release the rivot map here?
 						pivot_map->Release_Ref();
 					}
 
-					if ( weight != 0.0 ) {
-
+					if( weight != 0.0 ){
 						wcount++;
 						Vector3 temp_trans;
 						motion->Get_Translation( temp_trans, piv_idx, frame_num );
 						trans += weight * ScaleFactor * temp_trans;
 						weight_total += weight;
 
-#ifdef ASSUME_NORMALIZED_ANIM_COMBO_WEIGHTS
-						motion->Get_Orientation(q1,piv_idx, frame_num );
-						if ( wcount == 1 ) {
+						motion->Get_Orientation( q1, piv_idx, frame_num );
+						if( wcount == 1 ){
 							q0 = q1;
-						} else {
-							Fast_Slerp(q0, q0, q1, weight / weight_total );
+						}else{
+							Fast_Slerp( q0, q0, q1, weight / weight_total );
 						}
-#else
-						q0 = q1;	
-						motion->Get_Orientation(q1, piv_idx, frame_num );
-						last_weight = weight;
-#endif
 					}
 
 					motion->Release_Ref();
@@ -687,29 +670,13 @@ void HTreeClass::Combo_Update
 				}
 			}
 
-#ifdef ASSUME_NORMALIZED_ANIM_COMBO_WEIGHTS
 
-			if (weight_total != 0.0f ) {
+			if( weight_total != 0.0f ){
 				// SKB: Removed assert because I have a case where I don't want normalization.
 				// 	  One anim moves X, the other moves Y.  Assert was just in to warn programmers.	
-//				WWASSERT(WWMath::Fabs( weight_total - 1.0 ) < WWMATH_EPSILON);
-
 				pivot->Transform.Translate(trans);
 				pivot->Transform = pivot->Transform * Build_Matrix3D(q0);
 			}
-#else
-			if (( weight_total != 0.0f ) && (wcount >= 2)) {
-			
-				pivot->Transform.Translate( trans / weight_total );
-				Quaternion q = Slerp_( q0, q1, last_weight / weight_total );
-				pivot->Transform = pivot->Transform * Build_Matrix3D(q);
-
-			} else if (weight_total != 0.0f) {
-
-				pivot->Transform.Translate( trans / weight_total );
-				pivot->Transform = pivot->Transform * Build_Matrix3D(q1);
-			}
-#endif
 
 			pivot->IsVisible = false;
 
@@ -745,8 +712,7 @@ void HTreeClass::Combo_Update
  * HISTORY:                                                                                    *
  *   11/4/97    GTH : Created.                                                                 *
  *=============================================================================================*/
-int HTreeClass::Get_Bone_Index(const char * name) const
-{
+int HTreeClass::Get_Bone_Index(const char * name) const {
 	for (int i=0; i < NumPivots; i++) {
 		if (stricmp(Pivot[i].Name,name) == 0) {
 			return i;
@@ -768,8 +734,7 @@ int HTreeClass::Get_Bone_Index(const char * name) const
  * HISTORY:                                                                                    *
  *   11/4/97    GTH : Created.                                                                 *
  *=============================================================================================*/
-const char * HTreeClass::Get_Bone_Name(int boneidx) const
-{
+const char* HTreeClass::Get_Bone_Name( int boneidx ) const {
 	assert(boneidx >= 0);
 	assert(boneidx < NumPivots);
 
@@ -791,14 +756,13 @@ const char * HTreeClass::Get_Bone_Name(int boneidx) const
  * HISTORY:                                                                                    *
  *   4/12/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-int HTreeClass::Get_Parent_Index(int boneidx) const
-{
-	assert(boneidx >= 0);
-	assert(boneidx < NumPivots);
+int HTreeClass::Get_Parent_Index( int boneidx ) const {
+	assert( boneidx >= 0 );
+	assert( boneidx < NumPivots );
 
-	if (Pivot[boneidx].Parent != NULL) {
+	if( Pivot[boneidx].Parent != NULL ){
 		return Pivot[boneidx].Parent->Index;
-	} else {
+	}else{
 		return 0;
 	}
 }
@@ -822,82 +786,72 @@ void HTreeClass::Scale(float factor)
 	ScaleFactor *= factor;
 }
 
-void HTreeClass::Capture_Bone(int boneindex)
-{
-	assert(boneindex >= 0);
-	assert(boneindex < NumPivots);
+void HTreeClass::Capture_Bone( int boneindex ){
+	assert( boneindex >= 0 );
+	assert( boneindex < NumPivots );
 	Pivot[boneindex].IsCaptured = true;
 }
 
-void HTreeClass::Release_Bone(int boneindex)
-{
-	assert(boneindex >= 0);
-	assert(boneindex < NumPivots);
+void HTreeClass::Release_Bone( int boneindex ){
+	assert( boneindex >= 0 );
+	assert( boneindex < NumPivots );
+
 	Pivot[boneindex].IsCaptured = false;
 }
 
-bool HTreeClass::Is_Bone_Captured(int boneindex) const
-{
-	assert(boneindex >= 0);
-	assert(boneindex < NumPivots);
+bool HTreeClass::Is_Bone_Captured( int boneindex ) const {
+	assert( boneindex >= 0 );
+	assert( boneindex < NumPivots );
+
 	return Pivot[boneindex].IsCaptured;
 }
 
-void HTreeClass::Control_Bone(int boneindex,const Matrix3D & relative_tm,bool world_space_translation)
-{
-	assert(boneindex >= 0);
-	assert(boneindex < NumPivots);
-	assert(Pivot[boneindex].IsCaptured);
+void HTreeClass::Control_Bone( int boneindex, const Matrix3D& relative_tm, bool world_space_translation ){
+	assert( boneindex >= 0 );
+	assert( boneindex < NumPivots );
+	assert( Pivot[boneindex].IsCaptured );
 
 	Pivot[boneindex].WorldSpaceTranslation = world_space_translation;
 	Pivot[boneindex].CapTransform = relative_tm;
 }
 
-void HTreeClass::Get_Bone_Control(int boneindex, Matrix3D & relative_tm) const
-{
-	assert(boneindex >= 0);
-	assert(boneindex < NumPivots);
+void HTreeClass::Get_Bone_Control( int boneindex, Matrix3D& relative_tm ) const {
+	assert( boneindex >= 0 );
+	assert( boneindex < NumPivots );
 
-	//
-	//	Return the bone's control transform to the caller
-	//
-	if (Pivot[boneindex].IsCaptured) {
+	// Return the bone's control transform to the caller
+	if( Pivot[boneindex].IsCaptured ){
 		relative_tm = Pivot[boneindex].CapTransform;
-	} else {
-		relative_tm.Make_Identity ();
+	}else{
+		relative_tm.Make_Identity();
 	}
-
-	return ;
 }
 
-
-
 // Morph the bones on the HTree using weights from a number of other HTrees
-HTreeClass * HTreeClass::Create_Morphed(	int num_morph_sources,
-														const float morph_weights[],
-														const HTreeClass *tree_array[] )
-{
+HTreeClass* HTreeClass::Create_Morphed( int num_morph_sources, const float morph_weights[], const HTreeClass* tree_array[] ){
 	int i;
-	assert(num_morph_sources>0);
-	for(i=0;i<num_morph_sources;i++) {
+	assert( num_morph_sources > 0 );
+
+	for( i = 0; i < num_morph_sources; i++ ){
 		assert( tree_array[i] );
 		assert( morph_weights[i]>=0.0f && morph_weights[i]<=1.0f );
 	}
-	for(i=0;i<num_morph_sources-1;i++) {
+
+	for( i = 0; i < num_morph_sources - 1; i++ ){
 		assert( tree_array[i]->NumPivots == tree_array[i+1]->NumPivots );
 	}
 
 	// Clone the first one,
-	HTreeClass * new_tree = new HTreeClass( *tree_array[0] );
+	HTreeClass* new_tree = new HTreeClass( *tree_array[0] );
 
 	// Then interpolate all the pivots translations
-	for (int pi = 0; pi < new_tree->NumPivots; pi++) {
+	for( int pi = 0; pi < new_tree->NumPivots; pi++ ){
 
-		Vector3 pos(0.0f,0.0f,0.0f);
-		for(int nm = 0; nm < num_morph_sources; nm++) {
-			pos.X += tree_array[nm]->Pivot[pi].BaseTransform.Get_Translation().X*morph_weights[nm];
-			pos.Y += tree_array[nm]->Pivot[pi].BaseTransform.Get_Translation().Y*morph_weights[nm];
-			pos.Z += tree_array[nm]->Pivot[pi].BaseTransform.Get_Translation().Z*morph_weights[nm];
+		Vector3 pos( 0.0f, 0.0f, 0.0f );
+		for( int nm = 0; nm < num_morph_sources; nm++ ){
+			pos.X += tree_array[nm]->Pivot[pi].BaseTransform.Get_Translation().X * morph_weights[nm];
+			pos.Y += tree_array[nm]->Pivot[pi].BaseTransform.Get_Translation().Y * morph_weights[nm];
+			pos.Z += tree_array[nm]->Pivot[pi].BaseTransform.Get_Translation().Z * morph_weights[nm];
 		}
 
 		new_tree->Pivot[pi].BaseTransform.Set_Translation( pos );

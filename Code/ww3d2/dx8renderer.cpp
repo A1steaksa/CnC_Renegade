@@ -1864,17 +1864,14 @@ void DX8MeshRendererClass::Unregister_Mesh_Type(MeshClass* mesh)
 }
 
 
-void DX8MeshRendererClass::Register_Mesh_Type(MeshClass* mesh)
-{
+void DX8MeshRendererClass::Register_Mesh_Type( MeshClass* mesh ){
 	WWMEMLOG(MEM_GEOMETRY);
 	MeshModelClass * mmc = mesh->Peek_Model();
-#ifdef ENABLE_CATEGORY_LOG
-	WWDEBUG_SAY(("Registering mesh: %s (%d polys, %d verts + %d gap polygons)\n",mmc->Get_Name(),mmc->Get_Polygon_Count(),mmc->Get_Vertex_Count(),mmc->Get_Gap_Filler_Polygon_Count()));
-#endif
+
 	bool skin=(mmc->Get_Flag(MeshModelClass::SKIN) && mmc->VertexBoneLink);
 	bool sorting=((!!mmc->Get_Flag(MeshModelClass::SORT)) && WW3D::Is_Sorting_Enabled() && (mmc->Get_Sort_Level() == SORT_LEVEL_NONE));
 
-	if (skin) {
+	if( skin ){
 
 		/*
 		** This mesh is a skin.  Add it to a DX8SkinFVFCategoryContainer.

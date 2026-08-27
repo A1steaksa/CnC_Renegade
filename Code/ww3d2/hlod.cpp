@@ -2126,28 +2126,27 @@ int HLodClass::Get_Num_Polys(void) const
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Render(RenderInfoClass & rinfo)
-{
+void HLodClass::Render( RenderInfoClass& rinfo ){
 	int i;
 
-	if (Is_Not_Hidden_At_All() == false) {
+	if( Is_Not_Hidden_At_All() == false ){
 		return;
 	}
 
-	Animatable3DObjClass::Render(rinfo);
+	Animatable3DObjClass::Render( rinfo );
 
-	for (i = 0; i < Lod[CurLod].Count(); i++) {
-		Lod[CurLod][i].Model->Render(rinfo);
+	for( i = 0; i < Lod[CurLod].Count(); i++ ){
+		Lod[CurLod][i].Model->Render( rinfo );
 	}
 
-	if (Is_Sub_Objects_Match_LOD_Enabled()) {
-		for (i = 0; i < AdditionalModels.Count(); i++) {
-			AdditionalModels[i].Model->Set_LOD_Level(Get_LOD_Level());
-			AdditionalModels[i].Model->Render(rinfo);
+	if( Is_Sub_Objects_Match_LOD_Enabled() ){
+		for( i = 0; i < AdditionalModels.Count(); i++ ){
+			AdditionalModels[i].Model->Set_LOD_Level( Get_LOD_Level() );
+			AdditionalModels[i].Model->Render( rinfo );
 		}
-	} else {
-		for (i = 0; i < AdditionalModels.Count(); i++) {
-			AdditionalModels[i].Model->Render(rinfo);
+	}else{
+		for( i = 0; i < AdditionalModels.Count(); i++ ){
+			AdditionalModels[i].Model->Render( rinfo );
 		}
 	}
 }
@@ -2361,8 +2360,7 @@ int HLodClass::Add_Sub_Object(RenderObjClass * subobj)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-int HLodClass::Remove_Sub_Object(RenderObjClass * removeme)
-{
+int HLodClass::Remove_Sub_Object( RenderObjClass* removeme ){
 	// no object given?
 	if (removeme == NULL) {
 		return 0;
@@ -2398,7 +2396,7 @@ int HLodClass::Remove_Sub_Object(RenderObjClass * removeme)
 		}
 	}
 	
-	if (found) {
+	if( found ){
 
 		// clear the object's container pointer
 		removeme->Set_Container(NULL);
@@ -2406,8 +2404,8 @@ int HLodClass::Remove_Sub_Object(RenderObjClass * removeme)
 		// let him know in case he is removed from the scene as a result of this
 		// this is the combination of this HLod being in the scene and and this model
 		// either being in the current LOD or being in the additional model list...
-		if (iscurrent && Is_In_Scene()) {
-			removeme->Notify_Removed(Scene);
+		if( iscurrent && Is_In_Scene() ){
+			removeme->Notify_Removed( Scene );
 		}
 
 		// release our reference to this render object
@@ -2436,8 +2434,7 @@ int HLodClass::Remove_Sub_Object(RenderObjClass * removeme)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-int HLodClass::Get_Num_Sub_Objects_On_Bone(int boneindex) const
-{
+int HLodClass::Get_Num_Sub_Objects_On_Bone( int boneindex ) const {
 	int count = 0;
 
 	for (int lod = 0; lod < LodCount; lod++) {
@@ -2445,9 +2442,11 @@ int HLodClass::Get_Num_Sub_Objects_On_Bone(int boneindex) const
 			if (Lod[lod][model].BoneIndex == boneindex) count++;
 		}
 	}
+
 	for (int model = 0; model < AdditionalModels.Count(); model++) {
 		if (AdditionalModels[model].BoneIndex == boneindex) count++;
 	}
+	
 	return count;
 }
 
@@ -2464,8 +2463,7 @@ int HLodClass::Get_Num_Sub_Objects_On_Bone(int boneindex) const
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-RenderObjClass * HLodClass::Get_Sub_Object_On_Bone(int index,int boneindex) const
-{
+RenderObjClass* HLodClass::Get_Sub_Object_On_Bone( int index, int boneindex ) const {
 	int count = 0;
 	for (int lod = 0; lod < LodCount; lod++) {
 		for (int model = 0; model < Lod[lod].Count(); model++) {
@@ -2957,8 +2955,7 @@ void HLodClass::Increment_LOD(void)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Decrement_LOD(void)
-{
+void HLodClass::Decrement_LOD(void){
 	if (CurLod < 1) return;
 
 	if (Is_In_Scene()) {
@@ -2991,11 +2988,9 @@ void HLodClass::Decrement_LOD(void)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-float HLodClass::Get_Cost(void) const
-{
-	return(Cost[CurLod]);
+float HLodClass::Get_Cost(void) const {
+	return( Cost[CurLod] );
 }
-
 
 /***********************************************************************************************
  * HLodClass::Get_Value -- returns the value of this LOD                                       *
@@ -3009,11 +3004,9 @@ float HLodClass::Get_Cost(void) const
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-float HLodClass::Get_Value(void) const
-{
-	return(Value[CurLod]);
+float HLodClass::Get_Value(void) const {
+	return( Value[CurLod] );
 }
-
 
 /***********************************************************************************************
  * HLodClass::Get_Post_Increment_Value -- returns the post increment value                     *
@@ -3027,11 +3020,9 @@ float HLodClass::Get_Value(void) const
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-float HLodClass::Get_Post_Increment_Value(void) const
-{
-	return(Value[CurLod + 1]);
+float HLodClass::Get_Post_Increment_Value(void) const{
+	return( Value[CurLod + 1] );
 }
-
 
 /***********************************************************************************************
  * HLodClass::Set_LOD_Level -- set the current lod level                                       *
@@ -3069,7 +3060,6 @@ void HLodClass::Set_LOD_Level( int lod ){
 	}
 }
 
-
 /***********************************************************************************************
  * HLodClass::Get_LOD_Level -- returns the current LOD level                                   *
  *                                                                                             *
@@ -3082,11 +3072,9 @@ void HLodClass::Set_LOD_Level( int lod ){
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-int HLodClass::Get_LOD_Level(void) const
-{
+int HLodClass::Get_LOD_Level(void) const {
 	return CurLod;
 }
-
 
 /***********************************************************************************************
  * HLodClass::Get_LOD_Count -- returns the number of levels of detail                          *
@@ -3100,8 +3088,7 @@ int HLodClass::Get_LOD_Level(void) const
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-int HLodClass::Get_LOD_Count(void) const
-{
+int HLodClass::Get_LOD_Count(void) const {
 	return LodCount;
 }
 
@@ -3176,35 +3163,6 @@ RenderObjClass * HLodClass::Get_Current_LOD(void)
 	return Get_Lod_Model(CurLod, 0);
 }
 
-
-/***********************************************************************************************
- * HLodClass::Set_Texture_Reduction_Factor -- resizeable texture support                       *
- *                                                                                             *
- * INPUT:                                                                                      *
- *                                                                                             *
- * OUTPUT:                                                                                     *
- *                                                                                             *
- * WARNINGS:                                                                                   *
- *                                                                                             *
- * HISTORY:                                                                                    *
- *   1/26/00    gth : Created.                                                                 *
- *=============================================================================================*/
-/*
-void HLodClass::Set_Texture_Reduction_Factor(float trf)
-{
-	WWASSERT(0);	// don't call to tex reduction system, it's broken!
-	// We don't touch the additional subobjects: they will get Prepare_LOD
-	// called on them individually which is where texture reduction will be
-	// set also.
-	for (int lod = 0; lod < LodCount; lod++) {
-		int model_count = Lod[lod].Count();
-		for (int model_id = 0; model_id < model_count; model_id++) {
-			Lod[lod][model_id].Model->Set_Texture_Reduction_Factor(trf);
-		}
-	}
-}
-*/
-
 /***********************************************************************************************
  * HLodClass::Scale -- scale this HLod model                                                   *
  *                                                                                             *
@@ -3217,8 +3175,7 @@ void HLodClass::Set_Texture_Reduction_Factor(float trf)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Scale(float scale)
-{
+void HLodClass::Scale( float scale ){
 	if (scale==1.0f) return;
 
 	int lod;
@@ -3259,11 +3216,10 @@ void HLodClass::Scale(float scale)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-int HLodClass::Get_Num_Snap_Points(void)
-{
-	if (SnapPoints) {
+int HLodClass::Get_Num_Snap_Points(void){
+	if( SnapPoints ){
 		return SnapPoints->Count();
-	} else {
+	}else{
 		return 0;
 	}
 }
@@ -3281,12 +3237,11 @@ int HLodClass::Get_Num_Snap_Points(void)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Get_Snap_Point(int index,Vector3 * set)
-{
-	WWASSERT(set != NULL);
-	if (SnapPoints) {
+void HLodClass::Get_Snap_Point( int index, Vector3* set ){
+	WWASSERT( set != NULL );
+	if( SnapPoints ){
 		*set = (*SnapPoints)[index];
-	} else {
+	}else{
 		set->X = set->Y = set->Z = 0;
 	}
 }
@@ -3304,8 +3259,7 @@ void HLodClass::Get_Snap_Point(int index,Vector3 * set)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Update_Sub_Object_Transforms(void)
-{
+void HLodClass::Update_Sub_Object_Transforms(void){
 	/*
 	** Update the animation transforms, recurse up to the
 	** top of the tree...
@@ -3494,8 +3448,7 @@ void HLodClass::add_lod_model( int lod, RenderObjClass* robj, int boneindex ){
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Create_Decal(DecalGeneratorClass * generator)
-{
+void HLodClass::Create_Decal( DecalGeneratorClass* generator ){
 	for (int lod=0; lod<LodCount; lod++) {
 		for (int model=0; model<Lod[lod].Count(); model++) {
 			Lod[lod][model].Model->Create_Decal(generator);
@@ -3523,16 +3476,15 @@ void HLodClass::Create_Decal(DecalGeneratorClass * generator)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Delete_Decal(uint32 decal_id)
-{
-	for (int lod=0; lod<LodCount; lod++) {
-		for (int model=0; model<Lod[lod].Count(); model++) {
-			Lod[lod][model].Model->Delete_Decal(decal_id);
+void HLodClass::Delete_Decal( uint32 decal_id ){
+	for( int lod = 0; lod < LodCount; lod++ ){
+		for( int model = 0; model<Lod[lod].Count(); model++ ){
+			Lod[lod][model].Model->Delete_Decal( decal_id );
 		}
 	}
 
-	for (int model=0; model<AdditionalModels.Count(); model++) {
-		AdditionalModels[model].Model->Delete_Decal(decal_id);
+	for( int model = 0; model < AdditionalModels.Count(); model++ ){
+		AdditionalModels[model].Model->Delete_Decal( decal_id );
 	}
 }
 
@@ -3549,9 +3501,8 @@ void HLodClass::Delete_Decal(uint32 decal_id)
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Set_HTree(HTreeClass * htree)
-{
-	Animatable3DObjClass::Set_HTree(htree);
+void HLodClass::Set_HTree( HTreeClass* htree ){
+	Animatable3DObjClass::Set_HTree( htree );
 }
 
 
@@ -3567,28 +3518,18 @@ void HLodClass::Set_HTree(HTreeClass * htree)
  * HISTORY:                                                                                    *
  *   3/19/01    pds : Created.                                                                 *
  *=============================================================================================*/
-void HLodClass::Set_Hidden(int onoff)
-{
-	//
-	//	Loop over all attached models
-	//
+void HLodClass::Set_Hidden( int onoff ){
+	// Loop over all attached models
 	int additional_count = AdditionalModels.Count();
-	for (int index = 0; index < additional_count; index ++) {
-		
-		//
-		//	Is this a particle emitter?
-		//
-		RenderObjClass *model = AdditionalModels[index].Model;
-		if (model->Class_ID () == RenderObjClass::CLASSID_PARTICLEEMITTER) {
-			
-			//
+	for( int index = 0; index < additional_count; index++ ){	
+		// Is this a particle emitter?
+		RenderObjClass* model = AdditionalModels[index].Model;
+		if( model->Class_ID () == RenderObjClass::CLASSID_PARTICLEEMITTER ){
 			//	Pass the hidden bit onto the emitter
-			//
-			model->Set_Hidden(onoff);
+			model->Set_Hidden( onoff );
 		}
 	}
 
-	Animatable3DObjClass::Set_Hidden(onoff);
-	return ;
+	Animatable3DObjClass::Set_Hidden( onoff );
 }
 

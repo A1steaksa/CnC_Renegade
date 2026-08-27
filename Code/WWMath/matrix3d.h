@@ -209,9 +209,21 @@ public:
  	WWINLINE Vector4 & operator [] (int i) { return Row[i]; }
 	WWINLINE const Vector4 & operator [] (int i) const { return Row[i]; }
 
-	WWINLINE Vector3 Get_Translation(void) const { return Vector3(Row[0][3],Row[1][3],Row[2][3]); }
-	WWINLINE void Get_Translation(Vector3 * set) const { set->X = Row[0][3]; set->Y = Row[1][3]; set->Z = Row[2][3]; }
-	WWINLINE void Set_Translation(const Vector3 & t)  { Row[0][3] = t[0]; Row[1][3] = t[1];Row[2][3] = t[2]; }
+	WWINLINE Vector3 Get_Translation(void) const {
+		return Vector3( Row[0][3], Row[1][3], Row[2][3] );
+	}
+	
+	WWINLINE void Get_Translation( Vector3* set ) const {
+		set->X = Row[0][3];
+		set->Y = Row[1][3];
+		set->Z = Row[2][3];
+	}
+
+	WWINLINE void Set_Translation( const Vector3& t ){
+		Row[0][3] = t[0];
+		Row[1][3] = t[1];
+		Row[2][3] = t[2];
+	}
 
 	void Set_Rotation(const Matrix3 & m);
 	void Set_Rotation(const Quaternion & q);
@@ -1489,23 +1501,12 @@ WWINLINE Matrix3D operator * (const Matrix3D &A,const Matrix3D &B)
  * HISTORY:                                                                                    * 
  *   02/24/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-WWINLINE Vector3 operator * (const Matrix3D &A,const Vector3 &a)
-{
-#if 0
-	return Vector3
-	(
-		(A[0][0]*a[0] + A[0][1]*a[1] + A[0][2]*a[2] + A[0][3]),
-		(A[1][0]*a[0] + A[1][1]*a[1] + A[1][2]*a[2] + A[1][3]),
-		(A[2][0]*a[0] + A[2][1]*a[1] + A[2][2]*a[2] + A[2][3])
+WWINLINE Vector3 operator *( const Matrix3D& A, const Vector3& a ){
+	return Vector3(
+		( A.Row[0].X * a.X + A.Row[0].Y * a.Y + A.Row[0].Z * a.Z + A.Row[0].W ),
+		( A.Row[1].X * a.X + A.Row[1].Y * a.Y + A.Row[1].Z * a.Z + A.Row[1].W ),
+		( A.Row[2].X * a.X + A.Row[2].Y * a.Y + A.Row[2].Z * a.Z + A.Row[2].W )
 	);
-#else
-	return Vector3
-	(
-		(A.Row[0].X*a.X + A.Row[0].Y*a.Y + A.Row[0].Z*a.Z + A.Row[0].W),
-		(A.Row[1].X*a.X + A.Row[1].Y*a.Y + A.Row[1].Z*a.Z + A.Row[1].W),
-		(A.Row[2].X*a.X + A.Row[2].Y*a.Y + A.Row[2].Z*a.Z + A.Row[2].W)
-	);
-#endif
 }
 
 

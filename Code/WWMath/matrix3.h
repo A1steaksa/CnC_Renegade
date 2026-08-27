@@ -232,21 +232,21 @@ public:
 	/*
 	** Miscellaneous
 	*/
-	WWINLINE void	Rotate_AABox_Extent(const Vector3 & extent,Vector3 * new_extent);
+	WWINLINE void Rotate_AABox_Extent(const Vector3 & extent,Vector3 * new_extent);
 
 	/*
 	** Some useful pre-initialized Matrix3's
 	*/
-	static const Matrix3			Identity;
-	static const Matrix3			RotateX90;
-	static const Matrix3			RotateX180;
-	static const Matrix3			RotateX270;
-	static const Matrix3			RotateY90;
-	static const Matrix3			RotateY180;
-	static const Matrix3			RotateY270;
-	static const Matrix3			RotateZ90;
-	static const Matrix3			RotateZ180;
-	static const Matrix3			RotateZ270;
+	static const Matrix3 Identity;
+	static const Matrix3 RotateX90;
+	static const Matrix3 RotateX180;
+	static const Matrix3 RotateX270;
+	static const Matrix3 RotateY90;
+	static const Matrix3 RotateY180;
+	static const Matrix3 RotateY270;
+	static const Matrix3 RotateZ90;
+	static const Matrix3 RotateZ180;
+	static const Matrix3 RotateZ270;
 
 protected:
 
@@ -267,12 +267,11 @@ protected:
  * HISTORY:                                                                                    * 
  *   06/02/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-WWINLINE Matrix3::Matrix3(bool identity)
-{
-	if (identity) {
-		Row[0].Set(1.0,0.0,0.0);
-		Row[1].Set(0.0,1.0,0.0);
-		Row[2].Set(0.0,0.0,1.0);
+WWINLINE Matrix3::Matrix3( bool identity ){
+	if( identity ){
+		Row[0].Set( 1.0, 0.0, 0.0 );
+		Row[1].Set( 0.0, 1.0, 0.0 );
+		Row[2].Set( 0.0, 0.0, 1.0 );
 	}
 }
 
@@ -970,22 +969,20 @@ WWINLINE Matrix3 Create_Z_Rotation_Matrix3(float s,float c)
 	return mat;
 }
 
-WWINLINE Matrix3 Create_Z_Rotation_Matrix3(float rad)
-{
-	return Create_Z_Rotation_Matrix3(sinf(rad),cosf(rad));
+WWINLINE Matrix3 Create_Z_Rotation_Matrix3( float rad ){
+	return Create_Z_Rotation_Matrix3( sinf( rad ), cosf( rad ) );
 }
 
-WWINLINE void Matrix3::Rotate_Vector(const Matrix3 & A,const Vector3 & in,Vector3 * out)
-{
+WWINLINE void Matrix3::Rotate_Vector( const Matrix3& A, const Vector3& in, Vector3* out ){
 	Vector3 tmp;
-	Vector3 * v;
+	Vector3* v;
 
 	// check for aliased parameters
-	if (out == &in) {
+	if( out == &in ){
 		tmp = in;
 		v = &tmp;
-	} else {
-		v = (Vector3 *)&in;		// whats the right way to do this...
+	}else{
+		v = (Vector3*) &in; // whats the right way to do this...
 	}
 
 	out->X = (A[0][0] * v->X + A[0][1] * v->Y + A[0][2] * v->Z);

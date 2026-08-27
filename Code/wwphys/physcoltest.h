@@ -54,32 +54,29 @@ class PhysClass;
 // phys object collided with (if any).
 //
 ///////////////////////////////////////////////////////////////////////////
-class PhysRayCollisionTestClass : public RayCollisionTestClass
-{
+class PhysRayCollisionTestClass : public RayCollisionTestClass {
 public:
-
 	/*
 	** To create a PhysRayCollisionTest, you need the following
 	** ray - the ray you want to test
 	** res - pointer to a result struct to put results in
 	** group - collision group of the object making query
 	*/
-	PhysRayCollisionTestClass(const LineSegClass & ray,CastResultStruct * res,int group,int type = COLLISION_TYPE_PROJECTILE) :
-		RayCollisionTestClass(ray,res,type), 
-		CollidedPhysObj(NULL),
-		CollisionGroup(group),
-		CheckStaticObjs(true),
-		CheckDynamicObjs(true)
+	PhysRayCollisionTestClass( const LineSegClass& ray, CastResultStruct* res, int group, int type = COLLISION_TYPE_PROJECTILE ) :
+		RayCollisionTestClass( ray, res, type ), 
+		CollidedPhysObj( NULL ),
+		CollisionGroup( group ),
+		CheckStaticObjs( true ),
+		CheckDynamicObjs( true )
 	{
 	}
 
-	PhysClass *		CollidedPhysObj;
-	int				CollisionGroup;
-	bool				CheckStaticObjs;
-	bool				CheckDynamicObjs;
+	PhysClass* CollidedPhysObj;
+	int CollisionGroup;
+	bool CheckStaticObjs;
+	bool CheckDynamicObjs;
 
 private:
-
 	// not implemented:
 	PhysRayCollisionTestClass(const PhysRayCollisionTestClass & );
 	PhysRayCollisionTestClass & operator = (const PhysRayCollisionTestClass & );
@@ -87,8 +84,7 @@ private:
 };
 
 
-class PhysAABoxCollisionTestClass : public AABoxCollisionTestClass
-{
+class PhysAABoxCollisionTestClass : public AABoxCollisionTestClass {
 public:
 
 	/*

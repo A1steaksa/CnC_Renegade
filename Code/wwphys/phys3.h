@@ -61,39 +61,57 @@ public:
 
 	Phys3Class(void);
 	virtual ~Phys3Class(void);
-	virtual Phys3Class *			As_Phys3Class(void) { return this; }
 
-	void								Init(const Phys3DefClass & def);
+	virtual Phys3Class* As_Phys3Class(void) {
+		return this;
+	}
 
-	virtual const AABoxClass & Get_Bounding_Box(void) const;
-	virtual const Matrix3D &	Get_Transform(void) const;
-	virtual void					Set_Transform(const Matrix3D & m);
+	void Init( const Phys3DefClass& def );
 
-	virtual const AABoxClass &	Get_Collision_Box(void) const	{ return CollisionBox; }
+	virtual const AABoxClass& Get_Bounding_Box(void) const;
+	virtual const Matrix3D& Get_Transform(void) const;
+	virtual void Set_Transform(const Matrix3D & m);
 
-	virtual bool					Cast_Ray(PhysRayCollisionTestClass & raytest);
-	virtual bool					Cast_AABox(PhysAABoxCollisionTestClass & boxtest);
-	virtual bool					Cast_OBBox(PhysOBBoxCollisionTestClass & boxtest);
-	virtual bool					Intersection_Test(PhysAABoxIntersectionTestClass & test);
-	virtual bool					Intersection_Test(PhysOBBoxIntersectionTestClass & test);
-	virtual bool					Intersection_Test(PhysMeshIntersectionTestClass & test);
+	virtual const AABoxClass& Get_Collision_Box(void) const {
+		return CollisionBox;
+	}
 
-	virtual void					Set_Model(RenderObjClass * model);
+	virtual bool Cast_Ray( PhysRayCollisionTestClass& raytest );
+	virtual bool Cast_AABox( PhysAABoxCollisionTestClass& boxtest );
+	virtual bool Cast_OBBox( PhysOBBoxCollisionTestClass& boxtest );
+	virtual bool Intersection_Test( PhysAABoxIntersectionTestClass& test );
+	virtual bool Intersection_Test( PhysOBBoxIntersectionTestClass& test );
+	virtual bool Intersection_Test( PhysMeshIntersectionTestClass& test );
 
-	virtual void					Get_Velocity(Vector3 * set_vel) const;
-	virtual void					Set_Velocity(const Vector3 & newvel);
+	virtual void Set_Model(RenderObjClass * model);
 
-	virtual void					Apply_Impulse(const Vector3 & imp);
-	virtual void					Apply_Impulse(const Vector3 & imp, const Vector3 & wpos);
+	virtual void Get_Velocity(Vector3 * set_vel) const;
+	virtual void Set_Velocity(const Vector3 & newvel);
 
-	virtual void					Timestep(float dt); 
-	virtual bool 					Is_In_Contact(void) const { return OnGround; }
+	virtual void Apply_Impulse(const Vector3 & imp);
+	virtual void Apply_Impulse(const Vector3 & imp, const Vector3 & wpos);
+
+	virtual void Timestep( float dt ); 
+	
+	virtual bool Is_In_Contact(void) const {
+		return OnGround;
+	}
 
 	// Set_In_Contact needed for network state updates so we don't have to wait for Check_Ground
-	virtual void Set_In_Contact( bool onoff ) { OnGround = onoff; }
-	virtual int Get_Contact_Surface_Type(void) { return GroundSurface; }
+	virtual void Set_In_Contact( bool onoff ){
+		OnGround = onoff;
+	}
+
+	virtual int Get_Contact_Surface_Type(void){
+		return GroundSurface;
+	}
+
 	virtual void Invalidate_Ground_State(void);
-	PhysClass* Peek_Ground_Object(void) { return GroundState.GroundObject; }
+
+	PhysClass* Peek_Ground_Object(void){
+		return GroundState.GroundObject;
+	}
+
 	void Assert_State_Valid(void);
 
 	/*
@@ -114,12 +132,26 @@ public:
 
 	virtual void Set_Slide_Angle(float angle);
 	virtual float Get_Slide_Angle(void) const;
-	virtual void Set_Normalized_Speed(float val){ NormSpeed = val; }
-	virtual float Get_Normalized_Speed(void) const { return NormSpeed; }
 	
-	void Add_Animation_Move(const Vector3 & move){ AnimationMove += move; }
-	void Get_Animation_Move(Vector3 * set_move){ *set_move = AnimationMove; }
-	void Reset_Animation_Move(void){ AnimationMove.Set(0,0,0); }
+	virtual void Set_Normalized_Speed( float val ){
+		NormSpeed = val;
+	}
+	
+	virtual float Get_Normalized_Speed(void) const {
+		return NormSpeed;
+	}
+	
+	void Add_Animation_Move(const Vector3 & move){
+		AnimationMove += move;
+	}
+	
+	void Get_Animation_Move( Vector3* set_move){
+		*set_move = AnimationMove;
+	}
+
+	void Reset_Animation_Move(void){
+		AnimationMove.Set( 0, 0, 0 );
+	}
 
 	/*
 	** Shadow support
@@ -140,13 +172,29 @@ public:
 
 	void Network_Latency_State_Update( const Vector3& pos, const Vector3& vel );
 	
-	static void Set_Correction_Time(float time) { _CorrectionTime = time; }
-	static void Set_Allowable_Error(float err) { _AllowableError = err; }
-	static void Set_Pop_Error(float err) { _PopError = err; }
+	static void Set_Correction_Time( float time ){
+		_CorrectionTime = time;
+	}
+	
+	static void Set_Allowable_Error( float err ){
+		_AllowableError = err;
+	}
+	
+	static void Set_Pop_Error( float err ){
+		_PopError = err;
+	}
 
-	static float Get_Correction_Time(void) { return _CorrectionTime; }
-	static float Get_Allowable_Error(void) { return _AllowableError; }
-	static float Get_Pop_Error(void) { return _PopError; }
+	static float Get_Correction_Time(void){
+		return _CorrectionTime;
+	}
+	
+	static float Get_Allowable_Error(void){
+		return _AllowableError;
+	}
+	
+	static float Get_Pop_Error(void){
+		return _PopError;
+	}
 
 	/*
 	** Save-Load system
@@ -225,7 +273,6 @@ protected:
 		COLLIDE_MOVE
 	};
 
-	
 	/*
 	** Members
 	*/
@@ -279,8 +326,8 @@ inline void Phys3Class::Compute_WS_Collision_Box( const StateStruct& state, AABo
 }
 
 inline Phys3Class::StateStruct::StateStruct(void) :
-	Position(0,0,0),
-	Velocity(0,0,0)
+	Position( 0, 0, 0 ),
+	Velocity( 0, 0, 0 )
 { 
 }
 

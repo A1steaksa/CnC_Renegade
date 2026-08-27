@@ -547,15 +547,12 @@ void	Add_Files( const char * dir, MixFileCreator & mix )
 			StringClass	source;
 			source.Format( "makemix\\%s", name );
 			mix.Add_File( source, name );
-//			WWDEBUG_SAY(( "Adding file from %s %s\n", source, name ));
 		}
 	}
 }
 
-void	Setup_Mix_File( void )
-{
+void	Setup_Mix_File( void ){
 	_SimpleFileFactory.Set_Sub_Directory( "DATA\\" );
-//	_SimpleFileFactory.Set_Strip_Path( true );
 
 	WWDEBUG_SAY(( "Mix File Create .....\n" ));
 

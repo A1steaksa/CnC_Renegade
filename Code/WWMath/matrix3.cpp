@@ -44,73 +44,63 @@
 /*
 ** Some pre-initialized Matrix3's
 */
-const Matrix3 Matrix3::Identity
-(
+const Matrix3 Matrix3::Identity(
 	1.0,	0.0,	0.0,
 	0.0,	1.0,	0.0,
 	0.0,	0.0,	1.0
 );
 
-const Matrix3 Matrix3::RotateX90
-(
+const Matrix3 Matrix3::RotateX90(
 	1.0,	0.0,	0.0,
-	0.0,	0.0, -1.0,
+	0.0,	0.0,   -1.0,
 	0.0,	1.0,	0.0
 );
 
-const Matrix3 Matrix3::RotateX180
-(
+const Matrix3 Matrix3::RotateX180(
 	1.0,	0.0,	0.0,
 	0.0, -1.0,	0.0,
 	0.0,	0.0, -1.0
 );
 
-const Matrix3 Matrix3::RotateX270
-(
+const Matrix3 Matrix3::RotateX270(
 	1.0,	0.0,	0.0,
 	0.0,	0.0,	1.0,
-	0.0, -1.0,	0.0
+	0.0,   -1.0,	0.0
 );
 
-const Matrix3 Matrix3::RotateY90
-(
+const Matrix3 Matrix3::RotateY90(
 	0.0,	0.0,	1.0,
 	0.0,	1.0,	0.0,
-  -1.0,	0.0,	0.0
+   -1.0,	0.0,	0.0
 );
 
-const Matrix3 Matrix3::RotateY180
-(
-  -1.0,	0.0,	0.0,
+const Matrix3 Matrix3::RotateY180(
+   -1.0,	0.0,	0.0,
 	0.0,	1.0,	0.0,
-	0.0,	0.0, -1.0
+	0.0,	0.0,   -1.0
 );
 
-const Matrix3 Matrix3::RotateY270
-(
-	0.0,	0.0, -1.0,
+const Matrix3 Matrix3::RotateY270(
+	0.0,	0.0,   -1.0,
 	0.0,	1.0,	0.0,
 	1.0,	0.0,	0.0
 );
 
-const Matrix3 Matrix3::RotateZ90
-(
-	0.0, -1.0,	0.0,
+const Matrix3 Matrix3::RotateZ90(
+	0.0,   -1.0,	0.0,
 	1.0,	0.0,	0.0,
 	0.0,	0.0,	1.0
 );
 
-const Matrix3 Matrix3::RotateZ180
-(
-  -1.0,	0.0,	0.0,
-	0.0, -1.0,	0.0,
+const Matrix3 Matrix3::RotateZ180(
+   -1.0,	0.0,	0.0,
+	0.0,   -1.0,	0.0,
 	0.0,	0.0,	1.0
 );
 
-const Matrix3 Matrix3::RotateZ270
-(
+const Matrix3 Matrix3::RotateZ270(
 	0.0,	1.0,	0.0,
-  -1.0,	0.0,	0.0,
+   -1.0,	0.0,	0.0,
 	0.0,	0.0,	1.0
 );
 
@@ -142,22 +132,19 @@ Matrix3::Matrix3(const Matrix4 & m)
 	Row[2].Set(m[2][0],m[2][1],m[2][2]);
 }
 
-void Matrix3::Set(const Matrix3D & m)
-{
+void Matrix3::Set( const Matrix3D& m ){
 	Row[0].Set(m[0][0],m[0][1],m[0][2]);
 	Row[1].Set(m[1][0],m[1][1],m[1][2]);
 	Row[2].Set(m[2][0],m[2][1],m[2][2]);
 }
 
-void Matrix3::Set(const Matrix4 & m)
-{
+void Matrix3::Set( const Matrix4& m ){
 	Row[0].Set(m[0][0],m[0][1],m[0][2]);
 	Row[1].Set(m[1][0],m[1][1],m[1][2]);
 	Row[2].Set(m[2][0],m[2][1],m[2][2]);
 }
 
-void Matrix3::Set(const Quaternion & q)
-{
+void Matrix3::Set( const Quaternion& q ){
 	Row[0][0] = (float)(1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]));
 	Row[0][1] = (float)(2.0 * (q[0] * q[1] - q[2] * q[3]));
 	Row[0][2] = (float)(2.0 * (q[2] * q[0] + q[1] * q[3]));
@@ -168,7 +155,7 @@ void Matrix3::Set(const Quaternion & q)
 
 	Row[2][0] = (float)(2.0 * (q[2] * q[0] - q[1] * q[3]));
 	Row[2][1] = (float)(2.0 * (q[1] * q[2] + q[0] * q[3]));
-	Row[2][2] =(float)(1.0 - 2.0 * (q[1] * q[1] + q[0] * q[0]));
+	Row[2][2] = (float)(1.0 - 2.0 * (q[1] * q[1] + q[0] * q[0]));
 }
 
 
@@ -251,37 +238,6 @@ Matrix3 operator * (const Matrix3 & a, const Matrix3D & b)
 	
 	#undef ROWCOL
 }
-
-
-#if 0
-
-void Matrix3::Compute_Jacobi_Rotation(int i,int j,Matrix3 * r,Matrix3 * rinv)
-{
-
-}
-
-void Matrix3::Symmetric_Eigen_Solve(void)
-{
-	Matrix3 eigen_vals = *this;
-	Matrix3 eigen_vecs(1);
-
-	Matrix3 jr,jrinv;
-
-	while (!done) {
-		eigen_vals.Compute_Jacobi_Rotation(i,j,&jr,&jrinv);
-		eigen_vals = jr * (eigenvals) * jrinv;
-		eigen_vecs = eigen_vecs * jr;
-	}
-
-	/*
-	** Done!  Eigen values are the diagonals of
-	** the eigen_vals matrix and the eigen vectors
-	** are the columns of the eigen_vecs matrix
-	*/
-
-}
-
-#endif
 
 
 void Matrix3::Multiply(const Matrix3 & A,const Matrix3 & B,Matrix3 * set_res)

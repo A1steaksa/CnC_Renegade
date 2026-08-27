@@ -989,8 +989,7 @@ TextureClass* Load_Texture( ChunkLoadClass& cload ){
 					// Do nothing.
 					break;
 
-				case W3DTEXTURE_TYPE_BUMPMAP:
-				{
+				case W3DTEXTURE_TYPE_BUMPMAP: {
 					if (DX8Wrapper::Is_Initted() && DX8Wrapper::Get_Current_Caps()->Support_Bump_Envmap()) {
 						// No mipmaps to bumpmap for now
 						mipcount=TextureClass::MIP_LEVELS_1;

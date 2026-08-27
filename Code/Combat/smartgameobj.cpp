@@ -188,40 +188,29 @@ void SmartGameObj::Copy_Settings( const SmartGameObjDef& definition ){
 	}
 }
 
-/*
-**
-*/
-void	SmartGameObj::Re_Init( const SmartGameObjDef & definition )
-{
+
+void SmartGameObj::Re_Init( const SmartGameObjDef& definition ){
 	ArmedGameObj::Re_Init( definition );
 
-	//
-	//	Remove the listener from the scene
-	//
-	if ( Listener != NULL ) {
+	// Remove the listener from the scene
+	if( Listener != NULL ){
 		Listener->Remove_From_Scene();
 	}
 
-	//
-	//	Free the stealth effect as necessary
-	//
-	if (StealthEffect != NULL) {
-		REF_PTR_RELEASE (StealthEffect);
-		StealthEnabled			= false;
+	// Free the stealth effect as necessary
+	if( StealthEffect != NULL ){
+		REF_PTR_RELEASE( StealthEffect );
+		StealthEnabled = false;
 		StealthPowerupTimer	= 0.0F;
 		StealthFiringTimer	= 0.0F;
 	}
 
-	//
-	//	Copy any internal settings from the definition
-	//
+	// Copy any internal settings from the definition
 	Copy_Settings( definition );
-	return ;
 }
 
-const SmartGameObjDef & SmartGameObj::Get_Definition( void ) const
-{
-	return (const SmartGameObjDef &)BaseGameObj::Get_Definition();
+const SmartGameObjDef & SmartGameObj::Get_Definition(void) const {
+	return (const SmartGameObjDef&) BaseGameObj::Get_Definition();
 }
 
 
@@ -487,8 +476,7 @@ bool SmartGameObj::Is_Human_Controlled(void){
 	return ControlOwner >= 0;
 }
 
-bool SmartGameObj::Is_Controlled_By_Me(void)
-{
+bool SmartGameObj::Is_Controlled_By_Me(void){
 	if( !CombatManager::I_Am_Client() ){
 		return false;
 	}
@@ -610,8 +598,7 @@ void SmartGameObj::Apply_Control( void )
 	}
 }
 
-void SmartGameObj::Think()
-{
+void SmartGameObj::Think(){
 	{	
 		WWPROFILE( "Smart Think" );
 
@@ -692,19 +679,19 @@ void SmartGameObj::Think()
 			}
 		}
 	}
+
 	{
-	WWPROFILE("Embedded Armed think in smart think");
-	ArmedGameObj::Think();
+		WWPROFILE("Embedded Armed think in smart think");
+		ArmedGameObj::Think();
 	}
 }
 
-void	SmartGameObj::Post_Think( void ) 
-{
+void SmartGameObj::Post_Think( void ){
 	ArmedGameObj::Post_Think();
 
 	WWPROFILE( "Smart PostThink" );
 
-	if ( Is_Delete_Pending() ) {				// don't update if destroying... (so we don't create a new laser!)
+	if( Is_Delete_Pending() ){ // don't update if destroying... (so we don't create a new laser!)
 		return;
 	}
 
@@ -788,13 +775,12 @@ void	SmartGameObj::On_Logical_Heard (LogicalListenerClass *listener, LogicalSoun
 }
 
 
-void SmartGameObj::Register_Listener(void)
-{
-	if (Listener != NULL) {
+void SmartGameObj::Register_Listener(void){
+	if( Listener != NULL ){
 		const SmartGameObjDef& definition = Get_Definition();
-		Listener->Set_Scale(definition.ListenerScale);
+		Listener->Set_Scale( definition.ListenerScale );
 		Listener->Set_DropOff_Radius( 0.001f );
-		Listener->Attach_To_Object(Peek_Model());
+		Listener->Attach_To_Object( Peek_Model() );
 		Listener->Add_To_Scene();
 	}
 }

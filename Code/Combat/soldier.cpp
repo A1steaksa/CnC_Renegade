@@ -445,69 +445,55 @@ void	SoldierGameObj::Prepare_Speech_Framework( void ) {
 }
 
 
-void	SoldierGameObj::Re_Init( const SoldierGameObjDef& definition ) {
-	if ( this == COMBAT_STAR ) {
+void SoldierGameObj::Re_Init( const SoldierGameObjDef& definition ){
+	if( this == COMBAT_STAR ){
 		HUDClass::Force_Weapon_Chart_Update();
 		WeaponViewClass::Reset();
 	}
 
-	//
-	//	Remove the object from the world (just to be safe)
-	//
+	// Remove the object from the world (just to be safe)
 	COMBAT_SCENE->Remove_Object( Peek_Physical_Object() );
 
-	//
-	//	Reset the weapon model
-	//
+	// Reset the weapon model
 	Set_Weapon_Model( NULL );
 
-	if ( BackWeaponRenderModel != NULL ) {
+	if( BackWeaponRenderModel != NULL ){
 		Peek_Model()->Remove_Sub_Object( BackWeaponRenderModel );
 		BackWeaponRenderModel->Release_Ref();
 		BackWeaponRenderModel = NULL;
 	}
 
-	if ( BackFlagRenderModel != NULL ) {
+	if( BackFlagRenderModel != NULL ){
 		Peek_Model()->Remove_Sub_Object( BackFlagRenderModel );
 		BackFlagRenderModel->Release_Ref();
 		BackFlagRenderModel = NULL;
 	}
 
-	if ( WeaponAnimControl != NULL ) {
+	if( WeaponAnimControl != NULL ){
 		delete WeaponAnimControl;
 		WeaponAnimControl = NULL;
 	}
 
-	//
-	//	Re-initialize the base class
-	//
+	// Re-initialize the base class
 	SmartGameObj::Re_Init( definition );
 
-	//
-	//	Free some of the data we will be re-initializing
-	//
+	// Free some of the data we will be re-initializing
 	REF_PTR_RELEASE( HeadModel );
 	REF_PTR_RELEASE( SpeechAnim );
 	REF_PTR_RELEASE( CurrentSpeech );
 
 	HumanState.Reset();
 
-	//
-	//	Copy any internal settings from the definition
-	//
+	// Copy any internal settings from the definition
 	Copy_Settings( definition );
 
-	//
-	//	"Dirty" the object for networking
-	//
+	// "Dirty" the object for networking
 	Set_Object_Dirty_Bit( NetworkObjectClass::BIT_RARE, true );
 
 	// When class changes, update for new weapon
-	if ( this == COMBAT_STAR ) {
+	if( this == COMBAT_STAR ){
 		HUDClass::Reset();
 	}
-
-	return;
 }
 
 
@@ -1765,10 +1751,10 @@ void SoldierGameObj::Handle_Legs( void ) {
 			int ground_type = Peek_Human_Phys()->Get_Contact_Surface_Type();
 
 			// Try effects on ladders again BMG
-			/**/if ( Is_On_Ladder() ) {
+			if ( Is_On_Ladder() ) {
 				my_type = SurfaceEffectsManager::HITTER_TYPE_FOOTSTEP_LADDER;
 				ground_type = SURFACE_TYPE_LIGHT_METAL;
-			}/**/
+			}
 
 			Matrix3D tm;
 			tm = Get_Transform();
@@ -1949,13 +1935,8 @@ void SoldierGameObj::Think( void ) {
 			}
 		}
 
-		if ( Get_State() == HumanStateClass::DESTROY ) {
-			if ( HumanState.Get_State_Timer() > CORPSE_PERSIST_TIME ) {
-				// If Human Controlled, drop a backpack
-				if ( Is_Human_Controlled() ) {
-					//				PowerUpGameObj::Create_Backpack( this );	// No more backpacks
-				}
-
+		if ( Get_State() == HumanStateClass::DESTROY ){
+			if ( HumanState.Get_State_Timer() > CORPSE_PERSIST_TIME ){
 				Set_Delete_Pending();
 			}
 		}
@@ -2098,8 +2079,8 @@ void SoldierGameObj::Think( void ) {
 	}
 }
 
-void SoldierGameObj::Post_Think( void ) {
-	if ( Get_State() == HumanStateClass::IN_VEHICLE ) {
+void SoldierGameObj::Post_Think(void){
+	if( Get_State() == HumanStateClass::IN_VEHICLE ){
 		SmartGameObj::Post_Think();
 		return;
 	}
@@ -2111,19 +2092,19 @@ void SoldierGameObj::Post_Think( void ) {
 
 		bool update_weapon = false;
 
-		if ( WeaponChanged ) {
+		if( WeaponChanged ){
 			WeaponChanged = false;
 			Update_Back_Gun();
 			update_weapon = true;
 		}
 
-		if ( ( Get_Weapon() != NULL ) && ( Get_Weapon()->Is_Model_Update_Needed() ) ) {
+		if( ( Get_Weapon() != NULL ) && ( Get_Weapon()->Is_Model_Update_Needed() ) ){
 			update_weapon = true;
-			Get_Weapon()->Reset_Model_Update();			// reset model update needed
+			Get_Weapon()->Reset_Model_Update(); // reset model update needed
 		}
 
 
-		if ( update_weapon ) {
+		if( update_weapon ){
 			if ( Get_Weapon() != NULL ) {
 				Set_Weapon_Model( Get_Weapon()->Get_Model_Name() );
 			} else {
@@ -2131,23 +2112,22 @@ void SoldierGameObj::Post_Think( void ) {
 			}
 		}
 
-		if ( WeaponAnimControl ) {
-			WeaponAnimControl->Update( TimeManager::Get_Frame_Seconds() );			// update the animation control
+		if( WeaponAnimControl ){
+			WeaponAnimControl->Update( TimeManager::Get_Frame_Seconds() ); // update the animation control
 		}
-
 
 		Handle_Head_look();
 
-		if ( Get_Weapon() != NULL && Get_State() == HumanStateClass::ON_FIRE ) {
+		if( Get_Weapon() != NULL && Get_State() == HumanStateClass::ON_FIRE ){
 			Get_Weapon()->Set_Primary_Triggered( false );
 			Get_Weapon()->Set_Secondary_Triggered( false );
 		}
 
 	}
+
 	SmartGameObj::Post_Think();
 
 	Update_Healing_Effect();
-
 }
 
 const Matrix3D& SoldierGameObj::Get_Muzzle( int index ) {
@@ -2434,15 +2414,15 @@ void	SoldierGameObj::Start_Transition_Animation( const char* anim_name, Transiti
 }
 
 void SoldierGameObj::Set_Weapon_Model( const char* model_name ) {
-	if ( WeaponRenderModel != NULL ) {		// remove old gun model
-		if ( Peek_Model() != NULL ) {
-			Peek_Model()->Remove_Sub_Object( WeaponRenderModel );		// Clean the bone
+	if( WeaponRenderModel != NULL ){ // remove old gun model
+		if( Peek_Model() != NULL ){
+			Peek_Model()->Remove_Sub_Object( WeaponRenderModel ); // Clean the bone
 		}
 		WeaponRenderModel->Release_Ref();
 		WeaponRenderModel = NULL;
 	}
 
-	if ( ( model_name != NULL ) && ( *model_name != 0 ) ) {
+	if( ( model_name != NULL ) && ( *model_name != 0 ) ){
 
 		StringClass stripped_name( true );
 		Get_Render_Obj_Name_From_Filename( stripped_name, model_name );
@@ -2548,18 +2528,17 @@ void SoldierGameObj::Set_Back_Flag_Model( const char* model_name,
 	}
 }
 
-void	SoldierGameObj::Update_Back_Gun( void ) {
+void SoldierGameObj::Update_Back_Gun( void ) {
 	WeaponClass* next_weapon = WeaponBag->Get_Next_Weapon();
 	if ( next_weapon && ( next_weapon != Get_Weapon() ) ) {
 		Set_Back_Weapon_Model( next_weapon->Get_Back_Model_Name() );
-	}
-	else {
+	}else{
 		Set_Back_Weapon_Model( NULL );
 	}
 }
 
 //------------------------------------------------------------------------------------
-float SoldierGameObj::Get_Weapon_Height( void ) {
+float SoldierGameObj::Get_Weapon_Height(void){
 	float height = 1.62f;		// set to be at about eye level
 	if ( Is_Crouched() ) {
 		height -= 0.56f;
@@ -2568,7 +2547,7 @@ float SoldierGameObj::Get_Weapon_Height( void ) {
 }
 
 //------------------------------------------------------------------------------------
-float SoldierGameObj::Get_Weapon_Length( void ) {
+float SoldierGameObj::Get_Weapon_Length(void){
 	return 0.8f;		// forward offset, move to weapon
 }
 
@@ -3989,21 +3968,18 @@ void SoldierGameObj::Update_Healing_Effect( void ) {
 
 void SoldierGameObj::Enable_Ghost_Collision( bool onoff ) {
 	bool is_using_ghost_collision = ( Peek_Physical_Object()->Get_Collision_Group() == SOLDIER_GHOST_COLLISION_GROUP );
-	if ( onoff == is_using_ghost_collision ) {
+	if( onoff == is_using_ghost_collision ){
 		return;
 	}
 
 	//
 	//	Change the collision group as necessary
 	//
-	if ( onoff ) {
+	if( onoff ){
 		Peek_Physical_Object()->Set_Collision_Group( SOLDIER_GHOST_COLLISION_GROUP );
-	}
-	else {
+	}else{
 		Peek_Physical_Object()->Set_Collision_Group( SOLDIER_COLLISION_GROUP );
 	}
-
-	return;
 }
 
 
@@ -4165,7 +4141,7 @@ float		SoldierGameObj::Get_Stealth_Fade_Distance( void ) const {
 }
 
 
-void	SoldierGameObj::Lock_Facing( PhysicalGameObj* game_obj, bool turn_body ) {
+void SoldierGameObj::Lock_Facing( PhysicalGameObj* game_obj, bool turn_body ){
 	FacingObject = game_obj;
 	FacingAllowBodyTurn = turn_body;
 
@@ -4175,13 +4151,11 @@ void	SoldierGameObj::Lock_Facing( PhysicalGameObj* game_obj, bool turn_body ) {
 	if ( game_obj == NULL ) {
 		Cancel_Look_At();
 	}
-
-	return;
 }
 
 
-void	SoldierGameObj::Update_Locked_Facing( void ) {
-	if ( FacingObject != NULL ) {
+void SoldierGameObj::Update_Locked_Facing(void){
+	if( FacingObject != NULL ){
 
 		//
 		//	Get the position of the object we're "looking" at.
@@ -4192,7 +4166,7 @@ void	SoldierGameObj::Update_Locked_Facing( void ) {
 		//
 		//	If the object is a soldier, then look at his head
 		//
-		if ( FacingObject.Get_Ptr()->As_PhysicalGameObj()->As_SoldierGameObj() != NULL ) {
+		if( FacingObject.Get_Ptr()->As_PhysicalGameObj()->As_SoldierGameObj() != NULL ){
 			const float SOLDIER_HEIGHT = 1.7F;
 			pos.Z += SOLDIER_HEIGHT;
 		}
@@ -4205,10 +4179,8 @@ void	SoldierGameObj::Update_Locked_Facing( void ) {
 		//
 		//	If we can turn to face the object, do so...
 		//
-		if ( FacingAllowBodyTurn ) {
+		if( FacingAllowBodyTurn ){
 			Internal_Set_Targeting( pos, false );
 		}
 	}
-
-	return;
 }

@@ -69,8 +69,7 @@ class LightClass;
 ** - we need the direction of the lights in eye-space
 ** - the ambient light from all lights should be added into the ambient light (not just scene)
 */
-class LightEnvironmentClass 
-{
+class LightEnvironmentClass  {
 public:
 
 	LightEnvironmentClass(void);

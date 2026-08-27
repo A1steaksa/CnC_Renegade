@@ -169,8 +169,7 @@ private:
 	friend class MeshClass;
 };
 
-WWINLINE const Matrix3D &	HTreeClass::Get_Root_Transform(void) const
-{
+WWINLINE const Matrix3D& HTreeClass::Get_Root_Transform(void) const {
 	return Pivot[0].Transform;
 }
 

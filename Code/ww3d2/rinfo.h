@@ -71,45 +71,45 @@ const unsigned MAX_OVERRIDE_FLAG_LEVEL=32;
 */
 class RenderInfoClass {
 public:
-	RenderInfoClass(CameraClass & cam);
+	RenderInfoClass( CameraClass& cam );
 	~RenderInfoClass(void);
 
 	enum RINFO_OVERRIDE_FLAGS {
-		RINFO_OVERRIDE_DEFAULT						= 0x0000,	// No overrides
-		RINFO_OVERRIDE_FORCE_TWO_SIDED			= 0x0001,	// Override mesh settings to force no backface culling
-		RINFO_OVERRIDE_FORCE_SORTING				= 0x0002,	// Override mesh settings to force sorting
-		RINFO_OVERRIDE_ADDITIONAL_PASSES_ONLY	= 0x0004,	// Do not render base passes (only additional passes)
-		RINFO_OVERRIDE_SHADOW_RENDERING			= 0x0008		// Hint: we are rendering a shadow
+		RINFO_OVERRIDE_DEFAULT = 0x0000,	// No overrides
+		RINFO_OVERRIDE_FORCE_TWO_SIDED = 0x0001,	// Override mesh settings to force no backface culling
+		RINFO_OVERRIDE_FORCE_SORTING = 0x0002,	// Override mesh settings to force sorting
+		RINFO_OVERRIDE_ADDITIONAL_PASSES_ONLY = 0x0004,	// Do not render base passes (only additional passes)
+		RINFO_OVERRIDE_SHADOW_RENDERING = 0x0008		// Hint: we are rendering a shadow
 	};
 
-	void								Push_Material_Pass(MaterialPassClass * matpass);
-	void								Pop_Material_Pass(void);
+	void Push_Material_Pass(MaterialPassClass * matpass);
+	void Pop_Material_Pass(void);
 
-	int								Additional_Pass_Count(void);
-	MaterialPassClass *			Peek_Additional_Pass(int i);
+	int Additional_Pass_Count(void);
+	MaterialPassClass* Peek_Additional_Pass(int i);
 
-	void								Push_Override_Flags(RINFO_OVERRIDE_FLAGS flg);	// Saves current override flags on stack and installs a new one
-	void								Pop_Override_Flags(void);								// Restores previous override flags from stack
-	RINFO_OVERRIDE_FLAGS &		Current_Override_Flags(void);							// Access to current override flags
+	void Push_Override_Flags(RINFO_OVERRIDE_FLAGS flg);	// Saves current override flags on stack and installs a new one
+	void Pop_Override_Flags(void);								// Restores previous override flags from stack
+	RINFO_OVERRIDE_FLAGS& Current_Override_Flags(void);							// Access to current override flags
 
-	CameraClass &					Camera;
+	CameraClass& Camera;
 
-	float								fog_scale;
-	float								fog_start;
-	float								fog_end;
+	float fog_scale;
+	float fog_start;
+	float fog_end;
 
-	LightEnvironmentClass*		light_environment;
+	LightEnvironmentClass* light_environment;
 
 protected:
-	MaterialPassClass*			AdditionalMaterialPassArray[MAX_ADDITIONAL_MATERIAL_PASSES];
-	unsigned							AdditionalMaterialPassCount;
-	unsigned							RejectedMaterialPasses;
-	RINFO_OVERRIDE_FLAGS			OverrideFlag[MAX_OVERRIDE_FLAG_LEVEL];
-	unsigned							OverrideFlagLevel;
+	MaterialPassClass* AdditionalMaterialPassArray[MAX_ADDITIONAL_MATERIAL_PASSES];
+	unsigned AdditionalMaterialPassCount;
+	unsigned RejectedMaterialPasses;
+	RINFO_OVERRIDE_FLAGS OverrideFlag[MAX_OVERRIDE_FLAG_LEVEL];
+	unsigned OverrideFlagLevel;
 
 };
 
-	
+
 /**
 ** SpecialRenderInfoClass
 ** This structure also contains a "grab-bag" of junk for use by the Special_Render
@@ -122,9 +122,8 @@ protected:
 ** 
 ** The reason for a Special_Render function is that I didn't want to pollute
 ** the main rendering pipeline with checks for these alternate rendering operations.
-*/	
-class SpecialRenderInfoClass : public RenderInfoClass
-{	
+*/
+class SpecialRenderInfoClass : public RenderInfoClass {	
 
 public:	
 	SpecialRenderInfoClass(CameraClass & cam,int render_type);

@@ -46,17 +46,16 @@
 //	UnitCoordinationZoneMgr
 //
 //////////////////////////////////////////////////////////////////////
-class UnitCoordinationZoneMgr
-{
+class UnitCoordinationZoneMgr {
 public:
 
 	///////////////////////////////////////////////////////////////////
 	//	Public methods
 	///////////////////////////////////////////////////////////////////
-	static void		Build_Zones (void);
-	static void		Reset (void);
-	static bool		Is_Unit_In_Zone (const Vector3 &pos);
-	static void		Display_Debug_Boxes (void);
+	static void Build_Zones(void);
+	static void Reset(void);
+	static bool Is_Unit_In_Zone( const Vector3& pos );
+	static void Display_Debug_Boxes(void);
 	
 protected:
 	
@@ -73,14 +72,13 @@ private:
 	///////////////////////////////////////////////////////////////////
 	//	Private methods
 	///////////////////////////////////////////////////////////////////
-	static void		Detect_Ladder_Zones (void);
-	static void		Detect_Elevator_Zones (void);
-	
+	static void Detect_Ladder_Zones (void);
+	static void Detect_Elevator_Zones (void);
 
 	///////////////////////////////////////////////////////////////////
 	//	Private member data
 	///////////////////////////////////////////////////////////////////
-	static DynamicVectorClass<AABoxClass>	ZoneList;
+	static DynamicVectorClass<AABoxClass> ZoneList;
 };
 
 

@@ -48,11 +48,10 @@ CullableClass::CullableClass(void) :
 	CullLink(NULL),
 	NextCollected(NULL)
 {
-	CullBox.Init(Vector3(0,0,0),Vector3(1,1,1));
+	CullBox.Init( Vector3( 0, 0, 0 ), Vector3( 1, 1, 1 ) );
 }
 
-CullableClass::~CullableClass(void)
-{
+CullableClass::~CullableClass(void){
 	// the cull system that contains us is responsible for any culling link
 	// so we better be out of it and it should have cleared our pointer before
 	// we are deleted.

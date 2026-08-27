@@ -91,22 +91,35 @@ public:
 	** object will automatically be updated in whatever culling system it is currently
 	** contained in (if any)
 	*/
-	WWINLINE const AABoxClass & Get_Cull_Box(void) const							{ return CullBox; }
-	void Set_Cull_Box(const AABoxClass & box,bool just_loaded = false);
+	WWINLINE const AABoxClass & Get_Cull_Box(void) const {
+		return CullBox;
+	}
+
+	void Set_Cull_Box( const AABoxClass& box, bool just_loaded = false );
 
 	/*
 	** These functions are used by various culling systems to manage the linkage 
 	** pointers.  *The average user should NEVER call these*
 	*/
-	void Set_Culling_System(CullSystemClass * sys);
+	void Set_Culling_System( CullSystemClass* sys );
 	CullSystemClass* Get_Culling_System(void) const;
-	WWINLINE void Set_Cull_Link(CullLinkClass * c)					{ CullLink = c; }
-	WWINLINE CullLinkClass* Get_Cull_Link(void) const							{ return CullLink; }
+	WWINLINE void Set_Cull_Link( CullLinkClass* c ){
+		CullLink = c;
+	}
+
+	WWINLINE CullLinkClass* Get_Cull_Link(void) const {
+		return CullLink;
+	}
 
 private:
 
-	WWINLINE void					Set_Next_Collected(CullableClass * c)			{ NextCollected = c; }
-	WWINLINE CullableClass *	Get_Next_Collected(void)							{ return NextCollected; }
+	WWINLINE void Set_Next_Collected( CullableClass* c ){
+		NextCollected = c;
+	}
+	
+	WWINLINE CullableClass* Get_Next_Collected(void){
+		return NextCollected;
+	}
 
 	/*
 	** Culling Data

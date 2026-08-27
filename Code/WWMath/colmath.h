@@ -76,22 +76,20 @@ const float COLLISION_EPSILON = 0.001f;
 ** CollisionMath
 ** This is a collection of the low-level math functions for collision detection.
 */
-class CollisionMath
-{
+class CollisionMath {
 public:
-
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Intersect Functions.
 	// These functions simply return a bool indicating whether the two operands intersect.
 	////////////////////////////////////////////////////////////////////////////////////////
-	static bool		Intersection_Test(const AABoxClass & box,const TriClass & tri);	
-	static bool		Intersection_Test(const AABoxClass & box,const AABoxClass & box2);
-	static bool		Intersection_Test(const AABoxClass & box,const OBBoxClass & box2);	
-	static bool		Intersection_Test(const OBBoxClass & box,const TriClass & tri);
-	static bool		Intersection_Test(const OBBoxClass & box,const AABoxClass & box2);
-	static bool		Intersection_Test(const OBBoxClass & box,const OBBoxClass & box2);
-	static bool		Intersection_Test(const SphereClass & sphere,const AABoxClass & box);
-	static bool		Intersection_Test(const SphereClass & sphere,const OBBoxClass & box);
+	static bool Intersection_Test( const AABoxClass& box, const TriClass& tri );	
+	static bool Intersection_Test( const AABoxClass& box, const AABoxClass& box2 );
+	static bool Intersection_Test( const AABoxClass& box, const OBBoxClass& box2 );	
+	static bool Intersection_Test( const OBBoxClass& box, const TriClass& tri );
+	static bool Intersection_Test( const OBBoxClass& box, const AABoxClass& box2 );
+	static bool Intersection_Test( const OBBoxClass& box, const OBBoxClass& box2 );
+	static bool Intersection_Test( const SphereClass& sphere, const AABoxClass& box );
+	static bool Intersection_Test( const SphereClass& sphere, const OBBoxClass& box );
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Overlap Functions.
@@ -102,8 +100,7 @@ public:
 	// It indicates whether the the object is in the positive (front/outside) space
 	// of the volume, the negative (back/inside) space of the volume, or both (overlapping)
 	////////////////////////////////////////////////////////////////////////////////////////
-	enum OverlapType
-	{
+	enum OverlapType {
 		POS				= 0x01,
 		NEG				= 0x02,
 		ON					= 0x04,
@@ -181,31 +178,30 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////////
 
 	// Line segment functions.  Intersect this line segment with the given object
-	static bool		Collide(const LineSegClass & line,const AAPlaneClass & plane,CastResultStruct * result);
-	static bool		Collide(const LineSegClass & line,const PlaneClass & plane,CastResultStruct * result);
-	static bool		Collide(const LineSegClass & line,const TriClass & tri,CastResultStruct * result);
-	static bool		Collide(const LineSegClass & line,const SphereClass & sphere,CastResultStruct * result);
-	static bool		Collide(const LineSegClass & line,const AABoxClass & box,CastResultStruct * result);
-	static bool		Collide(const LineSegClass & line,const OBBoxClass & box,CastResultStruct * result);
+	static bool Collide(const LineSegClass & line,const AAPlaneClass & plane,CastResultStruct * result);
+	static bool Collide(const LineSegClass & line,const PlaneClass & plane,CastResultStruct * result);
+	static bool Collide(const LineSegClass & line,const TriClass & tri,CastResultStruct * result);
+	static bool Collide(const LineSegClass & line,const SphereClass & sphere,CastResultStruct * result);
+	static bool Collide(const LineSegClass & line,const AABoxClass & box,CastResultStruct * result);
+	static bool Collide(const LineSegClass & line,const OBBoxClass & box,CastResultStruct * result);
 
 	// AABox functions
-	static bool		Collide(const AABoxClass & box,const Vector3 & move,const PlaneClass & plane,CastResultStruct * result);
-	static bool		Collide(const AABoxClass & box,const Vector3 & move,const TriClass & tri,CastResultStruct * result);
-	static bool		Collide(const AABoxClass & box,const Vector3 & move,const AABoxClass & box2,CastResultStruct * result);
-	static bool		Collide(const AABoxClass & box,const Vector3 & move,const OBBoxClass & box2,const Vector3 & move2,CastResultStruct * result);
+	static bool Collide(const AABoxClass & box,const Vector3 & move,const PlaneClass & plane,CastResultStruct * result);
+	static bool Collide(const AABoxClass & box,const Vector3 & move,const TriClass & tri,CastResultStruct * result);
+	static bool Collide(const AABoxClass & box,const Vector3 & move,const AABoxClass & box2,CastResultStruct * result);
+	static bool Collide(const AABoxClass & box,const Vector3 & move,const OBBoxClass & box2,const Vector3 & move2,CastResultStruct * result);
 
 	// OBBox functions
-	static bool		Collide(const OBBoxClass & box,const Vector3 & move,const PlaneClass & plane,CastResultStruct * result);
-	static bool		Collide(const OBBoxClass & box,const Vector3 & move,const TriClass & tri,const Vector3 & move2,CastResultStruct * result);
-	static bool		Collide(const OBBoxClass & box,const Vector3 & move,const AABoxClass & box2,const Vector3 & move2,CastResultStruct * result);
-	static bool		Collide(const OBBoxClass & box,const Vector3 & move,const OBBoxClass & box2,const Vector3 & move2,CastResultStruct * result);
+	static bool Collide(const OBBoxClass & box,const Vector3 & move,const PlaneClass & plane,CastResultStruct * result);
+	static bool Collide(const OBBoxClass & box,const Vector3 & move,const TriClass & tri,const Vector3 & move2,CastResultStruct * result);
+	static bool Collide(const OBBoxClass & box,const Vector3 & move,const AABoxClass & box2,const Vector3 & move2,CastResultStruct * result);
+	static bool Collide(const OBBoxClass & box,const Vector3 & move,const OBBoxClass & box2,const Vector3 & move2,CastResultStruct * result);
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Stats 
 	// Note that these functions will only work if you have stat tracking enabled
 	////////////////////////////////////////////////////////////////////////////////////////
-	struct ColmathStatsStruct
-	{	
+	struct ColmathStatsStruct {
 		ColmathStatsStruct(void);
 		void Reset(void);
 
@@ -228,22 +224,25 @@ public:
 		int CollisionOBBoxOBBoxHitCount;
 	};
 	
-	static void									Reset_Stats(void)				{ Stats.Reset(); }
-	static const ColmathStatsStruct &	Get_Current_Stats(void)		{ return Stats; }
+	static void Reset_Stats(void){
+		Stats.Reset();
+	}
+
+	static const ColmathStatsStruct& Get_Current_Stats(void){
+		return Stats;
+	}
 
 private:
-
-	static OverlapType eval_overlap_mask(int mask);
-	static OverlapType eval_overlap_collision(const CastResultStruct & res);
+	static OverlapType eval_overlap_mask( int mask );
+	static OverlapType eval_overlap_collision( const CastResultStruct& res );
 
 	static const float COINCIDENCE_EPSILON;
 
-	static ColmathStatsStruct				Stats;
+	static ColmathStatsStruct Stats;
 };
 
 
-inline CollisionMath::OverlapType CollisionMath::eval_overlap_mask(int mask)
-{
+inline CollisionMath::OverlapType CollisionMath::eval_overlap_mask( int mask ){
 	// check if all verts are "ON"
 	if (mask == ON) {
 		return ON;
@@ -263,15 +262,13 @@ inline CollisionMath::OverlapType CollisionMath::eval_overlap_mask(int mask)
 	return BOTH;
 }
 
-
-inline CollisionMath::OverlapType CollisionMath::eval_overlap_collision(const CastResultStruct & res)
-{
-	if (res.Fraction < 1.0f) {
+inline CollisionMath::OverlapType CollisionMath::eval_overlap_collision( const CastResultStruct& res ){
+	if( res.Fraction < 1.0f ){
 		return BOTH;
-	} else {
-		if (res.StartBad) {
+	}else{
+		if( res.StartBad ){
 			return NEG;
-		} else {
+		}else{
 			return POS;
 		}
 	}

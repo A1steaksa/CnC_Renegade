@@ -273,16 +273,34 @@ public:
 		return NULL;
 	}
 
-	virtual int						Add_Sub_Object(RenderObjClass * subobj)								{ return 0; }
-	virtual int						Remove_Sub_Object(RenderObjClass * robj)								{ return 0; }
+	virtual int Add_Sub_Object( RenderObjClass* subobj ){
+		return 0;
+	}
+	
+	virtual int Remove_Sub_Object( RenderObjClass* robj ){
+		return 0;
+	}
+
 	virtual RenderObjClass* Get_Sub_Object_By_Name( const char* name ) const;
 
-	virtual int						Get_Num_Sub_Objects_On_Bone(int boneindex) const					{ return 0; }
-	virtual RenderObjClass *	Get_Sub_Object_On_Bone(int index,int boneindex)	const				{ return NULL; }
-	virtual int						Get_Sub_Object_Bone_Index(RenderObjClass * subobj)	const 		{ return 0; }
-	virtual int						Add_Sub_Object_To_Bone(RenderObjClass * subobj,int bone_index)	{ return 0; }
-	virtual int						Add_Sub_Object_To_Bone(RenderObjClass * subobj,const char * bname);
-	virtual int						Remove_Sub_Objects_From_Bone(const char * bname);
+	virtual int Get_Num_Sub_Objects_On_Bone(int boneindex) const {
+		return 0;
+	}
+	
+	virtual RenderObjClass* Get_Sub_Object_On_Bone( int index, int boneindex) const {
+		return NULL;
+	}
+	
+	virtual int Get_Sub_Object_Bone_Index( RenderObjClass* subobj ) const {
+		return 0;
+	}
+	
+	virtual int Add_Sub_Object_To_Bone( RenderObjClass* subobj, int bone_index ){
+		return 0;
+	}
+
+	virtual int Add_Sub_Object_To_Bone( RenderObjClass* subobj, const char* bname );
+	virtual int Remove_Sub_Objects_From_Bone( const char* bname );
 
 	// This is public only so objects can recursively call this on their sub-objects
 	virtual void Update_Sub_Object_Transforms(void);
@@ -354,7 +372,11 @@ public:
 	// Intersect_Sphere - tests a ray for intersection with the bounding spheres
 	// Intersect_Sphere_Quick - tests a ray for intersection with bounding spheres
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	virtual bool					Cast_Ray(RayCollisionTestClass & raytest)								{ return false; }
+	
+	virtual bool Cast_Ray( RayCollisionTestClass& raytest ){
+		return false;
+	}
+	
 	virtual bool					Cast_AABox(AABoxCollisionTestClass & boxtest)						{ return false; }
 	virtual bool					Cast_OBBox(OBBoxCollisionTestClass & boxtest)						{ return false; }
 	
@@ -450,7 +472,10 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Render Object Interface - Attributes, Options, Properties, etc
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	virtual MaterialInfoClass * Get_Material_Info(void) 													{ return NULL; }
+	virtual MaterialInfoClass* Get_Material_Info(void){
+		return NULL;
+	}
+
 	virtual void					Set_User_Data(void *value, bool recursive = false)					{ User_Data = value; };
 	virtual void *					Get_User_Data()																{ return User_Data; };
 	virtual int						Get_Num_Snap_Points(void)													{ return 0; }
@@ -516,11 +541,25 @@ public:
 		return Scene != NULL;
 	}
 
-	virtual float					Get_Native_Screen_Size(void) const										{ return NativeScreenSize; }
-	virtual void					Set_Native_Screen_Size(float screensize)								{ NativeScreenSize = screensize; }
+	virtual float Get_Native_Screen_Size(void) const {
+		return NativeScreenSize;
+	}
+	
+	virtual void Set_Native_Screen_Size( float screensize ){
+		NativeScreenSize = screensize;
+	}
 
-	void								Set_Sub_Objects_Match_LOD(int onoff)									{ if (onoff) { Bits |= SUBOBJS_MATCH_LOD; } else { Bits &= ~SUBOBJS_MATCH_LOD; } }
-	int								Is_Sub_Objects_Match_LOD_Enabled(void)									{ return Bits & SUBOBJS_MATCH_LOD; }
+	void Set_Sub_Objects_Match_LOD( int onoff ){
+		if( onoff ){
+			Bits |= SUBOBJS_MATCH_LOD;
+		}else{
+			Bits &= ~SUBOBJS_MATCH_LOD;
+		}
+	}
+
+	int Is_Sub_Objects_Match_LOD_Enabled(void){
+		return Bits & SUBOBJS_MATCH_LOD;
+	}
 
 	void Set_Sub_Object_Transforms_Dirty( bool onoff ){
 		if( onoff ) {

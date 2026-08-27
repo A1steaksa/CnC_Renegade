@@ -273,21 +273,22 @@ void Animatable3DObjClass::Release(void){
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Render(RenderInfoClass & rinfo)
-{
-	if (HTree == NULL) return;
-
-	if (Is_Not_Hidden_At_All() == false) {
+void Animatable3DObjClass::Render( RenderInfoClass& rinfo ){
+	if( HTree == NULL ){
 		return;
 	}
 
-	if ( CurMotionMode == SINGLE_ANIM ) {
-		if ( ModeAnim.AnimMode != ANIM_MODE_MANUAL ) {
+	if( Is_Not_Hidden_At_All() == false ){
+		return;
+	}
+
+	if( CurMotionMode == SINGLE_ANIM ){
+		if( ModeAnim.AnimMode != ANIM_MODE_MANUAL ){
 			Single_Anim_Progress();
 		}
 	}
 
-	if (!Is_Hierarchy_Valid() || Are_Sub_Object_Transforms_Dirty()) {
+	if( !Is_Hierarchy_Valid() || Are_Sub_Object_Transforms_Dirty() ){
 		Update_Sub_Object_Transforms();
 	}
 }
@@ -304,17 +305,18 @@ void Animatable3DObjClass::Render(RenderInfoClass & rinfo)
  * HISTORY:                                                                                    *
  *   12/10/98   GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Special_Render(SpecialRenderInfoClass & rinfo)
-{
-	if (HTree == NULL) return;
+void Animatable3DObjClass::Special_Render( SpecialRenderInfoClass& rinfo ){
+	if( HTree == NULL ){
+		return;
+	}
 
-	if ( CurMotionMode == SINGLE_ANIM ) {
-		if ( ModeAnim.AnimMode != ANIM_MODE_MANUAL ) {
+	if( CurMotionMode == SINGLE_ANIM ){
+		if( ModeAnim.AnimMode != ANIM_MODE_MANUAL ){
 			Single_Anim_Progress();
 		}
 	}
 
-	if (!Is_Hierarchy_Valid()) {
+	if( !Is_Hierarchy_Valid() ){
 		Update_Sub_Object_Transforms();
 	}
 }
@@ -350,10 +352,9 @@ void Animatable3DObjClass::Set_Transform( const Matrix3D &m ){
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Set_Position(const Vector3 &v)
-{ 
-	CompositeRenderObjClass::Set_Position(v); 
-	Set_Hierarchy_Valid(false); 
+void Animatable3DObjClass::Set_Position( const Vector3 &v ){
+	CompositeRenderObjClass::Set_Position( v ); 
+	Set_Hierarchy_Valid( false ); 
 }
 
 
@@ -369,11 +370,10 @@ void Animatable3DObjClass::Set_Position(const Vector3 &v)
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-int Animatable3DObjClass::Get_Num_Bones(void)
-{
-	if (HTree) {
+int Animatable3DObjClass::Get_Num_Bones(void){
+	if( HTree ){
 		return HTree->Num_Pivots();
-	} else {
+	}else{
 		return 1;
 	}
 }
@@ -391,11 +391,10 @@ int Animatable3DObjClass::Get_Num_Bones(void)
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-const char * Animatable3DObjClass::Get_Bone_Name(int bone_index)
-{
-	if (HTree) {
-		return HTree->Get_Bone_Name(bone_index);
-	} else {
+const char * Animatable3DObjClass::Get_Bone_Name( int bone_index ){
+	if( HTree ){
+		return HTree->Get_Bone_Name( bone_index );
+	}else{
 		return "RootTransform";
 	}
 }
@@ -537,7 +536,6 @@ void Animatable3DObjClass::Set_Animation( HAnimComboClass* anim_combo ){
 	Set_Hierarchy_Valid(false);
 }						 
 
-
 /***********************************************************************************************
  * Animatable3DObjClass::Peek_Animation													                 *
  *                                                                                             *
@@ -550,16 +548,14 @@ void Animatable3DObjClass::Set_Animation( HAnimComboClass* anim_combo ){
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-HAnimClass *	Animatable3DObjClass::Peek_Animation( void )
-{
-	if ( CurMotionMode == SINGLE_ANIM ) {
+HAnimClass* Animatable3DObjClass::Peek_Animation(void){
+	if( CurMotionMode == SINGLE_ANIM ){
 		return ModeAnim.Motion;
-	} else {
+	}else{
 		return NULL;
 	}
 }
 
-
 /***********************************************************************************************
  * Animatable3DObjClass::Get_Bone_Transform -- return the transform for the given bone         *
  *                                                                                             *
@@ -572,20 +568,18 @@ HAnimClass *	Animatable3DObjClass::Peek_Animation( void )
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-const Matrix3D &	Animatable3DObjClass::Get_Bone_Transform(const char * bonename)
-{
-	if (HTree) {
-		WWASSERT(HTree);
-		WWASSERT(bonename);
+const Matrix3D& Animatable3DObjClass::Get_Bone_Transform( const char* bonename ){
+	if( HTree ){
+		WWASSERT( HTree );
+		WWASSERT( bonename );`
 		
-		int idx = HTree->Get_Bone_Index(bonename);
-		return Get_Bone_Transform(idx);
-	} else {
+		int idx = HTree->Get_Bone_Index( bonename );
+		return Get_Bone_Transform( idx );
+	}else{
 		return Get_Transform();
 	}
 }
 
-
 /***********************************************************************************************
  * Animatable3DObjClass::Get_Bone_Transform -- return the transform for the given bone         *
  *                                                                                             *
@@ -598,25 +592,23 @@ const Matrix3D &	Animatable3DObjClass::Get_Bone_Transform(const char * bonename)
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-const Matrix3D &	Animatable3DObjClass::Get_Bone_Transform(int boneindex)
-{
+const Matrix3D& Animatable3DObjClass::Get_Bone_Transform( int boneindex ){
 	Validate_Transform();
 
-	if (HTree) {
+	if( HTree ){
 		/*
 		** If our hierarchy isn't valid, we just need to evaluate our animation
 		** state.
 		*/
-		if (!Is_Hierarchy_Valid()) {
+		if( !Is_Hierarchy_Valid() ){
 			Update_Sub_Object_Transforms();
 		}
 
-		return HTree->Get_Transform(boneindex);
-	} else {
+		return HTree->Get_Transform( boneindex );
+	}else{
 		return Transform;
 	}
 }
-
 
 /***********************************************************************************************
  * Animatable3DObjClass::Capture_Bone -- capture the specified bone (override animation)       *
@@ -630,13 +622,11 @@ const Matrix3D &	Animatable3DObjClass::Get_Bone_Transform(int boneindex)
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Capture_Bone(int boneindex)
-{ 
-	if (HTree) {
-		HTree->Capture_Bone(boneindex); 
+void Animatable3DObjClass::Capture_Bone( int boneindex ){
+	if( HTree ){
+		HTree->Capture_Bone( boneindex );
 	}
 }
-
 
 /***********************************************************************************************
  * Animatable3DObjClass::Release_Bone -- release the specified bone (allow animation)          *
@@ -650,13 +640,11 @@ void Animatable3DObjClass::Capture_Bone(int boneindex)
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Release_Bone(int boneindex)
-{ 
-	if (HTree) {
-		HTree->Release_Bone(boneindex); 
+void Animatable3DObjClass::Release_Bone( int boneindex ){
+	if( HTree ){
+		HTree->Release_Bone( boneindex ); 
 	}
 }
-
 
 /***********************************************************************************************
  * Animatable3DObjClass::Is_Bone_Captured -- returns whether the specified bone is captured    *
@@ -670,15 +658,13 @@ void Animatable3DObjClass::Release_Bone(int boneindex)
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-bool Animatable3DObjClass::Is_Bone_Captured(int boneindex) const					
-{ 
-	if (HTree) {
-		return HTree->Is_Bone_Captured(boneindex); 
-	} else {
+bool Animatable3DObjClass::Is_Bone_Captured( int boneindex ) const {
+	if( HTree ){
+		return HTree->Is_Bone_Captured( boneindex ); 
+	}else{
 		return false;
 	}
 }
-
 
 /***********************************************************************************************
  * Animatable3DObjClass::Control_Bone -- sets the transform for the bone                       *
@@ -692,19 +678,10 @@ bool Animatable3DObjClass::Is_Bone_Captured(int boneindex) const
  * HISTORY:                                                                                    *
  *   3/2/99     GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Control_Bone(int bindex,const Matrix3D & objtm,bool world_space_translation)
-{ 
-#ifdef WWDEBUG	
-	for (int j=0; j<3; j++) {
-		for (int i=0; i<4; i++) {
-			WWASSERT(WWMath::Is_Valid_Float(objtm[j][i]));
-		}
-	}
-#endif
-
-	if (HTree) {
-		HTree->Control_Bone(bindex,objtm,world_space_translation); 
-		Set_Hierarchy_Valid(false);
+void Animatable3DObjClass::Control_Bone( int bindex, const Matrix3D& objtm, bool world_space_translation ){
+	if( HTree ){
+		HTree->Control_Bone( bindex, objtm, world_space_translation ); 
+		Set_Hierarchy_Valid( false );
 	}
 }
 
@@ -720,8 +697,7 @@ void Animatable3DObjClass::Control_Bone(int bindex,const Matrix3D & objtm,bool w
  * HISTORY:                                                                                    *
  *   12/8/98    GTH : Created.                                                                 *
  *=============================================================================================*/
-void Animatable3DObjClass::Update_Sub_Object_Transforms(void)
-{
+void Animatable3DObjClass::Update_Sub_Object_Transforms(void){
 	/*
 	** The RenderObj impementation will cause our 'container' 
 	** to update if we are not valid yet
@@ -733,11 +709,12 @@ void Animatable3DObjClass::Update_Sub_Object_Transforms(void)
 	*/
 	switch (CurMotionMode) {
 
-		case BASE_POSE:
+		case BASE_POSE: {
 			Base_Update(Transform);
 			break;
+		}
 
-		case SINGLE_ANIM:
+		case SINGLE_ANIM: {
 			if ( ModeAnim.AnimMode != ANIM_MODE_MANUAL ) {
 				Single_Anim_Progress();
 			}
@@ -750,8 +727,9 @@ void Animatable3DObjClass::Update_Sub_Object_Transforms(void)
 				ModeAnim.PrevFrame = AnimatedSoundMgrClass::Trigger_Sound(ModeAnim.Motion, ModeAnim.PrevFrame, ModeAnim.Frame, Get_Transform ());
 			}
 			break;
+		}
 
-		case DOUBLE_ANIM:
+		case DOUBLE_ANIM: {
 			Blend_Update(Transform,ModeInterp.Motion0,ModeInterp.Frame0,
 				ModeInterp.Motion1,ModeInterp.Frame1,ModeInterp.Percentage);
 
@@ -767,16 +745,16 @@ void Animatable3DObjClass::Update_Sub_Object_Transforms(void)
 			}
 
   			break;
+		}
 
-		case MULTIPLE_ANIM:
-		{
-			Combo_Update(Transform,ModeCombo.AnimCombo);
+		case MULTIPLE_ANIM: {
+			Combo_Update( Transform, ModeCombo.AnimCombo );
 
 			/*
 			**	Play any sounds that are triggered by this frame of animation
 			*/
 			int count = ModeCombo.AnimCombo->Get_Num_Anims();
-			for (int index = 0; index < count; index ++) {				
+			for( int index = 0; index < count; index++ ){				
 				HAnimClass *motion = ModeCombo.AnimCombo->Peek_Motion(index);
 
 				if ( motion != NULL && motion->Has_Embedded_Sounds() ) {
@@ -968,13 +946,13 @@ void Animatable3DObjClass::Single_Anim_Progress (void)
  * HISTORY:                                                                                    *
  *   4/13/99    BMG : Created.                                                                 *
  *=============================================================================================*/
-bool Animatable3DObjClass::Is_Animation_Complete( void ) const {
-	if (CurMotionMode == SINGLE_ANIM) {
-	
-		if ( ModeAnim.AnimMode == ANIM_MODE_ONCE ) {
+bool Animatable3DObjClass::Is_Animation_Complete(void) const {
+	if( CurMotionMode == SINGLE_ANIM ){	
+		if( ModeAnim.AnimMode == ANIM_MODE_ONCE ){
 			return ( ModeAnim.Frame == ModeAnim.Motion->Get_Num_Frames() - 1 );
 		}
 	}
+
 	return false;
 }
 

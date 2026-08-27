@@ -1228,26 +1228,30 @@ bool MeshGeometryClass::cast_obbox_brute_force(OBBoxCollisionTestClass & boxtest
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshGeometryClass::Compute_Plane_Equations(Vector4 * peq)
-{
-	WWASSERT(peq!=NULL);
+void MeshGeometryClass::Compute_Plane_Equations( Vector4* peq ){
+	WWASSERT( peq != NULL );
 
-	TriIndex * poly	= Poly->Get_Array();
-	Vector3 * vert		= Vertex->Get_Array();
+	TriIndex* poly = Poly->Get_Array();
+	Vector3* vert = Vertex->Get_Array();
 
-	for(int pidx = 0; pidx < PolyCount; pidx++)
-	{
-		Vector3 a,b,normal;
-		const Vector3 & p0= vert[poly[pidx][0]];
+	for( int pidx = 0; pidx < PolyCount; pidx++ ){
+		Vector3 a, b, normal;
+		const Vector3& p0 = vert[poly[pidx][0]];
 
-		Vector3::Subtract(vert[poly[pidx][1]],p0,&a);
-		Vector3::Subtract(vert[poly[pidx][2]],p0,&b);
-		Vector3::Cross_Product(a,b,&normal);
+		Vector3::Subtract( vert[poly[pidx][1]], p0, &a );
+		Vector3::Subtract( vert[poly[pidx][2]], p0, &b );
+		Vector3::Cross_Product( a, b, &normal );
 		normal.Normalize();
 
-		peq[pidx].Set( normal.X, normal.Y, normal.Z, -(Vector3::Dot_Product(p0,normal)) );
+		peq[pidx].Set(
+			normal.X,
+			normal.Y,
+			normal.Z,
+			-( Vector3::Dot_Product( p0, normal ) )
+		);
 	}
-	Set_Flag(DIRTY_PLANES,false);
+
+	Set_Flag( DIRTY_PLANES, false );
 }
 
 
@@ -1265,10 +1269,9 @@ void MeshGeometryClass::Compute_Plane_Equations(Vector4 * peq)
  * HISTORY:                                                                                    *
  *   11/9/2000  gth : Created.                                                                 *
  *=============================================================================================*/
-void MeshGeometryClass::Compute_Vertex_Normals(Vector3 * vnorm)
-{
-	WWASSERT(vnorm != NULL);
-	if ((PolyCount == 0)|| (VertexCount == 0)) {
+void MeshGeometryClass::Compute_Vertex_Normals( Vector3* vnorm ){
+	WWASSERT( vnorm != NULL );
+	if( ( PolyCount == 0 ) || ( VertexCount == 0 ) ){
 		return;
 	}
 
@@ -1279,12 +1282,10 @@ void MeshGeometryClass::Compute_Vertex_Normals(Vector3 * vnorm)
 	// Two cases, with or without vertex shade indices.  The vertex shade indices
 	// implicitly contain the smoothing groups information from the original mesh.
 	// In their abscesnce, the entire mesh is smoothed.
-	if (!shadeIx) {
+	if( !shadeIx ){
+		VectorProcessorClass::Clear( vnorm, VertexCount );
 
-		VectorProcessorClass::Clear(vnorm, VertexCount);
-
-		for(int pidx = 0; pidx < PolyCount; pidx++) {
-
+		for( int pidx = 0; pidx < PolyCount; pidx++ ){
 			vnorm[poly[pidx].I].X += peq[pidx].X;
 			vnorm[poly[pidx].I].Y += peq[pidx].Y;
 			vnorm[poly[pidx].I].Z += peq[pidx].Z;
@@ -1297,13 +1298,10 @@ void MeshGeometryClass::Compute_Vertex_Normals(Vector3 * vnorm)
 			vnorm[poly[pidx].K].Y += peq[pidx].Y;
 			vnorm[poly[pidx].K].Z += peq[pidx].Z;
 		}
-	
-	} else {
-	
-		VectorProcessorClass::Clear (vnorm, VertexCount);
+	}else{
+		VectorProcessorClass::Clear( vnorm, VertexCount );
 
-		for (int pidx = 0; pidx < PolyCount; pidx++)	{
-
+		for( int pidx = 0; pidx < PolyCount; pidx++ ){
 			vnorm[shadeIx[poly[pidx].I]].X += peq[pidx].X;
 			vnorm[shadeIx[poly[pidx].I]].Y += peq[pidx].Y;
 			vnorm[shadeIx[poly[pidx].I]].Z += peq[pidx].Z;
@@ -1403,17 +1401,11 @@ Vector3* MeshGeometryClass::get_vert_normals(void){
  * HISTORY:                                                                                    *
  *   6/14/2001  gth : Created.                                                                 *
  *=============================================================================================*/
-const Vector3 * MeshGeometryClass::Get_Vertex_Normal_Array(void)
-{ 
-#if (OPTIMIZE_VNORM_RAM)
-	Compute_Vertex_Normals(get_vert_normals());
-	return get_vert_normals(); 
-#else
-	if (Get_Flag(DIRTY_VNORMALS)) {
-		Compute_Vertex_Normals(get_vert_normals());
+const Vector3 * MeshGeometryClass::Get_Vertex_Normal_Array(void){
+	if( Get_Flag(DIRTY_VNORMALS) ){
+		Compute_Vertex_Normals( get_vert_normals() );
 	}
-	return get_vert_normals(); 
-#endif
+	return get_vert_normals();
 }
 
 
@@ -1448,19 +1440,10 @@ Vector4* MeshGeometryClass::get_planes( bool create ){
  * HISTORY:                                                                                    *
  *   6/14/2001  gth : Created.                                                                 *
  *=============================================================================================*/
-const Vector4 * MeshGeometryClass::Get_Plane_Array(bool create)
-{ 
-#if (OPTIMIZE_PLANEEQ_RAM)
-	Vector4 * planes = get_planes(create);
-	Compute_Plane_Equations(planes);
+const Vector4 * MeshGeometryClass::Get_Plane_Array( bool create ){
+	Vector4* planes = get_planes( create );
+	Compute_Plane_Equations( planes );
 	return planes;
-#else
-	Vector4 * planes = get_planes(create);
-	if (planes && Get_Flag(DIRTY_PLANES)) {
-		Compute_Plane_Equations(planes);
-	}
-	return planes;
-#endif
 }
 
 /***********************************************************************************************
@@ -1891,7 +1874,7 @@ WW3DErrorType MeshGeometryClass::read_vertex_influences( ChunkLoadClass& cload )
 		if( cload.Read( &vinf, sizeof(W3dVertInfStruct) ) != sizeof(W3dVertInfStruct) ){
 			return WW3D_ERROR_LOAD_FAILED;
 		}
-		links[i] = vinf.BoneIdx;		
+		links[i] = vinf.BoneIdx;
 	}	
 	Set_Flag( SKIN, true );
 

@@ -172,8 +172,7 @@ HRawAnimClass::HRawAnimClass(void) :
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-HRawAnimClass::~HRawAnimClass(void)
-{
+HRawAnimClass::~HRawAnimClass(void){
 	Free();
 }
 
@@ -519,9 +518,7 @@ void HRawAnimClass::Get_Translation(Vector3& trans, int pividx, float frame ) co
  * HISTORY:                                                                                    * 
  *   08/11/1997 GH  : Created.                                                                 * 
  *=============================================================================================*/
-void HRawAnimClass::Get_Orientation(Quaternion& q, int pividx,float frame) const
-{
-//	int frame0 = (int)frame;
+void HRawAnimClass::Get_Orientation(Quaternion& q, int pividx,float frame) const {
 	int frame0=WWMath::Float_To_Long(frame-0.499999f);
 	int frame1 = frame0 + 1;
 

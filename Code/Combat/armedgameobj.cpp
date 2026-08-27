@@ -149,11 +149,10 @@ ArmedGameObj::~ArmedGameObj( void ){
 void ArmedGameObj::Init( const ArmedGameObjDef&  definition ){
 	PhysicalGameObj::Init( definition );
 	Copy_Settings( definition );
-	return;
 }
 
 void ArmedGameObj::Copy_Settings( const ArmedGameObjDef&  definition ){
-	WeaponClass*  weapon = NULL;
+	WeaponClass* weapon = NULL;
 	if( definition.WeaponDefID != 0 ){
 		weapon = WeaponBag->Add_Weapon( definition.WeaponDefID, definition.WeaponRounds );
 	}
@@ -170,7 +169,6 @@ void ArmedGameObj::Copy_Settings( const ArmedGameObjDef&  definition ){
 	}
 
 	Init_Muzzle_Bones();
-	return;
 }
 
 void ArmedGameObj::Re_Init( const ArmedGameObjDef&  definition ){
@@ -204,8 +202,6 @@ void ArmedGameObj::Re_Init( const ArmedGameObjDef&  definition ){
 		WeaponBag->Move_Contents( old_bag );
 		delete old_bag;
 	}
-
-	return;
 }
 
 const ArmedGameObjDef& ArmedGameObj::Get_Definition(void) const {

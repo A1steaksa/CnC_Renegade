@@ -56,8 +56,7 @@
 **
 ** The default state of ComputeContactPoint is *false*
 */
-struct CastResultStruct
-{
+struct CastResultStruct {
 	CastResultStruct(void){
         Reset();
     }

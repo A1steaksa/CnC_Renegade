@@ -183,7 +183,14 @@ class HAnimComboDataClass : public AutoPoolClass<HAnimComboDataClass,256> {
 
 		void Clear(void);
 		void Set_HAnim(HAnimClass *motion);
-		void Give_HAnim(HAnimClass *motion) { if(HAnim) HAnim->Release_Ref(); HAnim = motion; }	// used for giving this object the reference
+		
+		// used for giving this object the reference
+		void Give_HAnim( HAnimClass* motion ){
+			if( HAnim ){
+				HAnim->Release_Ref();
+				HAnim = motion;
+			}
+		}
 
 		void Set_Frame( float frame ){
 			PrevFrame = Frame;

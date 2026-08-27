@@ -203,8 +203,7 @@ void CompositeRenderObjClass::Set_Name( const char* name ){
  * HISTORY:                                                                                    *
  *   1/26/00    gth : Created.                                                                 *
  *=============================================================================================*/
-void CompositeRenderObjClass::Set_Base_Model_Name(const char *name)
-{
+void CompositeRenderObjClass::Set_Base_Model_Name( const char* name ){
 	BaseModelName=name;
 }
 

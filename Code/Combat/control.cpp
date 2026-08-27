@@ -138,11 +138,9 @@ void	ControlClass::Clear_Boolean( void )
 }
 
 
-void	ControlClass::Clear_Control( void )	
-{ 
-	WWASSERT( (8 * sizeof(ControlClass::OneTimeBooleanBits)) >= ControlClass::NUM_BOOLEAN_ONE_TIME );
-	WWASSERT( (8 * sizeof(ControlClass::ContinuousBooleanBits)) >= ControlClass::NUM_BOOLEAN_CONTINUOUS );
-
+void ControlClass::Clear_Control(void){ 
+	WWASSERT( ( 8 * sizeof(ControlClass::OneTimeBooleanBits)) >= ControlClass::NUM_BOOLEAN_ONE_TIME );
+	WWASSERT( ( 8 * sizeof(ControlClass::ContinuousBooleanBits)) >= ControlClass::NUM_BOOLEAN_CONTINUOUS );
 	OneTimeBooleanBits	= 0;
 	ContinuousBooleanBits	= 0;
 	memset( AnalogValues, 0, sizeof(AnalogValues) ); 

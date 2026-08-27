@@ -126,7 +126,7 @@ Vector3	Random_Vector(float size)
 /*
 **
 */
-SoldierObserverClass::SoldierObserverClass( void ) : 
+SoldierObserverClass::SoldierObserverClass(void) : 
 	State( SOLDIER_AI_RELAXED_IDLE ),
 	StateTimer( 0 ),
 	HomeRadius( 9999999 ),
@@ -144,16 +144,14 @@ SoldierObserverClass::SoldierObserverClass( void ) :
 }
 
 
-SoldierObserverClass::~SoldierObserverClass( void )
-{
+SoldierObserverClass::~SoldierObserverClass(void){
 	Release_Cover_Position();
 }
 
 /*
 **
 */
-void	SoldierObserverClass::Release_Cover_Position( void )
-{
+void SoldierObserverClass::Release_Cover_Position(void){
 	if ( CoverPosition != NULL ) {
 		CoverManager::Release_Cover( CoverPosition );
 		CoverPosition = NULL;
@@ -165,8 +163,7 @@ void	SoldierObserverClass::Release_Cover_Position( void )
 */
 SimplePersistFactoryClass<SoldierObserverClass, CHUNKID_SOLDIER_OBSERVER>	_SoldierObserverPersistFactory;
 
-const PersistFactoryClass &	SoldierObserverClass::Get_Factory (void) const
-{
+const PersistFactoryClass&	SoldierObserverClass::Get_Factory(void) const {
 	return _SoldierObserverPersistFactory;
 }
 
@@ -290,22 +287,18 @@ bool	SoldierObserverClass::Load (ChunkLoadClass &cload)
 /*
 **
 */
-void	SoldierObserverClass::Attach( GameObject * obj )
-{
+void SoldierObserverClass::Attach( GameObject* obj ){
 	// Warning, Attach may not be called on loaded scripts
 }
 
 
-void	SoldierObserverClass::Detach( GameObject * obj )
-{
-	//
-	//	Clear the soldier's internal innate observer pointer
-	//
-	SmartGameObj *smart_game_obj = obj->As_SmartGameObj();
-	if ( smart_game_obj != NULL ) {
-		SoldierGameObj *soldier = smart_game_obj->As_SoldierGameObj();
-		if ( soldier != NULL ) {
-			if ( soldier->Get_Innate_Observer () == this ) {
+void SoldierObserverClass::Detach( GameObject* obj ){
+	// Clear the soldier's internal innate observer pointer
+	SmartGameObj* smart_game_obj = obj->As_SmartGameObj();
+	if( smart_game_obj != NULL ){
+		SoldierGameObj* soldier = smart_game_obj->As_SoldierGameObj();
+		if( soldier != NULL ){
+			if( soldier->Get_Innate_Observer() == this ){
 				soldier->Clear_Innate_Observer();
 			}
 		}

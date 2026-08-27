@@ -200,13 +200,6 @@ PhysicsSceneClass::PhysicsSceneClass(void) :
 	WWASSERT_PRINT(TheScene == NULL,"Only one instance of the PhysicsSceneClass is allowed.\r\n");
 	WWMEMLOG(MEM_PHYSICSDATA);
 	TheScene = this;
-	
-	/*
-	** Initialize Umbra
-	*/
-#if (UMBRASUPPORT)
-	UmbraSupport::Init();
-#endif
 
 	/*
 	** Clear the collision flags
@@ -1462,19 +1455,6 @@ void PhysicsSceneClass::Render_Object(RenderInfoClass & context,PhysClass * obj)
 		LightEnvironmentClass & light_env = *(obj->Get_Static_Lighting_Environment());
 		light_env.Pre_Render_Update(context.Camera.Get_Transform());
 
-		/*
-		** If lighting debugging is enabled, display a vector to each light source
-		*/
-#if WWDEBUG
-		Vector3 pos = obj->Peek_Model()->Get_Bounding_Box().Center;
-		if (LightingDebugDisplayEnabled) {
-			if ((pos - context.Camera.Get_Position()).Length2() < 30.0f * 30.0f) {
-				for (int i=0; i<light_env.Get_Light_Count(); i++) {
-					DEBUG_RENDER_VECTOR(pos,light_env.Get_Light_Direction(i),light_env.Get_Light_Diffuse(i));
-				}
-			}
-		}
-#endif
 		context.light_environment = &light_env;
 	
 	} else {
@@ -1993,23 +1973,6 @@ void PhysicsSceneClass::Shatter_Mesh
 		** procedurally generated and it will not get loaded...
 		*/
 		frag->Enable_Dont_Save(true);
-
-		/*
-		** Debugging, Stop the velocity, set life to infinite, move along initial velocity to offset pieces
-		*/
-#if (SHATTER_DEBUG)
-		Matrix3D tm = frag->Get_Transform();
-		Vector3 pos,vel;
-		tm.Get_Translation(&pos);
-		frag->Get_Velocity(&vel);
-		tm.Set_Translation(pos+vel*0.1f);
-		frag->Set_Transform(tm);
-		frag->Set_Velocity(Vector3(0,0,0));
-		frag->Set_Lifetime(60.0f);
-		frag->Set_Gravity_Multiplier(0.0f);
-		frag->Set_Bounce_Count(100);
-		frag->Set_Orientation_Mode_Fixed();		
-#endif
 
 		/*
 		** Add the fragment to the scene

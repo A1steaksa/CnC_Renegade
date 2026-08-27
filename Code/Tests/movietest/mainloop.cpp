@@ -114,24 +114,16 @@ void	Wait( int time )
 /*
 ** MAIN GAME LOOP
 */
-void Main_Loop(void)
-{
+void Main_Loop(void){
 	Init_Debug();
 	Create_Scene();
 	Load_Data();
 	Create_Objects();
 
-	while (!Keyboard->Down(VK_ESCAPE)) {
-
+	while( !Keyboard->Down( VK_ESCAPE ) ){
 		Time_Step();
 		Render();
 		Windows_Message_Handler();
-
-//		if (Keyboard->Down(VK_F1)) {
-//			while(Keyboard->Down(VK_F1));
-//			TheWorld.Next_Render_Device();
-//		}
-
 	}
 
 	Destroy_Objects();
@@ -141,9 +133,8 @@ void Main_Loop(void)
 	Debug_Refs();
 }
 
-void Render(void)
-{
-	WW3D::Begin_Render(true,Vector3(0,0,0.5));
+void Render(void){
+	WW3D::Begin_Render( true, Vector3( 0, 0 , 0.5 ) );
 	WW3D::Render(TheScene,Camera);
 	WW3D::End_Render();
 }

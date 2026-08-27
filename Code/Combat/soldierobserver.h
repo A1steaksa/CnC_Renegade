@@ -86,28 +86,28 @@ public:
 	bool Set_State( SoldierGameObj * soldier, int state, const Vector3& location = Vector3(0,0,0), GameObject* enemy = NULL);
 
 private:
-	int		State;					// Current State
-	float		StateTimer;				// Time spent in this state
+	int State; // Current State
+	float StateTimer; // Time spent in this state
 
-	Vector3	HomeLocation;			// Location to stay centered around
-	float		HomeRadius;				// Radius to stay within
+	Vector3	HomeLocation; // Location to stay centered around
+	float		HomeRadius; // Radius to stay within
 
 	Vector3	AlertPosition;
-	float		ActionTimer;	// Used to make us change actions periodically
+	float ActionTimer; // Used to make us change actions periodically
 	GameObjReference EnemyObject;
-	bool		CoveredAttack;
-	CoverEntryClass * CoverPosition;
-	float		ConversationTimer;
-	bool		IsAlerted;
+	bool CoveredAttack;
+	CoverEntryClass* CoverPosition;
+	float ConversationTimer;
+	bool IsAlerted;
 
-	float		Aggressiveness;
-	float		TakeCoverProbability;
-	bool		IsStationary;
+	float Aggressiveness;
+	float TakeCoverProbability;
+	bool IsStationary;
 
 	StringClass	SubStateString;
 
-	int		LastEvent;
-	int		LastWeaponIndex;
+	int LastEvent;
+	int LastWeaponIndex;
 
 	/*
 	** Innate AI States

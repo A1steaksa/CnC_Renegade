@@ -467,24 +467,23 @@ const char* HumanStateClass::Get_State_Name( void ) {
 	}
 }
 
-void	HumanStateClass::Set_Sub_State( int sub_state ) {
-	if ( Is_Sub_State_Adjustable() ) {
-		if ( SubState != sub_state ) {
+void HumanStateClass::Set_Sub_State( int sub_state ) {
+	if( Is_Sub_State_Adjustable() ){
+		if( SubState != sub_state ){
 			WWASSERT( sub_state >= 0 && sub_state <= HIGHEST_HUMAN_SUB_STATE );
 			SubState = sub_state;
 			Update_Animation();
 		}
-	}
-	else {
+	}else{
 		Debug_Say( ( "Can't adjust state %s", Get_State_Name() ) );
 	}
 }
 
-bool	HumanStateClass::Is_Sub_State_Adjustable( void ) {
+bool HumanStateClass::Is_Sub_State_Adjustable(void){
 	return ( State == UPRIGHT ) || ( State == LADDER );
 }
 
-void	HumanStateClass::Start_Transition_Animation( const char* anim_name, bool blend ) {
+void HumanStateClass::Start_Transition_Animation( const char* anim_name, bool blend ) {
 	if ( StateLocked ) {
 		Debug_Say( ( "State is Locked.  Can't Start Transition Anim %s\n", anim_name ) );
 		return;
@@ -875,15 +874,15 @@ void HumanStateClass::Update_Animation(void){
 	}
 }
 
-#define	MOVING_THRESHHOLD			0.2
-#define	WALKING_THRESHHOLD		3.21f
+#define	MOVING_THRESHHOLD 0.2
+#define	WALKING_THRESHHOLD 3.21f
 
 void HumanStateClass::Reset_Loiter_Delay(void){
 	LoiterDelay = FreeRandom.Get_Float( 6 ) - 3;
 }
 
 // Must deal with LAND, ANIMATIONS, DEATH, WOUNDS, TRANSITIONS, JUMP, DEATH FALLS, LADDER
-void	HumanStateClass::Update_State( void ) {
+void HumanStateClass::Update_State( void ) {
 	WWPROFILE( "Human State" );
 
 	StateTimer += TimeManager::Get_Frame_Seconds();
@@ -1008,10 +1007,10 @@ void	HumanStateClass::Update_State( void ) {
 }
 
 
-void	HumanStateClass::Post_Think( void ) {
+void HumanStateClass::Post_Think( void ) {
 	// Update sub_state per movement
 	// do it for upright, land, ladder, airborne,
-	if ( Is_Sub_State_Adjustable() || Is_State_Interruptable() ) {
+	if( Is_Sub_State_Adjustable() || Is_State_Interruptable() ){
 
 		// Update the SubState
 		int new_sub_state = 0;
@@ -1019,7 +1018,7 @@ void	HumanStateClass::Post_Think( void ) {
 		// Get our current move vector
 		Vector3	move_vector;
 		HumanPhys->Get_Animation_Move( &move_vector );
-		if ( TimeManager::Get_Frame_Seconds() > 0 ) {
+		if( TimeManager::Get_Frame_Seconds() > 0 ){
 			move_vector /= TimeManager::Get_Frame_Seconds();
 		}
 
@@ -1028,88 +1027,94 @@ void	HumanStateClass::Post_Think( void ) {
 		// When walking running diagonally, use forward/backward legs.
 		// Unless you are crouched, then use straffe legs
 		float direction_ratio = 0.75f;
-		if ( Get_State_Flag( CROUCHED_FLAG ) ) {
+		if( Get_State_Flag( CROUCHED_FLAG ) ){
 			direction_ratio = 2;
 		}
 
 		// Convert to SubMode
-		if ( WWMath::Fabs( move_vector[0] ) > direction_ratio * WWMath::Fabs( move_vector[1] ) ) {
-			if ( move_vector[0] > MOVING_THRESHHOLD ) 	new_sub_state |= SUB_STATE_FORWARD;
-			else if ( move_vector[0] < -MOVING_THRESHHOLD )	new_sub_state |= SUB_STATE_BACKWARD;
-		}
-		else {
-			if ( move_vector[1] > MOVING_THRESHHOLD ) 	new_sub_state |= SUB_STATE_LEFT;
-			else if ( move_vector[1] < -MOVING_THRESHHOLD )	new_sub_state |= SUB_STATE_RIGHT;
+		if( WWMath::Fabs( move_vector[0] ) > direction_ratio * WWMath::Fabs( move_vector[1] ) ){
+			if( move_vector[0] > MOVING_THRESHHOLD ){
+				new_sub_state |= SUB_STATE_FORWARD;
+			}else if( move_vector[0] < -MOVING_THRESHHOLD ){
+				new_sub_state |= SUB_STATE_BACKWARD;
+			}
+		}else{
+			if( move_vector[1] > MOVING_THRESHHOLD ){
+				new_sub_state |= SUB_STATE_LEFT;
+			}else if( move_vector[1] <- MOVING_THRESHHOLD ){
+				new_sub_state |= SUB_STATE_RIGHT;
+			}
 		}
 
-		if ( new_sub_state == 0 ) {
-			if ( move_vector[2] > MOVING_THRESHHOLD ) 	new_sub_state |= SUB_STATE_UP;
-			else if ( move_vector[2] < -MOVING_THRESHHOLD )	new_sub_state |= SUB_STATE_DOWN;
+		if( new_sub_state == 0 ){
+			if( move_vector[2] > MOVING_THRESHHOLD ){
+				new_sub_state |= SUB_STATE_UP;
+			}else if( move_vector[2] < -MOVING_THRESHHOLD ){
+				new_sub_state |= SUB_STATE_DOWN;
+			}
 		}
 
-		if ( new_sub_state != 0 ) {
-			if ( move_vector.Length() < WALKING_THRESHHOLD ) new_sub_state |= SUB_STATE_SLOW;
+		if( new_sub_state != 0 ){
+			if( move_vector.Length() < WALKING_THRESHHOLD ){
+				new_sub_state |= SUB_STATE_SLOW;
+			}
 		}
 
 		// Get him out of WOUNDED, LAND, LOITER states if moving or shooting
-		if ( Is_State_Interruptable() && Get_State() != UPRIGHT ) {
+		if( Is_State_Interruptable() && Get_State() != UPRIGHT ){
 			if ( new_sub_state != 0 || WeaponFired ) {
-				if ( Get_State() == LAND && Get_Sub_State() == new_sub_state ) {
+				if( Get_State() == LAND && Get_Sub_State() == new_sub_state ){
 					// don't interrupt lands for the same direction
-				}
-				else {
+				}else{
 					Set_State( UPRIGHT );
 				}
 			}
 		}
 
-		if ( Is_Sub_State_Adjustable() ) {
-
-			if ( new_sub_state != Get_Sub_State() ) {
+		if( Is_Sub_State_Adjustable() ){
+			if( new_sub_state != Get_Sub_State() ){
 				Set_Sub_State( (HumanSubStateType) new_sub_state );
 			}
 		}
 
 		// Scale animation speed
 		float ideal_speed = 0;
-		if ( !( new_sub_state & SUB_STATE_SLOW ) ) {
+		if( !( new_sub_state & SUB_STATE_SLOW ) ){
 			if ( new_sub_state & SUB_STATE_FORWARD )	ideal_speed = 5.5f;
 			if ( new_sub_state & SUB_STATE_BACKWARD )	ideal_speed = 4.5f;
 			if ( new_sub_state & SUB_STATE_LEFT )		ideal_speed = 4.5f;
 			if ( new_sub_state & SUB_STATE_RIGHT )		ideal_speed = 5.5f;
-		}
-		else {
+		}else{
 			if ( new_sub_state & SUB_STATE_FORWARD )	ideal_speed = 1.6f;
 			if ( new_sub_state & SUB_STATE_BACKWARD )	ideal_speed = 1.5f;
 			if ( new_sub_state & SUB_STATE_LEFT )		ideal_speed = 1.5f;
 			if ( new_sub_state & SUB_STATE_RIGHT )		ideal_speed = 1.6f;
 		}
 
-		if ( State == LADDER ) {
+		if( State == LADDER ){
 			if ( new_sub_state & SUB_STATE_UP )			ideal_speed = 0.15f;
 			if ( new_sub_state & SUB_STATE_DOWN )		ideal_speed = 0.15f;
 		}
 
 		// Turning is at speed 1
-		bool turning = ( new_sub_state & ( SUB_STATE_TURN_LEFT | SUB_STATE_TURN_RIGHT ) &&
-			!( new_sub_state & ( SUB_STATE_FORWARD | SUB_STATE_BACKWARD ) ) );
+		bool turning = (
+			new_sub_state & ( SUB_STATE_TURN_LEFT | SUB_STATE_TURN_RIGHT )
+			&& !( new_sub_state & ( SUB_STATE_FORWARD | SUB_STATE_BACKWARD ) )
+		);
 
-		if ( !turning && ideal_speed != 0 ) {
+		if( !turning && ideal_speed != 0 ){
 			// Get Anim_Speed_Scale
 			Vector3	vel;
 			HumanPhys->Get_Animation_Move( &vel );
-			if ( TimeManager::Get_Frame_Seconds() > 0 ) {
+			if( TimeManager::Get_Frame_Seconds() > 0 ){
 				vel /= TimeManager::Get_Frame_Seconds();
 			}
 			float speed = WWMath::Clamp( vel.Length() / ideal_speed, 0.33f, 3 );
 			AnimControl->Set_Anim_Speed_Scale( speed );
-		}
-		else {
+		}else{
 			AnimControl->Set_Anim_Speed_Scale( 1 );
 		}
-
 		HumanPhys->Reset_Animation_Move();
-
 	}
 }
 
